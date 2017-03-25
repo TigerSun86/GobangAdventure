@@ -39,7 +39,7 @@ namespace GobangGameLib.GameJudge
             var patterns = PatternManager.Instance().PatternRepo[PatternType.Five].Patterns.Values.SelectMany(x => x);
             return PositionManager.Instance()
                 .Lines
-                .SelectMany(l => matcher.MatchPatterns(board, l, patterns));
+                .SelectMany(l => matcher.MatchPatterns(board, l, patterns).Select(m => m.Positions));
         }
 
         private PieceType GetWinnerInOneLine(IBoard board, IPositions line)

@@ -8,45 +8,32 @@ namespace GobangGameLib.GameBoard.Patterns
 {
     public class PatternManager
     {
-        private readonly static IDictionary<PatternType, IEnumerable<Pattern>> P1Repo = new Dictionary<PatternType, IEnumerable<Pattern>>
+        private readonly static List<Pattern[]> P1Repo = new List<Pattern[]>
         {
+            new []
             {
-                PatternType.Five,
-                new []
-                {
-                    new Pattern(new[] { PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1 })
-                }
+                new Pattern(PatternType.Five, new[] { PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1 })
             },
+            new []
             {
-                PatternType.OpenFour,
-                new []
-                {
-                    new Pattern(new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty })
-                }
+                new Pattern(PatternType.OpenFour, new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty })
             },
+            new []
             {
-                PatternType.OpenThree,
-                new []
-                {
-                    new Pattern(new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty })
-                }
+                new Pattern(PatternType.OpenThree, new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty })
             },
+            new []
             {
-                PatternType.OpenTwo,
-                new []
-                {
-                    new Pattern(new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.Empty})
-                }
+                new Pattern(PatternType.OpenTwo, new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.Empty})
             }
         };
 
         private static PatternManager _patternManager;
-
         private IDictionary<PatternType, IPatternGroup> _patternRepo;
 
         private PatternManager()
         {
-            _patternRepo = P1Repo.ToDictionary(kvp => kvp.Key, kvp => CreatePatternGroupFromP1Patterns(kvp.Value));
+            _patternRepo = P1Repo.ToDictionary(i => i[0].PatternType, i => CreatePatternGroupFromP1Patterns(i));
         }
 
         public static PatternManager Instance()

@@ -10,6 +10,8 @@ namespace GobangGameLib.GameBoard.Patterns
     {
         IEnumerable<PieceType> Pieces { get; }
 
+        PatternType PatternType { get; }
+
         IPattern GetOther();
     }
 }

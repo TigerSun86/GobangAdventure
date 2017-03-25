@@ -96,7 +96,7 @@ namespace GobangGameLib.Game
             var five = PositionManager.Instance()
                 .Lines
                 .SelectMany(l => matcher.MatchPatterns(Board, l, patterns));
-            var pos = string.Join(",", five.Select(l => $"({l.First().Row},{l.First().Col})"));
+            var pos = string.Join(",", five.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
             if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {patternType} at {pos}.");
         }
     }

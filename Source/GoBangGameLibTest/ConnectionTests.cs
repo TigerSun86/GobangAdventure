@@ -42,7 +42,7 @@ namespace GoBangGameLibTest
                 board.Set(positions[i], pieces[i]);
             }
 
-            IPattern pattern = new Pattern(pieces);
+            IPattern pattern = new Pattern(PatternType.OpenThree, pieces);
 
             var connection = new PatternMatcher();
 
@@ -51,7 +51,7 @@ namespace GoBangGameLibTest
 
             // Assert
             Assert.AreEqual(1, result.Count());
-            CollectionAssert.AreEqual(positions, result.First().ToList());
+            CollectionAssert.AreEqual(positions, result.First().Positions.ToList());
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace GoBangGameLibTest
                 board.Set(positions[i], pieces[i + 1]);
             }
 
-            IPattern pattern = new Pattern(pieces);
+            IPattern pattern = new Pattern(PatternType.OpenThree, pieces);
 
             var connection = new PatternMatcher();
 

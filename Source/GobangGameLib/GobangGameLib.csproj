@@ -46,6 +46,8 @@
     <Compile Include="GameBoard\Patterns\PatternGroup.cs" />
     <Compile Include="GameBoard\Patterns\PatternManager.cs" />
     <Compile Include="GameBoard\Patterns\PatternType.cs" />
+    <Compile Include="GameBoard\PieceConnection\IMatch.cs" />
+    <Compile Include="GameBoard\PieceConnection\Match.cs" />
     <Compile Include="GameBoard\PieceConnection\PatternMatcher.cs" />
     <Compile Include="GameBoard\Patterns\Pattern.cs" />
     <Compile Include="GameBoard\Position.cs" />

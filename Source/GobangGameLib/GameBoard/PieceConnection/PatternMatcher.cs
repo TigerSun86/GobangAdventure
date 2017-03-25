@@ -13,19 +13,19 @@ namespace GobangGameLib.GameBoard.PieceConnection
     {
         private readonly static int Base = Enum.GetNames(typeof(PieceType)).Length;
 
-        public IEnumerable<IEnumerable<Position>> MatchPatterns(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
+        public IEnumerable<Match> MatchPatterns(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
         {
             var patternsWithSameCount = patterns.GroupBy(p => p.Pieces.Count());
             return patternsWithSameCount.SelectMany(ps => Match(board, line, ps));
         }
 
-        internal IEnumerable<IEnumerable<Position>> Match(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
+        internal IEnumerable<Match> Match(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
         {
             int num = patterns.First().Pieces.Count();
             int highestBase = (int)Math.Pow(Base, num - 1);
             int currentHash = 0;
             Queue<Position> queue = new Queue<Position>();
-            HashSet<int> patternHashes = GetPatternHashes(patterns);
+            Dictionary<int, PatternType> patternHashes = GetPatternHashes(patterns);
             foreach (Position p in line.Positions)
             {
                 currentHash = Add(currentHash, board.Get(p));
@@ -35,9 +35,10 @@ namespace GobangGameLib.GameBoard.PieceConnection
 
                 if (queue.Count == num)
                 {
-                    if (patternHashes.Contains(currentHash))
+                    PatternType type;
+                    if (patternHashes.TryGetValue(currentHash, out type))
                     {
-                        yield return queue.ToList();
+                        yield return new Match(type, queue.ToList());
                     }
 
                     Position headPosition = queue.Dequeue();
@@ -46,14 +47,14 @@ namespace GobangGameLib.GameBoard.PieceConnection
             }
         }
 
-        private HashSet<int> GetPatternHashes(IEnumerable<IPattern> patterns)
+        private Dictionary<int, PatternType> GetPatternHashes(IEnumerable<IPattern> patterns)
         {
-            HashSet<int> hashes = new HashSet<int>();
-
+            Dictionary<int, PatternType> hashes = new Dictionary<int, PatternType>();
             foreach (IPattern pattern in patterns)
             {
                 var hash = pattern.Pieces.Aggregate(0, (sum, piece) => Add(sum, piece));
-                hashes.Add(hash);
+                Debug.Assert(!hashes.ContainsKey(hash));
+                hashes[hash] = pattern.PatternType;
             }
 
             return hashes;
