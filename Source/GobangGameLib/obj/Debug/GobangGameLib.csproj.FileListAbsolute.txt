@@ -1,0 +1,15 @@
+C:\WS\GobangAdventure\GobangGameLib\bin\Debug\GobangGameLib.dll
+C:\WS\GobangAdventure\GobangGameLib\bin\Debug\GobangGameLib.pdb
+C:\WS\GobangAdventure\GobangGameLib\obj\Debug\GobangGameLib.dll
+C:\WS\GobangAdventure\GobangGameLib\obj\Debug\GobangGameLib.pdb
+C:\WS\GobangAdventure\GobangGameLib\obj\Debug\GobangGameLib.csprojResolveAssemblyReference.cache
+C:\Workspace\GobangAdventure\GobangGameLib\bin\Debug\GobangGameLib.dll
+C:\Workspace\GobangAdventure\GobangGameLib\bin\Debug\GobangGameLib.pdb
+C:\Workspace\GobangAdventure\GobangGameLib\obj\Debug\GobangGameLib.csprojResolveAssemblyReference.cache
+C:\Workspace\GobangAdventure\GobangGameLib\obj\Debug\GobangGameLib.dll
+C:\Workspace\GobangAdventure\GobangGameLib\obj\Debug\GobangGameLib.pdb
+C:\Workspace\GobangAdventure\Source\GobangGameLib\bin\Debug\GobangGameLib.dll
+C:\Workspace\GobangAdventure\Source\GobangGameLib\bin\Debug\GobangGameLib.pdb
+C:\Workspace\GobangAdventure\Source\GobangGameLib\obj\Debug\GobangGameLib.csprojResolveAssemblyReference.cache
+C:\Workspace\GobangAdventure\Source\GobangGameLib\obj\Debug\GobangGameLib.dll
+C:\Workspace\GobangAdventure\Source\GobangGameLib\obj\Debug\GobangGameLib.pdb

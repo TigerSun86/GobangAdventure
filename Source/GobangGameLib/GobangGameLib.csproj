@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{074097EC-CEBA-4C50-B1C3-F59DA2B9B457}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GobangGameLib</RootNamespace>
+    <AssemblyName>GobangGameLib</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GameBoard\Board.cs" />
+    <Compile Include="GameBoard\BoardProperties.cs" />
+    <Compile Include="GameBoard\IBoard.cs" />
+    <Compile Include="GameBoard\Patterns\IPatternGroup.cs" />
+    <Compile Include="GameBoard\Patterns\IPattern.cs" />
+    <Compile Include="GameBoard\Patterns\PatternGroup.cs" />
+    <Compile Include="GameBoard\Patterns\PatternManager.cs" />
+    <Compile Include="GameBoard\Patterns\PatternType.cs" />
+    <Compile Include="GameBoard\PieceConnection\PatternMatcher.cs" />
+    <Compile Include="GameBoard\Patterns\Pattern.cs" />
+    <Compile Include="GameBoard\Position.cs" />
+    <Compile Include="GameBoard\PositionManagement\IPositions.cs" />
+    <Compile Include="GameBoard\PositionManagement\ILines.cs" />
+    <Compile Include="GameBoard\PositionManagement\IAllLineGroups.cs" />
+    <Compile Include="GameBoard\PositionManagement\Line.cs" />
+    <Compile Include="GameBoard\PositionManagement\LineGroup.cs" />
+    <Compile Include="GameBoard\PositionManagement\LineType.cs" />
+    <Compile Include="GameBoard\PositionManagement\PositionManager.cs" />
+    <Compile Include="Game\GameFactory.cs" />
+    <Compile Include="Game\GameStatus.cs" />
+    <Compile Include="Game\GobangGame.cs" />
+    <Compile Include="Game\IGame.cs" />
+    <Compile Include="GameBoard\PieceType.cs" />
+    <Compile Include="GameJudge\IJudge.cs" />
+    <Compile Include="GameJudge\Judge.cs" />
+    <Compile Include="Players\IPlayer.cs" />
+    <Compile Include="Players\RandomPlayer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\BoardHelper.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

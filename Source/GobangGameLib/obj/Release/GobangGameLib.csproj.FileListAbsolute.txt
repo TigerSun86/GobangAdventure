@@ -1,0 +1,5 @@
+C:\Workspace\GobangAdventure\GobangGameLib\bin\Release\GobangGameLib.dll
+C:\Workspace\GobangAdventure\GobangGameLib\bin\Release\GobangGameLib.pdb
+C:\Workspace\GobangAdventure\GobangGameLib\obj\Release\GobangGameLib.dll
+C:\Workspace\GobangAdventure\GobangGameLib\obj\Release\GobangGameLib.pdb
+C:\Workspace\GobangAdventure\GobangGameLib\obj\Release\GobangGameLib.csprojResolveAssemblyReference.cache
