@@ -1,7 +1,0 @@
-C:\Workspace\GobangAdventure\GoBangGameLibTest\bin\Release\GoBangGameLibTest.dll
-C:\Workspace\GobangAdventure\GoBangGameLibTest\bin\Release\GoBangGameLibTest.pdb
-C:\Workspace\GobangAdventure\GoBangGameLibTest\bin\Release\GobangGameLib.dll
-C:\Workspace\GobangAdventure\GoBangGameLibTest\bin\Release\GobangGameLib.pdb
-C:\Workspace\GobangAdventure\GoBangGameLibTest\obj\Release\GoBangGameLibTest.dll
-C:\Workspace\GobangAdventure\GoBangGameLibTest\obj\Release\GoBangGameLibTest.pdb
-C:\Workspace\GobangAdventure\GoBangGameLibTest\obj\Release\GoBangGameLibTest.csprojResolveAssemblyReference.cache

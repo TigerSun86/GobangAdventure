@@ -1,7 +1,0 @@
-C:\Workspace\GobangAdventure\AI\bin\Release\AI.dll
-C:\Workspace\GobangAdventure\AI\bin\Release\AI.pdb
-C:\Workspace\GobangAdventure\AI\bin\Release\GobangGameLib.dll
-C:\Workspace\GobangAdventure\AI\bin\Release\GobangGameLib.pdb
-C:\Workspace\GobangAdventure\AI\obj\Release\AI.csprojResolveAssemblyReference.cache
-C:\Workspace\GobangAdventure\AI\obj\Release\AI.dll
-C:\Workspace\GobangAdventure\AI\obj\Release\AI.pdb
