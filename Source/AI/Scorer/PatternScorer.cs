@@ -19,22 +19,37 @@ namespace AI.Scorer
             double sum = 0;
 
             var myPatterns = GetPatternCounts(board, player);
-            //Debug.WriteLine("My patterns "+string.Join(",", myPatterns));
-
             var oPatterns = GetPatternCounts(board, player.GetOther());
-            //Debug.WriteLine("O patterns " + string.Join(",", oPatterns));
+
+            //DebugInfo(myPatterns, oPatterns);
 
             sum += GetCountFromDictionary(myPatterns, PatternType.Five) * 10;
             sum += GetCountFromDictionary(myPatterns, PatternType.OpenFour) * 5;
             sum += GetCountFromDictionary(myPatterns, PatternType.OpenThree) * 3;
             sum += GetCountFromDictionary(myPatterns, PatternType.OpenTwo) * 1;
+            sum += GetCountFromDictionary(myPatterns, PatternType.OpenOne) * 0.1;
 
             sum -= GetCountFromDictionary(oPatterns, PatternType.Five) * 10;
             sum -= GetCountFromDictionary(oPatterns, PatternType.OpenFour) * 5;
             sum -= GetCountFromDictionary(oPatterns, PatternType.OpenThree) * 3;
             sum -= GetCountFromDictionary(oPatterns, PatternType.OpenTwo) * 1;
+            sum -= GetCountFromDictionary(oPatterns, PatternType.OpenOne) * 0.1;
 
             return sum;
+        }
+
+        private void DebugInfo(Dictionary<PatternType, int> myPatterns, Dictionary<PatternType, int> oPatterns)
+        {
+            var my = string.Join(",", myPatterns);
+            var o = string.Join(",", oPatterns);
+            if (!string.IsNullOrWhiteSpace(my))
+            {
+                Debug.WriteLine("My patterns " + my);
+            }
+            if (!string.IsNullOrWhiteSpace(o))
+            {
+                Debug.WriteLine("O patterns " + o);
+            }
         }
 
         private Dictionary<PatternType, int> GetPatternCounts(IBoard board, PieceType pieceType)

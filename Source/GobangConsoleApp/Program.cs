@@ -25,8 +25,10 @@ namespace GobangConsoleApp
             //IGame game = new GameFactory().CreateRandomGame();
             IGame game = new GameFactory().CreateGame(
                 //new RandomPlayer(),
-                new MinmaxSearchAi(1, new CenterScorer()) { Player = PieceType.P1 },
-                new MinmaxSearchAi(1, new PatternScorer()) { Player = PieceType.P2 });
+                new AbPruningAi(2, new PatternScorer()) { Player = PieceType.P1 },
+                new AbPruningAi(2, new PatternScorer()) { Player = PieceType.P2 }
+                //new ExceptionPlayer()
+                );
             game.Start();
             var board = game.Board;
             DisplayBoard(board);

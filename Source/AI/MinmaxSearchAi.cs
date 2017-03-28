@@ -24,6 +24,7 @@ namespace AI
             this._maxDepth = maxDepth;
             this._scorer = scorer;
         }
+
         public MinmaxSearchAi() : this(3, new CenterScorer()) { }
 
         public PieceType Player

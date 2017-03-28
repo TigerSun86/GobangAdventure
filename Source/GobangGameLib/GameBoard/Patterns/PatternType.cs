@@ -11,6 +11,7 @@ namespace GobangGameLib.GameBoard.Patterns
         Five,
         OpenFour,
         OpenThree,
-        OpenTwo
+        OpenTwo,
+        OpenOne
     }
 }

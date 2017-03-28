@@ -8,8 +8,8 @@ namespace GobangGameLib.GameBoard
 {
     public static class BoardProperties
     {
-        public const int RowSize = 11;
-        public const int ColSize = 11;
+        public static int RowSize = 11;
+        public static int ColSize = 11;
         public const int NumOfPiecesToWin = 5;
 
         public readonly static IEnumerable<int> RowIndexes = Enumerable.Range(0, RowSize);

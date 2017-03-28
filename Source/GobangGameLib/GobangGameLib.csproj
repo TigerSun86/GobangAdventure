@@ -65,7 +65,9 @@
     <Compile Include="GameBoard\PieceType.cs" />
     <Compile Include="GameJudge\IJudge.cs" />
     <Compile Include="GameJudge\Judge.cs" />
+    <Compile Include="Players\ExceptionPlayer.cs" />
     <Compile Include="Players\IPlayer.cs" />
+    <Compile Include="Players\NextAvailablePlayer.cs" />
     <Compile Include="Players\RandomPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\BoardHelper.cs" />

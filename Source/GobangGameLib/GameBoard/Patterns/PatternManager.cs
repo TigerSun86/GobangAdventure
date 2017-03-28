@@ -25,6 +25,10 @@ namespace GobangGameLib.GameBoard.Patterns
             new []
             {
                 new Pattern(PatternType.OpenTwo, new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.Empty})
+            },
+            new []
+            {
+                new Pattern(PatternType.OpenOne, new[] { PieceType.Empty, PieceType.P1, PieceType.Empty})
             }
         };
 

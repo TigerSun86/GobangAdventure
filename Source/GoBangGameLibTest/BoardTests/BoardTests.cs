@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GobangGameLib.GameBoard.PositionManagement;
+using GobangGameLib.Game;
+using GobangGameLib.Players;
 
 namespace GoBangGameLibTest.BoardTests
 {
@@ -29,6 +31,51 @@ namespace GoBangGameLibTest.BoardTests
         public void PositionCount()
         {
             Assert.AreEqual(BoardProperties.RowSize * BoardProperties.ColSize, PositionManager.Instance().Positions.Count());
+        }
+
+        [TestMethod]
+        public void IsFull()
+        {
+            IGame game = new GameFactory().CreateGame(
+                new NextAvailablePlayer(),
+                new NextAvailablePlayer()
+                );
+            game.Start();
+
+            BoardProperties.ColSize = 4;
+            foreach (var i in Enumerable.Range(0, BoardProperties.RowSize * BoardProperties.ColSize))
+            {
+                Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
+                game.Run();
+            }
+
+            Assert.AreEqual(game.GameStatus, GameStatus.Tie);
+            Assert.IsTrue(game.Board.IsFull());
+
+            BoardProperties.ColSize = 11;
+        }
+
+        [TestMethod]
+        public void FullBoardDeepCloneIsFull()
+        {
+            IGame game = new GameFactory().CreateGame(
+                new NextAvailablePlayer(),
+                new NextAvailablePlayer()
+                );
+            game.Start();
+
+            BoardProperties.ColSize = 4;
+            foreach (var i in Enumerable.Range(0, BoardProperties.RowSize * BoardProperties.ColSize))
+            {
+                Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
+                game.Run();
+            }
+
+            Assert.AreEqual(game.GameStatus, GameStatus.Tie);
+            Assert.IsTrue(game.Board.IsFull());
+
+            var board2 = game.Board.DeepClone();
+            Assert.IsTrue(board2.IsFull());
         }
     }
 }

@@ -47,6 +47,7 @@ namespace GobangGameLib.GameBoard
         {
             Board result = new Board();
             result._data = (PieceType[,])_data.Clone();
+            result._pieceCount = _pieceCount;
             return result;
         }
     }
