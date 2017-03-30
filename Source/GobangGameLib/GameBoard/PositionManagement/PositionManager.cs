@@ -9,21 +9,10 @@ namespace GobangGameLib.GameBoard.PositionManagement
     public class PositionManager : IAllLineGroups, ILines, IPositions
     {
         private readonly List<ILines> _lineGroups;
-        private static PositionManager _positionManager;
 
-        private PositionManager()
+        public PositionManager(List<ILines> lineGroups)
         {
-            _lineGroups = GetAllLineGroups().ToList();
-        }
-
-        public static PositionManager Instance()
-        {
-            if (_positionManager == null)
-            {
-                _positionManager = new PositionManager();
-            }
-
-            return _positionManager;
+            this._lineGroups = lineGroups;
         }
 
         public IEnumerable<ILines> LineGroups
@@ -53,12 +42,19 @@ namespace GobangGameLib.GameBoard.PositionManagement
             }
         }
 
-        private IEnumerable<ILines> GetAllLineGroups()
+        /// <summary>
+        /// Yield every empty spot.
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public IEnumerable<Position> GetEmptyPositions(IBoard board)
         {
-            yield return new LineGroup(LineType.Row);
-            yield return new LineGroup(LineType.Column);
-            yield return new LineGroup(LineType.DiagonalOne);
-            yield return new LineGroup(LineType.DiagonalTwo);
+            return GetPlayerPositions(board, PieceType.Empty);
+        }
+
+        public IEnumerable<Position> GetPlayerPositions(IBoard board, PieceType player)
+        {
+            return Positions.Where(p => board.Get(p).Equals(player));
         }
     }
 }

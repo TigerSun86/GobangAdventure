@@ -1,13 +1,10 @@
-﻿using GobangGameLib.GameBoard;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GobangGameLib.GameBoard.PositionManagement;
+﻿using System.Linq;
 using GobangGameLib.Game;
+using GobangGameLib.GameBoard;
+using GobangGameLib.GameBoard.PositionManagement;
+using GobangGameLib.GameJudge;
 using GobangGameLib.Players;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoBangGameLibTest.BoardTests
 {
@@ -17,7 +14,10 @@ namespace GoBangGameLibTest.BoardTests
         [TestMethod]
         public void DeepClone()
         {
-            Board board = new Board();
+            var context = new BoardProperties();
+            var positions = new PositionFactory().Create(context);
+
+            Board board = new Board(context);
             var board2 = (Board)board.DeepClone();
 
             board2.Set(new Position(0, 0), PieceType.P1);
@@ -30,20 +30,27 @@ namespace GoBangGameLibTest.BoardTests
         [TestMethod]
         public void PositionCount()
         {
-            Assert.AreEqual(BoardProperties.RowSize * BoardProperties.ColSize, PositionManager.Instance().Positions.Count());
+            var context = new BoardProperties();
+            var positions = new PositionFactory().Create(context);
+
+            Assert.AreEqual(context.RowSize * context.ColSize, positions.Positions.Count());
         }
 
         [TestMethod]
         public void IsFull()
         {
+            var context = new BoardProperties(4, 4, 5);
+            var positions = new PositionFactory().Create(context);
+
             IGame game = new GameFactory().CreateGame(
-                new NextAvailablePlayer(),
-                new NextAvailablePlayer()
+                context,
+                new NextAvailablePlayer(positions),
+                new NextAvailablePlayer(positions),
+                new BasicJudge(context, positions)
                 );
             game.Start();
 
-            BoardProperties.ColSize = 4;
-            foreach (var i in Enumerable.Range(0, BoardProperties.RowSize * BoardProperties.ColSize))
+            foreach (var i in Enumerable.Range(0, context.RowSize * context.ColSize))
             {
                 Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
                 game.Run();
@@ -51,21 +58,23 @@ namespace GoBangGameLibTest.BoardTests
 
             Assert.AreEqual(game.GameStatus, GameStatus.Tie);
             Assert.IsTrue(game.Board.IsFull());
-
-            BoardProperties.ColSize = 11;
         }
 
         [TestMethod]
         public void FullBoardDeepCloneIsFull()
         {
+            var context = new BoardProperties(4, 4, 5);
+            var positions = new PositionFactory().Create(context);
+
             IGame game = new GameFactory().CreateGame(
-                new NextAvailablePlayer(),
-                new NextAvailablePlayer()
+                context,
+                new NextAvailablePlayer(positions),
+                new NextAvailablePlayer(positions),
+                new BasicJudge(context, positions)
                 );
             game.Start();
 
-            BoardProperties.ColSize = 4;
-            foreach (var i in Enumerable.Range(0, BoardProperties.RowSize * BoardProperties.ColSize))
+            foreach (var i in Enumerable.Range(0, context.RowSize * context.ColSize))
             {
                 Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
                 game.Run();

@@ -6,13 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GobangGameLib.GameBoard.PositionManagement;
-using GobangGameLib.Util;
 
 namespace GobangGameLib.Players
 {
     public class RandomPlayer : IPlayer
     {
         private PieceType _player;
+        private PositionManager _positions;
+
+        public RandomPlayer(PositionManager positions)
+        {
+            _positions = positions;
+        }
 
         public PieceType Player
         {
@@ -21,10 +26,10 @@ namespace GobangGameLib.Players
                 _player = value;
             }
         }
-        
+
         public Position MakeAMove(IBoard board)
         {
-            var emptyPositions = BoardHelper.GetEmptyPositions(board);
+            var emptyPositions = _positions.GetEmptyPositions(board);
             return emptyPositions.ElementAt(new Random().Next(0, emptyPositions.Count()));
         }
     }

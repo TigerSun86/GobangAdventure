@@ -4,13 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GobangGameLib.GameBoard;
-using GobangGameLib.Util;
+using GobangGameLib.GameBoard.PositionManagement;
 
 namespace GobangGameLib.Players
 {
     public class NextAvailablePlayer : IPlayer
     {
         private PieceType _player;
+        private PositionManager _positions;
+
+        public NextAvailablePlayer(PositionManager positions)
+        {
+            _positions = positions;
+        }
 
         public PieceType Player
         {
@@ -22,7 +28,7 @@ namespace GobangGameLib.Players
 
         public Position MakeAMove(IBoard board)
         {
-            var emptyPositions = BoardHelper.GetEmptyPositions(board);
+            var emptyPositions = _positions.GetEmptyPositions(board);
             return emptyPositions.FirstOrDefault();
         }
     }

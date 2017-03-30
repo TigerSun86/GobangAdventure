@@ -1,36 +1,36 @@
 ﻿
+using System;
+using System.Diagnostics;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameJudge;
 using GobangGameLib.Players;
-using System;
-using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PositionManagement;
-using System.Linq;
-using GobangGameLib.GameBoard.PieceConnection;
-using System.Diagnostics;
 
 namespace GobangGameLib.Game
 {
     public class GobangGame : IGame
     {
+        private BoardProperties _context;
         private IPlayer _player1;
         private IPlayer _player2;
+        private IJudge _judge;
         private PieceType _curPiece;
-        private IJudge _judge = new Judge();
 
-        public GobangGame(IPlayer p1, IPlayer p2)
+        public GobangGame(BoardProperties context, IPlayer p1, IPlayer p2, IJudge judge)
         {
+            _context = context;
             _player1 = p1;
             _player2 = p2;
+            _judge = judge;
         }
 
         public IBoard Board { get; private set; }
         public GameStatus GameStatus { get; private set; }
 
-        public void Start() {
+        public void Start()
+        {
             _curPiece = PieceType.P1;
 
-            Board = new Board();
+            Board = new Board(_context);
             GameStatus = GameStatus.NotEnd;
         }
 
@@ -46,7 +46,6 @@ namespace GobangGameLib.Game
             Board.Set(move, _curPiece);
 
             Debug.WriteLine($"{_curPiece} moved at ({move.Row},{move.Col}).");
-            DebugInfo();
 
             _curPiece = _curPiece.GetOther();
 
@@ -79,25 +78,6 @@ namespace GobangGameLib.Game
             {
                 throw new ArgumentException("Player should be p1 or p2.");
             }
-        }
-
-        private void DebugInfo()
-        {
-            Detailed(PatternType.Five);
-            Detailed(PatternType.OpenFour);
-            Detailed(PatternType.OpenThree);
-            Detailed(PatternType.OpenTwo);
-        }
-
-        private void Detailed(PatternType patternType)
-        {
-            var matcher = new PatternMatcher();
-            var patterns = PatternManager.Instance().PatternRepo[patternType].Patterns.Values.SelectMany(x => x);
-            var five = PositionManager.Instance()
-                .Lines
-                .SelectMany(l => matcher.MatchPatterns(Board, l, patterns));
-            var pos = string.Join(",", five.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
-            if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {patternType} at {pos}.");
         }
     }
 }

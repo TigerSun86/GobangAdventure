@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PieceConnection;
@@ -35,7 +31,10 @@ namespace GoBangGameLibTest
                 PieceType.P1,
                 PieceType.Empty
             };
-            IBoard board = new Board();
+
+            var context = new BoardProperties();
+
+            IBoard board = new Board(context);
             IPositions line = new FreeLine(positions);
             foreach (var i in Enumerable.Range(0, positions.Count()))
             {
@@ -74,7 +73,10 @@ namespace GoBangGameLibTest
                 PieceType.P1,
                 PieceType.Empty
             };
-            IBoard board = new Board();
+
+            var context = new BoardProperties();
+
+            IBoard board = new Board(context);
             IPositions line = new FreeLine(positions);
             foreach (var i in Enumerable.Range(0, positions.Count() - 1))
             {

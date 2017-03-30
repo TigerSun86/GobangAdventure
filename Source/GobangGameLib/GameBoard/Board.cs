@@ -8,12 +8,14 @@ namespace GobangGameLib.GameBoard
 {
     public class Board : IBoard
     {
+        private BoardProperties _context;
         private PieceType[,] _data;
         private int _pieceCount;
 
-        public Board()
+        public Board(BoardProperties context)
         {
-            _data = new PieceType[BoardProperties.RowSize, BoardProperties.ColSize];
+            _context = context;
+            _data = new PieceType[_context.RowSize, _context.ColSize];
             _pieceCount = 0;
         }
 
@@ -40,12 +42,12 @@ namespace GobangGameLib.GameBoard
 
         public bool IsFull()
         {
-            return _pieceCount == BoardProperties.RowSize * BoardProperties.ColSize;
+            return _pieceCount == _context.RowSize * _context.ColSize;
         }
 
         public IBoard DeepClone()
         {
-            Board result = new Board();
+            Board result = new Board(_context);
             result._data = (PieceType[,])_data.Clone();
             result._pieceCount = _pieceCount;
             return result;

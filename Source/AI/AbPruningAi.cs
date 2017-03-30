@@ -1,29 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AI.Scorer;
 using GobangGameLib.GameBoard;
+using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.Players;
-using GobangGameLib.Util;
 
 namespace AI
 {
     public class AbPruningAi : IPlayer
     {
         private PieceType _player;
+        private readonly PositionManager _positions;
         private readonly int _maxDepth;
         private readonly IScorer _scorer;
 
-        public AbPruningAi(int maxDepth, IScorer scorer)
+        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer)
         {
+            this._player = player;
+            this._positions = positions;
             this._maxDepth = maxDepth;
             this._scorer = scorer;
         }
-
-        public AbPruningAi() : this(3, new CenterScorer()) { }
 
         public PieceType Player
         {
@@ -52,7 +49,7 @@ namespace AI
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in BoardHelper.GetEmptyPositions(board))
+            foreach (Position move in _positions.GetEmptyPositions(board))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
@@ -90,7 +87,7 @@ namespace AI
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in BoardHelper.GetEmptyPositions(board))
+            foreach (Position move in _positions.GetEmptyPositions(board))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
@@ -108,10 +105,6 @@ namespace AI
                 }
                 if (score < maxPossibleScore)
                 {
-                    board.Set(move, curPlayer);
-                    var a = _scorer.GetScore(board, _player);
-                    board.Set(move, PieceType.Empty);
-
                     maxPossibleScore = score;
                     bestMove = move;
                 }

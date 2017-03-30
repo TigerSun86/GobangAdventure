@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GobangGameLib.GameJudge
 {
-    interface IJudge
+    public interface IJudge
     {
         PieceType GetWinner(IBoard board);
     }

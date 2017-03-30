@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
-using GobangGameLib.Util;
 
 namespace AI.Scorer
 {
     public class PatternScorer : IScorer
     {
+        private readonly PositionManager _positions;
+
+        public PatternScorer(PositionManager positions)
+        {
+            _positions = positions;
+        }
+
         public double GetScore(IBoard board, PieceType player)
         {
             double sum = 0;
 
             var myPatterns = GetPatternCounts(board, player);
             var oPatterns = GetPatternCounts(board, player.GetOther());
-
-            //DebugInfo(myPatterns, oPatterns);
 
             sum += GetCountFromDictionary(myPatterns, PatternType.Five) * 10;
             sum += GetCountFromDictionary(myPatterns, PatternType.OpenFour) * 5;
@@ -57,9 +59,7 @@ namespace AI.Scorer
             var patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
             var patterns = patternTypes.Select(p => PatternManager.Instance().PatternRepo[p].Patterns[pieceType]).SelectMany(p => p);
             var matcher = new PatternMatcher();
-            var matches = PositionManager.Instance()
-                .Lines
-                .SelectMany(l => matcher.MatchPatterns(board, l, patterns));
+            var matches = _positions.Lines.SelectMany(l => matcher.MatchPatterns(board, l, patterns));
             var counts = matches.GroupBy(m => m.PatternType).ToDictionary(g => g.Key, g => g.Count());
             return counts;
         }
