@@ -9,7 +9,7 @@ namespace GobangGameLib.GameBoard.PositionManagement
         public PositionManager Create(BoardProperties context)
         {
             var types = Enum.GetValues(typeof(LineType)).Cast<LineType>();
-            var lineGroups = types.Select(t => (ILines)CreateLineGroup(context, t)).ToList();
+            var lineGroups = types.ToDictionary(t => t, t => (ILines)CreateLineGroup(context, t));
             var positionManager = new PositionManager(lineGroups);
             return positionManager;
         }
@@ -23,29 +23,29 @@ namespace GobangGameLib.GameBoard.PositionManagement
 
         private Line CreateLine(BoardProperties context, LineType type, int row, int col)
         {
-            List<Position> positions;
+            IEnumerable<Position> positions;
             if (type.Equals(LineType.Row))
             {
-                positions = GetRow(context, row).ToList();
+                positions = GetRow(context, row);
             }
             else if (type.Equals(LineType.Column))
             {
-                positions = GetColumn(context, col).ToList();
+                positions = GetColumn(context, col);
             }
             else if (type.Equals(LineType.DiagonalOne))
             {
-                positions = GetDiagonalOne(context, row, col).ToList();
+                positions = GetDiagonalOne(context, row, col);
             }
             else if (type.Equals(LineType.DiagonalTwo))
             {
-                positions = GetDiagonalTwo(context, row, col).ToList();
+                positions = GetDiagonalTwo(context, row, col);
             }
             else
             {
                 throw new ArgumentException(type.ToString());
             }
 
-            return new Line(type, positions);
+            return new Line(type, positions.ToList());
         }
 
         private IEnumerable<Tuple<int, int>> GetIndexes(BoardProperties context, LineType type)

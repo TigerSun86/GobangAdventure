@@ -8,6 +8,6 @@ namespace GobangGameLib.GameBoard.PositionManagement
 {
     public interface IAllLineGroups
     {
-        IEnumerable<ILines> LineGroups { get; }
+        IDictionary<LineType, ILines> LineGroups { get; }
     }
 }

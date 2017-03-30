@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace GobangGameLib.GameBoard.PositionManagement
 {
-    public class LineGroup : ILines, IPositions
+    public class LineGroup : ILines
     {
-        private List<IPositions> _lines;
+        private IList<IPositions> _lines;
 
-        public LineGroup(LineType type, List<IPositions> lines)
+        public LineGroup(LineType type, IList<IPositions> lines)
         {
             this._lines = lines;
         }
 
-        public IEnumerable<IPositions> Lines
+        public IList<IPositions> Lines
         {
             get
             {

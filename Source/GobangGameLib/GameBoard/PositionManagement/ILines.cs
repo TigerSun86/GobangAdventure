@@ -8,6 +8,6 @@ namespace GobangGameLib.GameBoard.PositionManagement
 {
     public interface ILines
     {
-        IEnumerable<IPositions> Lines { get; }
+        IList<IPositions> Lines { get; }
     }
 }

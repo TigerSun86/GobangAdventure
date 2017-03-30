@@ -17,7 +17,7 @@ namespace GoBangGameLibTest.Utils
             _positions = positions.ToList();
         }
 
-        public IEnumerable<Position> Positions
+        public IList<Position> Positions
         {
             get
             {

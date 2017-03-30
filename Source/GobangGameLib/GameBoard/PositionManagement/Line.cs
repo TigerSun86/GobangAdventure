@@ -9,15 +9,15 @@ namespace GobangGameLib.GameBoard.PositionManagement
     public class Line : IPositions
     {
         private readonly LineType type;
-        private readonly List<Position> _positions;
+        private readonly IList<Position> _positions;
         
-        public Line(LineType type, List<Position> positions)
+        public Line(LineType type, IList<Position> positions)
         {
             this.type = type;
             this._positions = positions;
         }
 
-        public IEnumerable<Position> Positions
+        public IList<Position> Positions
         {
             get
             {

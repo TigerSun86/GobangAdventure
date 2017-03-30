@@ -21,8 +21,7 @@ namespace GobangGameLib.GameJudge
 
         public PieceType GetWinner(IBoard board)
         {
-            var winner = _positions.LineGroups
-                .SelectMany(lineGroup => lineGroup.Lines.Select(line => GetWinnerInOneLine(board, line)))
+            var winner = _positions.Lines.Select(line => GetWinnerInOneLine(board, line))
                 .Where(winnerPiece => !winnerPiece.Equals(PieceType.Empty))
                 .FirstOrDefault();
 

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace GobangGameLib.GameBoard.PositionManagement
 {
-    public class PositionManager : IAllLineGroups, ILines, IPositions
+    public class PositionManager : IAllLineGroups
     {
-        private readonly List<ILines> _lineGroups;
+        private readonly IDictionary<LineType, ILines> _lineGroups;
 
-        public PositionManager(List<ILines> lineGroups)
+        public PositionManager(IDictionary<LineType, ILines> lineGroups)
         {
             this._lineGroups = lineGroups;
         }
 
-        public IEnumerable<ILines> LineGroups
+        public IDictionary<LineType, ILines> LineGroups
         {
             get
             {
@@ -27,7 +27,7 @@ namespace GobangGameLib.GameBoard.PositionManagement
         {
             get
             {
-                return LineGroups.SelectMany(g => g.Lines);
+                return LineGroups.SelectMany(g => g.Value.Lines);
             }
         }
 
@@ -38,7 +38,7 @@ namespace GobangGameLib.GameBoard.PositionManagement
         {
             get
             {
-                return LineGroups.First().Lines.SelectMany(l => l.Positions);
+                return LineGroups.First().Value.Lines.SelectMany(l => l.Positions);
             }
         }
 
