@@ -10,20 +10,11 @@ namespace GobangGameLib.Players
 {
     public class NextAvailablePlayer : IPlayer
     {
-        private PieceType _player;
         private PositionManager _positions;
 
         public NextAvailablePlayer(PositionManager positions)
         {
             _positions = positions;
-        }
-
-        public PieceType Player
-        {
-            set
-            {
-                _player = value;
-            }
         }
 
         public Position MakeAMove(IBoard board)

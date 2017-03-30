@@ -10,8 +10,6 @@ namespace GobangGameLib.Players
 {
     public interface IPlayer
     {
-        PieceType Player { set; }
-
         Position MakeAMove(IBoard board);
     }
 }

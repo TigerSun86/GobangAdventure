@@ -10,18 +10,9 @@ namespace GobangConsoleApp
 {
     public class HumanPlayer : IPlayer
     {
-        private PieceType _player;
-
-        public PieceType Player
-        {
-            set
-            {
-                _player = value;
-            }
-        }
-
         public Position MakeAMove(IBoard board)
         {
+            Console.WriteLine("Please input, sample: 1 2");
             Position move = null;
             bool isValid = false;
             do

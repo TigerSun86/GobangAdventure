@@ -22,14 +22,6 @@ namespace AI
             this._scorer = scorer;
         }
 
-        public PieceType Player
-        {
-            set
-            {
-                _player = value;
-            }
-        }
-
         public Position MakeAMove(IBoard board)
         {
             IBoard boardCopy = board.DeepClone();
