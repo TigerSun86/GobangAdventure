@@ -23,13 +23,5 @@ namespace GobangGameLib.GameBoard.PositionManagement
                 return _lines;
             }
         }
-
-        public IEnumerable<Position> Positions
-        {
-            get
-            {
-                return Lines.SelectMany(l => l.Positions);
-            }
-        }
     }
 }

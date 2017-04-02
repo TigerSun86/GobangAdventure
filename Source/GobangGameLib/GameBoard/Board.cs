@@ -45,6 +45,14 @@ namespace GobangGameLib.GameBoard
             return _pieceCount == _context.RowSize * _context.ColSize;
         }
 
+        public int Count
+        {
+            get
+            {
+                return _pieceCount;
+            }
+        }
+
         public IBoard DeepClone()
         {
             Board result = new Board(_context);

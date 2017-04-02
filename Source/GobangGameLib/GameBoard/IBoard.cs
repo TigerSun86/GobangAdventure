@@ -15,6 +15,8 @@ namespace GobangGameLib.GameBoard
 
         bool IsFull();
 
+        int Count { get; }
+
         IBoard DeepClone();
     }
 }

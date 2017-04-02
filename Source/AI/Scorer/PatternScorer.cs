@@ -22,24 +22,34 @@ namespace AI.Scorer
 
         public double GetScore(IBoard board, PieceType player)
         {
-            double sum = 0;
-
             var myPatterns = GetPatternCounts(board, player);
             var oPatterns = GetPatternCounts(board, player.GetOther());
 
-            sum += GetCountFromDictionary(myPatterns, PatternType.Five) * 10;
-            sum += GetCountFromDictionary(myPatterns, PatternType.OpenFour) * 5;
-            sum += GetCountFromDictionary(myPatterns, PatternType.OpenThree) * 3;
-            sum += GetCountFromDictionary(myPatterns, PatternType.OpenTwo) * 1;
-            sum += GetCountFromDictionary(myPatterns, PatternType.OpenOne) * 0.1;
+            double myScore = 0;
+            myScore += GetCountFromDictionary(myPatterns, PatternType.Five) * 100;
+            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenFour) * 20;
+            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenThree) * 3;
+            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenTwo) * 1;
+            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenOne) * 0.1;
 
-            sum -= GetCountFromDictionary(oPatterns, PatternType.Five) * 10;
-            sum -= GetCountFromDictionary(oPatterns, PatternType.OpenFour) * 5;
-            sum -= GetCountFromDictionary(oPatterns, PatternType.OpenThree) * 3;
-            sum -= GetCountFromDictionary(oPatterns, PatternType.OpenTwo) * 1;
-            sum -= GetCountFromDictionary(oPatterns, PatternType.OpenOne) * 0.1;
+            double oScore = 0;
+            oScore += GetCountFromDictionary(oPatterns, PatternType.Five) * 100;
+            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenFour) * 20;
+            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenThree) * 3;
+            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenTwo) * 1;
+            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenOne) * 0.1;
 
-            return sum;
+            var nextPlayer = board.Count % 2 == 0 ? PieceType.P1 : PieceType.P2;
+            bool isMyTurn = player == nextPlayer;
+            if(isMyTurn)
+            {
+                myScore *= 1.1;
+            }
+            else
+            {
+                oScore *= 1.1;
+            }
+            return myScore - oScore;
         }
 
         private void DebugInfo(Dictionary<PatternType, int> myPatterns, Dictionary<PatternType, int> oPatterns)
