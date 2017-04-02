@@ -13,10 +13,12 @@ namespace GobangGameLib.GameJudge
     public class PatternJudge : IJudge
     {
         private readonly PositionManager _positions;
+        private readonly PatternRepository _patternRepository;
 
-        public PatternJudge(PositionManager positions)
+        public PatternJudge(PositionManager positions, PatternRepository patternRepository)
         {
             _positions = positions;
+            _patternRepository = patternRepository;
         }
 
         public PieceType GetWinner(IBoard board)
@@ -33,7 +35,7 @@ namespace GobangGameLib.GameJudge
         private IEnumerable<IEnumerable<Position>> GetWinLines(IBoard board)
         {
             var matcher = new PatternMatcher();
-            var patterns = PatternManager.Instance().PatternRepo[PatternType.Five].Patterns.Values.SelectMany(x => x);
+            var patterns = _patternRepository.Patterns[PatternType.Five].Patterns.Values.SelectMany(x => x);
             return _positions
                 .Lines
                 .SelectMany(l => matcher.MatchPatterns(board, l, patterns).Select(m => m.Positions));

@@ -26,16 +26,17 @@ namespace GobangConsoleApp
         {
             var context = new BoardProperties();
             var positions = new PositionFactory().Create(context);
+            var patterns = new PatternFactory().Create();
 
             //IGame game = new GameFactory().CreateRandomGame();
             IGame game = new GameFactory().CreateGame(context,
                 //new HumanPlayer(),
                 //new RandomPlayer(),
                 //new AbPruningAi(2, new PatternScorer()) { Player = PieceType.P1 },
-                new AbPruningAi(PieceType.P1, positions, 2, new PatternScorer(positions)),
-                new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions)) ,
+                new AbPruningAi(PieceType.P1, positions, 1, new PatternScorer(positions, patterns)),
+                new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)) ,
                 //new ExceptionPlayer()
-                new PatternJudge(positions)
+                new PatternJudge(positions, patterns)
                 );
             game.Start();
             var board = game.Board;
@@ -97,7 +98,8 @@ namespace GobangConsoleApp
         private static void Detailed(PositionManager positions, IBoard board, PatternType patternType)
         {
             var matcher = new PatternMatcher();
-            var patterns = PatternManager.Instance().PatternRepo[patternType].Patterns.Values.SelectMany(x => x);
+            var patternRepository = new PatternFactory().Create();
+            var patterns = patternRepository.Patterns[patternType].Patterns.Values.SelectMany(x => x);
             var five = positions
                 .Lines
                 .SelectMany(l => matcher.MatchPatterns(board, l, patterns));
