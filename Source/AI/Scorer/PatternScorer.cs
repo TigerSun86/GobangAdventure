@@ -43,11 +43,11 @@ namespace AI.Scorer
             bool isMyTurn = player == nextPlayer;
             if(isMyTurn)
             {
-                myScore *= 1.1;
+                myScore *= 1.2;
             }
             else
             {
-                oScore *= 1.1;
+                oScore *= 1.2;
             }
             return myScore - oScore;
         }

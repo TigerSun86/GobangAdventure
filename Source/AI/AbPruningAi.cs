@@ -9,10 +9,11 @@ namespace AI
 {
     public class AbPruningAi : IPlayer
     {
-        private PieceType _player;
+        private readonly PieceType _player;
         private readonly PositionManager _positions;
         private readonly int _maxDepth;
         private readonly IScorer _scorer;
+        private int leafCount;
 
         public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer)
         {
@@ -24,10 +25,12 @@ namespace AI
 
         public Position MakeAMove(IBoard board)
         {
+            this.leafCount = 0;
+
             IBoard boardCopy = board.DeepClone();
             Tuple<double, Position> scoreAndMove = MaxSearch(boardCopy, _player, depth: 0,
                 minPossibleScore: double.NegativeInfinity, maxPossibleScore: double.PositiveInfinity);
-            Debug.WriteLine($"{_player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}.");
+            Debug.WriteLine($"{_player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");
             return scoreAndMove.Item2;
         }
 
@@ -35,6 +38,8 @@ namespace AI
         {
             if (depth >= _maxDepth || board.IsFull())
             {
+                this.leafCount++;
+
                 // Return the score of current board.
                 return new Tuple<double, Position>(_scorer.GetScore(board, _player), null);
             }
@@ -73,6 +78,8 @@ namespace AI
         {
             if (depth >= _maxDepth || board.IsFull())
             {
+                this.leafCount++;
+
                 // Return the score of current board.
                 return new Tuple<double, Position>(_scorer.GetScore(board, _player), null);
             }

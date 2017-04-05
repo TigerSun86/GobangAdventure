@@ -29,7 +29,7 @@ namespace GobangConsoleApp
             var patterns = new PatternFactory().Create();
 
             IGame game = new GameFactory().CreateGame(context,
-                //new HumanPlayer(),
+                // new HumanPlayer(),
                 //new RandomPlayer(),
                 new AbPruningAi(PieceType.P1, positions, 2, new PatternScorer(positions, patterns)),
                 new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)),
@@ -69,7 +69,7 @@ namespace GobangConsoleApp
             Console.Write("   ");
             for (var i = 0; i < context.ColSize; i++)
             {
-                Console.Write(i);
+                Console.Write(string.Format(" {0}", i));
             }
             Console.WriteLine();
             for (var i = 0; i < context.RowSize; i++)
@@ -77,6 +77,7 @@ namespace GobangConsoleApp
                 Console.Write(string.Format("{0,2:00} ", i));
                 for (var j = 0; j < context.ColSize; j++)
                 {
+                    Console.Write(" ");
                     Console.Write(PieceToDisplayChar[board.Get(new Position(i, j))]);
                 }
                 Console.WriteLine();
