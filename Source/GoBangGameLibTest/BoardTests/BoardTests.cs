@@ -86,5 +86,28 @@ namespace GoBangGameLibTest.BoardTests
             var board2 = game.Board.DeepClone();
             Assert.IsTrue(board2.IsFull());
         }
+
+        [TestMethod]
+        public void TestDiagonalIndexes()
+        {
+            var b = new BoardProperties();
+            var positions = new PositionFactory().Create(b);
+
+            var d1Lines = positions.LineGroups[LineType.DiagonalOne];
+
+            foreach (var p in positions.Positions)
+            {
+                int index = b.GetDiagonalOneIndex(p);
+                Assert.IsTrue(d1Lines.Lines[index].Positions.Contains(p));
+            }
+
+            var d2Lines = positions.LineGroups[LineType.DiagonalTwo];
+
+            foreach (var p in positions.Positions)
+            {
+                int index = b.GetDiagonalTwoIndex(p);
+                Assert.IsTrue(d2Lines.Lines[index].Positions.Contains(p));
+            }
+        }
     }
 }

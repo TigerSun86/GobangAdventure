@@ -8,12 +8,12 @@ namespace GobangGameLib.GameBoard.PositionManagement
 {
     public class Line : IPositions
     {
-        private readonly LineType type;
+        private readonly LineType _type;
         private readonly IList<Position> _positions;
         
         public Line(LineType type, IList<Position> positions)
         {
-            this.type = type;
+            this._type = type;
             this._positions = positions;
         }
 

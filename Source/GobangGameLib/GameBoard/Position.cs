@@ -22,6 +22,22 @@ namespace GobangGameLib.GameBoard
             Col = col;
         }
 
+        public override bool Equals(object obj)
+        {
+            var item = obj as Position;
+            if (item == null)
+            {
+                return false;
+            }
+
+            return (Row == item.Row) && (Col == item.Col);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Row << 16) + Col;
+        }
+
         public override string ToString()
         {
             return $"({Row},{Col})";

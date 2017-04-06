@@ -9,6 +9,7 @@ namespace GobangGameLib.GameBoard.PositionManagement
     public class PositionManager : IAllLineGroups
     {
         private readonly IDictionary<LineType, ILines> _lineGroups;
+        private BoardProperties _context;
 
         public PositionManager(IDictionary<LineType, ILines> lineGroups)
         {
@@ -55,6 +56,52 @@ namespace GobangGameLib.GameBoard.PositionManagement
         public IEnumerable<Position> GetPlayerPositions(IBoard board, PieceType player)
         {
             return Positions.Where(p => board.Get(p).Equals(player));
+        }
+
+        public IEnumerable<IPositions> GetAllLinesOf(Position position)
+        {
+            var lineTypes = Enum.GetValues(typeof(LineType)).Cast<LineType>();
+            return lineTypes.Select(t => GetLineOf(position, t));
+        }
+
+        public IPositions GetLineOf(Position position, LineType type)
+        {
+            int lineIndex = GetLineIndex(position, type);
+            return LineGroups[type].Lines[lineIndex];
+        }
+
+        public int GetLineIndex(Position position, LineType type)
+        {
+            if (type == LineType.Row)
+            {
+                return position.Row;
+            }
+            else if (type == LineType.Column)
+            {
+                return position.Col;
+            }
+            else if (type == LineType.DiagonalOne)
+            {
+                return GetDiagonalOneIndex(position);
+            }
+            else if (type == LineType.DiagonalTwo)
+            {
+                return GetDiagonalTwoIndex(position);
+            }
+            else
+            {
+                throw new ArgumentException($"Unsupported LineType: {type}.");
+            }
+        }
+
+        public int GetDiagonalOneIndex(Position position)
+        {
+            return _context.RowSize - 1 - position.Row + position.Col;
+        }
+
+        public int GetDiagonalTwoIndex(Position position)
+        {
+            return position.Row + position.Col;
         }
     }
 }
