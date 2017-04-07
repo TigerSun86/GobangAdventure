@@ -22,8 +22,19 @@ namespace AI.Scorer
 
         public double GetScore(IBoard board, PieceType player)
         {
-            var myPatterns = GetPatternCounts(board, player);
-            var oPatterns = GetPatternCounts(board, player.GetOther());
+            Dictionary<PatternType, int> myPatterns;
+            Dictionary<PatternType, int> oPatterns;
+            PatternBoard b = board as PatternBoard;
+            if (b != null)
+            {
+                myPatterns = GetPatternCounts(b, player);
+                oPatterns = GetPatternCounts(b, player.GetOther());
+            }
+            else
+            {
+                myPatterns = GetPatternCounts(board, player);
+                oPatterns = GetPatternCounts(board, player.GetOther());
+            }
 
             double myScore = 0;
             myScore += GetCountFromDictionary(myPatterns, PatternType.Five) * 100;
@@ -41,7 +52,7 @@ namespace AI.Scorer
 
             var nextPlayer = board.Count % 2 == 0 ? PieceType.P1 : PieceType.P2;
             bool isMyTurn = player == nextPlayer;
-            if(isMyTurn)
+            if (isMyTurn)
             {
                 myScore *= 1.2;
             }
@@ -69,10 +80,19 @@ namespace AI.Scorer
         private Dictionary<PatternType, int> GetPatternCounts(IBoard board, PieceType pieceType)
         {
             var patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
-            var patterns = patternTypes.Select(p => _patternRepository.Patterns[p].Patterns[pieceType]).SelectMany(p => p);
+            var patterns = patternTypes
+                .Select(p => _patternRepository.Patterns[p].Patterns[pieceType])
+                .SelectMany(p => p);
             var matcher = new PatternMatcher();
             var matches = _positions.Lines.SelectMany(l => matcher.MatchPatterns(board, l, patterns));
-            var counts = matches.GroupBy(m => m.PatternType).ToDictionary(g => g.Key, g => g.Count());
+            var counts = matches.GroupBy(m => m.Pattern.PatternType).ToDictionary(g => g.Key, g => g.Count());
+            return counts;
+        }
+
+        private Dictionary<PatternType, int> GetPatternCounts(PatternBoard board, PieceType pieceType)
+        {
+            HashSet<IMatch> matches = board.Matches[pieceType];
+            var counts = matches.GroupBy(m => m.Pattern.PatternType).ToDictionary(g => g.Key, g => g.Count());
             return counts;
         }
 

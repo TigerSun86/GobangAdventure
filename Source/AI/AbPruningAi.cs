@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using AI.Scorer;
 using GobangGameLib.GameBoard;
+using GobangGameLib.GameBoard.Patterns;
+using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.Players;
 
@@ -14,6 +16,9 @@ namespace AI
         private readonly int _maxDepth;
         private readonly IScorer _scorer;
         private int leafCount;
+        private readonly bool isPatternBoard;
+        private readonly PatternRepository patternRepository;
+        private readonly PatternMatcher matcher;
 
         public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer)
         {
@@ -21,13 +26,35 @@ namespace AI
             this._positions = positions;
             this._maxDepth = maxDepth;
             this._scorer = scorer;
+            this.isPatternBoard = false;
+        }
+
+        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer, bool isPatternBoard, PatternRepository patternRepository, PatternMatcher matcher)
+        {
+            this._player = player;
+            this._positions = positions;
+            this._maxDepth = maxDepth;
+            this._scorer = scorer;
+            this.isPatternBoard = isPatternBoard;
+            this.patternRepository = patternRepository;
+            this.matcher = matcher;
         }
 
         public Position MakeAMove(IBoard board)
         {
             this.leafCount = 0;
 
-            IBoard boardCopy = board.DeepClone();
+            IBoard boardCopy;
+            if (isPatternBoard)
+            {
+                boardCopy = new PatternBoard(board.DeepClone(), _positions, this.patternRepository, this.matcher);
+            }
+            else
+            {
+                boardCopy = board.DeepClone();
+            }
+
+            
             Tuple<double, Position> scoreAndMove = MaxSearch(boardCopy, _player, depth: 0,
                 minPossibleScore: double.NegativeInfinity, maxPossibleScore: double.PositiveInfinity);
             Debug.WriteLine($"{_player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");

@@ -41,7 +41,7 @@ namespace GoBangGameLibTest
                 board.Set(positions[i], pieces[i]);
             }
 
-            IPattern pattern = new Pattern(PatternType.OpenThree, pieces);
+            IPattern pattern = new Pattern(PatternType.OpenThree, PieceType.P1, pieces);
 
             var connection = new PatternMatcher();
 
@@ -83,7 +83,7 @@ namespace GoBangGameLibTest
                 board.Set(positions[i], pieces[i + 1]);
             }
 
-            IPattern pattern = new Pattern(PatternType.OpenThree, pieces);
+            IPattern pattern = new Pattern(PatternType.OpenThree, PieceType.P1, pieces);
 
             var connection = new PatternMatcher();
 

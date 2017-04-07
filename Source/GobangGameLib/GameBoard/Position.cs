@@ -24,6 +24,11 @@ namespace GobangGameLib.GameBoard
 
         public override bool Equals(object obj)
         {
+            if (object.ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
             var item = obj as Position;
             if (item == null)
             {

@@ -29,10 +29,10 @@ namespace GobangConsoleApp
             var patterns = new PatternFactory().Create();
 
             IGame game = new GameFactory().CreateGame(context,
-                // new HumanPlayer(),
+                 new HumanPlayer(),
                 //new RandomPlayer(),
-                new AbPruningAi(PieceType.P1, positions, 2, new PatternScorer(positions, patterns)),
-                new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)),
+                new AbPruningAi(PieceType.P2, positions, 3, new PatternScorer(positions, patterns), true, patterns, new PatternMatcher()),
+                //new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)),
                 new PatternJudge(positions, patterns)
                 );
             game.Start();

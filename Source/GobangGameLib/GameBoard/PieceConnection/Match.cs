@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GobangGameLib.GameBoard.Patterns;
 
 namespace GobangGameLib.GameBoard.PieceConnection
 {
     public class Match : IMatch
     {
-        public Match(PatternType type, IList<Position> positions)
+        public Match(IPattern pattern, IList<Position> positions)
         {
-            this.PatternType = type;
+            this.Pattern = pattern;
             this.Positions = positions;
         }
 
@@ -20,26 +17,31 @@ namespace GobangGameLib.GameBoard.PieceConnection
             get;
         }
 
-        public PatternType PatternType
+        public IPattern Pattern
         {
             get;
         }
 
         public override bool Equals(object obj)
         {
+            if (object.ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
             var item = obj as Match;
             if (item == null)
             {
                 return false;
             }
 
-            return (PatternType == item.PatternType) && (Positions.SequenceEqual(item.Positions));
+            return (Pattern == item.Pattern) && (Positions.SequenceEqual(item.Positions));
         }
 
         public override int GetHashCode()
         {
             // To avoid conflict, assuming Position.GethashCode() be greater than 10 bits.
-            return ((int)PatternType << 20)
+            return ((int)Pattern.PatternType << 20)
                 ^ (Positions[0].GetHashCode() << 10)
                 ^ Positions[Positions.Count - 1].GetHashCode();
         }

@@ -12,6 +12,6 @@ namespace GobangGameLib.GameBoard.Patterns
 
         PatternType PatternType { get; }
 
-        IPattern GetOther();
+        PieceType Player { get; }
     }
 }

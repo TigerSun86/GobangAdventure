@@ -16,7 +16,8 @@ namespace GobangGameLib.GameBoard.PositionManagement
 
         private LineGroup CreateLineGroup(BoardProperties context, LineType type)
         {
-            var lines = GetIndexes(context, type).Select(i => (IPositions)CreateLine(context, type, i.Item1, i.Item2)).ToList();
+            var lines = GetIndexes(context, type)
+                .Select(i => (IPositions)CreateLine(context, type, i.Item1, i.Item2)).ToList();
             var lineGroup = new LineGroup(type, lines);
             return lineGroup;
         }

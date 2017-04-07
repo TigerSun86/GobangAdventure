@@ -8,34 +8,26 @@ namespace GobangGameLib.GameBoard.Patterns
 {
     public class Pattern : IPattern
     {
-        private PatternType _patternType;
-        private readonly List<PieceType> _pieces;
-
-        public Pattern(PatternType patternType, IEnumerable<PieceType> pieces)
+        public Pattern(PatternType patternType, PieceType player, IEnumerable<PieceType> pieces)
         {
-            _patternType = patternType;
-            _pieces = pieces.ToList();
+            this.PatternType = patternType;
+            this.Player = player;
+            this.Pieces = pieces.ToList();
         }
 
         public PatternType PatternType
         {
-            get
-            {
-                return _patternType;
-            }
+            get;
+        }
+
+        public PieceType Player
+        {
+            get;
         }
 
         public IEnumerable<PieceType> Pieces
         {
-            get
-            {
-                return _pieces;
-            }
-        }
-
-        public IPattern GetOther()
-        {
-            return new Pattern(PatternType, Pieces.Select(p => p.GetOther()));
+            get;
         }
     }
 }

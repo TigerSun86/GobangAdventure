@@ -11,6 +11,6 @@ namespace GobangGameLib.GameBoard.PieceConnection
     {
         IList<Position> Positions { get; }
 
-        PatternType PatternType { get; }
+        IPattern Pattern { get; }
     }
 }

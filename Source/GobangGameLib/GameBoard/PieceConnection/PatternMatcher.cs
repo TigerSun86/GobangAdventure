@@ -25,7 +25,7 @@ namespace GobangGameLib.GameBoard.PieceConnection
             int highestBase = (int)Math.Pow(Base, num - 1);
             int currentHash = 0;
             Queue<Position> queue = new Queue<Position>();
-            Dictionary<int, PatternType> patternHashes = GetPatternHashes(patterns);
+            Dictionary<int, IPattern> patternHashes = GetPatternHashes(patterns);
             foreach (Position p in line.Positions)
             {
                 currentHash = Add(currentHash, board.Get(p));
@@ -35,10 +35,10 @@ namespace GobangGameLib.GameBoard.PieceConnection
 
                 if (queue.Count == num)
                 {
-                    PatternType type;
-                    if (patternHashes.TryGetValue(currentHash, out type))
+                    IPattern pattern;
+                    if (patternHashes.TryGetValue(currentHash, out pattern))
                     {
-                        yield return new Match(type, queue.ToList());
+                        yield return new Match(pattern, queue.ToList());
                     }
 
                     Position headPosition = queue.Dequeue();
@@ -47,14 +47,14 @@ namespace GobangGameLib.GameBoard.PieceConnection
             }
         }
 
-        private Dictionary<int, PatternType> GetPatternHashes(IEnumerable<IPattern> patterns)
+        private Dictionary<int, IPattern> GetPatternHashes(IEnumerable<IPattern> patterns)
         {
-            Dictionary<int, PatternType> hashes = new Dictionary<int, PatternType>();
+            Dictionary<int, IPattern> hashes = new Dictionary<int, IPattern>();
             foreach (IPattern pattern in patterns)
             {
                 var hash = pattern.Pieces.Aggregate(0, (sum, piece) => Add(sum, piece));
                 Debug.Assert(!hashes.ContainsKey(hash));
-                hashes[hash] = pattern.PatternType;
+                hashes[hash] = pattern;
             }
 
             return hashes;
