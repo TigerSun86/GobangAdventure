@@ -10,6 +10,7 @@ using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.GameJudge;
+using GobangGameLib.Players;
 
 namespace GobangConsoleApp
 {
@@ -29,10 +30,11 @@ namespace GobangConsoleApp
             var patterns = new PatternFactory().Create();
 
             IGame game = new GameFactory().CreateGame(context,
-                 new HumanPlayer(),
-                //new RandomPlayer(),
-                new AbPruningAi(PieceType.P2, positions, 3, new PatternScorer(positions, patterns), true, patterns, new PatternMatcher()),
-                //new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)),
+                 //new HumanPlayer(),
+                //new RandomPlayer(positions),
+                 //new RandomPlayer(positions),
+                new AbPruningAi(PieceType.P1, positions, 3, new PatternScorer(positions, patterns), true, patterns, new PatternMatcher()),
+                new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)),
                 new PatternJudge(positions, patterns)
                 );
             game.Start();
@@ -87,22 +89,51 @@ namespace GobangConsoleApp
 
         private static void DebugInfo(PositionManager positions, IBoard board)
         {
-            Detailed(positions, board, PatternType.Five);
-            Detailed(positions, board, PatternType.OpenFour);
-            Detailed(positions, board, PatternType.OpenThree);
-            Detailed(positions, board, PatternType.OpenTwo);
+            Detailed(positions, board);
         }
 
-        private static void Detailed(PositionManager positions, IBoard board, PatternType patternType)
+        private static void Detailed(PositionManager positions, IBoard board)
+        {
+            var matches = GetMatches1(positions, board).ToList();
+            PatternBoard pBoard = board as PatternBoard;
+            if(pBoard !=null)
+            {
+                var matches2 = GetMatches2(pBoard).ToList();
+                var any = matches.Except(matches2).ToList();
+                bool same = (matches.Count() == matches2.Count()) && !any.Any();
+                Debug.Assert(same);
+            }
+
+            var m2 = matches.GroupBy(m=> m.Pattern.PatternType, m=>m);
+            foreach(var m in m2)
+            {
+                var pos = string.Join(",", m.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
+                if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {m.Key} at {pos}.");
+            }
+        }
+
+
+        private static IEnumerable<IMatch> GetMatches1(PositionManager positions, IBoard board)
         {
             var matcher = new PatternMatcher();
             var patternRepository = new PatternFactory().Create();
-            var patterns = patternRepository.Patterns[patternType].Patterns.Values.SelectMany(x => x);
-            var five = positions
+
+            IEnumerable<PatternType> patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
+
+            IEnumerable<IPattern> patterns = patternTypes
+                .Select(p => patternRepository.Patterns[p].Patterns.Values)
+                .SelectMany(p => p)
+                .SelectMany(p => p);
+
+            var matches = positions
                 .Lines
                 .SelectMany(l => matcher.MatchPatterns(board, l, patterns));
-            var pos = string.Join(",", five.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
-            if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {patternType} at {pos}.");
+            return matches;
+        }
+
+        private static IEnumerable<IMatch> GetMatches2(PatternBoard board)
+        {
+            return board.Matches.Values.SelectMany(v => v);
         }
     }
 }

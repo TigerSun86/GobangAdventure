@@ -2,6 +2,8 @@
 using System;
 using System.Diagnostics;
 using GobangGameLib.GameBoard;
+using GobangGameLib.GameBoard.Patterns;
+using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.GameJudge;
 using GobangGameLib.Players;
 
@@ -30,7 +32,8 @@ namespace GobangGameLib.Game
         {
             _curPiece = PieceType.P1;
 
-            Board = new Board(_context);
+            //Board = new Board(_context);
+            Board = new PatternBoard(new Board(_context), new PositionFactory().Create(_context), new PatternFactory().Create(), new GameBoard.PieceConnection.PatternMatcher());
             GameStatus = GameStatus.NotEnd;
         }
 

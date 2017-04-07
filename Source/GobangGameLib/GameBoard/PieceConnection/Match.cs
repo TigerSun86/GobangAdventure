@@ -35,7 +35,7 @@ namespace GobangGameLib.GameBoard.PieceConnection
                 return false;
             }
 
-            return (Pattern == item.Pattern) && (Positions.SequenceEqual(item.Positions));
+            return (Pattern.PatternType == item.Pattern.PatternType) && (Positions.SequenceEqual(item.Positions));
         }
 
         public override int GetHashCode()
@@ -44,6 +44,11 @@ namespace GobangGameLib.GameBoard.PieceConnection
             return ((int)Pattern.PatternType << 20)
                 ^ (Positions[0].GetHashCode() << 10)
                 ^ Positions[Positions.Count - 1].GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"[{string.Join(",", Positions.Select(p => p.ToString()))}]";
         }
     }
 }

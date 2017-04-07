@@ -102,7 +102,7 @@ namespace GobangGameLib.GameBoard
 
         public IBoard DeepClone()
         {
-            throw new NotImplementedException();
+            return new PatternBoard(this.board, this.positions, this.patternRepository, this.matcher);
         }
     }
 }
