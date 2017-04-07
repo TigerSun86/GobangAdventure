@@ -9,10 +9,11 @@ namespace GobangGameLib.GameBoard.PositionManagement
     public class PositionManager : IAllLineGroups
     {
         private readonly IDictionary<LineType, ILines> _lineGroups;
-        private BoardProperties _context;
+        private readonly BoardProperties _context;
 
-        public PositionManager(IDictionary<LineType, ILines> lineGroups)
+        public PositionManager(BoardProperties context, IDictionary<LineType, ILines> lineGroups)
         {
+            this._context = context;
             this._lineGroups = lineGroups;
         }
 

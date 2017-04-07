@@ -35,7 +35,8 @@ namespace GobangGameLib.GameBoard
 
         public override int GetHashCode()
         {
-            return (Row << 16) + Col;
+            // To avoid conflict, assuming row and column length won't be greater than 32.
+            return (Row << 5) ^ Col;
         }
 
         public override string ToString()

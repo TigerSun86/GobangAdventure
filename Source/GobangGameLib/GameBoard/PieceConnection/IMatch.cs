@@ -9,7 +9,7 @@ namespace GobangGameLib.GameBoard.PieceConnection
 {
     public interface IMatch
     {
-        IEnumerable<Position> Positions { get; }
+        IList<Position> Positions { get; }
 
         PatternType PatternType { get; }
     }
