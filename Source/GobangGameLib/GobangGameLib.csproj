@@ -39,9 +39,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameBoard\Board.cs" />
+    <Compile Include="GameBoard\BoardFactory.cs" />
     <Compile Include="GameBoard\BoardProperties.cs" />
     <Compile Include="GameBoard\IBoard.cs" />
+    <Compile Include="GameBoard\IBoardFactory.cs" />
     <Compile Include="GameBoard\PatternBoard.cs" />
+    <Compile Include="GameBoard\PatternBoardFactory.cs" />
     <Compile Include="GameBoard\Patterns\IPatternGroup.cs" />
     <Compile Include="GameBoard\Patterns\IPattern.cs" />
     <Compile Include="GameBoard\Patterns\PatternFactory.cs" />

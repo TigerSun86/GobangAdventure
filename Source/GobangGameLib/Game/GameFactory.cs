@@ -6,9 +6,9 @@ namespace GobangGameLib.Game
 {
     public class GameFactory
     {
-        public IGame CreateGame(BoardProperties context, IPlayer p1, IPlayer p2, IJudge judge)
+        public IGame CreateGame(IBoardFactory boardFactory, IPlayer p1, IPlayer p2, IJudge judge)
         {
-            return new GobangGame(context, p1, p2, judge);
+            return new GobangGame(boardFactory, p1, p2, judge);
         }
     }
 }

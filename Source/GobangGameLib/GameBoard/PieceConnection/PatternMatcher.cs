@@ -19,6 +19,23 @@ namespace GobangGameLib.GameBoard.PieceConnection
             return patternsWithSameCount.SelectMany(ps => Match(board, line, ps));
         }
 
+        public IEnumerable<IMatch> GetPatternCounts(IBoard board, PatternRepository patternRepository, IEnumerable<IPositions> lines, PieceType pieceType)
+        {
+            if (board.Count == 0)
+            {
+                return Enumerable.Empty<IMatch>();
+            }
+
+            var patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
+            var patterns = patternTypes
+                .Select(p => patternRepository.Patterns[p].Patterns[pieceType])
+                .SelectMany(p => p);
+
+            var matches = lines.SelectMany(l => this.MatchPatterns(board, l, patterns));
+            return matches;
+        }
+
+
         internal IEnumerable<Match> Match(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
         {
             int num = patterns.First().Pieces.Count();

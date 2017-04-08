@@ -33,6 +33,11 @@ namespace GobangGameLib.GameBoard
 
         private IEnumerable<IMatch> GetPatternCounts(PieceType pieceType)
         {
+            if (this.board.Count == 0)
+            {
+                return Enumerable.Empty<IMatch>();
+            }
+
             var patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
             var patterns = patternTypes
                 .Select(p => this.patternRepository.Patterns[p].Patterns[pieceType])

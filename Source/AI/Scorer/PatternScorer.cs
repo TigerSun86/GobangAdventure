@@ -24,11 +24,11 @@ namespace AI.Scorer
         {
             Dictionary<PatternType, int> myPatterns;
             Dictionary<PatternType, int> oPatterns;
-            PatternBoard b = board as PatternBoard;
-            if (b != null)
+            PatternBoard patternBoard = board as PatternBoard;
+            if (patternBoard != null)
             {
-                myPatterns = GetPatternCounts(b, player);
-                oPatterns = GetPatternCounts(b, player.GetOther());
+                myPatterns = GetPatternCounts(patternBoard, player);
+                oPatterns = GetPatternCounts(patternBoard, player.GetOther());
             }
             else
             {

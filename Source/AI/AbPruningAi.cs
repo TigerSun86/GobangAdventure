@@ -11,69 +11,49 @@ namespace AI
 {
     public class AbPruningAi : IPlayer
     {
-        private readonly PieceType _player;
-        private readonly PositionManager _positions;
-        private readonly int _maxDepth;
-        private readonly IScorer _scorer;
+        private readonly PieceType player;
+        private readonly PositionManager positions;
+        private readonly int maxDepth;
+        private readonly IScorer scorer;
+        private readonly IBoardFactory boardFactory;
+
         private int leafCount;
-        private readonly bool isPatternBoard;
-        private readonly PatternRepository patternRepository;
-        private readonly PatternMatcher matcher;
 
-        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer)
+        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer, IBoardFactory boardFactory)
         {
-            this._player = player;
-            this._positions = positions;
-            this._maxDepth = maxDepth;
-            this._scorer = scorer;
-            this.isPatternBoard = false;
-        }
-
-        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer, bool isPatternBoard, PatternRepository patternRepository, PatternMatcher matcher)
-        {
-            this._player = player;
-            this._positions = positions;
-            this._maxDepth = maxDepth;
-            this._scorer = scorer;
-            this.isPatternBoard = isPatternBoard;
-            this.patternRepository = patternRepository;
-            this.matcher = matcher;
+            this.boardFactory = boardFactory;
+            this.player = player;
+            this.positions = positions;
+            this.maxDepth = maxDepth;
+            this.scorer = scorer;
         }
 
         public Position MakeAMove(IBoard board)
         {
             this.leafCount = 0;
 
-            IBoard boardCopy;
-            if (isPatternBoard)
-            {
-                boardCopy = new PatternBoard(board.DeepClone(), _positions, this.patternRepository, this.matcher);
-            }
-            else
-            {
-                boardCopy = board.DeepClone();
-            }
+            IBoard boardCopy = this.boardFactory.DeepCloneBoard(board);
 
-            
-            Tuple<double, Position> scoreAndMove = MaxSearch(boardCopy, _player, depth: 0,
+            Tuple<double, Position> scoreAndMove = MaxSearch(boardCopy, player, depth: 0,
                 minPossibleScore: double.NegativeInfinity, maxPossibleScore: double.PositiveInfinity);
-            Debug.WriteLine($"{_player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");
+
+            Debug.WriteLine($"{player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");
             return scoreAndMove.Item2;
         }
 
         private Tuple<double, Position> MaxSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
         {
-            if (depth >= _maxDepth || board.IsFull())
+            if (depth >= maxDepth || board.IsFull())
             {
                 this.leafCount++;
 
                 // Return the score of current board.
-                return new Tuple<double, Position>(_scorer.GetScore(board, _player), null);
+                return new Tuple<double, Position>(scorer.GetScore(board, player), null);
             }
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in _positions.GetEmptyPositions(board))
+            foreach (Position move in positions.GetEmptyPositions(board))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
@@ -103,17 +83,17 @@ namespace AI
 
         private Tuple<double, Position> MinSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
         {
-            if (depth >= _maxDepth || board.IsFull())
+            if (depth >= maxDepth || board.IsFull())
             {
                 this.leafCount++;
 
                 // Return the score of current board.
-                return new Tuple<double, Position>(_scorer.GetScore(board, _player), null);
+                return new Tuple<double, Position>(scorer.GetScore(board, player), null);
             }
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in _positions.GetEmptyPositions(board))
+            foreach (Position move in positions.GetEmptyPositions(board))
             {
                 // Make a move.
                 board.Set(move, curPlayer);

@@ -11,59 +11,59 @@ namespace GobangGameLib.Game
 {
     public class GobangGame : IGame
     {
-        private BoardProperties _context;
-        private IPlayer _player1;
-        private IPlayer _player2;
-        private IJudge _judge;
-        private PieceType _curPiece;
+        private readonly IBoardFactory boardFactory;
+        private readonly IPlayer player1;
+        private readonly IPlayer player2;
+        private readonly IJudge judge;
 
-        public GobangGame(BoardProperties context, IPlayer p1, IPlayer p2, IJudge judge)
+        public GobangGame(IBoardFactory boardFactory, IPlayer p1, IPlayer p2, IJudge judge)
         {
-            _context = context;
-            _player1 = p1;
-            _player2 = p2;
-            _judge = judge;
+            this.boardFactory = boardFactory;
+            this.player1 = p1;
+            this.player2 = p2;
+            this.judge = judge;
         }
 
         public IBoard Board { get; private set; }
+
+        public PieceType CurPiece { get; private set; }
+
         public GameStatus GameStatus { get; private set; }
 
         public void Start()
         {
-            _curPiece = PieceType.P1;
-
-            //Board = new Board(_context);
-            Board = new PatternBoard(new Board(_context), new PositionFactory().Create(_context), new PatternFactory().Create(), new GameBoard.PieceConnection.PatternMatcher());
-            GameStatus = GameStatus.NotEnd;
+            this.Board = this.boardFactory.Create();
+            this.CurPiece = PieceType.P1;
+            this.GameStatus = GameStatus.NotEnd;
         }
 
         public void Run()
         {
-            if (GameStatus != GameStatus.NotEnd)
+            if (this.GameStatus != GameStatus.NotEnd)
             {
                 throw new InvalidOperationException("Failed to run the game after it's over.");
             }
 
-            IPlayer curPlayer = GetPlayer(_curPiece);
+            IPlayer curPlayer = this.GetPlayer(CurPiece);
             Position move = curPlayer.MakeAMove(Board);
-            Board.Set(move, _curPiece);
+            this.Board.Set(move, this.CurPiece);
 
-            Debug.WriteLine($"{_curPiece} moved at ({move.Row},{move.Col}).");
+            Debug.WriteLine($"{CurPiece} moved at ({move.Row},{move.Col}).");
 
-            _curPiece = _curPiece.GetOther();
+            this.CurPiece = this.CurPiece.GetOther();
 
-            var winner = _judge.GetWinner(Board);
+            var winner = this.judge.GetWinner(Board);
             if (winner == PieceType.P1)
             {
-                GameStatus = GameStatus.P1Win;
+                this.GameStatus = GameStatus.P1Win;
             }
             else if (winner == PieceType.P2)
             {
-                GameStatus = GameStatus.P2Win;
+                this.GameStatus = GameStatus.P2Win;
             }
             else if (Board.IsFull())
             {
-                GameStatus = GameStatus.Tie;
+                this.GameStatus = GameStatus.Tie;
             }
         }
 
@@ -71,16 +71,15 @@ namespace GobangGameLib.Game
         {
             if (p == PieceType.P1)
             {
-                return _player1;
+                return player1;
             }
-            else if (p == PieceType.P2)
+
+            if (p == PieceType.P2)
             {
-                return _player2;
+                return player2;
             }
-            else
-            {
-                throw new ArgumentException("Player should be p1 or p2.");
-            }
+
+            throw new ArgumentException($"Unsupported player: {p.ToString()}.");
         }
     }
 }

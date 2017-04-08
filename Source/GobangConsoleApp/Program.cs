@@ -28,15 +28,20 @@ namespace GobangConsoleApp
             var context = new BoardProperties();
             var positions = new PositionFactory().Create(context);
             var patterns = new PatternFactory().Create();
+            var matcher = new PatternMatcher();
+            var boardFactory = new BoardFactory(context, positions);
+            var patternBoardFactory = new PatternBoardFactory(context, positions, patterns, matcher);
+            var patternScorer = new PatternScorer(positions, patterns);
 
-            IGame game = new GameFactory().CreateGame(context,
-                 //new HumanPlayer(),
+            IGame game = new GameFactory().CreateGame(boardFactory,
+                //new HumanPlayer(),
                 //new RandomPlayer(positions),
-                 //new RandomPlayer(positions),
-                new AbPruningAi(PieceType.P1, positions, 3, new PatternScorer(positions, patterns), true, patterns, new PatternMatcher()),
-                new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)),
+                //new RandomPlayer(positions),
+                new AbPruningAi(PieceType.P1, positions, 3, patternScorer, patternBoardFactory),
+                new AbPruningAi(PieceType.P2, positions, 2, patternScorer, patternBoardFactory),
                 new PatternJudge(positions, patterns)
                 );
+
             game.Start();
             var board = game.Board;
             DisplayBoard(board, context);
@@ -96,7 +101,7 @@ namespace GobangConsoleApp
         {
             var matches = GetMatches1(positions, board).ToList();
             PatternBoard pBoard = board as PatternBoard;
-            if(pBoard !=null)
+            if (pBoard != null)
             {
                 var matches2 = GetMatches2(pBoard).ToList();
                 var any = matches.Except(matches2).ToList();
@@ -104,8 +109,8 @@ namespace GobangConsoleApp
                 Debug.Assert(same);
             }
 
-            var m2 = matches.GroupBy(m=> m.Pattern.PatternType, m=>m);
-            foreach(var m in m2)
+            var m2 = matches.GroupBy(m => m.Pattern.PatternType, m => m);
+            foreach (var m in m2)
             {
                 var pos = string.Join(",", m.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
                 if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {m.Key} at {pos}.");
