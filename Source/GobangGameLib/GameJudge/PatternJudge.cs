@@ -36,8 +36,17 @@ namespace GobangGameLib.GameJudge
 
         private IEnumerable<IEnumerable<Position>> GetWinLines(IBoard board)
         {
-            var patterns = this.patternRepository.Get(PatternType.Five);
-            return this.matcher.MatchPatterns(board, this.positions.Lines, patterns).Select(m => m.Positions);
+            PatternBoard patternBoard = board as PatternBoard;
+            if (patternBoard == null)
+            {
+                var patterns = this.patternRepository.Get(PatternType.Five);
+                return this.matcher.MatchPatterns(board, this.positions.Lines, patterns).Select(m => m.Positions);
+            }
+
+            return PieceTypeExtensions.GetAllPieces()
+                .SelectMany(p => patternBoard.Matches[p]
+                    .Where(m => m.Pattern.PatternType == PatternType.Five))
+                .Select(m => m.Positions);
         }
     }
 }

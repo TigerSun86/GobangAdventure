@@ -5,6 +5,7 @@ using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
+using GobangGameLib.GameJudge;
 using GobangGameLib.Players;
 
 namespace AI
@@ -16,16 +17,18 @@ namespace AI
         private readonly int maxDepth;
         private readonly IScorer scorer;
         private readonly IBoardFactory boardFactory;
+        private readonly IJudge judge;
 
         private int leafCount;
 
-        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer, IBoardFactory boardFactory)
+        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer, IBoardFactory boardFactory, IJudge judge)
         {
             this.boardFactory = boardFactory;
             this.player = player;
             this.positions = positions;
             this.maxDepth = maxDepth;
             this.scorer = scorer;
+            this.judge = judge;
         }
 
         public Position MakeAMove(IBoard board)
@@ -43,7 +46,7 @@ namespace AI
 
         private Tuple<double, Position> MaxSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
         {
-            if (depth >= maxDepth || board.IsFull())
+            if (depth >= maxDepth || board.IsFull() || HasWinner(board))
             {
                 this.leafCount++;
 
@@ -83,7 +86,7 @@ namespace AI
 
         private Tuple<double, Position> MinSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
         {
-            if (depth >= maxDepth || board.IsFull())
+            if (depth >= maxDepth || board.IsFull() || HasWinner(board))
             {
                 this.leafCount++;
 
@@ -119,6 +122,11 @@ namespace AI
             }
 
             return new Tuple<double, Position>(maxPossibleScore, bestMove);
+        }
+
+        private bool HasWinner(IBoard board)
+        {
+            return PieceType.Empty != this.judge.GetWinner(board);
         }
     }
 }
