@@ -34,10 +34,10 @@ namespace GobangConsoleApp
             var patternScorer = new PatternScorer(positions, patterns, matcher);
 
             IGame game = new GameFactory().CreateGame(boardFactory,
-                //new HumanPlayer(),
+                new HumanPlayer(),
                 //new RandomPlayer(positions),
                 //new RandomPlayer(positions),
-                new AbPruningAi(PieceType.P1, positions, 2, patternScorer, patternBoardFactory),
+                //new AbPruningAi(PieceType.P1, positions, 2, patternScorer, patternBoardFactory),
                 new AbPruningAi(PieceType.P2, positions, 3, patternScorer, patternBoardFactory),
                 new PatternJudge(positions, patterns, matcher)
                 );
@@ -48,7 +48,16 @@ namespace GobangConsoleApp
 
             do
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 game.Run();
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                string elapsedTime = $"{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00}";
+                Console.WriteLine($"Elapsed time {elapsedTime}.");
+
                 DisplayBoard(board, context);
 
                 DebugInfo(positions, board);
