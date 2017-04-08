@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 
 namespace AI.Scorer
@@ -89,7 +87,7 @@ namespace AI.Scorer
 
         private Dictionary<PatternType, int> GetPatternCounts(PatternBoard board, PieceType pieceType)
         {
-            HashSet<IMatch> matches = board.Matches[pieceType];
+            var matches = board.Matches.Get(pieceType);
             var counts = matches.GroupBy(m => m.Pattern.PatternType).ToDictionary(g => g.Key, g => g.Count());
             return counts;
         }

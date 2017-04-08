@@ -1,50 +1,36 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace GobangGameLib.GameBoard.Patterns
 {
     public class PatternFactory
     {
-        private readonly static List<Pattern[]> P1Patterns = new List<Pattern[]>
+        private readonly static IPattern[] P1Patterns = new[]
         {
-            new []
-            {
-                new Pattern(PatternType.Five, PieceType.P1,
-                    new[] { PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1 })
-            },
-            new []
-            {
-                new Pattern(PatternType.OpenFour, PieceType.P1,
-                    new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty })
-            },
-            new []
-            {
-                new Pattern(PatternType.OpenThree, PieceType.P1,
-                    new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty })
-            },
-            new []
-            {
-                new Pattern(PatternType.OpenTwo, PieceType.P1,
-                    new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.Empty})
-            },
-            new []
-            {
-                new Pattern(PatternType.OpenOne, PieceType.P1,
-                    new[] { PieceType.Empty, PieceType.P1, PieceType.Empty})
-            }
+            new Pattern(PatternType.Five, PieceType.P1,
+                new[] { PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1 }),
+            new Pattern(PatternType.OpenFour, PieceType.P1,
+                new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
+            new Pattern(PatternType.OpenThree, PieceType.P1,
+                new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
+            new Pattern(PatternType.OpenTwo, PieceType.P1,
+                new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.Empty}),
+            new Pattern(PatternType.OpenOne, PieceType.P1,
+                new[] { PieceType.Empty, PieceType.P1, PieceType.Empty})
         };
 
         public PatternRepository Create()
         {
-            IDictionary<PatternType, List<IPattern>> p1Patterns = P1Patterns.ToDictionary(i => i[0].PatternType, i => i.ToList<IPattern>());
-            var patterns = new List<IPattern>[PieceTypeExtensions.GetAll().Count(), PatternTypeExtensions.GetAll().Count()];
-            foreach (var kvp in p1Patterns)
+            PatternRepository patternRepository = new PatternRepository();
+
+            foreach (var p1 in P1Patterns)
             {
-                patterns[(int)PieceType.P1, (int)kvp.Key] = kvp.Value;
-                patterns[(int)PieceType.P2, (int)kvp.Key] = kvp.Value.Select(p => GetOther(p)).ToList();
+                patternRepository.Add(p1.Player, p1.PatternType, p1);
+
+                var p2 = GetOther(p1);
+                patternRepository.Add(p2.Player, p2.PatternType, p2);
             }
 
-            return new PatternRepository(patterns);
+            return patternRepository;
         }
 
         private IPattern GetOther(IPattern pattern)

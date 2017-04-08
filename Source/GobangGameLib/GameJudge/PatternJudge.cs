@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 
 namespace GobangGameLib.GameJudge
@@ -43,10 +39,7 @@ namespace GobangGameLib.GameJudge
                 return this.matcher.MatchPatterns(board, this.positions.Lines, patterns).Select(m => m.Positions);
             }
 
-            return PieceTypeExtensions.GetAllPieces()
-                .SelectMany(p => patternBoard.Matches[p]
-                    .Where(m => m.Pattern.PatternType == PatternType.Five))
-                .Select(m => m.Positions);
+            return  patternBoard.Matches.Get(PatternType.Five).Select(m => m.Positions);
         }
     }
 }

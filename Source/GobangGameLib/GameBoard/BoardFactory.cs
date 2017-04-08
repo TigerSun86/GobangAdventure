@@ -1,6 +1,4 @@
-﻿using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PieceConnection;
-using GobangGameLib.GameBoard.PositionManagement;
+﻿using GobangGameLib.GameBoard.PositionManagement;
 
 namespace GobangGameLib.GameBoard
 {

@@ -1,6 +1,5 @@
 ﻿using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.GameJudge;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

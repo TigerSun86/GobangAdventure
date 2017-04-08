@@ -7,10 +7,8 @@ using AI.Scorer;
 using GobangGameLib.Game;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.GameJudge;
-using GobangGameLib.Players;
 
 namespace GobangConsoleApp
 {
@@ -143,7 +141,7 @@ namespace GobangConsoleApp
 
         private static IEnumerable<IMatch> GetMatches2(PatternBoard board)
         {
-            return board.Matches.Values.SelectMany(v => v);
+            return board.Matches.Get();
         }
     }
 }
