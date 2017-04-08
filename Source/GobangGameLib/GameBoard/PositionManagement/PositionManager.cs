@@ -61,8 +61,7 @@ namespace GobangGameLib.GameBoard.PositionManagement
 
         public IEnumerable<IPositions> GetAllLinesOf(Position position)
         {
-            var lineTypes = Enum.GetValues(typeof(LineType)).Cast<LineType>();
-            return lineTypes.Select(t => GetLineOf(position, t));
+            return LineTypeExtensions.GetAll().Select(t => GetLineOf(position, t));
         }
 
         public IPositions GetLineOf(Position position, LineType type)

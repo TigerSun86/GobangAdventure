@@ -11,13 +11,15 @@ namespace AI.Scorer
 {
     public class PatternScorer : IScorer
     {
-        private readonly PositionManager _positions;
-        private readonly PatternRepository _patternRepository;
+        private readonly PositionManager positions;
+        private readonly PatternRepository patternRepository;
+        private readonly PatternMatcher matcher;
 
-        public PatternScorer(PositionManager positions, PatternRepository patternRepository)
+        public PatternScorer(PositionManager positions, PatternRepository patternRepository, PatternMatcher matcher)
         {
-            _positions = positions;
-            _patternRepository = patternRepository;
+            this.positions = positions;
+            this.patternRepository = patternRepository;
+            this.matcher = matcher;
         }
 
         public double GetScore(IBoard board, PieceType player)
@@ -79,12 +81,8 @@ namespace AI.Scorer
 
         private Dictionary<PatternType, int> GetPatternCounts(IBoard board, PieceType pieceType)
         {
-            var patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
-            var patterns = patternTypes
-                .Select(p => _patternRepository.Patterns[p].Patterns[pieceType])
-                .SelectMany(p => p);
-            var matcher = new PatternMatcher();
-            var matches = _positions.Lines.SelectMany(l => matcher.MatchPatterns(board, l, patterns));
+            var patterns = patternRepository.Get(pieceType);
+            var matches = this.matcher.MatchPatterns(board, positions.Lines, patterns);
             var counts = matches.GroupBy(m => m.Pattern.PatternType).ToDictionary(g => g.Key, g => g.Count());
             return counts;
         }

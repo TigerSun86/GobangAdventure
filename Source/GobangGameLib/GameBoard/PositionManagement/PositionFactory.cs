@@ -8,8 +8,7 @@ namespace GobangGameLib.GameBoard.PositionManagement
     {
         public PositionManager Create(BoardProperties context)
         {
-            var types = Enum.GetValues(typeof(LineType)).Cast<LineType>();
-            var lineGroups = types.ToDictionary(t => t, t => (ILines)CreateLineGroup(context, t));
+            var lineGroups = LineTypeExtensions.GetAll().ToDictionary(t => t, t => (ILines)CreateLineGroup(context, t));
             var positionManager = new PositionManager(context, lineGroups);
             return positionManager;
         }

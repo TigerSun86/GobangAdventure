@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GobangGameLib.GameBoard.Patterns
 {
@@ -13,5 +11,13 @@ namespace GobangGameLib.GameBoard.Patterns
         OpenThree,
         OpenTwo,
         OpenOne
+    }
+
+    public static class PatternTypeExtensions
+    {
+        public static IEnumerable<PatternType> GetAll()
+        {
+            return Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
+        }
     }
 }

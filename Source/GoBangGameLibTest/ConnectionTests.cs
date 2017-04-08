@@ -43,10 +43,10 @@ namespace GoBangGameLibTest
 
             IPattern pattern = new Pattern(PatternType.OpenThree, PieceType.P1, pieces);
 
-            var connection = new PatternMatcher();
+            var matcher = new PatternMatcher();
 
             // Act
-            var result = connection.Match(board, line, new[] { pattern });
+            var result = matcher.MatchInternal(board, line, new[] { pattern });
 
             // Assert
             Assert.AreEqual(1, result.Count());
@@ -85,10 +85,10 @@ namespace GoBangGameLibTest
 
             IPattern pattern = new Pattern(PatternType.OpenThree, PieceType.P1, pieces);
 
-            var connection = new PatternMatcher();
+            var matcher = new PatternMatcher();
 
             // Act
-            var result = connection.Match(board, line, new[] { pattern });
+            var result = matcher.MatchInternal(board, line, new[] { pattern });
 
             // Assert
             Assert.AreEqual(0, result.Count());

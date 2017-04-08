@@ -38,12 +38,8 @@ namespace GobangGameLib.GameBoard
                 return Enumerable.Empty<IMatch>();
             }
 
-            var patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
-            var patterns = patternTypes
-                .Select(p => this.patternRepository.Patterns[p].Patterns[pieceType])
-                .SelectMany(p => p);
-            var matcher = new PatternMatcher();
-            var matches = this.positions.Lines.SelectMany(l => matcher.MatchPatterns(this.board, l, patterns));
+            var patterns = this.patternRepository.Get(pieceType);
+            var matches = this.matcher.MatchPatterns(this.board, this.positions.Lines, patterns);
             return matches;
         }
 
@@ -64,16 +60,9 @@ namespace GobangGameLib.GameBoard
         {
             IEnumerable<IPositions> relatedLines = this.positions.GetAllLinesOf(position);
 
-            IEnumerable<PatternType> patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
+            IEnumerable<IPattern> patterns = this.patternRepository.Get();
 
-            IEnumerable<IPattern> patterns = patternTypes
-                .Select(p => this.patternRepository.Patterns[p].Patterns.Values)
-                .SelectMany(p => p)
-                .SelectMany(p => p);
-
-            IList<Match> oldMatches = relatedLines
-                .SelectMany(l => this.matcher.MatchPatterns(board, l, patterns))
-                .ToList();
+            IEnumerable<Match> oldMatches = this.matcher.MatchPatterns(board, relatedLines, patterns);
 
             foreach (Match match in oldMatches)
             {
@@ -82,9 +71,7 @@ namespace GobangGameLib.GameBoard
 
             this.board.Set(position, piece);
 
-            IList<Match> newMatches = relatedLines
-                .SelectMany(l => this.matcher.MatchPatterns(board, l, patterns))
-                .ToList();
+            IEnumerable<Match> newMatches = this.matcher.MatchPatterns(board, relatedLines, patterns);
 
             foreach (Match match in newMatches)
             {

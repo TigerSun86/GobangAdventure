@@ -45,10 +45,8 @@
     <Compile Include="GameBoard\IBoardFactory.cs" />
     <Compile Include="GameBoard\PatternBoard.cs" />
     <Compile Include="GameBoard\PatternBoardFactory.cs" />
-    <Compile Include="GameBoard\Patterns\IPatternGroup.cs" />
     <Compile Include="GameBoard\Patterns\IPattern.cs" />
     <Compile Include="GameBoard\Patterns\PatternFactory.cs" />
-    <Compile Include="GameBoard\Patterns\PatternGroup.cs" />
     <Compile Include="GameBoard\Patterns\PatternRepository.cs" />
     <Compile Include="GameBoard\Patterns\PatternType.cs" />
     <Compile Include="GameBoard\PieceConnection\IMatch.cs" />

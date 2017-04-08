@@ -1,26 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GobangGameLib.GameBoard.Patterns
 {
     public class PatternRepository
     {
-        private IDictionary<PatternType, IPatternGroup> _patterns;
+        private readonly static IList<PieceType> Players = PieceTypeExtensions.GetAllPieces().ToList();
+        private readonly static IList<PatternType> PatternTypes = PatternTypeExtensions.GetAll().ToList();
 
-        public PatternRepository(IDictionary<PatternType, IPatternGroup> patterns)
+        // patterns[PieceType][PatternType]
+        private IList<IPattern>[,] patterns;
+
+        public PatternRepository(IList<IPattern>[,] patterns)
         {
-            _patterns = patterns;
+            this.patterns = patterns;
         }
 
-        public IDictionary<PatternType, IPatternGroup> Patterns
+        public IEnumerable<IPattern> Get(PieceType player, PatternType patternType)
         {
-            get
-            {
-                return _patterns;
-            }
+            return this.patterns[(int)player, (int)patternType];
+        }
+
+        public IEnumerable<IPattern> Get(PieceType player)
+        {
+            return PatternRepository.PatternTypes.SelectMany(patternType => Get(player, patternType));
+        }
+
+        public IEnumerable<IPattern> Get(PatternType patternType)
+        {
+            return PatternRepository.Players.SelectMany(player => Get(player, patternType));
+        }
+
+        public IEnumerable<IPattern> Get()
+        {
+            return PatternRepository.Players.SelectMany(player => Get(player));
         }
     }
 }

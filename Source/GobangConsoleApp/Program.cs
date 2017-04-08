@@ -31,15 +31,15 @@ namespace GobangConsoleApp
             var matcher = new PatternMatcher();
             var boardFactory = new BoardFactory(context, positions);
             var patternBoardFactory = new PatternBoardFactory(context, positions, patterns, matcher);
-            var patternScorer = new PatternScorer(positions, patterns);
+            var patternScorer = new PatternScorer(positions, patterns, matcher);
 
             IGame game = new GameFactory().CreateGame(boardFactory,
                 //new HumanPlayer(),
                 //new RandomPlayer(positions),
                 //new RandomPlayer(positions),
-                new AbPruningAi(PieceType.P1, positions, 3, patternScorer, patternBoardFactory),
-                new AbPruningAi(PieceType.P2, positions, 2, patternScorer, patternBoardFactory),
-                new PatternJudge(positions, patterns)
+                new AbPruningAi(PieceType.P1, positions, 2, patternScorer, patternBoardFactory),
+                new AbPruningAi(PieceType.P2, positions, 3, patternScorer, patternBoardFactory),
+                new PatternJudge(positions, patterns, matcher)
                 );
 
             game.Start();
@@ -65,7 +65,7 @@ namespace GobangConsoleApp
                 {
                     Console.WriteLine("Game ties.");
                 }
-                System.Threading.Thread.Sleep(500);
+                //System.Threading.Thread.Sleep(500);
                 //Console.ReadLine();
             } while (game.GameStatus == GameStatus.NotEnd);
             Console.ReadLine();
@@ -123,16 +123,10 @@ namespace GobangConsoleApp
             var matcher = new PatternMatcher();
             var patternRepository = new PatternFactory().Create();
 
-            IEnumerable<PatternType> patternTypes = Enum.GetValues(typeof(PatternType)).Cast<PatternType>();
+            IEnumerable<IPattern> patterns = patternRepository.Get();
 
-            IEnumerable<IPattern> patterns = patternTypes
-                .Select(p => patternRepository.Patterns[p].Patterns.Values)
-                .SelectMany(p => p)
-                .SelectMany(p => p);
+            var matches = matcher.MatchPatterns(board, positions.Lines, patterns);
 
-            var matches = positions
-                .Lines
-                .SelectMany(l => matcher.MatchPatterns(board, l, patterns));
             return matches;
         }
 

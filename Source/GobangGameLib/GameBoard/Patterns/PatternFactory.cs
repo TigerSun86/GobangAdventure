@@ -36,17 +36,15 @@ namespace GobangGameLib.GameBoard.Patterns
 
         public PatternRepository Create()
         {
-            IDictionary<PatternType, IPatternGroup> patterns = P1Patterns.ToDictionary(i => i[0].PatternType, i => CreatePatternGroupFromP1Patterns(i));
-            return new PatternRepository(patterns);
-        }
-
-        private IPatternGroup CreatePatternGroupFromP1Patterns(IEnumerable<IPattern> p1Patterns)
-        {
-            return new PatternGroup(new Dictionary<PieceType, IEnumerable<IPattern>>
+            IDictionary<PatternType, List<IPattern>> p1Patterns = P1Patterns.ToDictionary(i => i[0].PatternType, i => i.ToList<IPattern>());
+            var patterns = new List<IPattern>[PieceTypeExtensions.GetAll().Count(), PatternTypeExtensions.GetAll().Count()];
+            foreach (var kvp in p1Patterns)
             {
-                { PieceType.P1, p1Patterns },
-                { PieceType.P2, p1Patterns.Select(p => GetOther(p)).ToList() }
-            });
+                patterns[(int)PieceType.P1, (int)kvp.Key] = kvp.Value;
+                patterns[(int)PieceType.P2, (int)kvp.Key] = kvp.Value.Select(p => GetOther(p)).ToList();
+            }
+
+            return new PatternRepository(patterns);
         }
 
         private IPattern GetOther(IPattern pattern)

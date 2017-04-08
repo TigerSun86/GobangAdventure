@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GobangGameLib.GameBoard.PositionManagement
 {
@@ -12,5 +10,13 @@ namespace GobangGameLib.GameBoard.PositionManagement
         Column,
         DiagonalOne,
         DiagonalTwo
+    }
+
+    public static class LineTypeExtensions
+    {
+        public static IEnumerable<LineType> GetAll()
+        {
+            return Enum.GetValues(typeof(LineType)).Cast<LineType>();
+        }
     }
 }
