@@ -19,7 +19,7 @@ namespace AI.Moves
 
         public IEnumerable<Position> GetMoves(IBoard board, PieceType player)
         {
-            return positions.GetEmptyPositions(board);
+            return this.positions.GetEmptyPositions(board);
         }
     }
 }
