@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using AI.Moves;
 using AI.Scorer;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.PositionManagement;
@@ -11,21 +12,26 @@ namespace AI
     public class AbPruningAi : IPlayer
     {
         private readonly PieceType player;
-        private readonly PositionManager positions;
         private readonly int maxDepth;
         private readonly IScorer scorer;
+        private readonly IMoveEnumerator moveEnumerator;
         private readonly IBoardFactory boardFactory;
         private readonly IJudge judge;
 
         private int leafCount;
 
-        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer, IBoardFactory boardFactory, IJudge judge)
+        public AbPruningAi(PieceType player,
+            int maxDepth,
+            IScorer scorer,
+            IMoveEnumerator moveEnumerator,
+            IBoardFactory boardFactory,
+            IJudge judge)
         {
-            this.boardFactory = boardFactory;
             this.player = player;
-            this.positions = positions;
             this.maxDepth = maxDepth;
             this.scorer = scorer;
+            this.moveEnumerator = moveEnumerator;
+            this.boardFactory = boardFactory;
             this.judge = judge;
         }
 
@@ -54,7 +60,7 @@ namespace AI
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in positions.GetEmptyPositions(board))
+            foreach (Position move in this.moveEnumerator.GetMoves(board, curPlayer))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
@@ -70,6 +76,7 @@ namespace AI
                     // Just stop searching and return meaningless result.
                     return scoreAndMove;
                 }
+
                 if (score > minPossibleScore)
                 {
                     minPossibleScore = score;
@@ -94,7 +101,7 @@ namespace AI
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in positions.GetEmptyPositions(board))
+            foreach (Position move in this.moveEnumerator.GetMoves(board, curPlayer))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
@@ -110,6 +117,7 @@ namespace AI
                     // Just stop searching and return meaningless result.
                     return scoreAndMove;
                 }
+
                 if (score < maxPossibleScore)
                 {
                     maxPossibleScore = score;
