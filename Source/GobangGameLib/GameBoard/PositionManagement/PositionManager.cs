@@ -51,12 +51,17 @@ namespace GobangGameLib.GameBoard.PositionManagement
         /// <returns></returns>
         public IEnumerable<Position> GetEmptyPositions(IBoard board)
         {
-            return GetPlayerPositions(board, PieceType.Empty);
+            return GetPositionsByPieceType(board, PieceType.Empty);
         }
 
-        public IEnumerable<Position> GetPlayerPositions(IBoard board, PieceType player)
+        public IEnumerable<Position> GetPositionsByPieceType(IBoard board, PieceType pieceType)
         {
-            return Positions.Where(p => board.Get(p).Equals(player));
+            return Positions.Where(p => board.Get(p).Equals(pieceType));
+        }
+
+        public IEnumerable<Position> GetPlayerPositions(IBoard board)
+        {
+            return Positions.Where(p => !board.Get(p).Equals(PieceType.Empty));
         }
 
         public IEnumerable<IPositions> GetAllLinesOf(Position position)

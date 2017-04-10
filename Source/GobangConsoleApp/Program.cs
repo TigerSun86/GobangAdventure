@@ -31,17 +31,24 @@ namespace GobangConsoleApp
             var matcher = new PatternMatcher();
             var boardFactory = new BoardFactory(context, positions);
             var patternBoardFactory = new PatternBoardFactory(context, positions, patterns, matcher);
+            var centerScorer = new CenterScorer(context, positions);
             var patternScorer = new PatternScorer(positions, patterns, matcher);
+            var aggregatedScorer = new AggregatedScorer(new[]
+            {
+                new Tuple<IScorer, double>(patternScorer, 1),
+                new Tuple<IScorer, double>(centerScorer, 0.01)
+            });
             var judge = new PatternJudge(positions, patterns, matcher);
             var emptyMoveEnumerator = new EmptyPositionMoveEnumerator(positions);
-            var scoredMoveEnumerator = new ScoredMoveEnumerator(positions, patternScorer);
+            var scoredMoveEnumerator = new ScoredMoveEnumerator(positions, aggregatedScorer);
 
             IGame game = new GameFactory().CreateGame(boardFactory,
                 //new HumanPlayer(),
                 //new RandomPlayer(positions),
                 //new RandomPlayer(positions),
-                new AbPruningAi(PieceType.P1, 3, patternScorer, scoredMoveEnumerator, patternBoardFactory, judge),
-                new AbPruningAi(PieceType.P2, 3, patternScorer, scoredMoveEnumerator, patternBoardFactory, judge),
+                new AbPruningAi(PieceType.P1, 3, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
+                new AbPruningAi(PieceType.P2, 3, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
+                //new AbPruningAi(PieceType.P2, 2, patternScorer, emptyMoveEnumerator, patternBoardFactory, judge),
                 judge
                 );
 
