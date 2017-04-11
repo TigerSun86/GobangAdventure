@@ -17,23 +17,27 @@ namespace AiTests
     [TestClass]
     public class AiTests
     {
-
+        /// <summary>
+        /// Test blocking until half four pattern matching is implemented.
+        /// </summary>
+        [Ignore]
         [TestMethod]
         public void WhenOpponentHasOpenThreeThenBlockIt()
         {
             var boardString = new[]
             {
-                "         ",
-                "         ",
-                "         ",
-                "   XO    ",
-                "   XXO   ",
-                "     OO  ",
-                "     X   ",
-                "         ",
-                "         ",
+                // 2345678
+                "         ", // 0
+                "         ", // 1
+                "         ", // 2
+                "   XO    ", // 3
+                "   XXO   ", // 4
+                "     OO  ", // 5
+                "     X   ", // 6
+                "         ", // 7
+                "         ", // 8
             };
-            
+
             var context = new BoardProperties(boardString.Length, boardString[0].Length);
             var positions = new PositionFactory().Create(context);
             var board = Utils.ParseBoard(boardString, context, positions);
