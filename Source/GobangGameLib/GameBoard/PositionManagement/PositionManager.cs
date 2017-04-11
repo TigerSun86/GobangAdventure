@@ -9,9 +9,11 @@ namespace GobangGameLib.GameBoard.PositionManagement
     public class PositionManager : IAllLineGroups
     {
         private readonly IDictionary<LineType, ILines> _lineGroups;
+        private readonly BoardProperties _context;
 
-        public PositionManager(IDictionary<LineType, ILines> lineGroups)
+        public PositionManager(BoardProperties context, IDictionary<LineType, ILines> lineGroups)
         {
+            this._context = context;
             this._lineGroups = lineGroups;
         }
 
@@ -49,12 +51,62 @@ namespace GobangGameLib.GameBoard.PositionManagement
         /// <returns></returns>
         public IEnumerable<Position> GetEmptyPositions(IBoard board)
         {
-            return GetPlayerPositions(board, PieceType.Empty);
+            return GetPositionsByPieceType(board, PieceType.Empty);
         }
 
-        public IEnumerable<Position> GetPlayerPositions(IBoard board, PieceType player)
+        public IEnumerable<Position> GetPositionsByPieceType(IBoard board, PieceType pieceType)
         {
-            return Positions.Where(p => board.Get(p).Equals(player));
+            return Positions.Where(p => board.Get(p).Equals(pieceType));
+        }
+
+        public IEnumerable<Position> GetPlayerPositions(IBoard board)
+        {
+            return Positions.Where(p => !board.Get(p).Equals(PieceType.Empty));
+        }
+
+        public IEnumerable<IPositions> GetAllLinesOf(Position position)
+        {
+            return LineTypeExtensions.GetAll().Select(t => GetLineOf(position, t));
+        }
+
+        public IPositions GetLineOf(Position position, LineType type)
+        {
+            int lineIndex = GetLineIndex(position, type);
+            return LineGroups[type].Lines[lineIndex];
+        }
+
+        public int GetLineIndex(Position position, LineType type)
+        {
+            if (type == LineType.Row)
+            {
+                return position.Row;
+            }
+            else if (type == LineType.Column)
+            {
+                return position.Col;
+            }
+            else if (type == LineType.DiagonalOne)
+            {
+                return GetDiagonalOneIndex(position);
+            }
+            else if (type == LineType.DiagonalTwo)
+            {
+                return GetDiagonalTwoIndex(position);
+            }
+            else
+            {
+                throw new ArgumentException($"Unsupported LineType: {type}.");
+            }
+        }
+
+        public int GetDiagonalOneIndex(Position position)
+        {
+            return _context.RowSize - 1 - position.Row + position.Col;
+        }
+
+        public int GetDiagonalTwoIndex(Position position)
+        {
+            return position.Row + position.Col;
         }
     }
 }

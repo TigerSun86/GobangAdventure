@@ -1,52 +1,66 @@
 ﻿using System;
 using System.Diagnostics;
+using AI.Moves;
 using AI.Scorer;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.PositionManagement;
+using GobangGameLib.GameJudge;
 using GobangGameLib.Players;
 
 namespace AI
 {
     public class AbPruningAi : IPlayer
     {
-        private readonly PieceType _player;
-        private readonly PositionManager _positions;
-        private readonly int _maxDepth;
-        private readonly IScorer _scorer;
+        private readonly PieceType player;
+        private readonly int maxDepth;
+        private readonly IScorer scorer;
+        private readonly IMoveEnumerator moveEnumerator;
+        private readonly IBoardFactory boardFactory;
+        private readonly IJudge judge;
+
         private int leafCount;
 
-        public AbPruningAi(PieceType player, PositionManager positions, int maxDepth, IScorer scorer)
+        public AbPruningAi(PieceType player,
+            int maxDepth,
+            IScorer scorer,
+            IMoveEnumerator moveEnumerator,
+            IBoardFactory boardFactory,
+            IJudge judge)
         {
-            this._player = player;
-            this._positions = positions;
-            this._maxDepth = maxDepth;
-            this._scorer = scorer;
+            this.player = player;
+            this.maxDepth = maxDepth;
+            this.scorer = scorer;
+            this.moveEnumerator = moveEnumerator;
+            this.boardFactory = boardFactory;
+            this.judge = judge;
         }
 
         public Position MakeAMove(IBoard board)
         {
             this.leafCount = 0;
 
-            IBoard boardCopy = board.DeepClone();
-            Tuple<double, Position> scoreAndMove = MaxSearch(boardCopy, _player, depth: 0,
+            IBoard boardCopy = this.boardFactory.DeepCloneBoard(board);
+
+            Tuple<double, Position> scoreAndMove = MaxSearch(boardCopy, player, depth: 0,
                 minPossibleScore: double.NegativeInfinity, maxPossibleScore: double.PositiveInfinity);
-            Debug.WriteLine($"{_player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");
+
+            Debug.WriteLine($"{player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");
             return scoreAndMove.Item2;
         }
 
         private Tuple<double, Position> MaxSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
         {
-            if (depth >= _maxDepth || board.IsFull())
+            if (depth >= maxDepth || board.IsFull() || HasWinner(board))
             {
                 this.leafCount++;
 
                 // Return the score of current board.
-                return new Tuple<double, Position>(_scorer.GetScore(board, _player), null);
+                return new Tuple<double, Position>(scorer.GetScore(board, player), null);
             }
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in _positions.GetEmptyPositions(board))
+            foreach (Position move in this.moveEnumerator.GetMoves(board, curPlayer))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
@@ -62,6 +76,7 @@ namespace AI
                     // Just stop searching and return meaningless result.
                     return scoreAndMove;
                 }
+
                 if (score > minPossibleScore)
                 {
                     minPossibleScore = score;
@@ -76,17 +91,17 @@ namespace AI
 
         private Tuple<double, Position> MinSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
         {
-            if (depth >= _maxDepth || board.IsFull())
+            if (depth >= maxDepth || board.IsFull() || HasWinner(board))
             {
                 this.leafCount++;
 
                 // Return the score of current board.
-                return new Tuple<double, Position>(_scorer.GetScore(board, _player), null);
+                return new Tuple<double, Position>(scorer.GetScore(board, player), null);
             }
 
             PieceType otherPlayer = curPlayer.GetOther();
             Position bestMove = null;
-            foreach (Position move in _positions.GetEmptyPositions(board))
+            foreach (Position move in this.moveEnumerator.GetMoves(board, curPlayer))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
@@ -102,6 +117,7 @@ namespace AI
                     // Just stop searching and return meaningless result.
                     return scoreAndMove;
                 }
+
                 if (score < maxPossibleScore)
                 {
                     maxPossibleScore = score;
@@ -112,6 +128,11 @@ namespace AI
             }
 
             return new Tuple<double, Position>(maxPossibleScore, bestMove);
+        }
+
+        private bool HasWinner(IBoard board)
+        {
+            return PieceType.Empty != this.judge.GetWinner(board);
         }
     }
 }

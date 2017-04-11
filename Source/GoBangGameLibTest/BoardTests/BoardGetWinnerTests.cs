@@ -16,7 +16,7 @@ namespace GoBangGameLibTest.BoardTests
             var positions = new PositionFactory().Create(context);
 
             Board board = new Board(context);
-            PieceType result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            PieceType result = GetJudge().GetWinner(board);
             PieceType expect = PieceType.Empty;
             Assert.AreEqual(expect, result);
         }
@@ -33,7 +33,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(3, 5), PieceType.P1);
             board.Set(new Position(3, 6), PieceType.P1);
             board.Set(new Position(3, 7), PieceType.P1);
-            PieceType result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            PieceType result = GetJudge().GetWinner(board);
             PieceType expect = PieceType.P1;
             Assert.AreEqual(expect, result);
         }
@@ -52,7 +52,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(3, 5), PieceType.P1);
             board.Set(new Position(3, 6), PieceType.P1);
             board.Set(new Position(3, 7), PieceType.P2);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.Empty;
             Assert.AreEqual(expect, result);
         }
@@ -70,7 +70,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(5, 3), PieceType.P1);
             board.Set(new Position(6, 3), PieceType.P1);
             board.Set(new Position(7, 3), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.P1;
             Assert.AreEqual(expect, result);
         }
@@ -88,7 +88,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(5, 3), PieceType.P1);
             board.Set(new Position(6, 3), PieceType.P1);
             board.Set(new Position(7, 3), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.Empty;
             Assert.AreEqual(expect, result);
         }
@@ -106,7 +106,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(5, 7), PieceType.P1);
             board.Set(new Position(6, 8), PieceType.P1);
             board.Set(new Position(7, 9), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.P1;
             Assert.AreEqual(expect, result);
         }
@@ -124,7 +124,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(5, 7), PieceType.P2);
             board.Set(new Position(6, 8), PieceType.P1);
             board.Set(new Position(7, 9), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.Empty;
             Assert.AreEqual(expect, result);
         }
@@ -142,7 +142,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(5, 2), PieceType.P1);
             board.Set(new Position(6, 3), PieceType.P1);
             board.Set(new Position(7, 4), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.P1;
             Assert.AreEqual(expect, result);
         }
@@ -159,7 +159,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(5, 2), PieceType.P1);
             board.Set(new Position(6, 3), PieceType.P1);
             board.Set(new Position(7, 4), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.Empty;
             Assert.AreEqual(expect, result);
         }
@@ -176,7 +176,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(2, 3), PieceType.P1);
             board.Set(new Position(3, 2), PieceType.P1);
             board.Set(new Position(4, 1), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.P1;
             Assert.AreEqual(expect, result);
         }
@@ -193,7 +193,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(2, 3), PieceType.P1);
             board.Set(new Position(3, 2), PieceType.P2);
             board.Set(new Position(4, 1), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.Empty;
             Assert.AreEqual(expect, result);
         }
@@ -210,7 +210,7 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(8, 8), PieceType.P1);
             board.Set(new Position(9, 7), PieceType.P1);
             board.Set(new Position(10, 6), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.P1;
             Assert.AreEqual(expect, result);
         }
@@ -227,9 +227,16 @@ namespace GoBangGameLibTest.BoardTests
             board.Set(new Position(8, 8), PieceType.P1);
             board.Set(new Position(9, 7), PieceType.P2);
             board.Set(new Position(10, 6), PieceType.P1);
-            result = new PatternJudge(positions, new PatternFactory().Create()).GetWinner(board);
+            result = GetJudge().GetWinner(board);
             expect = PieceType.Empty;
             Assert.AreEqual(expect, result);
+        }
+
+        private static IJudge GetJudge()
+        {
+            var context = new BoardProperties();
+            var positions = new PositionFactory().Create(context);
+            return new PatternJudge(positions, new PatternFactory().Create(), new PatternMatcher());
         }
     }
 }

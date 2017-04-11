@@ -43,7 +43,11 @@
   <ItemGroup>
     <Compile Include="AbPruningAi.cs" />
     <Compile Include="MinmaxSearchAi.cs" />
+    <Compile Include="Moves\EmptyPositionMoveEnumerator.cs" />
+    <Compile Include="Moves\IMoveEnumerator.cs" />
+    <Compile Include="Moves\ScoredMoveEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scorer\AggregatedScorer.cs" />
     <Compile Include="Scorer\CenterScorer.cs" />
     <Compile Include="Scorer\IScorer.cs" />
     <Compile Include="Scorer\PatternScorer.cs" />

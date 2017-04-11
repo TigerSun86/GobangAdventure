@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using GobangGameLib.Game;
 using GobangGameLib.GameBoard;
+using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.GameJudge;
 using GobangGameLib.Players;
@@ -41,23 +42,34 @@ namespace GoBangGameLibTest.BoardTests
         {
             var context = new BoardProperties(4, 4, 5);
             var positions = new PositionFactory().Create(context);
+            var patterns = new PatternFactory().Create();
+            var matcher = new PatternMatcher();
+            var boardFactories = new IBoardFactory[]
+            {
+                new BoardFactory(context, positions),
+                new PatternBoardFactory(context, positions, patterns, matcher)
+            };
 
-            IGame game = new GameFactory().CreateGame(
-                context,
+            foreach (var boardFactory in boardFactories)
+            {
+                IGame game = new GameFactory().CreateGame(
+                boardFactory,
                 new NextAvailablePlayer(positions),
                 new NextAvailablePlayer(positions),
                 new BasicJudge(context, positions)
                 );
-            game.Start();
 
-            foreach (var i in Enumerable.Range(0, context.RowSize * context.ColSize))
-            {
-                Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
-                game.Run();
+                game.Start();
+
+                foreach (var i in Enumerable.Range(0, context.RowSize * context.ColSize))
+                {
+                    Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
+                    game.Run();
+                }
+
+                Assert.AreEqual(game.GameStatus, GameStatus.Tie);
+                Assert.IsTrue(game.Board.IsFull());
             }
-
-            Assert.AreEqual(game.GameStatus, GameStatus.Tie);
-            Assert.IsTrue(game.Board.IsFull());
         }
 
         [TestMethod]
@@ -65,26 +77,60 @@ namespace GoBangGameLibTest.BoardTests
         {
             var context = new BoardProperties(4, 4, 5);
             var positions = new PositionFactory().Create(context);
+            var patterns = new PatternFactory().Create();
+            var matcher = new PatternMatcher();
+            var boardFactories = new IBoardFactory[]
+            {
+                new BoardFactory(context, positions),
+                new PatternBoardFactory(context, positions, patterns, matcher)
+            };
 
-            IGame game = new GameFactory().CreateGame(
-                context,
+            foreach (var boardFactory in boardFactories)
+            {
+                IGame game = new GameFactory().CreateGame(
+                boardFactory,
                 new NextAvailablePlayer(positions),
                 new NextAvailablePlayer(positions),
                 new BasicJudge(context, positions)
                 );
-            game.Start();
 
-            foreach (var i in Enumerable.Range(0, context.RowSize * context.ColSize))
+                game.Start();
+
+                foreach (var i in Enumerable.Range(0, context.RowSize * context.ColSize))
+                {
+                    Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
+                    game.Run();
+                }
+
+                Assert.AreEqual(game.GameStatus, GameStatus.Tie);
+                Assert.IsTrue(game.Board.IsFull());
+
+                var board2 = game.Board.DeepClone();
+                Assert.IsTrue(board2.IsFull());
+            }
+        }
+
+        [TestMethod]
+        public void TestDiagonalIndexes()
+        {
+            var b = new BoardProperties();
+            var positions = new PositionFactory().Create(b);
+
+            var d1Lines = positions.LineGroups[LineType.DiagonalOne];
+
+            foreach (var p in positions.Positions)
             {
-                Assert.AreEqual(game.GameStatus, GameStatus.NotEnd);
-                game.Run();
+                int index = b.GetDiagonalOneIndex(p);
+                Assert.IsTrue(d1Lines.Lines[index].Positions.Contains(p));
             }
 
-            Assert.AreEqual(game.GameStatus, GameStatus.Tie);
-            Assert.IsTrue(game.Board.IsFull());
+            var d2Lines = positions.LineGroups[LineType.DiagonalTwo];
 
-            var board2 = game.Board.DeepClone();
-            Assert.IsTrue(board2.IsFull());
+            foreach (var p in positions.Positions)
+            {
+                int index = b.GetDiagonalTwoIndex(p);
+                Assert.IsTrue(d2Lines.Lines[index].Positions.Contains(p));
+            }
         }
     }
 }

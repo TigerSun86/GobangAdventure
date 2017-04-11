@@ -9,10 +9,12 @@ namespace GobangGameLib.GameBoard.PositionManagement
 {
     public class LineGroup : ILines
     {
-        private IList<IPositions> _lines;
+        private readonly LineType _type;
+        private readonly IList<IPositions> _lines;
 
         public LineGroup(LineType type, IList<IPositions> lines)
         {
+            this._type = type;
             this._lines = lines;
         }
 

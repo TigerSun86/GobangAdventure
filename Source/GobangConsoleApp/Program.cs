@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using AI;
+using AI.Moves;
 using AI.Scorer;
 using GobangGameLib.Game;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.GameJudge;
+using GobangGameLib.Players;
 
 namespace GobangConsoleApp
 {
@@ -27,21 +28,47 @@ namespace GobangConsoleApp
             var context = new BoardProperties();
             var positions = new PositionFactory().Create(context);
             var patterns = new PatternFactory().Create();
+            var matcher = new PatternMatcher();
+            var boardFactory = new BoardFactory(context, positions);
+            var patternBoardFactory = new PatternBoardFactory(context, positions, patterns, matcher);
+            var centerScorer = new CenterScorer(context, positions);
+            var patternScorer = new PatternScorer(positions, patterns, matcher);
+            var aggregatedScorer = new AggregatedScorer(new[]
+            {
+                new Tuple<IScorer, double>(patternScorer, 1),
+                new Tuple<IScorer, double>(centerScorer, 0.01)
+            });
+            var judge = new PatternJudge(positions, patterns, matcher);
+            var emptyMoveEnumerator = new EmptyPositionMoveEnumerator(positions);
+            var scoredMoveEnumerator = new ScoredMoveEnumerator(positions, aggregatedScorer);
 
-            IGame game = new GameFactory().CreateGame(context,
-                // new HumanPlayer(),
-                //new RandomPlayer(),
-                new AbPruningAi(PieceType.P1, positions, 2, new PatternScorer(positions, patterns)),
-                new AbPruningAi(PieceType.P2, positions, 2, new PatternScorer(positions, patterns)),
-                new PatternJudge(positions, patterns)
+            IGame game = new GameFactory().CreateGame(boardFactory,
+                //new HumanPlayer(),
+                //new RandomPlayer(positions),
+                //new RandomPlayer(positions),
+                new AbPruningAi(PieceType.P1, 3, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
+                new AbPruningAi(PieceType.P2, 3, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
+                //new AbPruningAi(PieceType.P2, 2, patternScorer, emptyMoveEnumerator, patternBoardFactory, judge),
+                judge
                 );
+
             game.Start();
             var board = game.Board;
             DisplayBoard(board, context);
 
             do
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
                 game.Run();
+
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                string elapsedTime = $"{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00}";
+                Console.WriteLine($"Elapsed time {elapsedTime}.");
+                Debug.WriteLine($"Elapsed time {elapsedTime}.");
+
                 DisplayBoard(board, context);
 
                 DebugInfo(positions, board);
@@ -58,7 +85,7 @@ namespace GobangConsoleApp
                 {
                     Console.WriteLine("Game ties.");
                 }
-                System.Threading.Thread.Sleep(500);
+                //System.Threading.Thread.Sleep(500);
                 //Console.ReadLine();
             } while (game.GameStatus == GameStatus.NotEnd);
             Console.ReadLine();
@@ -87,22 +114,45 @@ namespace GobangConsoleApp
 
         private static void DebugInfo(PositionManager positions, IBoard board)
         {
-            Detailed(positions, board, PatternType.Five);
-            Detailed(positions, board, PatternType.OpenFour);
-            Detailed(positions, board, PatternType.OpenThree);
-            Detailed(positions, board, PatternType.OpenTwo);
+            Detailed(positions, board);
         }
 
-        private static void Detailed(PositionManager positions, IBoard board, PatternType patternType)
+        private static void Detailed(PositionManager positions, IBoard board)
+        {
+            var matches = GetMatches1(positions, board).ToList();
+            PatternBoard pBoard = board as PatternBoard;
+            if (pBoard != null)
+            {
+                var matches2 = GetMatches2(pBoard).ToList();
+                var any = matches.Except(matches2).ToList();
+                bool same = (matches.Count() == matches2.Count()) && !any.Any();
+                Debug.Assert(same);
+            }
+
+            var m2 = matches.GroupBy(m => m.Pattern.PatternType, m => m);
+            foreach (var m in m2)
+            {
+                var pos = string.Join(",", m.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
+                if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {m.Key} at {pos}.");
+            }
+        }
+
+
+        private static IEnumerable<IMatch> GetMatches1(PositionManager positions, IBoard board)
         {
             var matcher = new PatternMatcher();
             var patternRepository = new PatternFactory().Create();
-            var patterns = patternRepository.Patterns[patternType].Patterns.Values.SelectMany(x => x);
-            var five = positions
-                .Lines
-                .SelectMany(l => matcher.MatchPatterns(board, l, patterns));
-            var pos = string.Join(",", five.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
-            if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {patternType} at {pos}.");
+
+            IEnumerable<IPattern> patterns = patternRepository.Get();
+
+            var matches = matcher.MatchPatterns(board, positions.Lines, patterns);
+
+            return matches;
+        }
+
+        private static IEnumerable<IMatch> GetMatches2(PatternBoard board)
+        {
+            return board.Matches.Get();
         }
     }
 }

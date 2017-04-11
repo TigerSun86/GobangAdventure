@@ -23,5 +23,15 @@ namespace GobangGameLib.GameBoard
             }
             return (t == PieceType.P1 ? PieceType.P2 : PieceType.P1);
         }
+
+        public static IEnumerable<PieceType> GetAll()
+        {
+            return Enum.GetValues(typeof(PieceType)).Cast<PieceType>();
+        }
+
+        public static IEnumerable<PieceType> GetAllPieces()
+        {
+            return GetAll().Where(e => e != PieceType.Empty);
+        }
     }
 }

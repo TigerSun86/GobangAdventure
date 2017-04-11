@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
-using GobangGameLib.GameBoard.PieceConnection;
 using GobangGameLib.GameBoard.PositionManagement;
 
 namespace GobangGameLib.GameJudge
 {
     public class PatternJudge : IJudge
     {
-        private readonly PositionManager _positions;
-        private readonly PatternRepository _patternRepository;
+        private readonly PositionManager positions;
+        private readonly PatternRepository patternRepository;
+        private readonly PatternMatcher matcher;
 
-        public PatternJudge(PositionManager positions, PatternRepository patternRepository)
+        public PatternJudge(PositionManager positions, PatternRepository patternRepository, PatternMatcher matcher)
         {
-            _positions = positions;
-            _patternRepository = patternRepository;
+            this.positions = positions;
+            this.patternRepository = patternRepository;
+            this.matcher = matcher;
         }
 
         public PieceType GetWinner(IBoard board)
@@ -34,11 +32,14 @@ namespace GobangGameLib.GameJudge
 
         private IEnumerable<IEnumerable<Position>> GetWinLines(IBoard board)
         {
-            var matcher = new PatternMatcher();
-            var patterns = _patternRepository.Patterns[PatternType.Five].Patterns.Values.SelectMany(x => x);
-            return _positions
-                .Lines
-                .SelectMany(l => matcher.MatchPatterns(board, l, patterns).Select(m => m.Positions));
+            PatternBoard patternBoard = board as PatternBoard;
+            if (patternBoard == null)
+            {
+                var patterns = this.patternRepository.Get(PatternType.Five);
+                return this.matcher.MatchPatterns(board, this.positions.Lines, patterns).Select(m => m.Positions);
+            }
+
+            return  patternBoard.Matches.Get(PatternType.Five).Select(m => m.Positions);
         }
     }
 }
