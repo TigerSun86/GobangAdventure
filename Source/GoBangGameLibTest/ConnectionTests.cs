@@ -2,7 +2,7 @@
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PositionManagement;
-using GoBangGameLibTest.Utils;
+using GoBangGameLibTest.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoBangGameLibTest

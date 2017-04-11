@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using AI.Moves;
 using AI.Scorer;
 using GobangGameLib.GameBoard;
-using GobangGameLib.GameBoard.PositionManagement;
 using GobangGameLib.GameJudge;
 using GobangGameLib.Players;
 
@@ -41,93 +39,89 @@ namespace AI
 
             IBoard boardCopy = this.boardFactory.DeepCloneBoard(board);
 
-            Tuple<double, Position> scoreAndMove = MaxSearch(boardCopy, player, depth: 0,
-                minPossibleScore: double.NegativeInfinity, maxPossibleScore: double.PositiveInfinity);
+            AiSearchResult result = Search(isMaxSearch: true,
+                board: boardCopy,
+                curPlayer: player,
+                depth: 0,
+                minPossibleScore: double.NegativeInfinity,
+                maxPossibleScore: double.PositiveInfinity);
 
-            Debug.WriteLine($"{player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");
-            return scoreAndMove.Item2;
+            Position bestMove = result.Moves.Peek().Move;
+
+            Debug.WriteLine($"{player} best move {bestMove}, score {result.Score},"
+                + $" leaf count {this.leafCount}, moves {string.Join(",", result.Moves)}.");
+
+            return bestMove;
         }
 
-        private Tuple<double, Position> MaxSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
+        private AiSearchResult Search(bool isMaxSearch,
+            IBoard board,
+            PieceType curPlayer,
+            int depth,
+            double minPossibleScore,
+            double maxPossibleScore)
         {
             if (depth >= maxDepth || board.IsFull() || HasWinner(board))
             {
                 this.leafCount++;
 
                 // Return the score of current board.
-                return new Tuple<double, Position>(scorer.GetScore(board, player), null);
+                double score = scorer.GetScore(board, player);
+                return new AiSearchResult(score);
             }
 
             PieceType otherPlayer = curPlayer.GetOther();
-            Position bestMove = null;
+
+            double worseScore = isMaxSearch ? minPossibleScore : maxPossibleScore;
+            AiSearchResult bestMove = new AiSearchResult(worseScore);
             foreach (Position move in this.moveEnumerator.GetMoves(board, curPlayer))
             {
                 // Make a move.
                 board.Set(move, curPlayer);
                 // Search deeper moves.
-                Tuple<double, Position> scoreAndMove = MinSearch(board, otherPlayer, depth + 1, minPossibleScore, maxPossibleScore);
+                AiSearchResult result = Search(!isMaxSearch, board, otherPlayer, depth + 1, minPossibleScore, maxPossibleScore);
                 // Undo the move.
                 board.Set(move, PieceType.Empty);
 
-                double score = scoreAndMove.Item1;
-                if (score >= maxPossibleScore)
-                {
-                    // Result is better than max possible score, so this whole max search branch is meaningless.
-                    // Just stop searching and return meaningless result.
-                    return scoreAndMove;
-                }
+                double score = result.Score;
 
-                if (score > minPossibleScore)
+                if (isMaxSearch)
                 {
-                    minPossibleScore = score;
-                    bestMove = move;
-                }
+                    if (score > bestMove.Score)
+                    {
+                        result.Moves.Push(new PlayerAndMove(curPlayer, move));
+                        bestMove = result;
 
-                // else (score <= minPossibleScore) ignore.
+                        if (score >= maxPossibleScore)
+                        {
+                            // Result is better than max possible score, so this whole max search branch is meaningless.
+                            // Just stop searching and return meaningless result.
+                            break;
+                        }
+
+                        minPossibleScore = score;
+                    }
+                }
+                else
+                {
+                    if (score < bestMove.Score)
+                    {
+                        result.Moves.Push(new PlayerAndMove(curPlayer, move));
+                        bestMove = result;
+
+                        if (score <= minPossibleScore)
+                        {
+                            // Result is worse than min possible score, so this whole min search branch is meaningless.
+                            // Just stop searching and return meaningless result.
+                            break;
+                        }
+
+                        maxPossibleScore = score;
+                    }
+                }
             }
 
-            return new Tuple<double, Position>(minPossibleScore, bestMove);
-        }
-
-        private Tuple<double, Position> MinSearch(IBoard board, PieceType curPlayer, int depth, double minPossibleScore, double maxPossibleScore)
-        {
-            if (depth >= maxDepth || board.IsFull() || HasWinner(board))
-            {
-                this.leafCount++;
-
-                // Return the score of current board.
-                return new Tuple<double, Position>(scorer.GetScore(board, player), null);
-            }
-
-            PieceType otherPlayer = curPlayer.GetOther();
-            Position bestMove = null;
-            foreach (Position move in this.moveEnumerator.GetMoves(board, curPlayer))
-            {
-                // Make a move.
-                board.Set(move, curPlayer);
-                // Search deeper moves.
-                Tuple<double, Position> scoreAndMove = MaxSearch(board, otherPlayer, depth + 1, minPossibleScore, maxPossibleScore);
-                // Undo the move.
-                board.Set(move, PieceType.Empty);
-
-                double score = scoreAndMove.Item1;
-                if (score <= minPossibleScore)
-                {
-                    // Result is worse than min possible score, so this whole min search branch is meaningless.
-                    // Just stop searching and return meaningless result.
-                    return scoreAndMove;
-                }
-
-                if (score < maxPossibleScore)
-                {
-                    maxPossibleScore = score;
-                    bestMove = move;
-                }
-
-                // else (score > maxPossibleScore) ignore.
-            }
-
-            return new Tuple<double, Position>(maxPossibleScore, bestMove);
+            return bestMove;
         }
 
         private bool HasWinner(IBoard board)
