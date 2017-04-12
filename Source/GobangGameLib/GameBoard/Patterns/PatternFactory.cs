@@ -4,17 +4,33 @@ namespace GobangGameLib.GameBoard.Patterns
 {
     public class PatternFactory
     {
-        private readonly static IPattern[] P1Patterns = new[]
+        private readonly static IPattern[] P1Patterns =
         {
-            new Pattern(PatternType.Five, PieceType.P1,
+            new Pattern(PatternType.Five, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1 }),
-            new Pattern(PatternType.OpenFour, PieceType.P1,
+
+            new Pattern(PatternType.OpenFour, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
-            new Pattern(PatternType.OpenThree, PieceType.P1,
+
+            new Pattern(PatternType.HalfFour, PatternPositionType.Any, PieceType.P1,
+                new[] { PieceType.P2, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
+
+            new Pattern(PatternType.HalfFour, PatternPositionType.Any, PieceType.P1,
+                new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P2 }),
+
+            new Pattern(PatternType.HalfFour, PatternPositionType.Head, PieceType.P1,
+                new[] { PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
+
+            new Pattern(PatternType.HalfFour, PatternPositionType.Tail, PieceType.P1,
+                new[] { PieceType.Empty , PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1}),
+
+            new Pattern(PatternType.OpenThree, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
-            new Pattern(PatternType.OpenTwo, PieceType.P1,
+
+            new Pattern(PatternType.OpenTwo, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.Empty}),
-            new Pattern(PatternType.OpenOne, PieceType.P1,
+
+            new Pattern(PatternType.OpenOne, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.Empty, PieceType.P1, PieceType.Empty})
         };
 
@@ -36,6 +52,7 @@ namespace GobangGameLib.GameBoard.Patterns
         private IPattern GetOther(IPattern pattern)
         {
             return new Pattern(pattern.PatternType,
+                pattern.PatternPositionType,
                 pattern.Player.GetOther(),
                 pattern.Pieces.Select(p => p.GetOther()));
         }

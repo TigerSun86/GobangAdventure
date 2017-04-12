@@ -67,50 +67,6 @@ namespace GobangGameLib.GameBoard
         /// 3 \ \ \ 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<int> DiagonalOneIndexes
-        {
-            get
-            {
-                return Enumerable.Range(0, 1);
-            }
-        }
-
-        /// <summary>
-        /// The order of the yielded indexes is: top-left, bottom-left, bottom-right.
-        /// 
-        /// 0 / / /
-        /// 1/ / /
-        /// 2 / / /
-        /// 3 1 2 3
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<int> DiagonalTwoIndexes
-        {
-            get
-            {
-                return Enumerable.Range(0, RowSize + ColSize - 1);
-            }
-        }
-
-        public int GetDiagonalOneIndex(Position position)
-        {
-            return RowSize - 1 - position.Row + position.Col;
-        }
-
-        public int GetDiagonalTwoIndex(Position position)
-        {
-            return position.Row + position.Col;
-        }
-
-        /// <summary>
-        /// The order of the yielded indexes is: bottom-left, top-left, top-right.
-        /// 
-        /// 0 1 2 3
-        /// 1 \ \ \
-        /// 2\ \ \ 
-        /// 3 \ \ \ 
-        /// </summary>
-        /// <returns></returns>
         public IEnumerable<Tuple<int, int>> GetDiagonalOneIndexes()
         {
             foreach (int row in RowIndexes.Reverse())

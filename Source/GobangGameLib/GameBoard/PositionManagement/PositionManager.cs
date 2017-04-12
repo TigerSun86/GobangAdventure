@@ -81,29 +81,46 @@ namespace GobangGameLib.GameBoard.PositionManagement
             {
                 return position.Row;
             }
-            else if (type == LineType.Column)
+
+            if (type == LineType.Column)
             {
                 return position.Col;
             }
-            else if (type == LineType.DiagonalOne)
+
+            if (type == LineType.DiagonalOne)
             {
                 return GetDiagonalOneIndex(position);
             }
-            else if (type == LineType.DiagonalTwo)
+
+            if (type == LineType.DiagonalTwo)
             {
                 return GetDiagonalTwoIndex(position);
             }
-            else
-            {
-                throw new ArgumentException($"Unsupported LineType: {type}.");
-            }
+
+            throw new ArgumentException($"Unsupported LineType: {type}.");
         }
 
+        /// <summary>
+        /// The order of the diagonal one indexes is: bottom-left, top-left, top-right.
+        /// 
+        /// 3 4 5 6
+        /// 2 \ \ \
+        /// 1\ \ \ 
+        /// 0 \ \ \ 
+        /// </summary>
         public int GetDiagonalOneIndex(Position position)
         {
             return _context.RowSize - 1 - position.Row + position.Col;
         }
 
+        /// <summary>
+        /// The order of the diagonal two indexes is: top-left, bottom-left, bottom-right.
+        /// 
+        /// 0 / / /
+        /// 1/ / /
+        /// 2 / / /
+        /// 3 4 5 6
+        /// </summary>
         public int GetDiagonalTwoIndex(Position position)
         {
             return position.Row + position.Col;

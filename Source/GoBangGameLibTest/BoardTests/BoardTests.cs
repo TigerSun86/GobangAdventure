@@ -120,7 +120,7 @@ namespace GoBangGameLibTest.BoardTests
 
             foreach (var p in positions.Positions)
             {
-                int index = b.GetDiagonalOneIndex(p);
+                int index = positions.GetDiagonalOneIndex(p);
                 Assert.IsTrue(d1Lines.Lines[index].Positions.Contains(p));
             }
 
@@ -128,7 +128,7 @@ namespace GoBangGameLibTest.BoardTests
 
             foreach (var p in positions.Positions)
             {
-                int index = b.GetDiagonalTwoIndex(p);
+                int index = positions.GetDiagonalTwoIndex(p);
                 Assert.IsTrue(d2Lines.Lines[index].Positions.Contains(p));
             }
         }

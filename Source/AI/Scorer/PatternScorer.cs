@@ -9,6 +9,16 @@ namespace AI.Scorer
 {
     public class PatternScorer : IScorer
     {
+        private readonly static Dictionary<PatternType, double> PatternAndScore = new Dictionary<PatternType, double>
+        {
+            { PatternType.Five, 100 },
+            { PatternType.OpenFour, 20 },
+            { PatternType.HalfFour, 10 },
+            { PatternType.OpenThree, 3 },
+            { PatternType.OpenTwo, 1 },
+            { PatternType.OpenOne, 0.1 },
+        };
+
         private readonly PositionManager positions;
         private readonly PatternRepository patternRepository;
         private readonly PatternMatcher matcher;
@@ -37,18 +47,16 @@ namespace AI.Scorer
             }
 
             double myScore = 0;
-            myScore += GetCountFromDictionary(myPatterns, PatternType.Five) * 100;
-            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenFour) * 20;
-            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenThree) * 3;
-            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenTwo) * 1;
-            myScore += GetCountFromDictionary(myPatterns, PatternType.OpenOne) * 0.1;
+            foreach (PatternType pattern in PatternTypeExtensions.GetAll())
+            {
+                myScore += GetCountFromDictionary(myPatterns, pattern) * PatternAndScore[pattern];
+            }
 
             double oScore = 0;
-            oScore += GetCountFromDictionary(oPatterns, PatternType.Five) * 100;
-            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenFour) * 20;
-            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenThree) * 3;
-            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenTwo) * 1;
-            oScore += GetCountFromDictionary(oPatterns, PatternType.OpenOne) * 0.1;
+            foreach (PatternType pattern in PatternTypeExtensions.GetAll())
+            {
+                oScore += GetCountFromDictionary(oPatterns, pattern) * PatternAndScore[pattern];
+            }
 
             var nextPlayer = board.Count % 2 == 0 ? PieceType.P1 : PieceType.P2;
             bool isMyTurn = player == nextPlayer;
@@ -60,6 +68,7 @@ namespace AI.Scorer
             {
                 oScore *= 1.2;
             }
+
             return myScore - oScore;
         }
 

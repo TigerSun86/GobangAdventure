@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace GobangGameLib.GameBoard.Patterns
 {
     public interface IPattern
     {
-        IEnumerable<PieceType> Pieces { get; }
-
         PatternType PatternType { get; }
 
+        PatternPositionType PatternPositionType { get; }
+
         PieceType Player { get; }
+
+        IEnumerable<PieceType> Pieces { get; }
     }
 }

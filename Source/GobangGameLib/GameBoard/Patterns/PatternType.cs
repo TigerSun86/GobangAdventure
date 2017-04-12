@@ -8,7 +8,9 @@ namespace GobangGameLib.GameBoard.Patterns
     {
         Five,
         OpenFour,
+        HalfFour,
         OpenThree,
+        // HalfThree,
         OpenTwo,
         OpenOne
     }
