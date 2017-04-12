@@ -25,33 +25,47 @@ namespace GobangGameLib.GameBoard.Patterns
         {
             if (board.Count == 0)
             {
+                // Assuming there is no pattern when no piece on the board.
                 yield break;
             }
 
-            int num = patterns.First().Pieces.Count();
-            int highestBase = (int)Math.Pow(Base, num - 1);
+            // Assuming all patterns are of the same size.
+            int patternSize = patterns.First().Pieces.Count();
+            int highestBase = (int)Math.Pow(Base, patternSize - 1);
             int currentHash = 0;
             Queue<Position> queue = new Queue<Position>();
-            Dictionary<int, IPattern> patternHashes = GetPatternHashes(patterns);
-            foreach (Position p in line.Positions)
+            Dictionary<int, IPattern> hashAndPattern = GetPatternHashes(patterns);
+            for (int index = 0; index < line.Positions.Count; index++)
             {
-                currentHash = Add(currentHash, board.Get(p));
-                queue.Enqueue(p);
+                Position position = line.Positions[index];
 
-                Debug.Assert(queue.Count <= num);
+                currentHash = Add(currentHash, board.Get(position));
+                queue.Enqueue(position);
 
-                if (queue.Count == num)
+                Debug.Assert(queue.Count <= patternSize);
+
+                if (queue.Count == patternSize)
                 {
                     IPattern pattern;
-                    if (patternHashes.TryGetValue(currentHash, out pattern))
+                    if (hashAndPattern.TryGetValue(currentHash, out pattern))
                     {
-                        yield return new Match(pattern, queue.ToList());
+                        if (IsPatternInValidPosition(pattern.PatternPositionType, index, patternSize, line.Positions.Count))
+                        {
+                            yield return new Match(pattern, queue.ToList());
+                        }
                     }
 
                     Position headPosition = queue.Dequeue();
                     currentHash = Remove(currentHash, highestBase, board.Get(headPosition));
                 }
             }
+        }
+
+        private bool IsPatternInValidPosition(PatternPositionType type, int index, int patternSize, int lineSize)
+        {
+            return (type == PatternPositionType.Any) ||
+                ((type == PatternPositionType.Head) && (index + 1 == patternSize)) ||
+                ((type == PatternPositionType.Tail) && (index + 1 == lineSize));
         }
 
         private Dictionary<int, IPattern> GetPatternHashes(IEnumerable<IPattern> patterns)

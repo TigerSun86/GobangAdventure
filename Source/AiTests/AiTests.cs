@@ -17,10 +17,6 @@ namespace AiTests
     [TestClass]
     public class AiTests
     {
-        /// <summary>
-        /// Test blocking until half four pattern matching is implemented.
-        /// </summary>
-        [Ignore]
         [TestMethod]
         public void WhenOpponentHasOpenThreeThenBlockIt()
         {
@@ -44,7 +40,7 @@ namespace AiTests
             var expected = new[] { new Position(2, 3), new Position(6, 7) };
 
             int count = 0;
-            foreach (var aiPlayer in GetAiPlayers(context, positions))
+            foreach (var aiPlayer in GetAiPlayers(context, positions, PieceType.P1))
             {
                 var move = aiPlayer.MakeAMove(board);
                 Assert.IsTrue(expected.Contains(move), $"Assertion failed on player {count}, whose move is {move.ToString()}.");
@@ -53,7 +49,38 @@ namespace AiTests
             }
         }
 
-        private IEnumerable<IPlayer> GetAiPlayers(BoardProperties context, PositionManager positions)
+        [TestMethod]
+        public void WhenOpponentHasOpenThreeThenBlockIt2()
+        {
+            var boardString = new[]
+            {
+                // 23456
+                "       ", // 0
+                "       ", // 1
+                "  X    ", // 2
+                "  XO   ", // 3
+                "  XXO  ", // 4
+                "    O  ", // 5
+                "       ", // 6
+                "       ", // 7
+            };
+
+            var context = new BoardProperties(boardString.Length, boardString[0].Length);
+            var positions = new PositionFactory().Create(context);
+            var board = Utils.ParseBoard(boardString, context, positions);
+            var expected = new[] { new Position(1, 2), new Position(5, 2) };
+
+            int count = 0;
+            foreach (var aiPlayer in GetAiPlayers(context, positions, PieceType.P2))
+            {
+                var move = aiPlayer.MakeAMove(board);
+                Assert.IsTrue(expected.Contains(move), $"Assertion failed on player {count}, whose move is {move.ToString()}.");
+
+                count++;
+            }
+        }
+
+        private IEnumerable<IPlayer> GetAiPlayers(BoardProperties context, PositionManager positions, PieceType player)
         {
             var patterns = new PatternFactory().Create();
             var matcher = new PatternMatcher();
@@ -71,9 +98,9 @@ namespace AiTests
 
             return new[]
             {
-                new AbPruningAi(PieceType.P1, 1, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
-                new AbPruningAi(PieceType.P1, 2, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
-                new AbPruningAi(PieceType.P1, 3, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge)
+                new AbPruningAi(player, 1, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
+                new AbPruningAi(player, 2, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge),
+                new AbPruningAi(player, 3, aggregatedScorer, scoredMoveEnumerator, patternBoardFactory, judge)
             };
         }
 

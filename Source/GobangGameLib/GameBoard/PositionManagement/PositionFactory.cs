@@ -54,22 +54,23 @@ namespace GobangGameLib.GameBoard.PositionManagement
             {
                 return context.RowIndexes.Select(i => new Tuple<int, int>(i, -1));
             }
-            else if (type.Equals(LineType.Column))
+
+            if (type.Equals(LineType.Column))
             {
                 return context.ColIndexes.Select(i => new Tuple<int, int>(-1, i));
             }
-            else if (type.Equals(LineType.DiagonalOne))
+
+            if (type.Equals(LineType.DiagonalOne))
             {
                 return context.GetDiagonalOneIndexes();
             }
-            else if (type.Equals(LineType.DiagonalTwo))
+
+            if (type.Equals(LineType.DiagonalTwo))
             {
                 return context.GetDiagonalTwoIndexes();
             }
-            else
-            {
-                throw new ArgumentOutOfRangeException(string.Format("Unconsidered subclass of Line: '{0}'.", type.ToString()));
-            }
+
+            throw new ArgumentOutOfRangeException(string.Format("Unconsidered subclass of Line: '{0}'.", type.ToString()));
         }
 
         private IEnumerable<Position> GetRow(BoardProperties context, int row)

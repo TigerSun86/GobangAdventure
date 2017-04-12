@@ -43,6 +43,7 @@
     <Compile Include="GameBoard\BoardProperties.cs" />
     <Compile Include="GameBoard\IBoard.cs" />
     <Compile Include="GameBoard\IBoardFactory.cs" />
+    <Compile Include="GameBoard\Patterns\PatternPositionType.cs" />
     <Compile Include="GameBoard\Patterns\PatternBoard.cs" />
     <Compile Include="GameBoard\Patterns\PatternBoardFactory.cs" />
     <Compile Include="GameBoard\Patterns\IPattern.cs" />
