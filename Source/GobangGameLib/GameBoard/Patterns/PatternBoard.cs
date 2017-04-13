@@ -7,16 +7,13 @@ namespace GobangGameLib.GameBoard.Patterns
     {
         private readonly IBoard board;
         private readonly PositionManager positions;
-        private readonly PatternRepository patternRepository;
         private readonly PatternMatcher matcher;
         private readonly MatchRepository matches;
 
-        public PatternBoard(IBoard board, PositionManager positions,
-            PatternRepository patternRepository, PatternMatcher matcher)
+        public PatternBoard(IBoard board, PositionManager positions, PatternMatcher matcher)
         {
             this.board = board;
             this.positions = positions;
-            this.patternRepository = patternRepository;
             this.matcher = matcher;
             this.matches = new MatchRepository();
             foreach (var match in GetAllMatches())
@@ -41,9 +38,8 @@ namespace GobangGameLib.GameBoard.Patterns
         public void Set(Position position, PieceType piece)
         {
             IEnumerable<IPositions> relatedLines = this.positions.GetAllLinesOf(position);
-            IEnumerable<IPattern> patterns = this.patternRepository.Get();
 
-            IEnumerable<IMatch> oldMatches = this.matcher.MatchPatterns(board, relatedLines, patterns);
+            IEnumerable<IMatch> oldMatches = this.matcher.MatchPatterns(board, relatedLines);
 
             foreach (IMatch match in oldMatches)
             {
@@ -52,7 +48,7 @@ namespace GobangGameLib.GameBoard.Patterns
 
             this.board.Set(position, piece);
 
-            IEnumerable<IMatch> newMatches = this.matcher.MatchPatterns(board, relatedLines, patterns);
+            IEnumerable<IMatch> newMatches = this.matcher.MatchPatterns(board, relatedLines);
 
             foreach (IMatch match in newMatches)
             {
@@ -75,13 +71,12 @@ namespace GobangGameLib.GameBoard.Patterns
 
         public IBoard DeepClone()
         {
-            return new PatternBoard(this.board, this.positions, this.patternRepository, this.matcher);
+            return new PatternBoard(this.board, this.positions, this.matcher);
         }
 
         private IEnumerable<IMatch> GetAllMatches()
         {
-            var patterns = this.patternRepository.Get();
-            return this.matcher.MatchPatterns(this.board, this.positions.Lines, patterns); ;
+            return this.matcher.MatchPatterns(this.board, this.positions.Lines);
         }
     }
 }

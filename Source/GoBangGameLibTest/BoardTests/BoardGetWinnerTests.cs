@@ -236,7 +236,8 @@ namespace GoBangGameLibTest.BoardTests
         {
             var context = new BoardProperties();
             var positions = new PositionFactory().Create(context);
-            return new PatternJudge(positions, new PatternFactory().Create(), new PatternMatcher());
+            var patternRepo = new PatternFactory().Create();
+            return new PatternJudge(positions, patternRepo, new PatternMatcher(patternRepo));
         }
     }
 }

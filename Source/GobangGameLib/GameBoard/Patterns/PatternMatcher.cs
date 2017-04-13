@@ -8,17 +8,32 @@ namespace GobangGameLib.GameBoard.Patterns
 {
     public class PatternMatcher
     {
-        private readonly static int Base = PieceTypeExtensions.GetAll().Count();
+        // Add 1 to avoid PieceType.Empty value is 0.
+        private readonly static int Base = PieceTypeExtensions.GetAll().Count() + 1;
 
-        public IEnumerable<IMatch> MatchPatterns(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
+        private readonly List<List<IPattern>> allPatterns;
+        private readonly Dictionary<int, IPattern> hashAndPattern;
+
+        public PatternMatcher(PatternRepository patternRepository)
         {
-            var patternsWithSameCount = patterns.GroupBy(p => p.Pieces.Count());
-            return patternsWithSameCount.SelectMany(ps => MatchInternal(board, line, ps));
+            IEnumerable<IPattern> patterns = patternRepository.Get();
+
+            this.allPatterns = patterns.GroupBy(p => p.Pieces.Count()).Select(g => g.ToList()).ToList();
+            this.hashAndPattern = GetPatternHashes(patterns);
+        }
+
+        public IEnumerable<IMatch> MatchPatterns(IBoard board, IEnumerable<IPositions> lines)
+        {
+            return lines.SelectMany(line =>
+                this.allPatterns.SelectMany(patterns => MatchInternal(board, line, patterns)));
         }
 
         public IEnumerable<IMatch> MatchPatterns(IBoard board, IEnumerable<IPositions> lines, IEnumerable<IPattern> patterns)
         {
-            return lines.SelectMany(l => this.MatchPatterns(board, l, patterns));
+            var patternsWithSameCount = patterns.GroupBy(p => p.Pieces.Count());
+
+            return lines.SelectMany(line =>
+                patternsWithSameCount.SelectMany(ps => MatchInternal(board, line, ps)));
         }
 
         internal IEnumerable<IMatch> MatchInternal(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
@@ -34,7 +49,6 @@ namespace GobangGameLib.GameBoard.Patterns
             int highestBase = (int)Math.Pow(Base, patternSize - 1);
             int currentHash = 0;
             Queue<Position> queue = new Queue<Position>();
-            Dictionary<int, IPattern> hashAndPattern = GetPatternHashes(patterns);
             for (int index = 0; index < line.Positions.Count; index++)
             {
                 Position position = line.Positions[index];
@@ -83,12 +97,14 @@ namespace GobangGameLib.GameBoard.Patterns
 
         private int Remove(int sum, int highestBase, PieceType pieceType)
         {
-            return sum - ((int)pieceType * highestBase);
+            // Add 1 to avoid PieceType.Empty value is 0.
+            return sum - (((int)pieceType + 1) * highestBase);
         }
 
         private int Add(int sum, PieceType pieceType)
         {
-            return (sum * Base) + (int)pieceType;
+            // Add 1 to avoid PieceType.Empty value is 0.
+            return (sum * Base) + (int)pieceType + 1;
         }
     }
 }

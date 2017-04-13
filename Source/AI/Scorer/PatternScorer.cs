@@ -32,31 +32,24 @@ namespace AI.Scorer
 
         public double GetScore(IBoard board, PieceType player)
         {
-            Dictionary<PatternType, int> myPatterns;
-            Dictionary<PatternType, int> oPatterns;
+            MatchRepository matchRepository;
             PatternBoard patternBoard = board as PatternBoard;
             if (patternBoard != null)
             {
-                myPatterns = GetPatternCounts(patternBoard, player);
-                oPatterns = GetPatternCounts(patternBoard, player.GetOther());
+                matchRepository = patternBoard.Matches;
             }
             else
             {
-                myPatterns = GetPatternCounts(board, player);
-                oPatterns = GetPatternCounts(board, player.GetOther());
+                var matches = this.matcher.MatchPatterns(board, positions.Lines);
+                matchRepository = new MatchRepository();
+                foreach (var match in matches)
+                {
+                    matchRepository.Add(match.Pattern.Player, match.Pattern.PatternType, match);
+                }
             }
 
-            double myScore = 0;
-            foreach (PatternType pattern in PatternTypeExtensions.GetAll())
-            {
-                myScore += GetCountFromDictionary(myPatterns, pattern) * PatternAndScore[pattern];
-            }
-
-            double oScore = 0;
-            foreach (PatternType pattern in PatternTypeExtensions.GetAll())
-            {
-                oScore += GetCountFromDictionary(oPatterns, pattern) * PatternAndScore[pattern];
-            }
+            double myScore = GetScore(player, matchRepository);
+            double oScore = GetScore(player.GetOther(), matchRepository);
 
             var nextPlayer = board.Count % 2 == 0 ? PieceType.P1 : PieceType.P2;
             bool isMyTurn = player == nextPlayer;
@@ -72,43 +65,16 @@ namespace AI.Scorer
             return myScore - oScore;
         }
 
-        private void DebugInfo(Dictionary<PatternType, int> myPatterns, Dictionary<PatternType, int> oPatterns)
+        private double GetScore(PieceType player, MatchRepository matchRepository)
         {
-            var my = string.Join(",", myPatterns);
-            var o = string.Join(",", oPatterns);
-            if (!string.IsNullOrWhiteSpace(my))
+            double score = 0;
+            foreach (PatternType pattern in PatternTypeExtensions.GetAll())
             {
-                Debug.WriteLine("My patterns " + my);
+                int patternCount = matchRepository.Get(player, pattern).Count;
+                score += patternCount * PatternScorer.PatternAndScore[pattern];
             }
-            if (!string.IsNullOrWhiteSpace(o))
-            {
-                Debug.WriteLine("O patterns " + o);
-            }
-        }
 
-        private Dictionary<PatternType, int> GetPatternCounts(IBoard board, PieceType pieceType)
-        {
-            var patterns = patternRepository.Get(pieceType);
-            var matches = this.matcher.MatchPatterns(board, positions.Lines, patterns);
-            var counts = matches.GroupBy(m => m.Pattern.PatternType).ToDictionary(g => g.Key, g => g.Count());
-            return counts;
-        }
-
-        private Dictionary<PatternType, int> GetPatternCounts(PatternBoard board, PieceType pieceType)
-        {
-            var matches = board.Matches.Get(pieceType);
-            var counts = matches.GroupBy(m => m.Pattern.PatternType).ToDictionary(g => g.Key, g => g.Count());
-            return counts;
-        }
-
-        private int GetCountFromDictionary(Dictionary<PatternType, int> dict, PatternType type)
-        {
-            int v;
-            if (dict.TryGetValue(type, out v))
-            {
-                return v;
-            }
-            return 0;
+            return score;
         }
     }
 }
