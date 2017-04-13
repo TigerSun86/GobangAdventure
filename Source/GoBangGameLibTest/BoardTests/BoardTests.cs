@@ -43,11 +43,11 @@ namespace GoBangGameLibTest.BoardTests
             var context = new BoardProperties(4, 4, 5);
             var positions = new PositionFactory().Create(context);
             var patterns = new PatternFactory().Create();
-            var matcher = new PatternMatcher();
+            var matcher = new PatternMatcher(patterns);
             var boardFactories = new IBoardFactory[]
             {
                 new BoardFactory(context, positions),
-                new PatternBoardFactory(context, positions, patterns, matcher)
+                new PatternBoardFactory(context, positions, matcher)
             };
 
             foreach (var boardFactory in boardFactories)
@@ -78,11 +78,11 @@ namespace GoBangGameLibTest.BoardTests
             var context = new BoardProperties(4, 4, 5);
             var positions = new PositionFactory().Create(context);
             var patterns = new PatternFactory().Create();
-            var matcher = new PatternMatcher();
+            var matcher = new PatternMatcher(patterns);
             var boardFactories = new IBoardFactory[]
             {
                 new BoardFactory(context, positions),
-                new PatternBoardFactory(context, positions, patterns, matcher)
+                new PatternBoardFactory(context, positions, matcher)
             };
 
             foreach (var boardFactory in boardFactories)

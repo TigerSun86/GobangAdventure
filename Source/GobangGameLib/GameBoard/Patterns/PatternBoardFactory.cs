@@ -6,20 +6,18 @@ namespace GobangGameLib.GameBoard.Patterns
     {
         private readonly BoardProperties context;
         private readonly PositionManager positions;
-        private readonly PatternRepository patternRepository;
         private readonly PatternMatcher matcher;
 
-        public PatternBoardFactory(BoardProperties context, PositionManager positions, PatternRepository patternRepository, PatternMatcher matcher)
+        public PatternBoardFactory(BoardProperties context, PositionManager positions, PatternMatcher matcher)
         {
             this.context = context;
             this.positions = positions;
-            this.patternRepository = patternRepository;
             this.matcher = matcher;
         }
 
         public IBoard Create()
         {
-            return new PatternBoard(new Board(this.context), this.positions, this.patternRepository, this.matcher);
+            return new PatternBoard(new Board(this.context), this.positions, this.matcher);
         }
 
         public IBoard DeepCloneBoard(IBoard board)

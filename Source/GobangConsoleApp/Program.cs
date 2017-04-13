@@ -28,9 +28,9 @@ namespace GobangConsoleApp
             var context = new BoardProperties();
             var positions = new PositionFactory().Create(context);
             var patterns = new PatternFactory().Create();
-            var matcher = new PatternMatcher();
+            var matcher = new PatternMatcher(patterns);
             var boardFactory = new BoardFactory(context, positions);
-            var patternBoardFactory = new PatternBoardFactory(context, positions, patterns, matcher);
+            var patternBoardFactory = new PatternBoardFactory(context, positions, matcher);
             var centerScorer = new CenterScorer(context, positions);
             var patternScorer = new PatternScorer(positions, patterns, matcher);
             var aggregatedScorer = new AggregatedScorer(new[]
@@ -71,7 +71,7 @@ namespace GobangConsoleApp
 
                 DisplayBoard(board, context);
 
-                DebugInfo(positions, board);
+                DebugInfo(positions, board, matcher);
 
                 if (game.GameStatus == GameStatus.P1Win)
                 {
@@ -112,47 +112,25 @@ namespace GobangConsoleApp
         }
 
 
-        private static void DebugInfo(PositionManager positions, IBoard board)
+        private static void DebugInfo(PositionManager positions, IBoard board, PatternMatcher matcher)
         {
-            Detailed(positions, board);
-        }
+            var matches1 = matcher.MatchPatterns(board, positions.Lines).ToList();
 
-        private static void Detailed(PositionManager positions, IBoard board)
-        {
-            var matches = GetMatches1(positions, board).ToList();
             PatternBoard pBoard = board as PatternBoard;
             if (pBoard != null)
             {
-                var matches2 = GetMatches2(pBoard).ToList();
-                var any = matches.Except(matches2).ToList();
-                bool same = (matches.Count() == matches2.Count()) && !any.Any();
+                var matches2 = pBoard.Matches.Get().ToList();
+                var any = matches1.Except(matches2).ToList();
+                bool same = (matches1.Count() == matches2.Count()) && !any.Any();
                 Debug.Assert(same);
             }
 
-            var m2 = matches.GroupBy(m => m.Pattern.PatternType, m => m);
-            foreach (var m in m2)
+            var groupedMatches = matches1.GroupBy(m => m.Pattern.PatternType, m => m);
+            foreach (var match in groupedMatches)
             {
-                var pos = string.Join(",", m.Select(l => $"({l.Positions.First().Row},{l.Positions.First().Col})"));
-                if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {m.Key} at {pos}.");
+                var pos = string.Join(",", match.Select(l => $"{l.Pattern.Player}:({l.Positions.First().Row},{l.Positions.First().Col})"));
+                if (!string.IsNullOrWhiteSpace(pos)) Debug.WriteLine($"Pattern {match.Key} at {pos}.");
             }
-        }
-
-
-        private static IEnumerable<IMatch> GetMatches1(PositionManager positions, IBoard board)
-        {
-            var matcher = new PatternMatcher();
-            var patternRepository = new PatternFactory().Create();
-
-            IEnumerable<IPattern> patterns = patternRepository.Get();
-
-            var matches = matcher.MatchPatterns(board, positions.Lines, patterns);
-
-            return matches;
-        }
-
-        private static IEnumerable<IMatch> GetMatches2(PatternBoard board)
-        {
-            return board.Matches.Get();
         }
     }
 }

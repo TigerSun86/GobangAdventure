@@ -42,7 +42,7 @@ namespace GoBangGameLibTest
 
             IPattern pattern = new Pattern(PatternType.OpenThree, PatternPositionType.Any, player: PieceType.P1, pieces: pieces);
 
-            var matcher = new PatternMatcher();
+            var matcher = new PatternMatcher(new PatternFactory().Create());
 
             // Act
             var result = matcher.MatchInternal(board, line, new[] { pattern });
@@ -84,7 +84,7 @@ namespace GoBangGameLibTest
 
             IPattern pattern = new Pattern(PatternType.OpenThree, PatternPositionType.Any, player: PieceType.P1, pieces: pieces);
 
-            var matcher = new PatternMatcher();
+            var matcher = new PatternMatcher(new PatternFactory().Create());
 
             // Act
             var result = matcher.MatchInternal(board, line, new[] { pattern });

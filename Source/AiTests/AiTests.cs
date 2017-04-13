@@ -83,8 +83,8 @@ namespace AiTests
         private IEnumerable<IPlayer> GetAiPlayers(BoardProperties context, PositionManager positions, PieceType player)
         {
             var patterns = new PatternFactory().Create();
-            var matcher = new PatternMatcher();
-            var patternBoardFactory = new PatternBoardFactory(context, positions, patterns, matcher);
+            var matcher = new PatternMatcher(patterns);
+            var patternBoardFactory = new PatternBoardFactory(context, positions, matcher);
             var centerScorer = new CenterScorer(context, positions);
             var patternScorer = new PatternScorer(positions, patterns, matcher);
             var aggregatedScorer = new AggregatedScorer(new[]
