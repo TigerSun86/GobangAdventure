@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PositionManagement;
@@ -45,7 +46,7 @@ namespace GoBangGameLibTest
             var matcher = new PatternMatcher(new PatternFactory().Create());
 
             // Act
-            var result = matcher.MatchInternal(board, line, new[] { pattern });
+            var result = matcher.MatchInternal(board, line, new HashSet<IPattern> { pattern });
 
             // Assert
             Assert.AreEqual(1, result.Count());
@@ -87,7 +88,7 @@ namespace GoBangGameLibTest
             var matcher = new PatternMatcher(new PatternFactory().Create());
 
             // Act
-            var result = matcher.MatchInternal(board, line, new[] { pattern });
+            var result = matcher.MatchInternal(board, line, new HashSet<IPattern> { pattern });
 
             // Assert
             Assert.AreEqual(0, result.Count());

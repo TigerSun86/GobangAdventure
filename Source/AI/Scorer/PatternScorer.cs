@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.Patterns;
 using GobangGameLib.GameBoard.PositionManagement;
@@ -15,6 +13,7 @@ namespace AI.Scorer
             { PatternType.OpenFour, 20 },
             { PatternType.HalfFour, 10 },
             { PatternType.OpenThree, 3 },
+            { PatternType.HalfThree, 1 },
             { PatternType.OpenTwo, 1 },
             { PatternType.OpenOne, 0.1 },
         };
