@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnostics.Windows;
 using BenchmarkDotNet.Running;
+using GobangBenchMark.Utilities;
 using GobangGameLib.GameBoard;
 using GobangGameLib.GameBoard.PositionManagement;
 using System;
@@ -17,6 +18,9 @@ namespace GobangBenchMark
         private IBoard boardEmpty;
         private IBoard boardFull;
         private IBoard boardHalfFull;
+        private NaiveBoard naiveBoardEmpty;
+        private NaiveBoard naiveBoardFull;
+        private NaiveBoard naiveBoardHalfFull;
 
         /// <summary>
         /// 10, 100, 10000 shows similar ratio of result in Mean. But 1 result is not similar with them.
@@ -34,22 +38,33 @@ namespace GobangBenchMark
         {
             this.context = new BoardProperties();
             this.positions = new PositionFactory().Create(context);
+
             this.boardEmpty = new BoardFactory(context, positions).Create();
+            this.naiveBoardEmpty = new NaiveBoard(this.context.RowSize, this.context.ColSize);
+
             this.boardFull = new BoardFactory(context, positions).Create();
+            this.naiveBoardFull = new NaiveBoard(this.context.RowSize, this.context.ColSize);
+
             var piece = PieceType.P1;
             foreach (var p in this.positions.Positions)
             {
                 this.boardFull.Set(p, piece);
+                this.naiveBoardFull.Data[p.Row, p.Col] = piece;
+
                 piece = piece.GetOther();
             }
 
             this.boardHalfFull = new BoardFactory(context, positions).Create();
+            this.naiveBoardHalfFull = new NaiveBoard(this.context.RowSize, this.context.ColSize);
+
             var ran = new Random(1);
             foreach (int i in Enumerable.Range(0, this.positions.Positions.Count() / 2))
             {
                 var emptyPositions = this.positions.GetEmptyPositions(this.boardHalfFull);
                 var p = emptyPositions.ElementAt(ran.Next(0, emptyPositions.Count()));
                 this.boardHalfFull.Set(p, piece);
+                this.naiveBoardHalfFull.Data[p.Row, p.Col] = piece;
+
                 piece = piece.GetOther();
             }
         }
@@ -88,7 +103,19 @@ namespace GobangBenchMark
             return sum;
         }
 
-        public int GetEmptyByPositionManager(IBoard board)
+        [Benchmark]
+        public int GetEmptyByNaiveBoard()
+        {
+            int sum = 0;
+            var ps = NaiveGetAllPositions().ToList();
+            sum += GetEmptyByNaiveBoard(this.naiveBoardEmpty);
+            sum += GetEmptyByNaiveBoard(this.naiveBoardFull);
+            sum += GetEmptyByNaiveBoard(this.naiveBoardHalfFull);
+
+            return sum;
+        }
+
+        private int GetEmptyByPositionManager(IBoard board)
         {
             int sum = 0;
             foreach (var i in Enumerable.Range(0, this.IterationCount))
@@ -103,7 +130,7 @@ namespace GobangBenchMark
             return sum;
         }
 
-        public int GetEmptyByForLoop(IBoard board)
+        private int GetEmptyByForLoop(IBoard board)
         {
             int sum = 0;
             foreach (var i in Enumerable.Range(0, this.IterationCount))
@@ -117,7 +144,7 @@ namespace GobangBenchMark
             return sum;
         }
 
-        public int GetEmptyByForLoopWithPreGeneratedPositions(IBoard board, List<Position> ps)
+        private int GetEmptyByForLoopWithPreGeneratedPositions(IBoard board, List<Position> ps)
         {
             int sum = 0;
             foreach (var i in Enumerable.Range(0, this.IterationCount))
@@ -127,6 +154,25 @@ namespace GobangBenchMark
                     if (board.Get(p) == PieceType.Empty)
                     {
                         sum++;
+                    }
+                }
+            }
+            return sum;
+        }
+
+        private int GetEmptyByNaiveBoard(NaiveBoard naiveBoardEmpty)
+        {
+            int sum = 0;
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
+            {
+                for (int r = 0; r < this.context.RowSize; r++)
+                {
+                    for (int c = 0; c < this.context.ColSize; c++)
+                    {
+                        if (naiveBoardEmpty.Data[r, c] == PieceType.Empty)
+                        {
+                            sum++;
+                        }
                     }
                 }
             }
