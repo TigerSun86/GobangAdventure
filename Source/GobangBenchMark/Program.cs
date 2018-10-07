@@ -11,7 +11,7 @@ namespace GobangBenchMark
         static void Main(string[] args)
         {
             new BoardEmptyPositionIterationBenchMark().Run();
-            new MinmaxSearchAiBenchMark().Run();
+            // new MinmaxSearchAiBenchMark().Run();
         }
     }
 }

@@ -13,6 +13,13 @@ namespace GobangBenchMark
     [MemoryDiagnoser]
     public class BoardEmptyPositionIterationBenchMark
     {
+        public enum BoardType
+        {
+            Empty,
+            HalfFull,
+            Full
+        }
+
         private BoardProperties context;
         private PositionManager positions;
         private IBoard boardEmpty;
@@ -27,6 +34,9 @@ namespace GobangBenchMark
         /// </summary>
         [Params(10)]
         public int IterationCount { get; set; }
+
+        [Params(BoardType.Empty, BoardType.HalfFull, BoardType.Full)]
+        public BoardType BoardTypePara { get; set; }
 
         public void Run()
         {
@@ -69,13 +79,12 @@ namespace GobangBenchMark
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
         public int GetEmptyByPositionManager()
         {
             int sum = 0;
-            sum += GetEmptyByPositionManager(this.boardEmpty);
-            sum += GetEmptyByPositionManager(this.boardFull);
-            sum += GetEmptyByPositionManager(this.boardHalfFull);
+
+            sum += GetEmptyByPositionManager(BoardTypeToIBoard());
 
             return sum;
         }
@@ -84,21 +93,19 @@ namespace GobangBenchMark
         public int GetEmptyByForLoop()
         {
             int sum = 0;
-            sum += GetEmptyByForLoop(this.boardEmpty);
-            sum += GetEmptyByForLoop(this.boardFull);
-            sum += GetEmptyByForLoop(this.boardHalfFull);
+            sum += GetEmptyByForLoop(BoardTypeToIBoard());
 
             return sum;
         }
+
 
         [Benchmark]
         public int GetEmptyByForLoopWithPreGeneratedPositions()
         {
             int sum = 0;
             var ps = NaiveGetAllPositions().ToList();
-            sum += GetEmptyByForLoopWithPreGeneratedPositions(this.boardEmpty, ps);
-            sum += GetEmptyByForLoopWithPreGeneratedPositions(this.boardFull, ps);
-            sum += GetEmptyByForLoopWithPreGeneratedPositions(this.boardHalfFull, ps);
+
+            sum += GetEmptyByForLoopWithPreGeneratedPositions(BoardTypeToIBoard(), ps);
 
             return sum;
         }
@@ -107,13 +114,108 @@ namespace GobangBenchMark
         public int GetEmptyByNaiveBoard()
         {
             int sum = 0;
-            var ps = NaiveGetAllPositions().ToList();
-            sum += GetEmptyByNaiveBoard(this.naiveBoardEmpty);
-            sum += GetEmptyByNaiveBoard(this.naiveBoardFull);
-            sum += GetEmptyByNaiveBoard(this.naiveBoardHalfFull);
+            sum += GetEmptyByNaiveBoard(BoardTypeToNaiveBoard());
 
             return sum;
         }
+
+        [Benchmark]
+        public int GetEmptyByNaiveBoard2WithLinq()
+        {
+            int sum = 0;
+            sum += GetEmptyByNaiveBoard2WithLinq(BoardTypeToNaiveBoard());
+
+            return sum;
+        }
+
+        [Benchmark]
+        public int GetEmptyPositionsWithCompressedPosition()
+        {
+            int sum = 0;
+            sum += GetEmptyPositionsWithCompressedPosition(BoardTypeToNaiveBoard());
+
+            return sum;
+        }
+
+        [Benchmark]
+        public int GetEmptyByTraversal()
+        {
+            int sum = 0;
+            sum += GetEmptyByTraversal(BoardTypeToNaiveBoard());
+
+            return sum;
+        }
+
+
+        [Benchmark]
+        public int GetEmptyByTraversalWithEmptyCheck()
+        {
+            int sum = 0;
+            sum += GetEmptyByTraversalWithEmptyCheck(BoardTypeToNaiveBoard());
+
+            return sum;
+        }
+
+        private int GetEmptyByTraversal(NaiveBoard board)
+        {
+            int sum = 0;
+
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
+            {
+                Traversal(board, (r, c) =>
+                {
+                    if (board.Data[r, c] == PieceType.Empty)
+                    {
+                        sum += r + c;
+                    }
+                });
+            }
+            return sum;
+        }
+
+        private int GetEmptyByTraversalWithEmptyCheck(NaiveBoard board)
+        {
+            int sum = 0;
+
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
+            {
+                TraversalWithEmptyCheck(board, (r, c) =>
+                {
+                    sum += r + c;
+                });
+            }
+
+            return sum;
+        }
+
+        private void Traversal(NaiveBoard b, Action<int, int> action)
+        {
+            for (int r = 0; r < b.RowSize; r++)
+            {
+                for (int c = 0; c < b.ColSize; c++)
+                {
+                    if (b.Data[r, c] == PieceType.Empty)
+                    {
+                        action(r, c);
+                    }
+                }
+            }
+        }
+
+        private void TraversalWithEmptyCheck(NaiveBoard b, Action<int, int> action)
+        {
+            for (int r = 0; r < b.RowSize; r++)
+            {
+                for (int c = 0; c < b.ColSize; c++)
+                {
+                    if (b.Data[r, c] == PieceType.Empty)
+                    {
+                        action(r, c);
+                    }
+                }
+            }
+        }
+
 
         private int GetEmptyByPositionManager(IBoard board)
         {
@@ -123,7 +225,7 @@ namespace GobangBenchMark
                 var ps = this.positions.GetEmptyPositions(board);
                 foreach (var p in ps)
                 {
-                    sum++;
+                    sum += p.Row + p.Col;
                 }
             }
 
@@ -138,7 +240,7 @@ namespace GobangBenchMark
                 var ps = NaiveGetEmpty(board);
                 foreach (var p in ps)
                 {
-                    sum++;
+                    sum += p.Row + p.Col;
                 }
             }
             return sum;
@@ -153,7 +255,7 @@ namespace GobangBenchMark
                 {
                     if (board.Get(p) == PieceType.Empty)
                     {
-                        sum++;
+                        sum += p.Row + p.Col;
                     }
                 }
             }
@@ -171,12 +273,62 @@ namespace GobangBenchMark
                     {
                         if (naiveBoardEmpty.Data[r, c] == PieceType.Empty)
                         {
-                            sum++;
+                            sum += r + c;
                         }
                     }
                 }
             }
             return sum;
+        }
+
+        private int GetEmptyByNaiveBoard2WithLinq(NaiveBoard naiveBoardEmpty)
+        {
+            int sum = 0;
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
+            {
+                sum += GetEmptyPositionsWithLinqInternal(naiveBoardEmpty).Sum(p => p.Row + p.Col);
+            }
+
+            return sum;
+        }
+
+        public IEnumerable<Position> GetEmptyPositionsWithLinqInternal(NaiveBoard naiveBoardEmpty)
+        {
+            for (int r = 0; r < naiveBoardEmpty.RowSize; r++)
+            {
+                for (int c = 0; c < naiveBoardEmpty.ColSize; c++)
+                {
+                    if (naiveBoardEmpty.Data[r, c] == PieceType.Empty)
+                    {
+                        yield return new Position(r, c);
+                    }
+                }
+            }
+        }
+
+        private int GetEmptyPositionsWithCompressedPosition(NaiveBoard naiveBoardEmpty)
+        {
+            int sum = 0;
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
+            {
+                sum += GetEmptyPositionsWithCompressedPositionInternal(naiveBoardEmpty).Sum(p => (p >> 8) + (p & 0xFF));
+            }
+
+            return sum;
+        }
+
+        private IEnumerable<int> GetEmptyPositionsWithCompressedPositionInternal(NaiveBoard naiveBoardEmpty)
+        {
+            for (int r = 0; r < naiveBoardEmpty.RowSize; r++)
+            {
+                for (int c = 0; c < naiveBoardEmpty.ColSize; c++)
+                {
+                    if (naiveBoardEmpty.Data[r, c] == PieceType.Empty)
+                    {
+                        yield return (r << 8) + c;
+                    }
+                }
+            }
         }
 
         private IEnumerable<Position> NaiveGetEmpty(IBoard board)
@@ -203,6 +355,32 @@ namespace GobangBenchMark
                     Position p = new Position(r, c);
                     yield return p;
                 }
+            }
+        }
+
+        private IBoard BoardTypeToIBoard()
+        {
+            switch (this.BoardTypePara)
+            {
+                case BoardType.Empty:
+                    return this.boardEmpty;
+                case BoardType.HalfFull:
+                    return this.boardHalfFull;
+                default:
+                    return this.boardFull;
+            }
+        }
+
+        private NaiveBoard BoardTypeToNaiveBoard()
+        {
+            switch (this.BoardTypePara)
+            {
+                case BoardType.Empty:
+                    return this.naiveBoardEmpty;
+                case BoardType.HalfFull:
+                    return this.naiveBoardHalfFull;
+                default:
+                    return this.naiveBoardFull;
             }
         }
     }
