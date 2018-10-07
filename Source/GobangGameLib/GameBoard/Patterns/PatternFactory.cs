@@ -11,7 +11,7 @@ namespace GobangGameLib.GameBoard.Patterns
 
             new Pattern(PatternType.OpenFour, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
-
+            
             new Pattern(PatternType.HalfFour, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.P2, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
 
@@ -23,9 +23,21 @@ namespace GobangGameLib.GameBoard.Patterns
 
             new Pattern(PatternType.HalfFour, PatternPositionType.Tail, PieceType.P1,
                 new[] { PieceType.Empty , PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P1}),
-
+                
             new Pattern(PatternType.OpenThree, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
+
+            new Pattern(PatternType.HalfThree, PatternPositionType.Any, PieceType.P1,
+                new[] { PieceType.P2, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
+
+            new Pattern(PatternType.HalfThree, PatternPositionType.Any, PieceType.P1,
+                new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.P1, PieceType.P2 }),
+
+            new Pattern(PatternType.HalfThree, PatternPositionType.Head, PieceType.P1,
+                new[] { PieceType.P1, PieceType.P1, PieceType.P1, PieceType.Empty }),
+
+            new Pattern(PatternType.HalfThree, PatternPositionType.Tail, PieceType.P1,
+                new[] { PieceType.Empty , PieceType.P1, PieceType.P1, PieceType.P1}),
 
             new Pattern(PatternType.OpenTwo, PatternPositionType.Any, PieceType.P1,
                 new[] { PieceType.Empty, PieceType.P1, PieceType.P1, PieceType.Empty}),

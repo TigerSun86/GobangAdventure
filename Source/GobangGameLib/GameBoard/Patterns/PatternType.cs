@@ -10,7 +10,7 @@ namespace GobangGameLib.GameBoard.Patterns
         OpenFour,
         HalfFour,
         OpenThree,
-        // HalfThree,
+        HalfThree,
         OpenTwo,
         OpenOne
     }

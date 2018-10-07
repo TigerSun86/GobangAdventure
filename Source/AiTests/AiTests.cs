@@ -80,6 +80,46 @@ namespace AiTests
             }
         }
 
+        [TestMethod]
+        public void PatternJudgeWontTakeHalfThreeAsFive()
+        {
+            var boardString = new[]
+            {
+                // 2345678910
+                "           ", // 0
+                " O         ", // 1
+                "  X        ", // 2
+                "   XX   X  ", // 3
+                "    XOOO   ", // 4
+                "    XXO    ", // 5
+                "    OOOX   ", // 6
+                "           ", // 7
+                "           ", // 8
+                "           ", // 9
+                "           ", // 10
+            };
+
+            var context = new BoardProperties(boardString.Length, boardString[0].Length);
+
+            var positions = new PositionFactory().Create(context);
+            var patterns = new PatternFactory().Create();
+            var matcher = new PatternMatcher(patterns);
+            var boardFactory = new BoardFactory(context, positions);
+            var patternBoardFactory = new PatternBoardFactory(context, positions, matcher);
+            var centerScorer = new CenterScorer(context, positions);
+            var patternScorer = new PatternScorer(positions, patterns, matcher);
+            var aggregatedScorer = new AggregatedScorer(new[]
+            {
+                new Tuple<IScorer, double>(patternScorer, 1),
+                new Tuple<IScorer, double>(centerScorer, 0.01)
+            });
+            var judge = new PatternJudge(positions, patterns, matcher);
+            var board = Utils.ParseBoard(boardString, context, positions);
+            var winner = judge.GetWinner(board);
+
+            Assert.AreEqual(PieceType.Empty, winner);
+        }
+
         private IEnumerable<IPlayer> GetAiPlayers(BoardProperties context, PositionManager positions, PieceType player)
         {
             var patterns = new PatternFactory().Create();

@@ -11,14 +11,14 @@ namespace GobangGameLib.GameBoard.Patterns
         // Add 1 to avoid PieceType.Empty value is 0.
         private readonly static int Base = PieceTypeExtensions.GetAll().Count() + 1;
 
-        private readonly List<List<IPattern>> allPatterns;
+        private readonly List<HashSet<IPattern>> allPatterns;
         private readonly Dictionary<int, IPattern> hashAndPattern;
 
         public PatternMatcher(PatternRepository patternRepository)
         {
             IEnumerable<IPattern> patterns = patternRepository.Get();
 
-            this.allPatterns = patterns.GroupBy(p => p.Pieces.Count()).Select(g => g.ToList()).ToList();
+            this.allPatterns = patterns.GroupBy(p => p.Pieces.Count()).Select(g => new HashSet<IPattern>(g)).ToList();
             this.hashAndPattern = GetPatternHashes(patterns);
         }
 
@@ -33,10 +33,10 @@ namespace GobangGameLib.GameBoard.Patterns
             var patternsWithSameCount = patterns.GroupBy(p => p.Pieces.Count());
 
             return lines.SelectMany(line =>
-                patternsWithSameCount.SelectMany(ps => MatchInternal(board, line, ps)));
+                patternsWithSameCount.SelectMany(ps => MatchInternal(board, line, new HashSet<IPattern>(ps))));
         }
 
-        internal IEnumerable<IMatch> MatchInternal(IBoard board, IPositions line, IEnumerable<IPattern> patterns)
+        internal IEnumerable<IMatch> MatchInternal(IBoard board, IPositions line, HashSet<IPattern> patterns)
         {
             if (board.Count == 0)
             {
@@ -61,7 +61,7 @@ namespace GobangGameLib.GameBoard.Patterns
                 if (queue.Count == patternSize)
                 {
                     IPattern pattern;
-                    if (hashAndPattern.TryGetValue(currentHash, out pattern))
+                    if (hashAndPattern.TryGetValue(currentHash, out pattern) && patterns.Contains(pattern))
                     {
                         if (IsPatternInValidPosition(pattern.PatternPositionType, index, patternSize, line.Positions.Count))
                         {

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI", "AI\AI.csproj", "{413E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiTests", "AiTests\AiTests.csproj", "{79E26B81-4CC9-495F-BBAA-F5D3BFE1A816}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GobangBenchMark", "GobangBenchMark\GobangBenchMark.csproj", "{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{79E26B81-4CC9-495F-BBAA-F5D3BFE1A816}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79E26B81-4CC9-495F-BBAA-F5D3BFE1A816}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79E26B81-4CC9-495F-BBAA-F5D3BFE1A816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
