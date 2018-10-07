@@ -22,7 +22,7 @@ namespace GobangBenchMark
         /// 10, 100, 10000 shows similar ratio of result in Mean. But 1 result is not similar with them.
         /// </summary>
         [Params(10)]
-        public int PositionCountToCheck { get; set; }
+        public int IterationCount { get; set; }
 
         public void Run()
         {
@@ -91,7 +91,7 @@ namespace GobangBenchMark
         public int GetEmptyByPositionManager(IBoard board)
         {
             int sum = 0;
-            foreach (var i in Enumerable.Range(0, this.PositionCountToCheck))
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
             {
                 var ps = this.positions.GetEmptyPositions(board);
                 foreach (var p in ps)
@@ -106,7 +106,7 @@ namespace GobangBenchMark
         public int GetEmptyByForLoop(IBoard board)
         {
             int sum = 0;
-            foreach (var i in Enumerable.Range(0, this.PositionCountToCheck))
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
             {
                 var ps = NaiveGetEmpty(board);
                 foreach (var p in ps)
@@ -120,7 +120,7 @@ namespace GobangBenchMark
         public int GetEmptyByForLoopWithPreGeneratedPositions(IBoard board, List<Position> ps)
         {
             int sum = 0;
-            foreach (var i in Enumerable.Range(0, this.PositionCountToCheck))
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
             {
                 foreach (var p in ps)
                 {
