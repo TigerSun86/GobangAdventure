@@ -20,8 +20,11 @@ namespace GobangBenchMark
         private NaiveMinmaxSearchAi p1NaiveAi;
         private NaiveMinmaxSearchAi p2NaiveAi;
 
-        [Params(1, 2)]
+        [Params(1)]
         public int SearchDepth { get; set; }
+
+        [Params(1)]
+        public int NumOfMovesToMake { get; set; }
 
         public void Run()
         {
@@ -96,14 +99,17 @@ namespace GobangBenchMark
 
             foreach (var board in boards)
             {
-                var position1 = this.p1Ai.MakeAMove(board);
-                board.Set(position1, PieceType.P1);
-                var position2 = this.p2Ai.MakeAMove(board);
+                var boardCopy = board.DeepClone();
+                for (int i = 0; i < NumOfMovesToMake; i++)
+                {
+                    var p = this.p1Ai.MakeAMove(boardCopy);
+                    boardCopy.Set(p, PieceType.P1);
+                    sum += p.Row + p.Col;
 
-                // Cleanup.
-                board.Set(position1, PieceType.Empty);
-
-                sum += position1.Row + position1.Col + position2.Row + position2.Col;
+                    p = this.p1Ai.MakeAMove(boardCopy);
+                    boardCopy.Set(p, PieceType.P2);
+                    sum += p.Row + p.Col;
+                }
             }
 
             return sum;
@@ -117,14 +123,41 @@ namespace GobangBenchMark
 
             foreach (var board in naiveBoards)
             {
-                var position1 = this.p1NaiveAi.MakeAMove(board);
-                board.Data[position1.Row, position1.Col] = PieceType.P1;
-                var position2 = this.p2NaiveAi.MakeAMove(board);
+                var boardCopy = board.DeepClone();
+                for (int i = 0; i < NumOfMovesToMake; i++)
+                {
+                    var p = this.p1NaiveAi.MakeAMove(boardCopy);
+                    boardCopy.Data[p.Row, p.Col] = PieceType.P1;
+                    sum += p.Row + p.Col;
 
-                // Cleanup.
-                board.Data[position1.Row, position1.Col] = PieceType.Empty;
+                    p = this.p2NaiveAi.MakeAMove(boardCopy);
+                    boardCopy.Data[p.Row, p.Col] = PieceType.P2;
+                    sum += p.Row + p.Col;
+                }
+            }
 
-                sum += position1.Row + position1.Col + position2.Row + position2.Col;
+            return sum;
+        }
+
+        [Benchmark]
+        public int NaiveMinmaxSearchAiWithAction()
+        {
+            // To avoid dead code elimination
+            int sum = 0;
+
+            foreach (var board in naiveBoards)
+            {
+                var boardCopy = board.DeepClone();
+                for (int i = 0; i < NumOfMovesToMake; i++)
+                {
+                    var p = this.p1NaiveAi.MakeAMoveWithAction(boardCopy);
+                    boardCopy.Data[p.Row, p.Col] = PieceType.P1;
+                    sum += p.Row + p.Col;
+
+                    p = this.p2NaiveAi.MakeAMoveWithAction(boardCopy);
+                    boardCopy.Data[p.Row, p.Col] =  PieceType.P2;
+                    sum += p.Row + p.Col ;
+                }
             }
 
             return sum;

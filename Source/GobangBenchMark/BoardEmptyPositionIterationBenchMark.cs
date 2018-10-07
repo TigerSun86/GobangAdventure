@@ -35,7 +35,7 @@ namespace GobangBenchMark
         [Params(10)]
         public int IterationCount { get; set; }
 
-        [Params(BoardType.Empty, BoardType.HalfFull, BoardType.Full)]
+        [Params(BoardType.HalfFull)]
         public BoardType BoardTypePara { get; set; }
 
         public void Run()
@@ -79,7 +79,7 @@ namespace GobangBenchMark
             }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public int GetEmptyByPositionManager()
         {
             int sum = 0;
@@ -216,6 +216,57 @@ namespace GobangBenchMark
             }
         }
 
+
+        [Benchmark]
+        public int GetEmptyByTraversal2()
+        {
+            int sum = 0;
+            sum += GetEmptyByTraversal2(BoardTypeToNaiveBoard());
+
+            return sum;
+        }
+
+
+        [Benchmark]
+        public int GetEmptyByTraversalWithEmptyCheck2()
+        {
+            int sum = 0;
+            sum += GetEmptyByTraversalWithEmptyCheck2(BoardTypeToNaiveBoard());
+
+            return sum;
+        }
+
+        private int GetEmptyByTraversal2(NaiveBoard board)
+        {
+            int sum = 0;
+
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
+            {
+                board.Traversal((r, c) =>
+                {
+                    if (board.Data[r, c] == PieceType.Empty)
+                    {
+                        sum += r + c;
+                    }
+                });
+            }
+            return sum;
+        }
+
+        private int GetEmptyByTraversalWithEmptyCheck2(NaiveBoard board)
+        {
+            int sum = 0;
+
+            foreach (var i in Enumerable.Range(0, this.IterationCount))
+            {
+                board.TraversalWithEmptyCheck((r, c) =>
+                {
+                    sum += r + c;
+                });
+            }
+
+            return sum;
+        }
 
         private int GetEmptyByPositionManager(IBoard board)
         {

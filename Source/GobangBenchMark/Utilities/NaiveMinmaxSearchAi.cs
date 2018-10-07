@@ -28,6 +28,16 @@ namespace GobangBenchMark.Utilities
             return scoreAndMove.Item2;
         }
 
+        public Position MakeAMoveWithAction(NaiveBoard board)
+        {
+            this.leafCount = 0;
+
+            NaiveBoard boardCopy = board.DeepClone();
+            Tuple<double, Position> scoreAndMove = MaxSearchWithAction(boardCopy, _player, 0);
+            Debug.WriteLine($"{_player} best move {scoreAndMove.Item2}, score {scoreAndMove.Item1}, leaf count {this.leafCount}.");
+            return scoreAndMove.Item2;
+        }
+
         private Tuple<double, Position> MaxSearch(NaiveBoard board, PieceType curPlayer, int depth)
         {
             if (depth >= _maxDepth)
@@ -41,9 +51,9 @@ namespace GobangBenchMark.Utilities
             PieceType otherPlayer = curPlayer.GetOther();
             double maxScore = double.NegativeInfinity;
             Position bestMove = null;
-            for (int r = 0; r < board.Data.GetLength(0); r++)
+            for (int r = 0; r < board.RowSize; r++)
             {
-                for (int c = 0; c < board.Data.GetLength(1); c++)
+                for (int c = 0; c < board.ColSize; c++)
                 {
                     if (board.Data[r, c] == PieceType.Empty)
                     {
@@ -79,9 +89,9 @@ namespace GobangBenchMark.Utilities
             PieceType otherPlayer = curPlayer.GetOther();
             double minScore = double.PositiveInfinity;
             Position bestMove = null;
-            for (int r = 0; r < board.Data.GetLength(0); r++)
+            for (int r = 0; r < board.RowSize; r++)
             {
-                for (int c = 0; c < board.Data.GetLength(1); c++)
+                for (int c = 0; c < board.ColSize; c++)
                 {
                     if (board.Data[r, c] == PieceType.Empty)
                     {
@@ -100,6 +110,70 @@ namespace GobangBenchMark.Utilities
                     }
                 }
             }
+
+            return new Tuple<double, Position>(minScore, bestMove);
+        }
+        
+        private Tuple<double, Position> MaxSearchWithAction(NaiveBoard board, PieceType curPlayer, int depth)
+        {
+            if (depth >= _maxDepth)
+            {
+                this.leafCount++;
+
+                // Return the score of current board.
+                return new Tuple<double, Position>(_scorer.GetScoreWithAction(board, _player), null);
+            }
+
+            PieceType otherPlayer = curPlayer.GetOther();
+            double maxScore = double.NegativeInfinity;
+            Position bestMove = null;
+            board.TraversalWithEmptyCheck((r, c) =>
+            {
+                // Make a move.
+                board.Data[r, c] = curPlayer;
+                // Search deeper moves.
+                Tuple<double, Position> scoreAndMove = MinSearchWithAction(board, otherPlayer, depth + 1);
+                double score = scoreAndMove.Item1;
+                if (maxScore < score)
+                {
+                    maxScore = score;
+                    bestMove = new Position(r, c);
+                }
+                // Undo the move.
+                board.Data[r, c] = PieceType.Empty;
+            });
+
+            return new Tuple<double, Position>(maxScore, bestMove);
+        }
+
+        private Tuple<double, Position> MinSearchWithAction(NaiveBoard board, PieceType curPlayer, int depth)
+        {
+            if (depth >= _maxDepth)
+            {
+                this.leafCount++;
+
+                // Return the score of current board.
+                return new Tuple<double, Position>(_scorer.GetScoreWithAction(board, _player), null);
+            }
+
+            PieceType otherPlayer = curPlayer.GetOther();
+            double minScore = double.PositiveInfinity;
+            Position bestMove = null;
+            board.TraversalWithEmptyCheck((r, c) =>
+            {
+                // Make a move.
+                board.Data[r, c] = curPlayer;
+                // Search deeper moves.
+                Tuple<double, Position> scoreAndMove = MaxSearchWithAction(board, otherPlayer, depth + 1);
+                double score = scoreAndMove.Item1;
+                if (minScore > score)
+                {
+                    minScore = score;
+                    bestMove = new Position(r, c);
+                }
+                // Undo the move.
+                board.Data[r, c] = PieceType.Empty;
+            });
 
             return new Tuple<double, Position>(minScore, bestMove);
         }

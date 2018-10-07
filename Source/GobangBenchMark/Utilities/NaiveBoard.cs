@@ -30,5 +30,33 @@ namespace GobangBenchMark.Utilities
         {
             return (r << 8) + c;
         }
+
+        public void Traversal(Action<int, int> action)
+        {
+            for (int r = 0; r < this.RowSize; r++)
+            {
+                for (int c = 0; c < this.ColSize; c++)
+                {
+                    if (this.Data[r, c] == PieceType.Empty)
+                    {
+                        action(r, c);
+                    }
+                }
+            }
+        }
+
+        public void TraversalWithEmptyCheck(Action<int, int> action)
+        {
+            for (int r = 0; r < this.RowSize; r++)
+            {
+                for (int c = 0; c < this.ColSize; c++)
+                {
+                    if (this.Data[r, c] == PieceType.Empty)
+                    {
+                        action(r, c);
+                    }
+                }
+            }
+        }
     }
 }
