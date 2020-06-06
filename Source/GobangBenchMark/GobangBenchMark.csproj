@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbPruningAiBenchMark.cs" />
     <Compile Include="BoardEmptyPositionIterationBenchMark.cs" />
     <Compile Include="MinmaxSearchAiBenchMark.cs" />
     <Compile Include="Program.cs" />
