@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GobangGameLib", "GobangGameLib\GobangGameLib.csproj", "{074097EC-CEBA-4C50-B1C3-F59DA2B9B457}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiTests", "AiTests\AiTests.csproj", "{79E26B81-4CC9-495F-BBAA-F5D3BFE1A816}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GobangBenchMark", "GobangBenchMark\GobangBenchMark.csproj", "{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GobangDesktopApp", "GobangDesktopApp\GobangDesktopApp.csproj", "{C4CE7B88-89B7-438A-8C4F-1AEA8DB55F27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,8 +47,15 @@ Global
 		{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA988EB1-EA22-4A90-88C7-CF5D497E5F03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4CE7B88-89B7-438A-8C4F-1AEA8DB55F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4CE7B88-89B7-438A-8C4F-1AEA8DB55F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4CE7B88-89B7-438A-8C4F-1AEA8DB55F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4CE7B88-89B7-438A-8C4F-1AEA8DB55F27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E7406461-C2A2-41E0-8CE7-5C03F6DD328C}
 	EndGlobalSection
 EndGlobal
