@@ -1,0 +1,3 @@
+module GobangConsole {
+	requires GobangCore;
+}
