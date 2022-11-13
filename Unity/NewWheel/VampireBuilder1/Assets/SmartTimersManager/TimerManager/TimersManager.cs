@@ -28,8 +28,8 @@ namespace Timers
                 Destroy(this);
             }
 
-            DontDestroyOnLoad(this);
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(this);
+            // DontDestroyOnLoad(gameObject);
             m_instance = this;
         }
 

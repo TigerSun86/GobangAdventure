@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
+    public string TargetTag { get; set; }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag(TargetTag))
         {
             var damagable = collision.GetComponent<Damagable>();
             damagable.TakeDamage(1);

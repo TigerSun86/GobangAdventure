@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Health))]
 public class Death : MonoBehaviour
 {
     private Health health;
+    [SerializeField] UnityEvent died;
 
     private void Awake()
     {
@@ -24,5 +26,6 @@ public class Death : MonoBehaviour
     void Die()
     {
         Destroy(gameObject);
+        died.Invoke();
     }
 }

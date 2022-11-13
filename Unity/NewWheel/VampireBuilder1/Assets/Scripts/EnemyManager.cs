@@ -27,5 +27,6 @@ public class EnemyManager : MonoBehaviour
 
         GameObject enemyObject = Instantiate(enemy);
         enemyObject.transform.position = position;
+        enemyObject.GetComponent<Attack>().TargetTag = "Player";
     }
 }
