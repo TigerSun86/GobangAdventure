@@ -1,17 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using Timers;
 using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
+    [SerializeField] float interval = 0.5f;
+    [SerializeField] float attackValue = 1f;
+
     public string TargetTag { get; set; }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private bool canAttack = true;
+
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.CompareTag(TargetTag))
+        AttackObject(collision.gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        AttackObject(collision.gameObject);
+    }
+
+    private void AttackObject(GameObject gameObject)
+    {
+        if (canAttack && gameObject.CompareTag(TargetTag))
         {
-            var damagable = collision.GetComponent<Damagable>();
-            damagable.TakeDamage(1);
+            var damagable = gameObject.GetComponent<Damagable>();
+            damagable.TakeDamage((int)attackValue);
+            canAttack = false;
+            TimersManager.SetTimer(this, interval, () => { canAttack = true; });
         }
     }
 }
