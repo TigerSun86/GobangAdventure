@@ -15,6 +15,8 @@ public class ExperienceBar : MonoBehaviour
         Level playerLevel = playerObject.GetComponent<Level>();
         playerLevel.OnExperienceChanged.AddListener(UpdateExperienceBar);
         playerLevel.OnLevelUp.AddListener(UpdateLevelText);
+        UpdateExperienceBar(playerLevel.Experience, playerLevel.ToLevelUp);
+        UpdateLevelText(playerLevel.LevelValue);
     }
 
     public void UpdateExperienceBar(int experienceValue, int experienceMax)
