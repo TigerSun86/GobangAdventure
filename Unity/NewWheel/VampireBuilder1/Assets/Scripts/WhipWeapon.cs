@@ -5,11 +5,8 @@ using UnityEngine;
 
 public class WhipWeapon : MonoBehaviour
 {
-    GameObject player;
-
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
         gameObject.GetComponent<Attack>().TargetTag = "Enemy";
         SetPosition();
         TimersManager.SetTimer(this, 0.5f, () => Destroy(gameObject));
@@ -21,9 +18,10 @@ public class WhipWeapon : MonoBehaviour
 
     private void SetPosition()
     {
+        Transform playerTransform = Manager.instance.PlayerTransform;
         Vector3 position = new Vector3();
-        position.x = player.transform.position.x + (player.transform.localScale.x / 2) + (gameObject.transform.localScale.x / 2);
-        position.y = player.transform.position.y;
+        position.x = playerTransform.position.x + (playerTransform.localScale.x / 2) + (gameObject.transform.localScale.x / 2);
+        position.y = playerTransform.position.y;
         gameObject.transform.position = position;
     }
 }

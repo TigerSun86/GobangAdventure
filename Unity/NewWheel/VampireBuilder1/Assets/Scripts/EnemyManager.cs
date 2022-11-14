@@ -29,9 +29,8 @@ public class EnemyManager : MonoBehaviour
 
         GameObject enemyObject = Instantiate(enemy);
         enemyObject.transform.position = position;
-        enemyObject.GetComponent<Attack>().TargetTag = "Player";
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        Level playerLevel = playerObject.GetComponent<Level>();
+        enemyObject.GetComponent<Attack>().TargetTag = Manager.instance.PlayerTag;
+        Level playerLevel = Manager.instance.PlayerLevel;
         enemyObject.GetComponent<Death>().died.AddListener(playerLevel.ExtractExperience);
     }
 }

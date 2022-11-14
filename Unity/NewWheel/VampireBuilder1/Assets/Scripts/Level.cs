@@ -15,11 +15,9 @@ public class Level : MonoBehaviour
 
     public void ExtractExperience(GameObject gameObject)
     {
-        Debug.Log("Called");
         ExperienceSource experienceSource = gameObject.GetComponent<ExperienceSource>();
         if (experienceSource != null)
         {
-            Debug.Log("Add");
             AddExperience(experienceSource.ExperienceValue);
         }
     }

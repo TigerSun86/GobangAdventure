@@ -7,12 +7,12 @@ using UnityEngine.UI;
 public class ExperienceBar : MonoBehaviour
 {
     [SerializeField] Slider slider;
+
     [SerializeField] TMPro.TextMeshProUGUI levelText;
 
     private void Awake()
     {
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        Level playerLevel = playerObject.GetComponent<Level>();
+        Level playerLevel = Manager.instance.PlayerLevel;
         playerLevel.OnExperienceChanged.AddListener(UpdateExperienceBar);
         playerLevel.OnLevelUp.AddListener(UpdateLevelText);
         UpdateExperienceBar(playerLevel.Experience, playerLevel.ToLevelUp);
