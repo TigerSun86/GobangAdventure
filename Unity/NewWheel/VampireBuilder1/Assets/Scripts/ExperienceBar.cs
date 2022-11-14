@@ -10,7 +10,7 @@ public class ExperienceBar : MonoBehaviour
 
     [SerializeField] TMPro.TextMeshProUGUI levelText;
 
-    private void Awake()
+    private void Start()
     {
         Level playerLevel = Manager.instance.PlayerLevel;
         playerLevel.OnExperienceChanged.AddListener(UpdateExperienceBar);
