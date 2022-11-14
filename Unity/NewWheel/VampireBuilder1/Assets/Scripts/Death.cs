@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class Death : MonoBehaviour
 {
     private Health health;
-    [SerializeField] UnityEvent died;
+    [SerializeField] public UnityEvent<GameObject> died;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class Death : MonoBehaviour
 
     void Die()
     {
+        died.Invoke(gameObject);
         Destroy(gameObject);
-        died.Invoke();
     }
 }
