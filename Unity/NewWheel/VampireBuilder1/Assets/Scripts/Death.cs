@@ -36,6 +36,9 @@ public class Death : MonoBehaviour
     void Die()
     {
         died.Invoke(gameObject);
-        Destroy(gameObject);
+        if (!gameObject.CompareTag("Player"))
+        {
+            Destroy(gameObject);
+        }
     }
 }
