@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Timers;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Attack : MonoBehaviour
@@ -12,14 +13,14 @@ public class Attack : MonoBehaviour
 
     private bool canAttack = true;
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        AttackObject(collision.gameObject);
+        AttackObject(other.gameObject);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D other)
     {
-        AttackObject(collision.gameObject);
+        AttackObject(other.gameObject);
     }
 
     private void AttackObject(GameObject gameObject)
