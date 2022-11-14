@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class Health : MonoBehaviour
 {
     [SerializeField] public int health = 10;
-    public UnityEvent healthChanged;
+    public UnityEvent<int> healthChanged;
 
     public void DecreaseHealth(int damage)
     {
@@ -16,7 +16,7 @@ public class Health : MonoBehaviour
             health = 0;
         }
 
-        healthChanged.Invoke();
+        healthChanged.Invoke(health);
     }
 
 }

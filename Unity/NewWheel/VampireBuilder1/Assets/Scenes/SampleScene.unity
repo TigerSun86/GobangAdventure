@@ -609,8 +609,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e52170ca6fa7bc4096aa965dd6fdd0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  whip: {fileID: 1616582825480466896, guid: b5370eea302fcb642a5df5fdfdbaf60d, type: 3}
-  interval: 1
+  prefabList:
+  - {fileID: 1616582825480466896, guid: b5370eea302fcb642a5df5fdfdbaf60d, type: 3}
 --- !u!4 &528383924
 Transform:
   m_ObjectHideFlags: 0
@@ -1084,6 +1084,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  timeToLive: 0
 --- !u!114 &737481699
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        var movementVector = new Vector3();
+        Vector3 movementVector = new Vector3();
         movementVector.x = -1;
         rb.velocity = movementVector * speed;
 

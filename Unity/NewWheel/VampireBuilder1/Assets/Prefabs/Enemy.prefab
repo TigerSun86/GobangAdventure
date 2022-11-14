@@ -141,6 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interval: 0.5
   attackValue: 1
+  targetTag: Player
 --- !u!114 &6902851330609279876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,6 +171,7 @@ MonoBehaviour:
   died:
     m_PersistentCalls:
       m_Calls: []
+  timeToLive: 0
 --- !u!114 &6902851330609279879
 MonoBehaviour:
   m_ObjectHideFlags: 0

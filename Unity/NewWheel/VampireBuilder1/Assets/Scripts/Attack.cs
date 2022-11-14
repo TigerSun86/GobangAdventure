@@ -9,7 +9,7 @@ public class Attack : MonoBehaviour
     [SerializeField] float interval = 0.5f;
     [SerializeField] float attackValue = 1f;
 
-    public string TargetTag { get; set; }
+    [SerializeField] string targetTag;
 
     private bool canAttack = true;
 
@@ -25,7 +25,7 @@ public class Attack : MonoBehaviour
 
     private void AttackObject(GameObject gameObject)
     {
-        if (canAttack && gameObject.CompareTag(TargetTag))
+        if (canAttack && gameObject.CompareTag(targetTag))
         {
             var damagable = gameObject.GetComponent<Damagable>();
             damagable.TakeDamage((int)attackValue);

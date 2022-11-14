@@ -5,12 +5,11 @@ using UnityEngine.UI;
 
 public class PlayerHealthUI : MonoBehaviour
 {
-    Health health;
     Slider healthBar;
 
     private void Awake()
     {
-        health = GetComponentInParent<Health>();
+        Health health = GetComponentInParent<Health>();
         healthBar = GetComponentInChildren<Slider>();
 
         health.healthChanged.AddListener(UpdateHealthBar);
@@ -19,8 +18,8 @@ public class PlayerHealthUI : MonoBehaviour
         healthBar.value = health.health;
     }
 
-    private void UpdateHealthBar()
+    private void UpdateHealthBar(int health)
     {
-        healthBar.value = health.health;
+        healthBar.value = health;
     }
 }

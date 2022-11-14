@@ -5,18 +5,15 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    [SerializeField] GameObject whip;
-    [SerializeField] float interval = 1f;
-    float timer;
+    [SerializeField] List<GameObject> prefabList;
 
     private void FixedUpdate()
     {
-        timer -= Time.fixedDeltaTime;
-        if (timer < 0f)
+        foreach (GameObject prefab in prefabList)
         {
-            Instantiate(whip);
-
-            timer = interval;
+            Spawner spawner = prefab.GetComponent<Spawner>();
+            Debug.Assert(spawner != null);
+            spawner.Spawn();
         }
     }
 }

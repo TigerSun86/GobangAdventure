@@ -1,23 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using Timers;
 using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Health))]
 public class Death : MonoBehaviour
 {
-    private Health health;
     [SerializeField] public UnityEvent<GameObject> died;
+
+    [SerializeField] public float timeToLive = 0f;
 
     private void Awake()
     {
-        health = GetComponent<Health>();
-        health.healthChanged.AddListener(CheckDeath);
+        Health health = GetComponent<Health>();
+        if (health != null)
+        {
+            health.healthChanged.AddListener(CheckDeathByHealth);
+        }
+
+        if (!Mathf.Approximately(timeToLive, 0f))
+        {
+            TimersManager.SetTimer(this, timeToLive, Die);
+        }
     }
 
-    public void CheckDeath()
+    public void CheckDeathByHealth(int health)
     {
-        if (health.health <= 0)
+        if (health <= 0)
         {
             Die();
         }
