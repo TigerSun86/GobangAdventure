@@ -5,15 +5,25 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    [SerializeField] List<GameObject> prefabList;
+    [SerializeField] GameObject bullet;
+    private float timer = 0f;
+    [SerializeField] protected float interval = 1f;
 
     private void FixedUpdate()
     {
-        foreach (GameObject prefab in prefabList)
+        timer -= Time.fixedDeltaTime;
+        if (timer > 0f)
         {
-            Spawner spawner = prefab.GetComponent<Spawner>();
-            Debug.Assert(spawner != null);
-            spawner.Spawn();
+            return;
         }
+
+        timer = interval;
+
+        GameObject gameObject = Instantiate(bullet);
+        Transform playerTransform = Manager.instance.PlayerTransform;
+        Vector3 position = new Vector3();
+        position.x = playerTransform.position.x + (playerTransform.localScale.x / 2) + (gameObject.transform.localScale.x / 2);
+        position.y = playerTransform.position.y;
+        gameObject.transform.position = position;
     }
 }
