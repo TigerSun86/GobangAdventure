@@ -14,6 +14,11 @@ public class GamePause : MonoBehaviour
 
     public void Unpause()
     {
+        if (Time.timeScale == 1f)
+        {
+            return;
+        }
+
         callerCount--;
         if (callerCount == 0)
         {
