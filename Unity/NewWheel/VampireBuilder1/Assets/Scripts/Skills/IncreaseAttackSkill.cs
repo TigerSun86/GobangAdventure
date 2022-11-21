@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class IncreaseAttackSkill : SkillBase
 {
+    [SerializeField] float changeAmount = 1f;
+
     [SerializeField] FloatVariable attackFactor;
 
     public override void LevelUp()
     {
         base.LevelUp();
-        attackFactor.ApplyChange(1);
+        attackFactor.ApplyChange(changeAmount);
     }
 
     public override string GetName()
@@ -19,6 +21,6 @@ public class IncreaseAttackSkill : SkillBase
 
     public override string GetNextLevelDescription()
     {
-        return "Increase the player attack by 1";
+        return "Increase the player attack by " + changeAmount;
     }
 }

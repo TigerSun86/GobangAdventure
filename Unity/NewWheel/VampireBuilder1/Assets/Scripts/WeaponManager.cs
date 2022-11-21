@@ -7,7 +7,8 @@ public class WeaponManager : MonoBehaviour
 {
     [SerializeField] GameObject bullet;
     private float timer = 0f;
-    [SerializeField] protected float interval = 1f;
+
+    [SerializeField] FloatVariable attackInterval;
 
     private void FixedUpdate()
     {
@@ -17,7 +18,7 @@ public class WeaponManager : MonoBehaviour
             return;
         }
 
-        timer = interval;
+        timer = attackInterval.value;
 
         GameObject gameObject = Instantiate(bullet);
         Transform playerTransform = Manager.instance.PlayerTransform;
