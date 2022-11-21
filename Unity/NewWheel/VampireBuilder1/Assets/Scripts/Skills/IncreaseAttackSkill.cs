@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class IncreaseAttackSkill : SkillData
+public class IncreaseAttackSkill : SkillBase
 {
     public override string GetName()
     {

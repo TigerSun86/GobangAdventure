@@ -425,7 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ec37b51d332c74c98c1e67e89cb1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillData: {fileID: 0}
+  skill: {fileID: 0}
   skillNameText: {fileID: 1432187279}
   levelText: {fileID: 1570139052}
   skillDescriptionText: {fileID: 1782040996}
@@ -619,7 +619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ec37b51d332c74c98c1e67e89cb1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillData: {fileID: 0}
+  skill: {fileID: 0}
   skillNameText: {fileID: 475108936}
   levelText: {fileID: 1699706678}
   skillDescriptionText: {fileID: 853481757}
@@ -1963,7 +1963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ec37b51d332c74c98c1e67e89cb1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillData: {fileID: 0}
+  skill: {fileID: 0}
   skillNameText: {fileID: 2121255282}
   levelText: {fileID: 1912668094}
   skillDescriptionText: {fileID: 508995024}
@@ -2892,7 +2892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ec37b51d332c74c98c1e67e89cb1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillData: {fileID: 0}
+  skill: {fileID: 0}
   skillNameText: {fileID: 1143816641}
   levelText: {fileID: 437022079}
   skillDescriptionText: {fileID: 844577066}
@@ -4796,7 +4796,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 1802444625}
   isEnabled: 1
-  skills: {fileID: 11400000, guid: 528159a920f305f43a4014855f7ed041, type: 2}
+  skillPrefabs: {fileID: 11400000, guid: 5bf90a56f903e5649a7c61ea76461845, type: 2}
+  skillInstances: {fileID: 11400000, guid: 64e68a7fe46c206409b3e87cc63e5d83, type: 2}
   skillButtons:
   - {fileID: 88840394}
   - {fileID: 186653585}

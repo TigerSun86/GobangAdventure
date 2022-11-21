@@ -8,7 +8,9 @@ public class UpgradeMenuManager : MonoBehaviour
 
     [SerializeField] bool isEnabled = true;
 
-    [SerializeField] SkillRuntimeSet skills;
+    [SerializeField] SkillRuntimeSet skillPrefabs;
+
+    [SerializeField] SkillRuntimeSet skillInstances;
 
     [SerializeField] List<SkillUpgradeButton> skillButtons;
 
@@ -20,6 +22,12 @@ public class UpgradeMenuManager : MonoBehaviour
         gamePause = GetComponent<GamePause>();
         Level playerLevel = Manager.instance.PlayerLevel;
         playerLevel.OnLevelUp.AddListener((level) => OpenMenu());
+
+        skillInstances.Items.Clear();
+        foreach (SkillBase skillPrefab in skillPrefabs.Items)
+        {
+            skillInstances.Add(Instantiate(skillPrefab));
+        }
     }
 
     public void OpenMenu()
@@ -31,10 +39,10 @@ public class UpgradeMenuManager : MonoBehaviour
             for (int i = 0; i < skillButtons.Count; i++)
             {
                 SkillUpgradeButton skillButton = skillButtons[i];
-                if (i < skills.Items.Count)
+                if (i < skillInstances.Items.Count)
                 {
                     skillButton.Enable();
-                    skillButton.SetSkill(skills.Items[i]);
+                    skillButton.SetSkill(skillInstances.Items[i]);
                 }
                 else
                 {

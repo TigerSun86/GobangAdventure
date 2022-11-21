@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class SkillRuntimeSet : RuntimeSet<SkillData>
+public class SkillRuntimeSet : RuntimeSet<SkillBase>
 { }

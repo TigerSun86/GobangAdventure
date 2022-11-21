@@ -6,17 +6,17 @@ using UnityEngine;
 
 public class SkillUpgradeButton : MonoBehaviour
 {
-    [SerializeField] SkillData skillData;
+    [SerializeField] SkillBase skill;
     [SerializeField] TextMeshProUGUI skillNameText;
     [SerializeField] TextMeshProUGUI levelText;
     [SerializeField] TextMeshProUGUI skillDescriptionText;
 
-    public void SetSkill(SkillData skillData)
+    public void SetSkill(SkillBase skill)
     {
-        this.skillData = skillData;
-        skillNameText.text = skillData.GetName();
-        levelText.text = "Level " + skillData.GetNextLevel();
-        skillDescriptionText.text = skillData.GetNextLevelDescription();
+        this.skill = skill;
+        skillNameText.text = skill.GetName();
+        levelText.text = "Level " + skill.GetNextLevel();
+        skillDescriptionText.text = skill.GetNextLevelDescription();
     }
 
     public void Enable()
@@ -31,6 +31,6 @@ public class SkillUpgradeButton : MonoBehaviour
 
     public void Upgrade()
     {
-        skillData.LevelUp();
+        skill.LevelUp();
     }
 }
