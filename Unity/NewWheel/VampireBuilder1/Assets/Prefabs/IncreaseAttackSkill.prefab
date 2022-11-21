@@ -44,3 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27da3e851a5857c49adb76d1601cfe50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: 0
+  attackFactorVariable: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
