@@ -10,6 +10,8 @@ public class WeaponManager : MonoBehaviour
 
     [SerializeField] FloatVariable attackInterval;
 
+    [SerializeField] FloatVariable attackArea;
+
     private void FixedUpdate()
     {
         timer -= Time.fixedDeltaTime;
@@ -26,5 +28,7 @@ public class WeaponManager : MonoBehaviour
         position.x = playerTransform.position.x + (playerTransform.localScale.x / 2) + (gameObject.transform.localScale.x / 2);
         position.y = playerTransform.position.y;
         gameObject.transform.position = position;
+
+        gameObject.transform.localScale *= attackArea.value;
     }
 }

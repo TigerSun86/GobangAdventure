@@ -1656,6 +1656,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
   attackInterval: {fileID: 11400000, guid: 2a6f1562002f3da42b4da2a838533da9, type: 2}
+  attackArea: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
 --- !u!4 &528383924
 Transform:
   m_ObjectHideFlags: 0
