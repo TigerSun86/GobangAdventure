@@ -9,7 +9,7 @@ public class Collider2DGameEventListener : MonoBehaviour
     public Collider2DGameEvent Event;
 
     [Tooltip("Response to invoke when Event is raised.")]
-    public UnityEvent<Collider2D> Response;
+    public UnityEvent<Collider2D, GameObject> Response;
 
     private void OnEnable()
     {
@@ -21,8 +21,8 @@ public class Collider2DGameEventListener : MonoBehaviour
         Event.UnregisterListener(this);
     }
 
-    public void OnEventRaised(Collider2D other)
+    public void OnEventRaised(Collider2D other, GameObject bullet)
     {
-        Response.Invoke(other);
+        Response.Invoke(other, bullet);
     }
 }

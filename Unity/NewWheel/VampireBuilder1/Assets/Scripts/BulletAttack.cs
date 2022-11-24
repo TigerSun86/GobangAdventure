@@ -7,15 +7,13 @@ public class BulletAttack : MonoBehaviour
 {
     [SerializeField] FloatVariable attackFactor;
 
-    [SerializeField] UnityEvent<Collider2D> hitEnemyEvent;
+    [SerializeField] UnityEvent<Collider2D, GameObject> hitEnemyEvent;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log(other.ClosestPoint(position: transform.position));
-
-            hitEnemyEvent.Invoke(other);
+            hitEnemyEvent.Invoke(other, gameObject);
             AttackObject(other.gameObject);
         }
     }
