@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UpgradeMenuManager : MonoBehaviour
@@ -36,13 +37,14 @@ public class UpgradeMenuManager : MonoBehaviour
         {
             gamePause.Pause();
             panel.SetActive(true);
+            List<SkillBase> selectedSkills = skillInstances.Items.Where(s => s.IsUpgradable()).ToList();
             for (int i = 0; i < skillButtons.Count; i++)
             {
                 SkillUpgradeButton skillButton = skillButtons[i];
-                if (i < skillInstances.Items.Count)
+                if (i < selectedSkills.Count)
                 {
                     skillButton.Enable();
-                    skillButton.SetSkill(skillInstances.Items[i]);
+                    skillButton.SetSkill(selectedSkills[i]);
                 }
                 else
                 {
