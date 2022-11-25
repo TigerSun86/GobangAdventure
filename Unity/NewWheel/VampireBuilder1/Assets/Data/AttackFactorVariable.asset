@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AttackFactorVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: The factor used to calculate the damage of all types of attacks
-  defaultValue: 1
-  value: 1
+  defaultValue: 10
+  value: 10

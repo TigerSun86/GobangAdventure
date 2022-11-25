@@ -5,10 +5,13 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     [SerializeField] GameObject enemy;
-    [SerializeField] float spawnAreaX;
-    [SerializeField] float spawnAreaYMin;
-    [SerializeField] float spawnAreaYMax;
-    [SerializeField] float spawnInterval = 1f;
+
+    [SerializeField] Vector2RuntimeSet spawnPositions;
+
+    [SerializeField] float spawnChance;
+
+    [SerializeField] float spawnInterval;
+
     float timer;
 
     private void FixedUpdate()
@@ -23,13 +26,16 @@ public class EnemyManager : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        Vector3 position = new Vector3();
-        position.x = spawnAreaX;
-        position.y = Random.Range(spawnAreaYMin, spawnAreaYMax);
-
-        GameObject enemyObject = Instantiate(enemy);
-        enemyObject.transform.position = position;
-        Level playerLevel = Manager.instance.PlayerLevel;
-        enemyObject.GetComponent<Death>().died.AddListener(playerLevel.ExtractExperience);
+        int index = Random.Range(0, spawnPositions.Items.Count);
+        foreach (Vector2 position in spawnPositions.Items)
+        {
+            if (Random.value < spawnChance)
+            {
+                GameObject enemyObject = Instantiate(enemy);
+                enemyObject.transform.position = position;
+                Level playerLevel = Manager.instance.PlayerLevel;
+                enemyObject.GetComponent<Death>().died.AddListener(playerLevel.ExtractExperience);
+            }
+        }
     }
 }
