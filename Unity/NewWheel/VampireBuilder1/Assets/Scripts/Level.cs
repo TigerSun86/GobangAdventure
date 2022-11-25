@@ -11,7 +11,7 @@ public class Level : MonoBehaviour
 
     public int Experience { get; set; } = 0;
 
-    public int ToLevelUp { get => LevelValue * 200; }
+    public int ToLevelUp { get => LevelValue * LevelValue * 200; }
 
     public void ExtractExperience(GameObject gameObject)
     {
