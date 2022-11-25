@@ -6,10 +6,10 @@ public class DamageUIManager : MonoBehaviour
 {
     [SerializeField] GameObject damageUIPrefab;
 
-    void CreateDamageUI(int damage)
+    public void CreateDamageUI(DamageData damageData)
     {
         GameObject damageUI = Instantiate(damageUIPrefab);
-        damageUI.GetComponent<DamageUI>().SetText(damage);
+        damageUI.GetComponent<DamageUI>().SetDamageData(damageData);
     }
 
     // Start is called before the first frame update

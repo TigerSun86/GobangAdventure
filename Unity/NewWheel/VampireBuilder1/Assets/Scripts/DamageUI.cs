@@ -11,17 +11,27 @@ public class DamageUI : MonoBehaviour
 
     Vector3 moveVector;
 
-    // Start is called before the first frame update
-    void Start()
+    public void SetDamageData(DamageData damageData)
     {
-        text = GetComponent<TextMeshPro>();
-        float moveSpeed = 10f;
-        moveVector = Vector3.right * moveSpeed;
+        transform.position = damageData.position;
+        text.text = damageData.amount.ToString();
+        Color textColor;
+        switch (damageData.damageType)
+        {
+            case DamageType.NORMAL_ATTACK:
+            default:
+                textColor = Color.yellow;
+                break;
+        }
+
+        text.color = textColor;
     }
 
-    public void SetText(int damage)
+    private void Awake()
     {
-        text.text = damage.ToString();
+        text = GetComponent<TextMeshPro>();
+        float moveSpeed = 1f;
+        moveVector = Vector3.up * moveSpeed;
     }
 
     // Update is called once per frame
