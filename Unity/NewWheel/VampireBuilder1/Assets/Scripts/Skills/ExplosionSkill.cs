@@ -1,14 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Scripting;
 
 public class ExplosionSkill : SkillBase
 {
     [SerializeField] FloatVariable attackFactor;
 
     [SerializeField] FloatVariable attackAreaFactor;
+
+    [SerializeField] GameObject effect;
+
+    private Vector2? debugPosition;
 
     public override void LevelUp()
     {
@@ -32,9 +32,9 @@ public class ExplosionSkill : SkillBase
             return;
         }
 
-        float radius = attackAreaFactor.value * 5;
+        float radius = attackAreaFactor.value * 2;
         int attack = (int)(attackFactor.value / 2);
-
+        debugPosition = bullet.transform.position;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(bullet.transform.position, radius);
         foreach (Collider2D collider in colliders)
         {
@@ -43,6 +43,22 @@ public class ExplosionSkill : SkillBase
             {
                 damagable.TakeDamage(attack);
             }
+        }
+
+        if (effect != null)
+        {
+            GameObject effectInstance = Instantiate(effect, bullet.transform.position, Quaternion.identity);
+            effectInstance.transform.localScale *= attackAreaFactor.value * 2;
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (debugPosition.HasValue)
+        {
+            float radius = attackAreaFactor.value * 2;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(debugPosition.Value, radius);
         }
     }
 }

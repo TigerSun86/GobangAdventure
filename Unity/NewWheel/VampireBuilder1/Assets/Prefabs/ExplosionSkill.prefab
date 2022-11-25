@@ -47,9 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 0
   maxLevel: 1
-  changeAmount: 1
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
   attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
+  effect: {fileID: 748580678013119055, guid: 01ddd37710f38a8489aa8c7b128fe6ff, type: 3}
 --- !u!114 &7320906344585899629
 MonoBehaviour:
   m_ObjectHideFlags: 0
