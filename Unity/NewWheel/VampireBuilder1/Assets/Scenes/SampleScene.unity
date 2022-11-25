@@ -2026,9 +2026,6 @@ MonoBehaviour:
   enemy: {fileID: 6902851330609279887, guid: 3377cdcfd8b3f694285475d3739f2016, type: 3}
   spawnPositions: {fileID: 11400000, guid: b57e271c2e8da6a478ad0aae534a3257, type: 2}
   spawnChance: 0.5
-  spawnAreaX: 10
-  spawnAreaYMin: -3.5
-  spawnAreaYMax: 4
   spawnInterval: 2
 --- !u!4 &679517081
 Transform:
