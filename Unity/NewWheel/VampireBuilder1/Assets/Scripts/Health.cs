@@ -11,6 +11,8 @@ public class Health : MonoBehaviour
 
     public UnityEvent<int> healthChanged;
 
+    private int maxHealthValue = 10;
+
     public void DecreaseHealth(int damage)
     {
         health -= damage;
@@ -25,6 +27,10 @@ public class Health : MonoBehaviour
     public void IncreaseHealth(int amount)
     {
         health += amount;
+        if (health >= maxHealthValue)
+        {
+            health = maxHealthValue;
+        }
 
         healthChanged.Invoke(health);
     }
@@ -33,6 +39,7 @@ public class Health : MonoBehaviour
     {
         if (maxHealth != null)
         {
+            maxHealthValue = maxHealth.value;
             health = maxHealth.value;
         }
     }
