@@ -2023,7 +2023,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36da0694ca97f5f4b951f653431ec58e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 6902851330609279887, guid: 3377cdcfd8b3f694285475d3739f2016, type: 3}
+  enemies:
+  - {fileID: 6902851330609279887, guid: 3377cdcfd8b3f694285475d3739f2016, type: 3}
+  - {fileID: 6902851330609279887, guid: 5ae92b83dbe6df249b61174ef15201b6, type: 3}
   spawnPositions: {fileID: 11400000, guid: b57e271c2e8da6a478ad0aae534a3257, type: 2}
   spawnChance: 0.5
   spawnInterval: 2

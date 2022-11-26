@@ -22,6 +22,13 @@ public class Health : MonoBehaviour
         healthChanged.Invoke(health);
     }
 
+    public void IncreaseHealth(int amount)
+    {
+        health += amount;
+
+        healthChanged.Invoke(health);
+    }
+
     private void Awake()
     {
         if (maxHealth != null)

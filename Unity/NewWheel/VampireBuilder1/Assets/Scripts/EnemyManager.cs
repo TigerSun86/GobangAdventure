@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] GameObject enemy;
+    [SerializeField] List<GameObject> enemies;
 
     [SerializeField] Vector2RuntimeSet spawnPositions;
 
@@ -43,6 +43,7 @@ public class EnemyManager : MonoBehaviour
         {
             if (Random.value < spawnChance)
             {
+                GameObject enemy = enemies[Random.Range(0, enemies.Count)];
                 GameObject enemyObject = Instantiate(enemy);
                 enemyObject.transform.position = position;
                 Level playerLevel = Manager.instance.PlayerLevel;
