@@ -12,6 +12,8 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] float spawnInterval;
 
+    [SerializeField] IntVariable spawnWaveNumber;
+
     float timer;
 
     private void FixedUpdate()
@@ -37,5 +39,7 @@ public class EnemyManager : MonoBehaviour
                 enemyObject.GetComponent<Death>().died.AddListener(playerLevel.ExtractExperience);
             }
         }
+
+        spawnWaveNumber.ApplyChange(1);
     }
 }
