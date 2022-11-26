@@ -14,6 +14,8 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] IntVariable spawnWaveNumber;
 
+    [SerializeField] IntVariable normalEnemyMaxHealth;
+
     float timer;
 
     private void FixedUpdate()
@@ -28,6 +30,14 @@ public class EnemyManager : MonoBehaviour
 
     private void SpawnEnemies()
     {
+        spawnWaveNumber.ApplyChange(1);
+        Debug.Log("Wave " + spawnWaveNumber.value);
+        if (spawnWaveNumber.value % 5 == 0)
+        {
+            normalEnemyMaxHealth.value += 5;
+            Debug.Log("Health " + normalEnemyMaxHealth.value);
+        }
+
         int index = Random.Range(0, spawnPositions.Items.Count);
         foreach (Vector2 position in spawnPositions.Items)
         {
@@ -40,6 +50,5 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
-        spawnWaveNumber.ApplyChange(1);
     }
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SpawnWaveNumberVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: Indicate the number of enemy spawning wave
-  defaultValue: 1
-  value: 1
+  defaultValue: 0
+  value: 0

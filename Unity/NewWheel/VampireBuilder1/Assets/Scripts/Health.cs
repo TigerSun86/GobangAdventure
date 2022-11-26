@@ -5,7 +5,10 @@ using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
+    [SerializeField] IntVariable maxHealth;
+
     [SerializeField] public int health;
+
     public UnityEvent<int> healthChanged;
 
     public void DecreaseHealth(int damage)
@@ -19,4 +22,11 @@ public class Health : MonoBehaviour
         healthChanged.Invoke(health);
     }
 
+    private void Awake()
+    {
+        if (maxHealth != null)
+        {
+            health = maxHealth.value;
+        }
+    }
 }
