@@ -18,8 +18,8 @@ public class Healable : MonoBehaviour
 
     public void TakeHealing(int amount)
     {
-        health.IncreaseHealth(amount);
+        int actualAmount = health.IncreaseHealth(amount);
 
-        onTakeHealing.Invoke(new DamageData(gameObject, amount, amount, DamageType.HEALING));
+        onTakeHealing.Invoke(new DamageData(gameObject, amount, actualAmount, DamageType.HEALING));
     }
 }

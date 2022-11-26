@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,26 +14,32 @@ public class Health : MonoBehaviour
 
     private int maxHealthValue = 10;
 
-    public void DecreaseHealth(int damage)
+    public int applyChange(int amount)
     {
-        health -= damage;
-        if (health < 0)
+        int healthTemp = this.health + amount;
+        if (healthTemp < 0)
         {
-            health = 0;
+            healthTemp = 0;
+        }
+        else if (healthTemp > maxHealthValue)
+        {
+            healthTemp = maxHealthValue;
         }
 
+        int changedAmount = healthTemp - this.health;
+        this.health = healthTemp;
         healthChanged.Invoke(health);
+        return changedAmount;
     }
 
-    public void IncreaseHealth(int amount)
+    public int DecreaseHealth(int damage)
     {
-        health += amount;
-        if (health >= maxHealthValue)
-        {
-            health = maxHealthValue;
-        }
+        return Math.Abs(applyChange(-damage));
+    }
 
-        healthChanged.Invoke(health);
+    public int IncreaseHealth(int amount)
+    {
+        return applyChange(amount);
     }
 
     private void Awake()

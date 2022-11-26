@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Timers;
 using TMPro;
 using UnityEngine;
@@ -11,10 +12,20 @@ public class DamageUI : MonoBehaviour
 
     Vector3 moveVector;
 
+    public static bool ShouldDisplay(DamageData damageData)
+    {
+        if (damageData.damageType == DamageType.HEALING && damageData.actualAmount == 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public void SetDamageData(DamageData damageData)
     {
         transform.position = damageData.gameObject.transform.position;
-        text.text = damageData.rawAmount.ToString();
+        text.text = damageData.actualAmount.ToString();
         Color textColor;
         switch (damageData.damageType)
         {

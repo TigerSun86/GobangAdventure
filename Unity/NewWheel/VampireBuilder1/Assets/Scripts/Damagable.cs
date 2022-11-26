@@ -21,10 +21,10 @@ public class Damagable : MonoBehaviour
 
     public void TakeDamage(int attack)
     {
-        health.DecreaseHealth(attack);
+        int actualDamage = health.DecreaseHealth(attack);
         spriteConfig.SetDamagedColor();
         TimersManager.SetTimer(this, 0.5f, spriteConfig.SetIdleColor);
 
-        onTakeDamage.Invoke(new DamageData(gameObject, attack, attack, DamageType.NORMAL_ATTACK));
+        onTakeDamage.Invoke(new DamageData(gameObject, attack, actualDamage, DamageType.NORMAL_ATTACK));
     }
 }

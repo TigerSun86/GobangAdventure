@@ -8,8 +8,11 @@ public class DamageUIManager : MonoBehaviour
 
     public void CreateDamageUI(DamageData damageData)
     {
-        GameObject damageUI = Instantiate(damageUIPrefab);
-        damageUI.GetComponent<DamageUI>().SetDamageData(damageData);
+        if (DamageUI.ShouldDisplay(damageData))
+        {
+            GameObject damageUI = Instantiate(damageUIPrefab);
+            damageUI.GetComponent<DamageUI>().SetDamageData(damageData);
+        }
     }
 
     // Start is called before the first frame update
