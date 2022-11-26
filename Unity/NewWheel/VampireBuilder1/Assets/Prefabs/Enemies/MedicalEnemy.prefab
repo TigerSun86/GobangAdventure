@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 2618346456724445054}
   - component: {fileID: 829962919072443979}
   - component: {fileID: 2772590755775450436}
+  - component: {fileID: 6363141025433424505}
   m_Layer: 0
   m_Name: MedicalEnemy
   m_TagString: Enemy
@@ -524,3 +525,18 @@ MonoBehaviour:
   interval: 1
   area: {x: 2, y: 2}
   targetTag: Enemy
+--- !u!114 &6363141025433424505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6902851330609279887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e0fb7e5beb9ed24bb80b5bf65386e7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onTakeHealing:
+    m_PersistentCalls:
+      m_Calls: []
