@@ -13,8 +13,8 @@ public class DamageUI : MonoBehaviour
 
     public void SetDamageData(DamageData damageData)
     {
-        transform.position = damageData.position;
-        text.text = damageData.amount.ToString();
+        transform.position = damageData.gameObject.transform.position;
+        text.text = damageData.rawAmount.ToString();
         Color textColor;
         switch (damageData.damageType)
         {

@@ -25,6 +25,6 @@ public class Damagable : MonoBehaviour
         spriteConfig.SetDamagedColor();
         TimersManager.SetTimer(this, 0.5f, spriteConfig.SetIdleColor);
 
-        onTakeDamage.Invoke(new DamageData(transform.position, attack, DamageType.NORMAL_ATTACK));
+        onTakeDamage.Invoke(new DamageData(gameObject, attack, attack, DamageType.NORMAL_ATTACK));
     }
 }
