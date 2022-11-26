@@ -18,6 +18,9 @@ public class DamageUI : MonoBehaviour
         Color textColor;
         switch (damageData.damageType)
         {
+            case DamageType.HEALING:
+                textColor = Color.cyan;
+                break;
             case DamageType.NORMAL_ATTACK:
             default:
                 textColor = Color.yellow;
