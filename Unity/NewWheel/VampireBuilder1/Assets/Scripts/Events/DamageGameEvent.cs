@@ -13,7 +13,6 @@ public class DamageGameEvent : ScriptableObject
 
     public void Raise(DamageData damageData)
     {
-        Debug.Log(damageData);
         for (int i = eventListeners.Count - 1; i >= 0; i--)
         {
             eventListeners[i].OnEventRaised(damageData);
