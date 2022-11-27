@@ -22,8 +22,6 @@ public class UpgradeMenuManager : MonoBehaviour
     void Start()
     {
         gamePause = GetComponent<GamePause>();
-        Level playerLevel = Manager.instance.PlayerLevel;
-        playerLevel.OnLevelUp.AddListener(() => OpenMenu());
 
         skillInstances.Items.Clear();
         foreach (SkillBase skillPrefab in skillPrefabs.Items)

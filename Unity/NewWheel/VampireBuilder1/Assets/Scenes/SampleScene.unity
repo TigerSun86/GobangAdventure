@@ -4523,6 +4523,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f07e05d8e9e09747b454c4a5aa69845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelUpEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 4d8662b3416469e4b9ff60a3dcfcbb7a, type: 2}
+        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   levelValue: {fileID: 11400000, guid: ab1594260a71a1d44aed656957350937, type: 2}
 --- !u!1 &844577064
 GameObject:
@@ -6353,6 +6368,7 @@ GameObject:
   - component: {fileID: 1270022578}
   - component: {fileID: 1270022577}
   - component: {fileID: 1270022580}
+  - component: {fileID: 1270022581}
   m_Layer: 5
   m_Name: ExperienceBarBase
   m_TagString: Untagged
@@ -6486,6 +6502,34 @@ MonoBehaviour:
   slider: {fileID: 1270022577}
   levelText: {fileID: 1359058202}
   levelValue: {fileID: 11400000, guid: ab1594260a71a1d44aed656957350937, type: 2}
+--- !u!114 &1270022581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270022575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 4d8662b3416469e4b9ff60a3dcfcbb7a, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270022580}
+        m_TargetAssemblyTypeName: ExperienceBar, Assembly-CSharp
+        m_MethodName: UpdateLevelText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1321692944
 GameObject:
   m_ObjectHideFlags: 0
@@ -8735,6 +8779,7 @@ GameObject:
   - component: {fileID: 1764069552}
   - component: {fileID: 1764069553}
   - component: {fileID: 1764069554}
+  - component: {fileID: 1764069555}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -8841,6 +8886,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 206025795}
+--- !u!114 &1764069555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764069547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 4d8662b3416469e4b9ff60a3dcfcbb7a, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1764069553}
+        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
+        m_MethodName: OpenMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1782040994
 GameObject:
   m_ObjectHideFlags: 0

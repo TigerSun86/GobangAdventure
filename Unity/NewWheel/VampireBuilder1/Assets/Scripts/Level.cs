@@ -5,7 +5,7 @@ public class Level : MonoBehaviour
 {
     public UnityEvent<int, int> OnExperienceChanged { get; } = new UnityEvent<int, int>();
 
-    public UnityEvent OnLevelUp { get; } = new UnityEvent();
+    [SerializeField] UnityEvent levelUpEvent;
 
     [SerializeField] IntVariable levelValue;
 
@@ -29,7 +29,7 @@ public class Level : MonoBehaviour
         {
             Experience -= ToLevelUp;
             levelValue.ApplyChange(1);
-            OnLevelUp.Invoke();
+            levelUpEvent.Invoke();
         }
 
         OnExperienceChanged.Invoke(Experience, ToLevelUp);
