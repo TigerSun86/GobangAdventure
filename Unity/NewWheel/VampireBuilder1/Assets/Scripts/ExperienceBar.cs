@@ -10,13 +10,15 @@ public class ExperienceBar : MonoBehaviour
 
     [SerializeField] TMPro.TextMeshProUGUI levelText;
 
+    [SerializeField] IntVariable levelValue;
+
     private void Start()
     {
         Level playerLevel = Manager.instance.PlayerLevel;
         playerLevel.OnExperienceChanged.AddListener(UpdateExperienceBar);
         playerLevel.OnLevelUp.AddListener(UpdateLevelText);
         UpdateExperienceBar(playerLevel.Experience, playerLevel.ToLevelUp);
-        UpdateLevelText(playerLevel.LevelValue);
+        UpdateLevelText();
     }
 
     public void UpdateExperienceBar(int experienceValue, int experienceMax)
@@ -25,8 +27,8 @@ public class ExperienceBar : MonoBehaviour
         slider.maxValue = experienceMax;
     }
 
-    public void UpdateLevelText(int level)
+    public void UpdateLevelText()
     {
-        levelText.text = "Level: " + level;
+        levelText.text = "Level: " + levelValue.value;
     }
 }

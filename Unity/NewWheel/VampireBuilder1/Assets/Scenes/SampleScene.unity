@@ -4523,6 +4523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f07e05d8e9e09747b454c4a5aa69845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelValue: {fileID: 11400000, guid: ab1594260a71a1d44aed656957350937, type: 2}
 --- !u!1 &844577064
 GameObject:
   m_ObjectHideFlags: 0
@@ -6484,6 +6485,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slider: {fileID: 1270022577}
   levelText: {fileID: 1359058202}
+  levelValue: {fileID: 11400000, guid: ab1594260a71a1d44aed656957350937, type: 2}
 --- !u!1 &1321692944
 GameObject:
   m_ObjectHideFlags: 0

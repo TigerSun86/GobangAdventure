@@ -23,7 +23,7 @@ public class UpgradeMenuManager : MonoBehaviour
     {
         gamePause = GetComponent<GamePause>();
         Level playerLevel = Manager.instance.PlayerLevel;
-        playerLevel.OnLevelUp.AddListener((level) => OpenMenu());
+        playerLevel.OnLevelUp.AddListener(() => OpenMenu());
 
         skillInstances.Items.Clear();
         foreach (SkillBase skillPrefab in skillPrefabs.Items)
@@ -36,7 +36,7 @@ public class UpgradeMenuManager : MonoBehaviour
     {
         if (isEnabled)
         {
-            gamePause.Pause();
+            //gamePause.Pause();
             panel.SetActive(true);
             bool isFirstButton = true;
             List<SkillBase> selectedSkills = skillInstances.Items.Where(s => s.IsUpgradable()).ToList();

@@ -5,13 +5,13 @@ public class Level : MonoBehaviour
 {
     public UnityEvent<int, int> OnExperienceChanged { get; } = new UnityEvent<int, int>();
 
-    public UnityEvent<int> OnLevelUp { get; } = new UnityEvent<int>();
+    public UnityEvent OnLevelUp { get; } = new UnityEvent();
 
-    public int LevelValue { get; set; } = 1;
+    [SerializeField] IntVariable levelValue;
 
     public int Experience { get; set; } = 0;
 
-    public int ToLevelUp { get => LevelValue * LevelValue * 200; }
+    public int ToLevelUp { get => levelValue.value * levelValue.value * 200; }
 
     public void ExtractExperience(GameObject gameObject)
     {
@@ -28,8 +28,8 @@ public class Level : MonoBehaviour
         if (Experience >= ToLevelUp)
         {
             Experience -= ToLevelUp;
-            LevelValue++;
-            OnLevelUp.Invoke(LevelValue);
+            levelValue.ApplyChange(1);
+            OnLevelUp.Invoke();
         }
 
         OnExperienceChanged.Invoke(Experience, ToLevelUp);
