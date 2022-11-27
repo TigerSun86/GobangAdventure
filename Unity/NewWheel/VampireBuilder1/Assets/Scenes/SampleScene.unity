@@ -2023,11 +2023,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36da0694ca97f5f4b951f653431ec58e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemies:
-  - {fileID: 6902851330609279887, guid: 3377cdcfd8b3f694285475d3739f2016, type: 3}
-  - {fileID: 6902851330609279887, guid: 5ae92b83dbe6df249b61174ef15201b6, type: 3}
+  spawnWaveConfigs:
+  - waveNumber: 1
+    enemies:
+    - enemyType: 0
+      minCount: 1
+      maxCount: 3
+  - waveNumber: 5
+    enemies:
+    - enemyType: 0
+      minCount: 1
+      maxCount: 3
+    - enemyType: 1
+      minCount: 0
+      maxCount: 1
+  - waveNumber: 10
+    enemies:
+    - enemyType: 0
+      minCount: 3
+      maxCount: 6
+    - enemyType: 1
+      minCount: 1
+      maxCount: 3
+  currentWaveConfig:
+    waveNumber: 0
+    enemies: []
+  enemyTypeAndPrefabMapping:
+  - enemyType: 0
+    prefab: {fileID: 6902851330609279887, guid: 3377cdcfd8b3f694285475d3739f2016, type: 3}
+  - enemyType: 1
+    prefab: {fileID: 6902851330609279887, guid: 5ae92b83dbe6df249b61174ef15201b6, type: 3}
   spawnPositions: {fileID: 11400000, guid: b57e271c2e8da6a478ad0aae534a3257, type: 2}
-  spawnChance: 0.5
   spawnInterval: 2
   spawnWaveNumber: {fileID: 11400000, guid: 12086ace809f8414f8c9ef91d0802686, type: 2}
   normalEnemyMaxHealth: {fileID: 11400000, guid: 9af2746568b8a84428ad00c122e48a40, type: 2}
