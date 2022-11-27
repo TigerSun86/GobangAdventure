@@ -4374,7 +4374,7 @@ GameObject:
   - component: {fileID: 1370159236}
   - component: {fileID: 1370159237}
   m_Layer: 0
-  m_Name: DamageUIManager
+  m_Name: DamageEffectManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4414,7 +4414,6 @@ MonoBehaviour:
     effectPrefab: {fileID: 6945137394529250571, guid: 8ca48eafa22932c41898ec308096e83a, type: 3}
   - damageType: 1
     effectPrefab: {fileID: 1886734465909692006, guid: f54d78932ea918645b3b06fee593a5bd, type: 3}
-  damageUIPrefab: {fileID: 6945137394529250571, guid: 8ca48eafa22932c41898ec308096e83a, type: 3}
 --- !u!114 &1370159237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4432,8 +4431,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1370159236}
-        m_TargetAssemblyTypeName: DamageUIManager, Assembly-CSharp
-        m_MethodName: CreateDamageUI
+        m_TargetAssemblyTypeName: DamageEffectManager, Assembly-CSharp
+        m_MethodName: CreateDamageEffect
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
