@@ -8930,7 +8930,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 1638313222}
-  isEnabled: 1
   skillPrefabs: {fileID: 11400000, guid: 5bf90a56f903e5649a7c61ea76461845, type: 2}
   skillInstances: {fileID: 11400000, guid: 64e68a7fe46c206409b3e87cc63e5d83, type: 2}
   skillButtons:
@@ -8938,6 +8937,7 @@ MonoBehaviour:
   - {fileID: 53966339}
   - {fileID: 681666257}
   - {fileID: 447984461}
+  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
 --- !u!114 &1764069554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8977,7 +8977,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!1 &1782040994
 GameObject:
