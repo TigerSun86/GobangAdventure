@@ -6,8 +6,9 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyMovement : MonoBehaviour
 {
+    [SerializeField] FloatVariable speed;
+
     Rigidbody2D rb;
-    [SerializeField] private float speed = 5f;
 
     private void Awake()
     {
@@ -18,7 +19,7 @@ public class EnemyMovement : MonoBehaviour
     {
         Vector3 movementVector = new Vector3();
         movementVector.x = -1;
-        rb.velocity = movementVector * speed;
+        rb.velocity = movementVector * speed.value;
 
         if (transform.position.x < -10)
         {

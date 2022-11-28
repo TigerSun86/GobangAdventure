@@ -6,5 +6,5 @@ public enum EnemyType
 {
     NORMAL,
 
-    Medical
+    MEDICAL
 }

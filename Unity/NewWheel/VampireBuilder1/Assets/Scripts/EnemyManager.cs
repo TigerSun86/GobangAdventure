@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] List<SpawnWaveData> spawnWaveConfigs;
-
-    [SerializeField] SpawnWaveData currentWaveConfig;
+    [SerializeField] FloatVariable spawnInterval;
 
     // Unity does not support SerializeField of Dictionary.
     [SerializeField] List<EnemyTypeAndPrefab> enemyTypeAndPrefabMapping;
 
     [SerializeField] Vector2RuntimeSet spawnPositions;
 
-    [SerializeField] float spawnInterval;
-
     [SerializeField] IntVariable spawnWaveNumber;
 
     [SerializeField] IntVariable normalEnemyMaxHealth;
+
+    [SerializeField] List<SpawnWaveData> spawnWaveConfigs;
+
+    [SerializeField] SpawnWaveData currentWaveConfig;
 
     private float timer;
 
@@ -34,7 +34,7 @@ public class EnemyManager : MonoBehaviour
         if (timer < 0f)
         {
             SpawnEnemies();
-            timer = spawnInterval;
+            timer = spawnInterval.value;
         }
     }
 
