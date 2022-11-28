@@ -7,7 +7,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Health))]
 public class Death : MonoBehaviour
 {
-    [SerializeField] public UnityEvent<GameObject> died;
+    [SerializeField] public UnityEvent<GameObject> deathEvent;
 
     [SerializeField] public float timeToLive = 0f;
 
@@ -35,7 +35,7 @@ public class Death : MonoBehaviour
 
     void Die()
     {
-        died.Invoke(gameObject);
+        deathEvent.Invoke(gameObject);
         if (!gameObject.CompareTag("Player"))
         {
             Destroy(gameObject);

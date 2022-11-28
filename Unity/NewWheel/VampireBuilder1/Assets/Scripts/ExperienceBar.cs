@@ -12,18 +12,20 @@ public class ExperienceBar : MonoBehaviour
 
     [SerializeField] IntVariable levelValue;
 
+    [SerializeField] IntVariable experianceValue;
+
+    [SerializeField] IntVariable experianceToLevelUpValue;
+
     private void Start()
     {
-        Level playerLevel = Manager.instance.PlayerLevel;
-        playerLevel.OnExperienceChanged.AddListener(UpdateExperienceBar);
-        UpdateExperienceBar(playerLevel.Experience, playerLevel.ToLevelUp);
+        UpdateExperienceBar();
         UpdateLevelText();
     }
 
-    public void UpdateExperienceBar(int experienceValue, int experienceMax)
+    public void UpdateExperienceBar()
     {
-        slider.value = experienceValue;
-        slider.maxValue = experienceMax;
+        slider.value = experianceValue.value;
+        slider.maxValue = experianceToLevelUpValue.value;
     }
 
     public void UpdateLevelText()

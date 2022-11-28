@@ -41,7 +41,6 @@ public class EnemyManager : MonoBehaviour
     private void SpawnEnemies()
     {
         spawnWaveNumber.ApplyChange(1);
-        Debug.Log("Wave " + spawnWaveNumber.value);
         if (spawnWaveNumber.value % 5 == 0)
         {
             normalEnemyMaxHealth.value += 5;
@@ -85,8 +84,6 @@ public class EnemyManager : MonoBehaviour
 
                 GameObject enemyObject = Instantiate(enemyPrefab);
                 enemyObject.transform.position = position;
-                Level playerLevel = Manager.instance.PlayerLevel;
-                enemyObject.GetComponent<Death>().died.AddListener(playerLevel.ExtractExperience);
             }
         }
     }

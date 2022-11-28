@@ -421,9 +421,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c5ca15bff45c504891b34c9b3691861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  died:
+  deathEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 50a5703115167414dae80eff4066c1bb, type: 2}
+        m_TargetAssemblyTypeName: GameObjectGameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   timeToLive: 0
 --- !u!114 &6902851330609279879
 MonoBehaviour:

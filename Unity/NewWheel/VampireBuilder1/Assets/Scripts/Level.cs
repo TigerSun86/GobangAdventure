@@ -3,15 +3,17 @@ using UnityEngine.Events;
 
 public class Level : MonoBehaviour
 {
-    public UnityEvent<int, int> OnExperienceChanged { get; } = new UnityEvent<int, int>();
+    private readonly object experienceOperationLock = new object();
 
     [SerializeField] UnityEvent levelUpEvent;
 
+    [SerializeField] UnityEvent experienceChangeEvent;
+
     [SerializeField] IntVariable levelValue;
 
-    public int Experience { get; set; } = 0;
+    [SerializeField] IntVariable experienceValue;
 
-    public int ToLevelUp { get => levelValue.value * levelValue.value * 200; }
+    [SerializeField] IntVariable experienceToLevelUpValue;
 
     public void ExtractExperience(GameObject gameObject)
     {
@@ -22,16 +24,40 @@ public class Level : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        experienceToLevelUpValue.SetValue(CalculateExperienceToLevelUp(levelValue.value));
+    }
+
     private void AddExperience(int amount)
     {
-        Experience += amount;
-        if (Experience >= ToLevelUp)
+        int levelUpCount = 0;
+        int experienceToLevelUp = CalculateExperienceToLevelUp(levelValue.value + levelUpCount);
+        lock (experienceOperationLock)
         {
-            Experience -= ToLevelUp;
-            levelValue.ApplyChange(1);
-            levelUpEvent.Invoke();
+            int newExperienceValue = experienceValue.value + amount;
+            while (newExperienceValue > experienceToLevelUp)
+            {
+                newExperienceValue -= experienceToLevelUp;
+                levelUpCount++;
+                experienceToLevelUp = CalculateExperienceToLevelUp(levelValue.value + levelUpCount);
+            }
+
+            experienceValue.SetValue(newExperienceValue);
+            experienceToLevelUpValue.SetValue(experienceToLevelUp);
         }
 
-        OnExperienceChanged.Invoke(Experience, ToLevelUp);
+        experienceChangeEvent.Invoke();
+
+        if (levelUpCount > 0)
+        {
+            levelValue.ApplyChange(levelUpCount);
+            levelUpEvent.Invoke();
+        }
+    }
+
+    private int CalculateExperienceToLevelUp(int level)
+    {
+        return level * level * 200;
     }
 }
