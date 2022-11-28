@@ -16,6 +16,8 @@ public class ExperienceBar : MonoBehaviour
 
     [SerializeField] IntVariable experianceToLevelUpValue;
 
+    [SerializeField] IntVariable pendingUpgradeCount;
+
     private void Start()
     {
         UpdateExperienceBar();
@@ -31,5 +33,9 @@ public class ExperienceBar : MonoBehaviour
     public void UpdateLevelText()
     {
         levelText.text = "Level: " + levelValue.value;
+        if (pendingUpgradeCount.value > 1)
+        {
+            levelText.text += $"({pendingUpgradeCount.value})";
+        }
     }
 }

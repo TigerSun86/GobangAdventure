@@ -2345,11 +2345,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1111486920}
   - {fileID: 1366804029}
   - {fileID: 1359058201}
-  - {fileID: 1111486920}
   m_Father: {fileID: 1728245732}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5791,7 +5791,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 444636244}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6404,6 +6404,7 @@ GameObject:
   - component: {fileID: 1270022580}
   - component: {fileID: 1270022581}
   - component: {fileID: 1270022582}
+  - component: {fileID: 1270022583}
   m_Layer: 5
   m_Name: ExperienceBarBase
   m_TagString: Untagged
@@ -6539,6 +6540,7 @@ MonoBehaviour:
   levelValue: {fileID: 11400000, guid: ab1594260a71a1d44aed656957350937, type: 2}
   experianceValue: {fileID: 11400000, guid: 2970de4558212f94185d46f94b037f20, type: 2}
   experianceToLevelUpValue: {fileID: 11400000, guid: cc58a399e55c50d42b6377ea8d20a223, type: 2}
+  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
 --- !u!114 &1270022581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6586,6 +6588,34 @@ MonoBehaviour:
       - m_Target: {fileID: 1270022580}
         m_TargetAssemblyTypeName: ExperienceBar, Assembly-CSharp
         m_MethodName: UpdateExperienceBar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1270022583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270022575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: eb0d114a76b393f48a8c2cc502dfd4ef, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270022580}
+        m_TargetAssemblyTypeName: ExperienceBar, Assembly-CSharp
+        m_MethodName: UpdateLevelText
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6877,7 +6907,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 444636244}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -7013,7 +7043,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 444636244}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -8150,11 +8180,11 @@ RectTransform:
   - {fileID: 681666252}
   - {fileID: 447984462}
   m_Father: {fileID: 1728245732}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 331.8069, y: -20}
+  m_AnchoredPosition: {x: 468.19305, y: -20}
   m_SizeDelta: {x: 663.6138, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1638313225
@@ -8629,8 +8659,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1638313223}
   - {fileID: 444636244}
+  - {fileID: 1638313223}
   m_Father: {fileID: 1270022576}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8929,6 +8959,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71f83c4bc6c984b45a460dff29581b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
   panel: {fileID: 1638313222}
   skillPrefabs: {fileID: 11400000, guid: 5bf90a56f903e5649a7c61ea76461845, type: 2}
   skillInstances: {fileID: 11400000, guid: 64e68a7fe46c206409b3e87cc63e5d83, type: 2}
@@ -8937,7 +8968,21 @@ MonoBehaviour:
   - {fileID: 53966339}
   - {fileID: 681666257}
   - {fileID: 447984461}
-  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
+  pendingUpgradeChangeEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: eb0d114a76b393f48a8c2cc502dfd4ef, type: 2}
+        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1764069554
 MonoBehaviour:
   m_ObjectHideFlags: 0
