@@ -11,6 +11,8 @@ public class Death : MonoBehaviour
 
     [SerializeField] public float timeToLive = 0f;
 
+    SelfDestroy selfDestroy;
+
     private void Awake()
     {
         Health health = GetComponent<Health>();
@@ -18,6 +20,8 @@ public class Death : MonoBehaviour
         {
             health.healthChanged.AddListener(CheckDeathByHealth);
         }
+
+        selfDestroy = GetComponent<SelfDestroy>();
 
         if (!Mathf.Approximately(timeToLive, 0f))
         {
@@ -36,9 +40,9 @@ public class Death : MonoBehaviour
     void Die()
     {
         deathEvent.Invoke(gameObject);
-        if (!gameObject.CompareTag("Player"))
+        if (selfDestroy != null)
         {
-            Destroy(gameObject);
+            selfDestroy.Destroy();
         }
     }
 }

@@ -36,7 +36,7 @@ public class Level : MonoBehaviour
         lock (experienceOperationLock)
         {
             int newExperienceValue = experienceValue.value + amount;
-            while (newExperienceValue > experienceToLevelUp)
+            while (newExperienceValue >= experienceToLevelUp)
             {
                 newExperienceValue -= experienceToLevelUp;
                 levelUpCount++;
