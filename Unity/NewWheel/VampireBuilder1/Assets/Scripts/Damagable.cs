@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Health))]
-[RequireComponent(typeof(SpriteConfig))]
 public class Damagable : MonoBehaviour
 {
     private Health health;
@@ -22,8 +21,11 @@ public class Damagable : MonoBehaviour
     public void TakeDamage(int attack)
     {
         int actualDamage = health.DecreaseHealth(attack);
-        spriteConfig.SetDamagedColor();
-        TimersManager.SetTimer(this, 0.5f, spriteConfig.SetIdleColor);
+        if (spriteConfig != null)
+        {
+            spriteConfig.SetDamagedColor();
+            TimersManager.SetTimer(this, 0.5f, spriteConfig.SetIdleColor);
+        }
 
         onTakeDamage.Invoke(new DamageData(gameObject, attack, actualDamage, DamageType.NORMAL_ATTACK));
     }

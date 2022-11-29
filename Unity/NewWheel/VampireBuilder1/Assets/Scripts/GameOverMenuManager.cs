@@ -16,6 +16,11 @@ public class GameOverMenuManager : MonoBehaviour
 
     public void OpenMenu()
     {
+        if (panel.activeInHierarchy)
+        {
+            return;
+        }
+
         panel.SetActive(value: true);
         gamePause.Pause();
     }
