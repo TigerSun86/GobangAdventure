@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 3807371709241022318}
   - component: {fileID: 1303345505088564791}
   - component: {fileID: 2286131043201406279}
+  - component: {fileID: -6599833735012603784}
+  - component: {fileID: 3980965466641927810}
+  - component: {fileID: 7639509605694257794}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Bullet
@@ -180,3 +183,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f714ea14a36b78245a9cec6cb1699703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-6599833735012603784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232792271753850171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bf9a195f021274a87117abd8f66ed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: {fileID: 11400000, guid: 7f73f97bdda8a0a4da18205097f05276, type: 2}
+  health: 0
+  healthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3980965466641927810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232792271753850171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802bde312a63d1f4ba099d21c79ecd33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7639509605694257794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232792271753850171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5ca15bff45c504891b34c9b3691861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  timeToLive: 0

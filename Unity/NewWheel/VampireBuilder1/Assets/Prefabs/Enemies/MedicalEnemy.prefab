@@ -272,6 +272,7 @@ GameObject:
   - component: {fileID: 2772590755775450436}
   - component: {fileID: 6363141025433424505}
   - component: {fileID: 1197466765642258717}
+  - component: {fileID: 4359114809878312802}
   - component: {fileID: -3405363415253002439}
   m_Layer: 0
   m_Name: MedicalEnemy
@@ -579,6 +580,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4359114809878312802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6902851330609279887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 533c223e74cd0064cad18e2816647f1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackFactor: {fileID: 11400000, guid: b729c9e95c11af942a53df74dab50da9, type: 2}
+  targetTag: Bullet
+  attackEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &-3405363415253002439
 MonoBehaviour:
   m_ObjectHideFlags: 0
