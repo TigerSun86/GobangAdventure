@@ -13,23 +13,11 @@ public class UpgradeMenuManager : MonoBehaviour
 
     [SerializeField] GameObject panel;
 
-    [SerializeField] SkillRuntimeSet skillPrefabs;
-
-    [SerializeField] SkillRuntimeSet skillInstances;
+    [SerializeField] SkillRuntimeSet skillUpgradeSequence;
 
     [SerializeField] List<SkillUpgradeButton> skillButtons;
 
     [SerializeField] UnityEvent pendingUpgradeChangeEvent;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        skillInstances.Items.Clear();
-        foreach (SkillBase skillPrefab in skillPrefabs.Items)
-        {
-            skillInstances.Add(Instantiate(skillPrefab));
-        }
-    }
 
     public void OpenMenu()
     {
@@ -82,14 +70,13 @@ public class UpgradeMenuManager : MonoBehaviour
     private void RefreshMenu()
     {
         bool isFirstButton = true;
-        List<SkillBase> selectedSkills = skillInstances.Items.Where(s => s.IsUpgradable()).ToList();
         for (int i = 0; i < skillButtons.Count; i++)
         {
             SkillUpgradeButton skillButton = skillButtons[i];
-            if (i < selectedSkills.Count)
+            if (i < skillUpgradeSequence.Items.Count)
             {
                 skillButton.Enable();
-                skillButton.SetSkill(selectedSkills[i]);
+                skillButton.SetSkill(skillUpgradeSequence.Items[i]);
                 if (isFirstButton)
                 {
                     isFirstButton = false;

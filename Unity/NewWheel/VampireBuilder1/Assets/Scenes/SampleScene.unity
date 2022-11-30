@@ -716,7 +716,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 731787897}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -954,7 +954,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -1120,7 +1120,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 731787897}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -1664,7 +1664,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -2593,7 +2593,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 731787897}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -4002,7 +4002,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 731787897}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -4159,6 +4159,147 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &731787892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 731787893}
+  - component: {fileID: 731787895}
+  - component: {fileID: 731787897}
+  - component: {fileID: 731787894}
+  - component: {fileID: 731787896}
+  m_Layer: 0
+  m_Name: SkillManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &731787893
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731787892}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.948621, y: -0.69616014, z: -10.023365}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &731787894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731787892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: eb0d114a76b393f48a8c2cc502dfd4ef, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 731787895}
+        m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
+        m_MethodName: RefreshSkillUpgradeSequence
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &731787895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731787892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b4f64c2ce7ccc4fb932ae1710ffa7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillPrefabs: {fileID: 11400000, guid: 5bf90a56f903e5649a7c61ea76461845, type: 2}
+  skillInstances: {fileID: 11400000, guid: 64e68a7fe46c206409b3e87cc63e5d83, type: 2}
+  skillUpgradeSequence: {fileID: 11400000, guid: 28c8ec33f692963478d14186a3c71a4c, type: 2}
+--- !u!114 &731787896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731787892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 4d8662b3416469e4b9ff60a3dcfcbb7a, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 731787897}
+        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
+        m_MethodName: OpenMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &731787897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731787892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f83c4bc6c984b45a460dff29581b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
+  panel: {fileID: 1638313222}
+  skillUpgradeSequence: {fileID: 11400000, guid: 28c8ec33f692963478d14186a3c71a4c, type: 2}
+  skillButtons:
+  - {fileID: 132311443}
+  - {fileID: 53966339}
+  - {fileID: 681666257}
+  - {fileID: 447984461}
+  pendingUpgradeChangeEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: eb0d114a76b393f48a8c2cc502dfd4ef, type: 2}
+        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &736905095
 GameObject:
   m_ObjectHideFlags: 0
@@ -4301,7 +4442,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -5534,7 +5675,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1764069553}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
@@ -9179,9 +9320,7 @@ GameObject:
   - component: {fileID: 1764069550}
   - component: {fileID: 1764069551}
   - component: {fileID: 1764069552}
-  - component: {fileID: 1764069553}
   - component: {fileID: 1764069554}
-  - component: {fileID: 1764069555}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -9254,42 +9393,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7beb3c9cf153344a176076172856c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1764069553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1764069547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71f83c4bc6c984b45a460dff29581b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
-  panel: {fileID: 1638313222}
-  skillPrefabs: {fileID: 11400000, guid: 5bf90a56f903e5649a7c61ea76461845, type: 2}
-  skillInstances: {fileID: 11400000, guid: 64e68a7fe46c206409b3e87cc63e5d83, type: 2}
-  skillButtons:
-  - {fileID: 132311443}
-  - {fileID: 53966339}
-  - {fileID: 681666257}
-  - {fileID: 447984461}
-  pendingUpgradeChangeEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: eb0d114a76b393f48a8c2cc502dfd4ef, type: 2}
-        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
-        m_MethodName: Raise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1764069554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9303,34 +9406,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 206025795}
---- !u!114 &1764069555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1764069547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 4d8662b3416469e4b9ff60a3dcfcbb7a, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1764069553}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: OpenMenu
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!1 &1782040994
 GameObject:
   m_ObjectHideFlags: 0
