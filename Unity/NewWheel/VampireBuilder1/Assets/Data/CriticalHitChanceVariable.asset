@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: CriticalHitChanceVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: The chance of making critical hit
-  defaultValue: 0.5
-  value: 0.5
+  defaultValue: 0
+  value: 0
