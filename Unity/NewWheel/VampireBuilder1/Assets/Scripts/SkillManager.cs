@@ -14,7 +14,10 @@ public class SkillManager : MonoBehaviour
     public void RefreshSkillUpgradeSequence()
     {
         skillUpgradeSequence.Items.Clear();
-        skillUpgradeSequence.Items.AddRange(skillInstances.Items.Where(s => s.IsUpgradable()));
+        skillUpgradeSequence.Items.AddRange(
+            skillInstances.Items
+                .Where(s => s.IsUpgradable())
+                .OrderBy(s => Random.value));
     }
 
     // Start is called before the first frame update
