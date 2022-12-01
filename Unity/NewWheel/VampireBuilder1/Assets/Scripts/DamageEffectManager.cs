@@ -26,6 +26,7 @@ public class DamageEffectManager : MonoBehaviour
         foreach (GameObject effect in effects)
         {
             GameObject effectInstance = Instantiate(effect);
+            effectInstance.transform.SetParent(this.transform);
             effectInstance.GetComponent<DamageDataStorage>().damageData = damageData;
         }
     }

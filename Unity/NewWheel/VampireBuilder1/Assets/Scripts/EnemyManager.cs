@@ -82,8 +82,7 @@ public class EnemyManager : MonoBehaviour
                 Vector2 position = positionCandidates[randomPositionIndex];
                 positionCandidates.RemoveAt(randomPositionIndex);
 
-                GameObject enemyObject = Instantiate(enemyPrefab);
-                enemyObject.transform.position = position;
+                GameObject enemyObject = Instantiate(enemyPrefab, position, Quaternion.identity, this.transform);
             }
         }
     }

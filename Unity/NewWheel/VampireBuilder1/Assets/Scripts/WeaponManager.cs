@@ -22,13 +22,12 @@ public class WeaponManager : MonoBehaviour
 
         timer = attackInterval.value;
 
-        GameObject gameObject = Instantiate(bullet);
         Transform playerTransform = Manager.instance.PlayerTransform;
         Vector3 position = new Vector3();
-        position.x = playerTransform.position.x + (playerTransform.localScale.x / 2) + (gameObject.transform.localScale.x / 2);
+        position.x = playerTransform.position.x + (playerTransform.localScale.x / 2) + (bullet.transform.localScale.x / 2);
         position.y = playerTransform.position.y;
-        gameObject.transform.position = position;
 
+        GameObject gameObject = Instantiate(bullet, position, Quaternion.identity, this.transform);
         gameObject.transform.localScale *= attackArea.value;
     }
 }

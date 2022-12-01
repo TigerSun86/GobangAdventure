@@ -47,7 +47,7 @@ public class ExplosionSkill : SkillBase
 
         if (effect != null)
         {
-            GameObject effectInstance = Instantiate(effect, bullet.transform.position, Quaternion.identity);
+            GameObject effectInstance = Instantiate(effect, bullet.transform.position, Quaternion.identity, this.transform);
             effectInstance.transform.localScale *= attackAreaFactor.value * 2;
         }
     }
