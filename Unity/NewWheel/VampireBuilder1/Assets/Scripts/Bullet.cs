@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     Rigidbody2D rb;
-    [SerializeField] private float speed = 5f;
+    [SerializeField] FloatVariable speed;
 
     private void Awake()
     {
@@ -16,6 +16,6 @@ public class Bullet : MonoBehaviour
     {
         Vector3 movementVector = new Vector3();
         movementVector.x = 1;
-        rb.velocity = movementVector * speed;
+        rb.velocity = movementVector * speed.value;
     }
 }
