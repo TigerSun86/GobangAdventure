@@ -7660,6 +7660,8 @@ MonoBehaviour:
     effectPrefab: {fileID: 6945137394529250571, guid: 8ca48eafa22932c41898ec308096e83a, type: 3}
   - damageType: 1
     effectPrefab: {fileID: 1886734465909692006, guid: f54d78932ea918645b3b06fee593a5bd, type: 3}
+  - damageType: 2
+    effectPrefab: {fileID: 6945137394529250571, guid: 8ca48eafa22932c41898ec308096e83a, type: 3}
 --- !u!114 &1370159237
 MonoBehaviour:
   m_ObjectHideFlags: 0

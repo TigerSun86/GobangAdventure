@@ -6,5 +6,7 @@ public enum DamageType
 {
     NORMAL_ATTACK,
 
-    HEALING
+    HEALING,
+
+    CRITICAL_HIT,
 }

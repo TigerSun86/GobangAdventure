@@ -6,6 +6,8 @@ public class ExplosionSkill : SkillBase
 
     [SerializeField] FloatVariable attackAreaFactor;
 
+    [SerializeField] CriticalHit criticalHit;
+
     [SerializeField] GameObject effect;
 
     private Vector2? debugPosition;
@@ -33,7 +35,7 @@ public class ExplosionSkill : SkillBase
         }
 
         float radius = attackAreaFactor.value * 2;
-        int attack = (int)(attackFactor.value / 2);
+        float attack = (int)(attackFactor.value / 2);
         debugPosition = bullet.transform.position;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(bullet.transform.position, radius);
         foreach (Collider2D collider in colliders)
@@ -41,7 +43,14 @@ public class ExplosionSkill : SkillBase
             Damagable damagable = collider.gameObject.GetComponent<Damagable>();
             if (damagable != null && collider.gameObject.tag == "Enemy")
             {
-                damagable.TakeDamage(attack);
+                float damage = attack;
+                DamageType damageType = DamageType.NORMAL_ATTACK;
+                if (criticalHit != null)
+                {
+                    (damage, damageType) = criticalHit.CalculateDamage(damage);
+                }
+
+                damagable.TakeDamage((int)damage, damageType);
             }
         }
 

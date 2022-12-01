@@ -7,6 +7,8 @@ public class Attack : MonoBehaviour
 {
     [SerializeField] FloatVariable attackFactor;
 
+    [SerializeField] CriticalHit criticalHit;
+
     [SerializeField] string targetTag;
 
     [SerializeField] UnityEvent<Collider2D, GameObject> attackEvent;
@@ -22,7 +24,14 @@ public class Attack : MonoBehaviour
 
     private void AttackObject(GameObject gameObject)
     {
+        float damage = attackFactor.value;
+        DamageType damageType = DamageType.NORMAL_ATTACK;
+        if (criticalHit != null)
+        {
+            (damage, damageType) = criticalHit.CalculateDamage(damage);
+        }
+
         Damagable damagable = gameObject.GetComponent<Damagable>();
-        damagable.TakeDamage((int)attackFactor.value);
+        damagable.TakeDamage((int)damage, damageType);
     }
 }

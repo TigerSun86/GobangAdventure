@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7916799154824901520}
   - component: {fileID: 7378212565140418291}
   - component: {fileID: 7320906344585899629}
+  - component: {fileID: 1216372035244004870}
   m_Layer: 0
   m_Name: ExplosionSkill
   m_TagString: Untagged
@@ -49,6 +50,7 @@ MonoBehaviour:
   maxLevel: 1
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
   attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
+  criticalHit: {fileID: 1216372035244004870}
   effect: {fileID: 748580678013119055, guid: 01ddd37710f38a8489aa8c7b128fe6ff, type: 3}
 --- !u!114 &7320906344585899629
 MonoBehaviour:
@@ -78,3 +80,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1216372035244004870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6657858356815002515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8171169bb3b43cc4cbd7c1f6ce51277d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  criticalHitChance: {fileID: 11400000, guid: 0e1c6a3b2fbff774d862a820f3292177, type: 2}
+  criticalHitDamage: {fileID: 11400000, guid: 0ea0b0c1472f10f43a1fa3a66b6571bb, type: 2}

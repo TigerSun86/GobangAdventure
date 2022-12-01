@@ -18,7 +18,7 @@ public class Damagable : MonoBehaviour
         spriteConfig = GetComponent<SpriteConfig>();
     }
 
-    public void TakeDamage(int attack)
+    public void TakeDamage(int attack, DamageType damageType)
     {
         int actualDamage = health.DecreaseHealth(attack);
         if (spriteConfig != null)
@@ -27,6 +27,6 @@ public class Damagable : MonoBehaviour
             TimersManager.SetTimer(this, 0.5f, spriteConfig.SetIdleColor);
         }
 
-        onTakeDamage.Invoke(new DamageData(gameObject, attack, actualDamage, DamageType.NORMAL_ATTACK));
+        onTakeDamage.Invoke(new DamageData(gameObject, attack, actualDamage, damageType));
     }
 }

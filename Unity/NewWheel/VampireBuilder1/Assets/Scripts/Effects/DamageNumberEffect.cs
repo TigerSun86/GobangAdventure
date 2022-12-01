@@ -51,6 +51,9 @@ public class DamageNumberEffect : MonoBehaviour
             case DamageType.HEALING:
                 textColor = Color.cyan;
                 break;
+            case DamageType.CRITICAL_HIT:
+                textColor = Color.red;
+                break;
             case DamageType.NORMAL_ATTACK:
             default:
                 textColor = Color.yellow;
