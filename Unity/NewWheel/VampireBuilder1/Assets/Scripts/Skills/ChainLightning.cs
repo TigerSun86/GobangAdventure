@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class ChainLightning : MonoBehaviour
@@ -21,7 +22,7 @@ public class ChainLightning : MonoBehaviour
 
     [SerializeField] CriticalHit criticalHit;
 
-    [SerializeField] GameObject effect;
+    [SerializeField] UnityEvent<List<Vector3>> chainLightningRunEvent;
 
     int remainingCount;
 
@@ -74,13 +75,6 @@ public class ChainLightning : MonoBehaviour
             return;
         }
 
-        if (effect != null)
-        {
-            GameObject effectInstance = Instantiate(effect);
-            LightningEffect lightningEffect = effectInstance.GetComponent<LightningEffect>();
-            lightningEffect.SetPositions(this.transform.position, target.gameObject.transform.position);
-        }
-
         float damage = attack;
         DamageType damageType = DamageType.NORMAL_ATTACK;
         if (criticalHit != null)
@@ -90,6 +84,8 @@ public class ChainLightning : MonoBehaviour
 
         Damagable damagable = target.gameObject.GetComponent<Damagable>();
         damagable.TakeDamage((int)damage, damageType);
+
+        chainLightningRunEvent.Invoke(new List<Vector3>() { this.transform.position, target.gameObject.transform.position });
         this.transform.position = target.gameObject.transform.position;
     }
 
