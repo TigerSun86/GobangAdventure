@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7378212565140418291}
   - component: {fileID: 7320906344585899629}
   - component: {fileID: 1216372035244004870}
+  - component: {fileID: 6405432844323238040}
   m_Layer: 0
   m_Name: ExplosionSkill
   m_TagString: Untagged
@@ -52,6 +53,22 @@ MonoBehaviour:
   attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
   criticalHit: {fileID: 1216372035244004870}
   effect: {fileID: 748580678013119055, guid: 01ddd37710f38a8489aa8c7b128fe6ff, type: 3}
+  attackTargetSelectEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6405432844323238040}
+        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
+        m_MethodName: AttackObject
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  attackBase: 0.5
 --- !u!114 &7320906344585899629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,3 +111,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   criticalHitChance: {fileID: 11400000, guid: 0e1c6a3b2fbff774d862a820f3292177, type: 2}
   criticalHitDamage: {fileID: 11400000, guid: 0ea0b0c1472f10f43a1fa3a66b6571bb, type: 2}
+--- !u!114 &6405432844323238040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6657858356815002515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 533c223e74cd0064cad18e2816647f1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
+  targetTag: 
+  attackEvent:
+    m_PersistentCalls:
+      m_Calls: []

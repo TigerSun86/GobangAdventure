@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ExplosionSkill : SkillBase
 {
@@ -9,6 +10,10 @@ public class ExplosionSkill : SkillBase
     [SerializeField] CriticalHit criticalHit;
 
     [SerializeField] GameObject effect;
+
+    [SerializeField] UnityEvent<GameObject, float> attackTargetSelectEvent;
+
+    [SerializeField] float attackBase = 0.5f;
 
     private Vector2? debugPosition;
 
@@ -40,17 +45,9 @@ public class ExplosionSkill : SkillBase
         Collider2D[] colliders = Physics2D.OverlapCircleAll(bullet.transform.position, radius);
         foreach (Collider2D collider in colliders)
         {
-            Damagable damagable = collider.gameObject.GetComponent<Damagable>();
-            if (damagable != null && collider.gameObject.tag == "Enemy")
+            if (DamagableUtilities.IsDamagableEnemy(collider.gameObject))
             {
-                float damage = attack;
-                DamageType damageType = DamageType.NORMAL_ATTACK;
-                if (criticalHit != null)
-                {
-                    (damage, damageType) = criticalHit.CalculateDamage(damage);
-                }
-
-                damagable.TakeDamage((int)damage, damageType);
+                attackTargetSelectEvent.Invoke(collider.gameObject, attackBase);
             }
         }
 

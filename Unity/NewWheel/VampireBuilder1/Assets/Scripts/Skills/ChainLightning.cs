@@ -24,6 +24,8 @@ public class ChainLightning : MonoBehaviour
 
     [SerializeField] UnityEvent<List<Vector3>> chainLightningRunEvent;
 
+    [SerializeField] UnityEvent<GameObject, float> attackTargetSelectEvent;
+
     int remainingCount;
 
     float currentAttack;
@@ -61,13 +63,11 @@ public class ChainLightning : MonoBehaviour
 
         remainingCount--;
 
-        float attack = currentAttack;
-        currentAttack *= (1 - attackDecreaseRate.value);
         debugPosition = this.transform.position;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, radius);
         Collider2D target = PositionUtilities.FindRandom(
             colliders,
-            (o) => o.gameObject.tag == "Enemy" && o.gameObject.GetComponent<Damagable>() != null,
+            (o) => DamagableUtilities.IsDamagableEnemy(o.gameObject),
             (o) => o.gameObject.transform.position);
         if (target == null)
         {
@@ -75,17 +75,11 @@ public class ChainLightning : MonoBehaviour
             return;
         }
 
-        float damage = attack;
-        DamageType damageType = DamageType.NORMAL_ATTACK;
-        if (criticalHit != null)
-        {
-            (damage, damageType) = criticalHit.CalculateDamage(damage);
-        }
-
-        Damagable damagable = target.gameObject.GetComponent<Damagable>();
-        damagable.TakeDamage((int)damage, damageType);
-
+        float attack = currentAttack;
+        currentAttack *= (1 - attackDecreaseRate.value);
+        attackTargetSelectEvent.Invoke(target.gameObject, attack);
         chainLightningRunEvent.Invoke(new List<Vector3>() { this.transform.position, target.gameObject.transform.position });
+
         this.transform.position = target.gameObject.transform.position;
     }
 
