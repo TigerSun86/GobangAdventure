@@ -271,9 +271,10 @@ GameObject:
   - component: {fileID: 829962919072443979}
   - component: {fileID: 2772590755775450436}
   - component: {fileID: 6363141025433424505}
-  - component: {fileID: 1197466765642258717}
-  - component: {fileID: 4359114809878312802}
   - component: {fileID: -3405363415253002439}
+  - component: {fileID: 1197466765642258717}
+  - component: {fileID: -336972625773581238}
+  - component: {fileID: 2952684321595919202}
   m_Layer: 0
   m_Name: MedicalEnemy
   m_TagString: Enemy
@@ -551,6 +552,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &-3405363415253002439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6902851330609279887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f714ea14a36b78245a9cec6cb1699703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1197466765642258717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,10 +577,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackFactor: {fileID: 11400000, guid: edcccd69d220b4a4db7983418f2bee5d, type: 2}
+--- !u!114 &-336972625773581238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6902851330609279887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aff83554db9861946abd78e19b523b7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackBase:
+    attackBase: 1
+    attackOption: 0
   targetTag: Player
-  attackEvent:
+  attackTargetSelectEvent:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1197466765642258717}
+        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
+        m_MethodName: AttackObject
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: -3405363415253002439}
         m_TargetAssemblyTypeName: SelfDestroy, Assembly-CSharp
         m_MethodName: Destroy
@@ -580,24 +620,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4359114809878312802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6902851330609279887}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 533c223e74cd0064cad18e2816647f1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackFactor: {fileID: 11400000, guid: b729c9e95c11af942a53df74dab50da9, type: 2}
-  targetTag: Bullet
-  attackEvent:
+  enemyHitEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &-3405363415253002439
+--- !u!114 &2952684321595919202
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -606,6 +632,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 6902851330609279887}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f714ea14a36b78245a9cec6cb1699703, type: 3}
+  m_Script: {fileID: 11500000, guid: aff83554db9861946abd78e19b523b7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackBase:
+    attackBase: 1
+    attackOption: -1
+  targetTag: Bullet
+  attackTargetSelectEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1197466765642258717}
+        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
+        m_MethodName: AttackObject
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  enemyHitEvent:
+    m_PersistentCalls:
+      m_Calls: []

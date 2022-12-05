@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 3980965466641927810}
   - component: {fileID: 7639509605694257794}
   - component: {fileID: -1311677499153844284}
+  - component: {fileID: -3553132888984764722}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Bullet
@@ -156,23 +157,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
-  criticalHit: {fileID: -1311677499153844284}
   targetTag: Enemy
   attackEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: c9440f1eb537dfa4a9ad019bc5591119, type: 2}
-        m_TargetAssemblyTypeName: Collider2DGameEvent, Assembly-CSharp
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2286131043201406279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,3 +235,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   criticalHitChance: {fileID: 11400000, guid: 0e1c6a3b2fbff774d862a820f3292177, type: 2}
   criticalHitDamage: {fileID: 11400000, guid: 0ea0b0c1472f10f43a1fa3a66b6571bb, type: 2}
+--- !u!114 &-3553132888984764722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232792271753850171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aff83554db9861946abd78e19b523b7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackBase:
+    attackBase: 1
+    attackOption: 0
+  targetTag: Enemy
+  attackTargetSelectEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1303345505088564791}
+        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
+        m_MethodName: AttackObject
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  enemyHitEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c9440f1eb537dfa4a9ad019bc5591119, type: 2}
+        m_TargetAssemblyTypeName: Collider2DGameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

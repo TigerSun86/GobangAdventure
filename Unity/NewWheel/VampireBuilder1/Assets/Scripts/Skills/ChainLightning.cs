@@ -10,21 +10,17 @@ public class ChainLightning : MonoBehaviour
 {
     private static readonly float ATTACK_INTERVAL = 0.2f;
 
+    [SerializeField] float initialAttackBase = 1f;
+
     [SerializeField] IntVariable maxCount;
 
     [SerializeField] FloatVariable attackDecreaseRate;
 
-    [SerializeField] FloatVariable initialAttack;
-
-    [SerializeField] FloatVariable attackFactor;
-
     [SerializeField] FloatVariable attackAreaFactor;
-
-    [SerializeField] CriticalHit criticalHit;
 
     [SerializeField] UnityEvent<List<Vector3>> chainLightningRunEvent;
 
-    [SerializeField] UnityEvent<GameObject, float> attackTargetSelectEvent;
+    [SerializeField] UnityEvent<GameObject, AttackData> attackTargetSelectEvent;
 
     int remainingCount;
 
@@ -40,7 +36,7 @@ public class ChainLightning : MonoBehaviour
     void Start()
     {
         remainingCount = maxCount.value;
-        currentAttack = initialAttack.value;
+        currentAttack = initialAttackBase;
         radius = attackAreaFactor.value + 2;
     }
 
@@ -77,7 +73,7 @@ public class ChainLightning : MonoBehaviour
 
         float attack = currentAttack;
         currentAttack *= (1 - attackDecreaseRate.value);
-        attackTargetSelectEvent.Invoke(target.gameObject, attack);
+        attackTargetSelectEvent.Invoke(target.gameObject, new AttackData(attack));
         chainLightningRunEvent.Invoke(new List<Vector3>() { this.transform.position, target.gameObject.transform.position });
 
         this.transform.position = target.gameObject.transform.position;

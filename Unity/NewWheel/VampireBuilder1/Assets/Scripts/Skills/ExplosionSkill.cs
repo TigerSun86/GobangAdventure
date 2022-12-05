@@ -11,9 +11,9 @@ public class ExplosionSkill : SkillBase
 
     [SerializeField] GameObject effect;
 
-    [SerializeField] UnityEvent<GameObject, float> attackTargetSelectEvent;
+    [SerializeField] UnityEvent<GameObject, AttackData> attackTargetSelectEvent;
 
-    [SerializeField] float attackBase = 0.5f;
+    [SerializeField] AttackData attackBase = new AttackData(0.5f);
 
     private Vector2? debugPosition;
 
