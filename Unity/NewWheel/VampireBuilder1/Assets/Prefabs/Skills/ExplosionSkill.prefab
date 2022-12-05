@@ -49,6 +49,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 0
   maxLevel: 1
+  dependencies:
+  - skill: {fileID: -1385894042017858680, guid: 835a453cab016a94582ef33c29a60c2b, type: 3}
+    level: 1
+  - skill: {fileID: 1321520197095232548, guid: a02d393cdc099424991e82d504fd679a, type: 3}
+    level: 1
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
   attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
   criticalHit: {fileID: 1216372035244004870}
@@ -68,7 +73,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  attackBase: 0.5
+  attackBase:
+    attackBase: 0.5
+    attackOption: 0
 --- !u!114 &7320906344585899629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,7 +131,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
-  targetTag: 
-  attackEvent:
-    m_PersistentCalls:
-      m_Calls: []

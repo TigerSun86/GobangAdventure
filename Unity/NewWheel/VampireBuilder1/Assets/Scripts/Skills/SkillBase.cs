@@ -8,6 +8,8 @@ public class SkillBase : MonoBehaviour
 
     [SerializeField] public int maxLevel;
 
+    [SerializeField] public List<SkillDependency> dependencies;
+
     public int GetLevel()
     {
         return level;

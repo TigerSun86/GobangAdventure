@@ -15,6 +15,8 @@ public class ExplosionSkill : SkillBase
 
     [SerializeField] AttackData attackBase = new AttackData(0.5f);
 
+    float radius;
+
     private Vector2? debugPosition;
 
     public override void LevelUp()
@@ -39,7 +41,6 @@ public class ExplosionSkill : SkillBase
             return;
         }
 
-        float radius = attackAreaFactor.value * 2;
         float attack = (int)(attackFactor.value / 2);
         debugPosition = bullet.transform.position;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(bullet.transform.position, radius);
@@ -58,11 +59,15 @@ public class ExplosionSkill : SkillBase
         }
     }
 
+    private void Start()
+    {
+        radius = attackAreaFactor.value + 1;
+    }
+
     void OnDrawGizmos()
     {
         if (debugPosition.HasValue)
         {
-            float radius = attackAreaFactor.value * 2;
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(debugPosition.Value, radius);
         }

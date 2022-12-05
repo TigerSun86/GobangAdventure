@@ -47,6 +47,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 0
   maxLevel: 0
+  dependencies:
+  - skill: {fileID: 7183047205494862607, guid: 325c8982b20004d4ebd0045e59225b95, type: 3}
+    level: 1
+  - skill: {fileID: 2628066561717642383, guid: 74e80727382cd544da062f2d5298d17f, type: 3}
+    level: 1
   chainLightningPrefab: {fileID: 3995482541262085184, guid: e8ae573a1b510214b89a13a1da98deae, type: 3}
   maxCount: {fileID: 11400000, guid: b529b75b3fd0f5e48852f598a51de52e, type: 2}
   attackDecreaseRate: {fileID: 11400000, guid: 24824790b2c54dd41a5b2a3a2538a86a, type: 2}
