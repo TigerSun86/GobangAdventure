@@ -54,6 +54,7 @@ MonoBehaviour:
     level: 1
   - skill: {fileID: 1321520197095232548, guid: a02d393cdc099424991e82d504fd679a, type: 3}
     level: 1
+  prefab: {fileID: 585533040300446151, guid: 7fba6441f5972e34eafc66226db5c66f, type: 3}
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
   attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
   criticalHit: {fileID: 1216372035244004870}
