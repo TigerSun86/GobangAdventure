@@ -46,5 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 0
   maxLevel: 0
+  dependencies: []
   changeAmount: 1
   attackFactor: {fileID: 11400000, guid: 9e40faef6e1e08b45bdbb3469956eb30, type: 2}

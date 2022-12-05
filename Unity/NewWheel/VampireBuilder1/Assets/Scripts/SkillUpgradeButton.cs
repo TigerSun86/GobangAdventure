@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +16,12 @@ public class SkillUpgradeButton : MonoBehaviour
     {
         this.skill = skill;
         skillNameText.text = skill.GetName();
+        if (skill.dependencies.Any())
+        {
+            string dependencies = string.Join(",", skill.dependencies);
+            skillNameText.text += $" ({dependencies})";
+        }
+
         levelText.text = "Level " + skill.GetNextLevel();
         skillDescriptionText.text = skill.GetNextLevelDescription();
     }

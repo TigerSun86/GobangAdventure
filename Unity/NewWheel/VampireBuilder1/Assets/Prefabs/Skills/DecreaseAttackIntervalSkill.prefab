@@ -45,5 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
+  maxLevel: 0
+  dependencies: []
   changeAmount: 0.3
   attackIntervalFactor: {fileID: 11400000, guid: 2a6f1562002f3da42b4da2a838533da9, type: 2}

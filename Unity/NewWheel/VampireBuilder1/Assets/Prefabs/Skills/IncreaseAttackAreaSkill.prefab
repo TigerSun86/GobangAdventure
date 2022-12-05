@@ -45,5 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
+  maxLevel: 0
+  dependencies: []
   changeAmount: 1
   attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
