@@ -21,6 +21,8 @@ public class ChainLightning : MonoBehaviour
 
     [SerializeField] CriticalHit criticalHit;
 
+    [SerializeField] GameObject effect;
+
     int remainingCount;
 
     float currentAttack;
@@ -70,6 +72,13 @@ public class ChainLightning : MonoBehaviour
         {
             Destroy(this.gameObject);
             return;
+        }
+
+        if (effect != null)
+        {
+            GameObject effectInstance = Instantiate(effect);
+            LightningEffect lightningEffect = effectInstance.GetComponent<LightningEffect>();
+            lightningEffect.SetPositions(this.transform.position, target.gameObject.transform.position);
         }
 
         float damage = attack;
