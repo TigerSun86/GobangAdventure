@@ -7683,7 +7683,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1370159236}
         m_TargetAssemblyTypeName: DamageEffectManager, Assembly-CSharp
-        m_MethodName: CreateDamageEffect
+        m_MethodName: CreateEffect
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
