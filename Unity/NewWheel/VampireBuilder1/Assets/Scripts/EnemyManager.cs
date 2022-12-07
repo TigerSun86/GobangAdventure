@@ -103,6 +103,7 @@ public class EnemyManager : MonoBehaviour
         {
             // This happens when manually add config in Unity editor in runtime.
             // Just silently wait for the manual change.
+            Debug.LogError("The config has duplicated waves");
             return;
         }
 
@@ -123,7 +124,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
-        currentWaveConfig = configs[index];
+        currentWaveConfig = configs[index: index];
     }
 
     private Dictionary<EnemyType, GameObject> getEnemyPrefabDictionary()

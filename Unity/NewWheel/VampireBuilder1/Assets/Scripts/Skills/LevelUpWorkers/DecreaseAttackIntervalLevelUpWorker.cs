@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DecreaseAttackIntervalLevelUpWorker : MonoBehaviour, LevelUpWorker
 {
-    [SerializeField] float changeAmount = 0.1f;
+    [SerializeField] float changeAmount = -0.1f;
 
     [SerializeField] FloatVariable factor;
 
