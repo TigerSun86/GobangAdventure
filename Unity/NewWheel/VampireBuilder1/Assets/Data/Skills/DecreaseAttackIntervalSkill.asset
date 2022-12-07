@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76e75bb920043d045a56a4b312ade41f, type: 3}
+  m_Name: DecreaseAttackIntervalSkill
+  m_EditorClassIdentifier: 
+  skillName: Decrease Attack Interval
+  level: 0
+  maxLevel: 0
+  dependencies: []
+  skillDescriptions:
+  - level: 1
+    format: Decrease the player attack interval by {0}
+    parameters:
+    - {fileID: 11400000, guid: f15f73a9764a99944a5510ddb21f76d3, type: 2}

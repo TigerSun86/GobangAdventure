@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50279f24193d5774e935aced1a6c2196, type: 3}
   m_Name: DivisionOperation
   m_EditorClassIdentifier: 
-  operationType: 0
+  operationType: 3

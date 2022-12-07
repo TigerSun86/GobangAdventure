@@ -9,7 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac82b735e2c7a294794f9d467c9feb15, type: 3}
+  m_Script: {fileID: 11500000, guid: f62b78c850fba77408b72fd89df809dd, type: 3}
   m_Name: SkillUpgradeSequence
   m_EditorClassIdentifier: 
-  Items: []
+  Items:
+  - {fileID: 11400000, guid: 443b30e1060464f4aa5a8e4d0299dc38, type: 2}
+  - {fileID: 11400000, guid: a11b8e158ff4a704bb9e496562d5bd43, type: 2}
+  - {fileID: 11400000, guid: a5b377c9c2044954ab3f8b8aa8788a66, type: 2}
+  - {fileID: 11400000, guid: f2bd3770cafce68438b3dd9aaf9b297e, type: 2}
+  - {fileID: 11400000, guid: c842eff84519994468ad6ec833b88b45, type: 2}
+  - {fileID: 11400000, guid: e306b5f61118e284fb820df1cb2b19c6, type: 2}
+  - {fileID: 11400000, guid: 19b692b5b0d06e7419a219ce6081fc54, type: 2}

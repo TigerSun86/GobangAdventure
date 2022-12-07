@@ -49,4 +49,9 @@ public class FloatVariable : ScriptableObject, ISerializationCallbackReceiver
     public void OnBeforeSerialize()
     {
     }
+
+    public override string ToString()
+    {
+        return value.ToString();
+    }
 }

@@ -1,17 +1,19 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 [Serializable]
 public class SkillDependency
 {
-    public SkillBase skill;
+    public Skill skill;
 
-    public int level;
+    public int requiredLevel;
+
+    public bool MeetRequirement()
+    {
+        return skill.level >= requiredLevel;
+    }
 
     public override string ToString()
     {
-        return $"{skill.GetName()} {level}";
+        return $"{skill.name} {requiredLevel}";
     }
 }

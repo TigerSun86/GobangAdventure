@@ -7,15 +7,15 @@ using UnityEngine;
 
 public class SkillUpgradeButton : MonoBehaviour
 {
-    [SerializeField] SkillBase skill;
+    [SerializeField] Skill skill;
     [SerializeField] TextMeshProUGUI skillNameText;
     [SerializeField] TextMeshProUGUI levelText;
     [SerializeField] TextMeshProUGUI skillDescriptionText;
 
-    public void SetSkill(SkillBase skill)
+    public void SetSkill(Skill skill)
     {
         this.skill = skill;
-        skillNameText.text = skill.GetName();
+        skillNameText.text = skill.name;
         if (skill.dependencies.Any())
         {
             string dependencies = string.Join(",", skill.dependencies);
