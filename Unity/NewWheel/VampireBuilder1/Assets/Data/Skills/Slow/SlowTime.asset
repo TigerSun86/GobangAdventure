@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SlowTime
   m_EditorClassIdentifier: 
   DeveloperDescription: The slow skill effect duration
-  defaultValue: 2
-  value: 2
+  defaultValue: 5
+  value: 5

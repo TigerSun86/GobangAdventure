@@ -9,7 +9,7 @@ public class Slow : MonoBehaviour, SpeedChange
 
     [SerializeField] FloatVariable speedChangeRate;
 
-    [SerializeField] UnityEvent<GameObject, AttackData> attackTargetSelectEvent;
+    [SerializeField] UnityEvent<GameObject, float> slowEvent;
 
     float speedChangeRateInteral;
 
@@ -29,6 +29,7 @@ public class Slow : MonoBehaviour, SpeedChange
 
         move = this.gameObject.GetComponentInParent<Move>();
         move.ApplySpeedChange(this);
+        slowEvent.Invoke(move.gameObject, timeToLive.value);
     }
 
     private void Update()

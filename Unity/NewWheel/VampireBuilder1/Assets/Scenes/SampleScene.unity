@@ -4273,6 +4273,7 @@ Transform:
   - {fileID: 1285760867}
   - {fileID: 1100077650}
   - {fileID: 7916799153123391880}
+  - {fileID: 1537481194}
   - {fileID: 1840129308}
   - {fileID: 4949922921752012612}
   - {fileID: 987066954}
@@ -4327,6 +4328,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e306b5f61118e284fb820df1cb2b19c6, type: 2}
   - {fileID: 11400000, guid: a5b377c9c2044954ab3f8b8aa8788a66, type: 2}
   - {fileID: 11400000, guid: 55b4978edc890914dad5ff607b4ca32d, type: 2}
+  - {fileID: 11400000, guid: cc0f4bb5911433944b9fbddbf892c072, type: 2}
   - {fileID: 11400000, guid: c842eff84519994468ad6ec833b88b45, type: 2}
   - {fileID: 11400000, guid: 19b692b5b0d06e7419a219ce6081fc54, type: 2}
   - {fileID: 11400000, guid: 443b30e1060464f4aa5a8e4d0299dc38, type: 2}
@@ -5995,7 +5997,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 731787893}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &987066955
 MonoBehaviour:
@@ -7529,7 +7531,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 731787893}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1300932777
 MonoBehaviour:
@@ -8683,6 +8685,111 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490214063}
   m_CullTransparentMesh: 1
+--- !u!1 &1537481193
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1537481194}
+  - component: {fileID: 1537481196}
+  - component: {fileID: 1537481195}
+  - component: {fileID: 1537481197}
+  m_Layer: 0
+  m_Name: FrozenSkill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1537481194
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537481193}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -10.542337, y: 0.6095103, z: 10.012899}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 731787893}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1537481195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537481193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c0cac0920ca8a84b83c09f90e3ffd75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skill: {fileID: 11400000, guid: cc0f4bb5911433944b9fbddbf892c072, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1537481196}
+        m_TargetAssemblyTypeName: FrozenLevelUpWorker, Assembly-CSharp
+        m_MethodName: LevelUp
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1537481196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537481193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3854f57ee6d064d4b9e41b2b86c1a134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 843753813805341757, guid: c2ed5ad87ae190242866c78d76131a8c, type: 3}
+  changeAmount: {fileID: 11400000, guid: 9bab70b4862f9a54d87b4cb153e54ee9, type: 2}
+  factor: {fileID: 11400000, guid: 654357405d4f4264a90eeadfa935aab0, type: 2}
+--- !u!114 &1537481197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537481193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3e88398b808fe941b02294b0536840d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: c9440f1eb537dfa4a9ad019bc5591119, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1537481196}
+        m_TargetAssemblyTypeName: FrozenLevelUpWorker, Assembly-CSharp
+        m_MethodName: Run
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1540351553
 GameObject:
   m_ObjectHideFlags: 0
@@ -10412,7 +10519,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 731787893}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1840129309
 MonoBehaviour:
@@ -11114,7 +11221,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 731787893}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5331650854712617407
 MonoBehaviour:
