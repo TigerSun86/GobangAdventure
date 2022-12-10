@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SpawnIntervalVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: 
-  defaultValue: 2
-  value: 2
+  defaultValue: 4
+  value: 4

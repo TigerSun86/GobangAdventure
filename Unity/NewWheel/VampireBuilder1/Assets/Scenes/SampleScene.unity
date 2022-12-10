@@ -3945,7 +3945,7 @@ MonoBehaviour:
     - enemyType: 0
       minCount: 1
       maxCount: 3
-  - waveNumber: 5
+  - waveNumber: 20
     enemies:
     - enemyType: 0
       minCount: 1
@@ -3953,14 +3953,14 @@ MonoBehaviour:
     - enemyType: 1
       minCount: 0
       maxCount: 1
-  - waveNumber: 10
+  - waveNumber: 40
     enemies:
     - enemyType: 0
-      minCount: 3
-      maxCount: 6
+      minCount: 2
+      maxCount: 3
     - enemyType: 1
       minCount: 1
-      maxCount: 3
+      maxCount: 2
   currentWaveConfig:
     waveNumber: 0
     enemies: []
