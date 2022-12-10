@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3258367023241068380}
   - component: {fileID: 8423229783585627278}
-  - component: {fileID: 3486350942840374317}
   - component: {fileID: 2347540660389084045}
   - component: {fileID: 3807371709241022318}
   - component: {fileID: 1303345505088564791}
@@ -20,6 +19,7 @@ GameObject:
   - component: {fileID: 7639509605694257794}
   - component: {fileID: -1311677499153844284}
   - component: {fileID: -3553132888984764722}
+  - component: {fileID: -8492735098726431486}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Bullet
@@ -94,19 +94,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3486350942840374317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232792271753850171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8aed41320ab10e4e834df3c016ba09f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: {fileID: 11400000, guid: 9e40faef6e1e08b45bdbb3469956eb30, type: 2}
 --- !u!50 &2347540660389084045
 Rigidbody2D:
   serializedVersion: 4
@@ -157,10 +144,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
-  targetTag: Enemy
-  attackEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &2286131043201406279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,3 +264,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &-8492735098726431486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232792271753850171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2d522daf2828624eb7140a78a603b86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultSpeed: {fileID: 11400000, guid: 9e40faef6e1e08b45bdbb3469956eb30, type: 2}
+  direction: {x: 1, y: 0}
