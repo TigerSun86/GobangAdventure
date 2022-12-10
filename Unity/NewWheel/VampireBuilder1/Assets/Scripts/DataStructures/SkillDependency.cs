@@ -14,6 +14,6 @@ public class SkillDependency
 
     public override string ToString()
     {
-        return $"{skill.name} {requiredLevel}";
+        return $"{skill.skillName} {requiredLevel}";
     }
 }

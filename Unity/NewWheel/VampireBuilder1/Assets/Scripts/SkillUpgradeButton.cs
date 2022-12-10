@@ -15,7 +15,7 @@ public class SkillUpgradeButton : MonoBehaviour
     public void SetSkill(Skill skill)
     {
         this.skill = skill;
-        skillNameText.text = skill.name;
+        skillNameText.text = skill.skillName;
         if (skill.dependencies.Any())
         {
             string dependencies = string.Join(",", skill.dependencies);
