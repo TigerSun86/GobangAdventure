@@ -4276,6 +4276,7 @@ Transform:
   - {fileID: 1840129308}
   - {fileID: 4949922921752012612}
   - {fileID: 987066954}
+  - {fileID: 1300932776}
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4329,6 +4330,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c842eff84519994468ad6ec833b88b45, type: 2}
   - {fileID: 11400000, guid: 19b692b5b0d06e7419a219ce6081fc54, type: 2}
   - {fileID: 11400000, guid: 443b30e1060464f4aa5a8e4d0299dc38, type: 2}
+  - {fileID: 11400000, guid: d4bc365cfd361dd4789082f2860b543b, type: 2}
 --- !u!114 &731787896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7495,6 +7497,111 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   changeAmount: 0.2
   factor: {fileID: 11400000, guid: 0e1c6a3b2fbff774d862a820f3292177, type: 2}
+--- !u!1 &1300932775
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1300932776}
+  - component: {fileID: 1300932779}
+  - component: {fileID: 1300932778}
+  - component: {fileID: 1300932777}
+  m_Layer: 0
+  m_Name: SlowSkill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1300932776
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300932775}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 731787893}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1300932777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300932775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3e88398b808fe941b02294b0536840d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: c9440f1eb537dfa4a9ad019bc5591119, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1300932779}
+        m_TargetAssemblyTypeName: SlowLevelUpWorker, Assembly-CSharp
+        m_MethodName: Run
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1300932778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300932775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c0cac0920ca8a84b83c09f90e3ffd75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skill: {fileID: 11400000, guid: d4bc365cfd361dd4789082f2860b543b, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1300932779}
+        m_TargetAssemblyTypeName: SlowLevelUpWorker, Assembly-CSharp
+        m_MethodName: LevelUp
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1300932779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300932775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c9268bb186f4540bc1ea2741029d78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 3656459903569065014, guid: 656f430ac3940424e9fc652847ccaf23, type: 3}
+  changeAmount: {fileID: 11400000, guid: 29b61ddcb8871a5458a3c60cb11f324a, type: 2}
+  factor: {fileID: 11400000, guid: 45a71458e7c5dc247ba6e625c1afaca5, type: 2}
 --- !u!1 &1321692944
 GameObject:
   m_ObjectHideFlags: 0

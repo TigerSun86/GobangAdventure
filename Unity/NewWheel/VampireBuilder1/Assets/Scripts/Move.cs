@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,22 +13,50 @@ public class Move : MonoBehaviour
 
     Rigidbody2D rb;
 
-    float speed;
+    List<SpeedChange> speedChanges = new List<SpeedChange>();
 
-    public void SetSpeed(float s)
+    public void ApplySpeedChange(SpeedChange speedChange)
     {
-        rb.velocity = direction * s;
+        if (speedChange.GetSpeedChangeRate() < 0)
+        {
+            Debug.LogError($"Could not support negative speed change rate {speedChange.GetSpeedChangeRate()}");
+            return;
+        }
+
+        speedChanges.Add(speedChange);
+        RefreshSpeed();
+    }
+
+    public void RemoveSpeedChange(SpeedChange speedChange)
+    {
+        speedChanges.Remove(speedChange);
+        RefreshSpeed();
     }
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         direction.Normalize();
-        speed = defaultSpeed.value;
     }
 
     private void Start()
     {
-        SetSpeed(defaultSpeed.value);
+        RefreshSpeed();
+    }
+
+    private void RefreshSpeed()
+    {
+        float rate = 1f;
+        if (speedChanges.Any())
+        {
+            rate = speedChanges.Select(s => s.GetSpeedChangeRate()).Min();
+        }
+
+        SetSpeed(defaultSpeed.value * rate);
+    }
+
+    private void SetSpeed(float s)
+    {
+        rb.velocity = direction * s;
     }
 }
