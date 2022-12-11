@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: EnemyAttackFactorVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: 
-  defaultValue: 10
-  value: 10
+  defaultValue: 1
+  value: 1

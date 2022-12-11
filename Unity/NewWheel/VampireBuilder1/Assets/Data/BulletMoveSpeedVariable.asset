@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BulletMoveSpeedVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: The speed of bullet movement
-  defaultValue: 5
-  value: 5
+  defaultValue: 2
+  value: 2

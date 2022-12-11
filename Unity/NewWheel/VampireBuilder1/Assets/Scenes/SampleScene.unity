@@ -6315,7 +6315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e2b9f55302e514f80c9b531db73c3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  changeAmount: -0.1
+  changeAmount: {fileID: 11400000, guid: 12390f48f50052f43a82bfc39fb068d3, type: 2}
   factor: {fileID: 11400000, guid: 2a6f1562002f3da42b4da2a838533da9, type: 2}
 --- !u!1 &1111486919
 GameObject:

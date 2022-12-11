@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: NormalEnemyMaxHealthVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: Indicate the max health value of normal enemy
-  defaultValue: 10
-  value: 10
+  defaultValue: 50
+  value: 50

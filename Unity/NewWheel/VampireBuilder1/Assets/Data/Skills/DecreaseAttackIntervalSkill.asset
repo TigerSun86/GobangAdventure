@@ -20,4 +20,6 @@ MonoBehaviour:
   - level: 1
     format: Decrease the player attack interval by {0}
     parameters:
-    - {fileID: 11400000, guid: f15f73a9764a99944a5510ddb21f76d3, type: 2}
+    - {fileID: 11400000, guid: 3a6c11590154749489ac090dcb91c0e2, type: 2}
+    - {fileID: 11400000, guid: cff20a574e6adc34295ed9a550df4b20, type: 2}
+    - {fileID: 11400000, guid: 12390f48f50052f43a82bfc39fb068d3, type: 2}

@@ -58,6 +58,6 @@ public class Level : MonoBehaviour
 
     private int CalculateExperienceToLevelUp(int level)
     {
-        return level * 200;
+        return (int)(Mathf.Sqrt(level) * 200);
     }
 }

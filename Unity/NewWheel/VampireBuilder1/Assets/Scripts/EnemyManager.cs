@@ -43,7 +43,7 @@ public class EnemyManager : MonoBehaviour
         spawnWaveNumber.ApplyChange(1);
         if (spawnWaveNumber.value % 5 == 0)
         {
-            normalEnemyMaxHealth.value += 5;
+            normalEnemyMaxHealth.value += 1;
         }
 
         UpdateCurrentWaveConfig();

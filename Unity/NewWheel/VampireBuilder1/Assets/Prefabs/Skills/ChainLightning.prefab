@@ -46,12 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ef2b80ae21bf64cbddbac447f2d615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialAttackBase: 0.5
   maxCount: {fileID: 11400000, guid: b529b75b3fd0f5e48852f598a51de52e, type: 2}
   attackDecreaseRate: {fileID: 11400000, guid: 24824790b2c54dd41a5b2a3a2538a86a, type: 2}
-  initialAttack: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
-  attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
   attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
-  criticalHit: {fileID: 0}
   chainLightningRunEvent:
     m_PersistentCalls:
       m_Calls:
@@ -95,10 +93,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
-  targetTag: 
-  attackEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &-858036058004576346
 MonoBehaviour:
   m_ObjectHideFlags: 0

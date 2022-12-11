@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DeveloperDescription: 
   defaultValue: 0.15
-  value: 0.15
+  value: 0.5

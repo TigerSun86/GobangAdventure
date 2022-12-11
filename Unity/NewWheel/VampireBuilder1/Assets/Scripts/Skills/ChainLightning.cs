@@ -10,7 +10,7 @@ public class ChainLightning : MonoBehaviour
 {
     private static readonly float ATTACK_INTERVAL = 0.2f;
 
-    [SerializeField] float initialAttackBase = 1f;
+    [SerializeField] float initialAttackBase;
 
     [SerializeField] IntVariable maxCount;
 

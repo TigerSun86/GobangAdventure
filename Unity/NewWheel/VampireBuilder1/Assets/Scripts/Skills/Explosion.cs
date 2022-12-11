@@ -10,7 +10,7 @@ public class Explosion : MonoBehaviour
 
     [SerializeField] FloatVariable attackAreaFactor;
 
-    [SerializeField] AttackData attackBase = new AttackData(0.5f);
+    [SerializeField] AttackData attackBase;
 
     [SerializeField] GameObject effect;
 
@@ -23,7 +23,7 @@ public class Explosion : MonoBehaviour
     private void Start()
     {
         timer = TIME_TO_LIVE;
-        radius = attackAreaFactor.value;
+        radius = attackAreaFactor.value / 2f;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.gameObject.transform.position, radius);
         foreach (Collider2D collider in colliders)
         {
@@ -36,7 +36,7 @@ public class Explosion : MonoBehaviour
         if (effect != null)
         {
             GameObject effectInstance = Instantiate(effect, this.gameObject.transform.position, Quaternion.identity, this.transform);
-            effectInstance.transform.localScale *= attackAreaFactor.value * 2;
+            effectInstance.transform.localScale *= radius;
         }
     }
 
