@@ -11,6 +11,8 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] List<Skill> skills;
 
+    [SerializeField] List<MainSkill> mainSkills;
+
     public void RefreshSkillUpgradeSequence()
     {
         skillUpgradeSequence.Items.Clear();

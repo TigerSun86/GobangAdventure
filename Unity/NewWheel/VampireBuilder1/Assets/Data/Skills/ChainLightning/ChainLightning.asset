@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70045fafb65c98d49940a1621fa1b79c, type: 3}
+  m_Name: ChainLightning
+  m_EditorClassIdentifier: 
+  description: 
+  defaultAttack: 8
+  defaultCriticalRate: 0
+  defaultCriticalAmount: 2
+  defaultArea: 3
+  defaultAttackDecrease: 0.5
+  attack: 8
+  criticalRate: 0
+  criticalAmount: 2
+  area: 3
+  attackDecrease: 0.5
+  subSkills:
+  - {fileID: 11400000, guid: 837bc788b6dd16a4c9b6382209486396, type: 2}
+  - {fileID: 11400000, guid: a3cb94aed7ad8f9418b9e0b6bf6fd7dc, type: 2}
+  - {fileID: 11400000, guid: f1231a47b68528c45aef650840eeb140, type: 2}
+  - {fileID: 11400000, guid: 43a631e542ca8b440a6f247a1360cacc, type: 2}
