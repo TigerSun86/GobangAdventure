@@ -11,7 +11,11 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] List<Skill> skills;
 
-    [SerializeField] List<MainSkill> mainSkills;
+    [SerializeField] MainSkillRuntimeSet activeSkills;
+
+    [SerializeField] MainSkillRuntimeSet inactiveSkills;
+
+    [SerializeField] UpgradeOptionRuntimeSet upgradeOptionSequence;
 
     public void RefreshSkillUpgradeSequence()
     {
@@ -20,17 +24,44 @@ public class SkillManager : MonoBehaviour
             skills
                 .Where(s => s.IsUpgradable())
                 .OrderBy(s => Random.value));
+
+        List<UpgradeOption> upgradeOptions = new List<UpgradeOption>();
+
+        foreach (MainSkill mainSkill in activeSkills.Items)
+        {
+            foreach (SubSkill subSkill in mainSkill.subSkills)
+            {
+                if (subSkill.CanLevelUp())
+                {
+                    upgradeOptions.Add(new SubSkillUpgradeOption(subSkill));
+                }
+            }
+        }
+
+        foreach (MainSkill mainSkill in inactiveSkills.Items)
+        {
+            upgradeOptions.Add(new MainSkillUpgradeOption(mainSkill));
+        }
+
+        upgradeOptionSequence.Items.Clear();
+        upgradeOptionSequence.Items.AddRange(upgradeOptions.OrderBy(s => Random.value));
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        foreach (MainSkill mainSkill in mainSkills)
+        for (int i = activeSkills.Items.Count - 1; i >= 0; i--)
         {
-            mainSkill.Reset();
+            MainSkill mainSkill = activeSkills.Items[i];
+            if (i == 0)
+            {
+                mainSkill.Reset();
+            }
+            else
+            {
+                mainSkill.Disable();
+            }
         }
-
-        mainSkills.First().isEnabled = true;
 
         RefreshSkillUpgradeSequence();
     }

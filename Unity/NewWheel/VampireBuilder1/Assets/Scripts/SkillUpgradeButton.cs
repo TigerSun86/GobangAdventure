@@ -1,29 +1,19 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class SkillUpgradeButton : MonoBehaviour
 {
-    [SerializeField] Skill skill;
+    [SerializeField] UpgradeOption skill;
     [SerializeField] TextMeshProUGUI skillNameText;
     [SerializeField] TextMeshProUGUI levelText;
     [SerializeField] TextMeshProUGUI skillDescriptionText;
 
-    public void SetSkill(Skill skill)
+    public void SetSkill(UpgradeOption skill)
     {
         this.skill = skill;
-        skillNameText.text = skill.skillName;
-        if (skill.dependencies.Any())
-        {
-            string dependencies = string.Join(",", skill.dependencies);
-            skillNameText.text += $" ({dependencies})";
-        }
-
-        levelText.text = "Level " + skill.GetNextLevel();
-        skillDescriptionText.text = skill.GetNextLevelDescription();
+        skillNameText.text = skill.upgradeName;
+        levelText.text = skill.levelText;
+        skillDescriptionText.text = skill.description;
     }
 
     public void Enable()
@@ -38,6 +28,6 @@ public class SkillUpgradeButton : MonoBehaviour
 
     public void Upgrade()
     {
-        skill.LevelUp();
+        skill.TriggerUpgrade();
     }
 }

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95943452fda5c8e4dbe2824fd4af9408, type: 3}
   m_Name: Area
   m_EditorClassIdentifier: 
+  skillName: Bounce count
   currentLevel: 0
   gemType: 2
   levelInfos:
@@ -19,3 +20,8 @@ MonoBehaviour:
     description: Increase the bounce count to 4
     attributeType: 3
     value: 4
+  - level: 2
+    description: Increase the bounce count to 5
+    attributeType: 3
+    value: 5
+  mainSkill: {fileID: 11400000, guid: cb978f8a679d8c84089b1cf365665943, type: 2}

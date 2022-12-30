@@ -1,10 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu]
 public class MainSkill : ScriptableObject
 {
-    public bool isEnabled;
+    [SerializeField] MainSkillRuntimeSet activeSkills;
+
+    [SerializeField] MainSkillRuntimeSet inactiveSkills;
+
+    public string skillName;
 
     public string description;
 
@@ -28,14 +33,23 @@ public class MainSkill : ScriptableObject
 
     public float attackDecrease;
 
-    public SubSkill initialSubSkill;
-
     public List<SubSkill> subSkills;
+
+    public void Enable()
+    {
+        activeSkills.Add(this);
+        inactiveSkills.Remove(this);
+    }
+
+    public void Disable()
+    {
+        activeSkills.Remove(this);
+        inactiveSkills.Add(this);
+        Reset();
+    }
 
     public void Reset()
     {
-        isEnabled = false;
-
         attack = defaultAttack;
         criticalRate = defaultCriticalRate;
         criticalAmount = defaultCriticalAmount;
@@ -47,7 +61,10 @@ public class MainSkill : ScriptableObject
             subSkill.SetMainSkill(this);
             subSkill.Reset();
         }
+    }
 
-        initialSubSkill.LevelUp();
+    public IEnumerable<SubSkill> GetActiveSubSkills()
+    {
+        return subSkills.Where(s => s.currentLevel > 0);
     }
 }

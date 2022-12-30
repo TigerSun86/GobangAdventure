@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70045fafb65c98d49940a1621fa1b79c, type: 3}
   m_Name: ChainLightning
   m_EditorClassIdentifier: 
-  description: 
+  activeSkills: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
+  inactiveSkills: {fileID: 11400000, guid: 45e5a03e739c22642b17942311356d33, type: 2}
+  skillName: Chain Lightning
+  description: Chain Lightning skill description
   defaultAttack: 8
   defaultCriticalRate: 0
   defaultCriticalAmount: 2
@@ -23,7 +26,6 @@ MonoBehaviour:
   criticalAmount: 2
   area: 3
   attackDecrease: 0.5
-  initialSubSkill: {fileID: 11400000, guid: a3cb94aed7ad8f9418b9e0b6bf6fd7dc, type: 2}
   subSkills:
   - {fileID: 11400000, guid: 837bc788b6dd16a4c9b6382209486396, type: 2}
   - {fileID: 11400000, guid: a3cb94aed7ad8f9418b9e0b6bf6fd7dc, type: 2}

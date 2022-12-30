@@ -6,13 +6,27 @@ using UnityEngine;
 [CreateAssetMenu]
 public class SubSkill : ScriptableObject
 {
+    public string skillName;
+
     public int currentLevel;
 
     public GemType gemType;
 
     public List<SubSkillLevelInfo> levelInfos;
 
-    private MainSkill mainSkill;
+    public MainSkill mainSkill;
+
+    public SubSkillLevelInfo GetNextLevelInfo()
+    {
+        int newLevel = currentLevel + 1;
+        SubSkillLevelInfo levelInfo = levelInfos.FirstOrDefault(l => l.level == newLevel);
+        if (levelInfo == null)
+        {
+            throw new System.Exception($"Could not find the sub skill [{skillName}] for level {newLevel}");
+        }
+
+        return levelInfo;
+    }
 
     public bool CanLevelUp()
     {
@@ -21,17 +35,11 @@ public class SubSkill : ScriptableObject
 
     public void LevelUp()
     {
-        int newLevel = currentLevel + 1;
-        SubSkillLevelInfo levelInfo = levelInfos.FirstOrDefault(l => l.level == newLevel);
-        if (levelInfo == null)
-        {
-            Debug.LogError($"Could not find the sub skill for level {newLevel}");
-            return;
-        }
+        SubSkillLevelInfo levelInfo = GetNextLevelInfo();
 
         ApplyChange(mainSkill, levelInfo);
 
-        currentLevel++;
+        currentLevel = levelInfo.level;
     }
 
     public void SetMainSkill(MainSkill mainSkill)

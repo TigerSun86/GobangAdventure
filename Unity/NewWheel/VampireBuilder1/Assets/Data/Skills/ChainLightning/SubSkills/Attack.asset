@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95943452fda5c8e4dbe2824fd4af9408, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: 
+  skillName: Attack
   currentLevel: 0
   gemType: 0
   levelInfos:

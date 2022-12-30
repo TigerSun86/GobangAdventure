@@ -10,9 +10,4 @@ public class SubSkillLevelInfo
     public AttributeType attributeType;
 
     public float value;
-
-    public override string ToString()
-    {
-        return description;
-    }
 }
