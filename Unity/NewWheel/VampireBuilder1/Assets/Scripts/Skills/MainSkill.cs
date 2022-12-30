@@ -1,12 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [CreateAssetMenu]
-public class MainSkill : ScriptableObject, ISerializationCallbackReceiver
+public class MainSkill : ScriptableObject
 {
+    public bool isEnabled;
+
     public string description;
 
     public float defaultAttack;
@@ -29,10 +28,14 @@ public class MainSkill : ScriptableObject, ISerializationCallbackReceiver
 
     public float attackDecrease;
 
+    public SubSkill initialSubSkill;
+
     public List<SubSkill> subSkills;
 
     public void Reset()
     {
+        isEnabled = false;
+
         attack = defaultAttack;
         criticalRate = defaultCriticalRate;
         criticalAmount = defaultCriticalAmount;
@@ -42,16 +45,9 @@ public class MainSkill : ScriptableObject, ISerializationCallbackReceiver
         foreach (SubSkill subSkill in subSkills)
         {
             subSkill.SetMainSkill(this);
+            subSkill.Reset();
         }
-    }
 
-    public void OnAfterDeserialize()
-    {
-        SceneManager.sceneLoaded += (a, b) => Reset();
-        EditorApplication.playModeStateChanged += (a) => Reset();
-    }
-
-    public void OnBeforeSerialize()
-    {
+        initialSubSkill.LevelUp();
     }
 }

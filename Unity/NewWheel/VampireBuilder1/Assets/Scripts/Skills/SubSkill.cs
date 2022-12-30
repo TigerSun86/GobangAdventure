@@ -1,14 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [CreateAssetMenu]
-public class SubSkill : ScriptableObject, ISerializationCallbackReceiver
+public class SubSkill : ScriptableObject
 {
     public int currentLevel;
 
@@ -48,16 +44,6 @@ public class SubSkill : ScriptableObject, ISerializationCallbackReceiver
         currentLevel = 0;
     }
 
-    public void OnAfterDeserialize()
-    {
-        SceneManager.sceneLoaded += (a, b) => Reset();
-        EditorApplication.playModeStateChanged += (a) => Reset();
-    }
-
-    public void OnBeforeSerialize()
-    {
-    }
-
     private void ApplyChange(MainSkill mainSkill, SubSkillLevelInfo levelInfo)
     {
         float value = levelInfo.value;
@@ -65,6 +51,18 @@ public class SubSkill : ScriptableObject, ISerializationCallbackReceiver
         {
             case AttributeType.ATTACK:
                 mainSkill.attack = value;
+                break;
+            case AttributeType.CRITICAL_RATE:
+                mainSkill.criticalRate = value;
+                break;
+            case AttributeType.CRITICAL_AMOUNT:
+                mainSkill.criticalAmount = value;
+                break;
+            case AttributeType.AREA:
+                mainSkill.area = value;
+                break;
+            case AttributeType.ATTACK_DECREASE:
+                mainSkill.attackDecrease = value;
                 break;
             default:
                 throw new InvalidEnumArgumentException(

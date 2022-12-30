@@ -25,6 +25,13 @@ public class SkillManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        foreach (MainSkill mainSkill in mainSkills)
+        {
+            mainSkill.Reset();
+        }
+
+        mainSkills.First().isEnabled = true;
+
         RefreshSkillUpgradeSequence();
     }
 }
