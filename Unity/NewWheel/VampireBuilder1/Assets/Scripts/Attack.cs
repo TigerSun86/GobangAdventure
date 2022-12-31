@@ -1,27 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class Attack : MonoBehaviour
 {
-    [SerializeField] FloatVariable attackFactor;
-
     public void AttackObject(GameObject gameObject, AttackData attackBase)
     {
-        float damage = attackBase.attackBase;
-        if (!attackBase.attackOption.HasFlag(AttackOption.NoFactor))
-        {
-            damage *= attackFactor.value;
-        }
-
+        float damage = attackBase.attack;
         DamageType damageType = DamageType.NORMAL_ATTACK;
-        if (!attackBase.attackOption.HasFlag(AttackOption.NoCritical))
+        if (attackBase.criticalRate > 0)
         {
-            CriticalHit criticalHit = GetComponent<CriticalHit>();
-            if (criticalHit != null)
+            bool isCriticalHit = Random.value < attackBase.criticalRate;
+            if (isCriticalHit)
             {
-                (damage, damageType) = criticalHit.CalculateDamage(damage);
+                damage *= attackBase.criticalAmount;
+                damageType = DamageType.CRITICAL_HIT;
             }
         }
 

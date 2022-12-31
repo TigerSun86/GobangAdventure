@@ -1,18 +1,25 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 [Serializable]
 public class AttackData
 {
-    public float attackBase;
+    public float attack;
 
-    public AttackOption attackOption;
+    public float criticalRate;
 
-    public AttackData(float attackBase, AttackOption attackOption = AttackOption.None)
+    public float criticalAmount;
+
+    public AttackData(float attack, float criticalRate = 0, float criticalAmount = 2)
     {
-        this.attackBase = attackBase;
-        this.attackOption = attackOption;
+        this.attack = attack;
+        this.criticalRate = criticalRate;
+        this.criticalAmount = criticalAmount;
+    }
+
+    public AttackData(MainSkill mainSkill)
+    {
+        this.attack = mainSkill.attack;
+        this.criticalRate = mainSkill.criticalRate;
+        this.criticalAmount = mainSkill.criticalAmount;
     }
 }

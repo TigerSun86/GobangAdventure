@@ -1,22 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using Random = UnityEngine.Random;
 
-public class ChainLightning : MonoBehaviour
+public class ChainLightning : SkillPrefab
 {
     private static readonly float ATTACK_INTERVAL = 0.2f;
 
-    [SerializeField] float initialAttackBase;
+    private static readonly float ATTACK_AREA = 10f;
 
-    [SerializeField] IntVariable maxCount;
-
-    [SerializeField] FloatVariable attackDecreaseRate;
-
-    [SerializeField] FloatVariable attackAreaFactor;
+    [SerializeField] MainSkill mainSkill;
 
     [SerializeField] UnityEvent<List<Vector3>> chainLightningRunEvent;
 
@@ -35,9 +28,9 @@ public class ChainLightning : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        remainingCount = maxCount.value;
-        currentAttack = initialAttackBase;
-        radius = attackAreaFactor.value + 2;
+        remainingCount = (int)Math.Round(mainSkill.area);
+        currentAttack = mainSkill.attack;
+        radius = ATTACK_AREA;
     }
 
     // Update is called once per frame
@@ -51,7 +44,7 @@ public class ChainLightning : MonoBehaviour
 
         timer = ATTACK_INTERVAL;
 
-        if (remainingCount <= 0)
+        if (remainingCount <= 0 || target == null)
         {
             Destroy(this.gameObject);
             return;
@@ -59,24 +52,29 @@ public class ChainLightning : MonoBehaviour
 
         remainingCount--;
 
+        attackTargetSelectEvent.Invoke(target, new AttackData(mainSkill)
+        {
+            attack = currentAttack
+        });
+
+        currentAttack *= (1 - mainSkill.attackDecrease);
+
         debugPosition = this.transform.position;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, radius);
-        Collider2D target = PositionUtilities.FindRandom(
+        Collider2D nextTarget = PositionUtilities.FindRandom(
             colliders,
             (o) => DamagableUtilities.IsDamagableEnemy(o.gameObject),
             (o) => o.gameObject.transform.position);
-        if (target == null)
+        if (nextTarget == null)
         {
             Destroy(this.gameObject);
             return;
         }
 
-        float attack = currentAttack;
-        currentAttack *= (1 - attackDecreaseRate.value);
-        attackTargetSelectEvent.Invoke(target.gameObject, new AttackData(attack));
-        chainLightningRunEvent.Invoke(new List<Vector3>() { this.transform.position, target.gameObject.transform.position });
+        chainLightningRunEvent.Invoke(new List<Vector3>() { this.transform.position, nextTarget.gameObject.transform.position });
 
-        this.transform.position = target.gameObject.transform.position;
+        this.transform.position = nextTarget.gameObject.transform.position;
+        this.target = nextTarget.gameObject;
     }
 
     void OnDrawGizmos()

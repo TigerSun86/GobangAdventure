@@ -62,11 +62,12 @@ public class SkillManager : MonoBehaviour
             }
 
             GameObject prefab = skillNameAndPrefabMap[mainSkill.skillName];
-            Instantiate(
+            GameObject instance = Instantiate(
                 prefab,
                 other.gameObject.transform.position,
                 Quaternion.identity,
                 this.transform);
+            instance.GetComponent<SkillPrefab>().target = other.gameObject;
         }
     }
 

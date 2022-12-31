@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3995482541262085310}
   - component: {fileID: 3995482541262085311}
   - component: {fileID: -8845075505843248639}
-  - component: {fileID: -858036058004576346}
   m_Layer: 0
   m_Name: ChainLightning
   m_TagString: Untagged
@@ -46,10 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ef2b80ae21bf64cbddbac447f2d615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAttackBase: 0.5
-  maxCount: {fileID: 11400000, guid: b529b75b3fd0f5e48852f598a51de52e, type: 2}
-  attackDecreaseRate: {fileID: 11400000, guid: 24824790b2c54dd41a5b2a3a2538a86a, type: 2}
-  attackAreaFactor: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
+  target: {fileID: 0}
+  mainSkill: {fileID: 11400000, guid: cb978f8a679d8c84089b1cf365665943, type: 2}
   chainLightningRunEvent:
     m_PersistentCalls:
       m_Calls:
@@ -93,17 +90,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
---- !u!114 &-858036058004576346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3995482541262085184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8171169bb3b43cc4cbd7c1f6ce51277d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  criticalHitChance: {fileID: 11400000, guid: 0e1c6a3b2fbff774d862a820f3292177, type: 2}
-  criticalHitDamage: {fileID: 11400000, guid: 0ea0b0c1472f10f43a1fa3a66b6571bb, type: 2}

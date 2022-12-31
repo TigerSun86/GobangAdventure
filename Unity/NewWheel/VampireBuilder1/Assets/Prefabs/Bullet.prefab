@@ -12,12 +12,10 @@ GameObject:
   - component: {fileID: 8423229783585627278}
   - component: {fileID: 2347540660389084045}
   - component: {fileID: 3807371709241022318}
-  - component: {fileID: 1303345505088564791}
   - component: {fileID: 2286131043201406279}
   - component: {fileID: -6599833735012603784}
   - component: {fileID: 3980965466641927810}
   - component: {fileID: 7639509605694257794}
-  - component: {fileID: -1311677499153844284}
   - component: {fileID: -3553132888984764722}
   - component: {fileID: -8492735098726431486}
   m_Layer: 0
@@ -131,19 +129,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &1303345505088564791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232792271753850171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 533c223e74cd0064cad18e2816647f1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}
 --- !u!114 &2286131043201406279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,20 +189,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   timeToLive: 0
---- !u!114 &-1311677499153844284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232792271753850171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8171169bb3b43cc4cbd7c1f6ce51277d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  criticalHitChance: {fileID: 11400000, guid: 0e1c6a3b2fbff774d862a820f3292177, type: 2}
-  criticalHitDamage: {fileID: 11400000, guid: 0ea0b0c1472f10f43a1fa3a66b6571bb, type: 2}
 --- !u!114 &-3553132888984764722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,24 +202,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackBase:
-    attackBase: 1
-    attackOption: 0
+    attack: 0
+    criticalRate: 0
+    criticalAmount: 2
   targetTag: Enemy
   attackTargetSelectEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1303345505088564791}
-        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
-        m_MethodName: AttackObject
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   enemyHitEvent:
     m_PersistentCalls:
       m_Calls:
