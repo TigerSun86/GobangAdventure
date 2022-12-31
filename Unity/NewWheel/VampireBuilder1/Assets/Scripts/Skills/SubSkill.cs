@@ -40,6 +40,8 @@ public class SubSkill : ScriptableObject
         ApplyChange(mainSkill, levelInfo);
 
         currentLevel = levelInfo.level;
+
+        mainSkill.activeSkills.NotifyChanged();
     }
 
     public void SetMainSkill(MainSkill mainSkill)

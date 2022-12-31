@@ -17,10 +17,4 @@ public class MainSkillUI : MonoBehaviour
         this.skill = skill;
         text.text = skill.skillName;
     }
-
-    public void Initialize()
-    {
-        skill = null;
-        text.text = string.Empty;
-    }
 }

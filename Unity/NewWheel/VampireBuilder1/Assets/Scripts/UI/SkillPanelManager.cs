@@ -23,18 +23,4 @@ public class SkillPanelManager : MonoBehaviour
             }
         }
     }
-
-    private void Start()
-    {
-        Initialize();
-        Refresh();
-    }
-
-    private void Initialize()
-    {
-        foreach (SkillPanel skillPanel in skillPanels)
-        {
-            skillPanel.Initialize();
-        }
-    }
 }

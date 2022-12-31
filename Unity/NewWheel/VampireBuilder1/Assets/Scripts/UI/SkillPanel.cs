@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -16,17 +17,16 @@ public class SkillPanel : MonoBehaviour
 
         mainSkillUI.SetSkill(skill);
 
-        int index = 0;
-        foreach (SubSkill subSkill in skill.GetActiveSubSkills())
+        List<SubSkill> activeSubSkills = skill.GetActiveSubSkills().ToList();
+        for (int i = 0; i < subSkillUIs.Count; i++)
         {
-            if (index == subSkillUIs.Count)
+            SubSkill subSkill = null;
+            if (i < activeSubSkills.Count)
             {
-                Debug.LogError($"Too many active sub skills: {index + 1}");
-                break;
+                subSkill = activeSubSkills[i];
             }
 
-            subSkillUIs[index].SetSkill(subSkill);
-            index++;
+            subSkillUIs[i].SetSkill(subSkill);
         }
     }
 
@@ -38,18 +38,5 @@ public class SkillPanel : MonoBehaviour
     public void Disable()
     {
         gameObject.SetActive(false);
-    }
-
-    public void Initialize()
-    {
-        Enable();
-        mainSkillUI.Initialize();
-
-        foreach (SubSkillUI subSkillUI in subSkillUIs)
-        {
-            subSkillUI.Initialize();
-        }
-
-        Disable();
     }
 }

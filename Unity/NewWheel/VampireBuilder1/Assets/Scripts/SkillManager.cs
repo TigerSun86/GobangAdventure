@@ -12,6 +12,8 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] List<Skill> skills;
 
+    [SerializeField] MainSkill initialMainSkill;
+
     [SerializeField] MainSkillRuntimeSet activeSkills;
 
     [SerializeField] MainSkillRuntimeSet inactiveSkills;
@@ -51,18 +53,8 @@ public class SkillManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = activeSkills.Items.Count - 1; i >= 0; i--)
-        {
-            MainSkill mainSkill = activeSkills.Items[i];
-            if (i == 0)
-            {
-                mainSkill.Reset();
-            }
-            else
-            {
-                mainSkill.Disable();
-            }
-        }
+        activeSkills.Clear();
+        initialMainSkill.Enable();
 
         RefreshSkillUpgradeSequence();
     }

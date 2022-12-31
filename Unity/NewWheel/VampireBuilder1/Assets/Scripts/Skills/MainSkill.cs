@@ -5,9 +5,9 @@ using UnityEngine;
 [CreateAssetMenu]
 public class MainSkill : ScriptableObject
 {
-    [SerializeField] MainSkillRuntimeSet activeSkills;
+    [SerializeField] public MainSkillRuntimeSet activeSkills;
 
-    [SerializeField] MainSkillRuntimeSet inactiveSkills;
+    [SerializeField] public MainSkillRuntimeSet inactiveSkills;
 
     public string skillName;
 
@@ -39,6 +39,7 @@ public class MainSkill : ScriptableObject
     {
         activeSkills.Add(this);
         inactiveSkills.Remove(this);
+        activeSkills.NotifyChanged();
     }
 
     public void Disable()

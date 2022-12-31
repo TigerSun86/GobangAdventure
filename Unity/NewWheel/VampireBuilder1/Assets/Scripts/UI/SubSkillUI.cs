@@ -18,14 +18,15 @@ public class SubSkillUI : MonoBehaviour
         RefreshText();
     }
 
-    public void Initialize()
-    {
-        skill = null;
-        text.text = string.Empty;
-    }
-
     private void RefreshText()
     {
-        text.text = $"L{skill.currentLevel} {skill.skillName}";
+        if (skill != null)
+        {
+            text.text = $"L{skill.currentLevel} {skill.skillName}";
+        }
+        else
+        {
+            text.text = string.Empty;
+        }
     }
 }

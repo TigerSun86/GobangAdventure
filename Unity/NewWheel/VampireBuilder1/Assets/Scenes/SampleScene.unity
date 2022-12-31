@@ -6243,6 +6243,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 19b692b5b0d06e7419a219ce6081fc54, type: 2}
   - {fileID: 11400000, guid: 443b30e1060464f4aa5a8e4d0299dc38, type: 2}
   - {fileID: 11400000, guid: d4bc365cfd361dd4789082f2860b543b, type: 2}
+  initialMainSkill: {fileID: 11400000, guid: cb978f8a679d8c84089b1cf365665943, type: 2}
   activeSkills: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
   inactiveSkills: {fileID: 11400000, guid: 45e5a03e739c22642b17942311356d33, type: 2}
   upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
@@ -13175,7 +13176,7 @@ GameObject:
   - component: {fileID: 1549248759}
   - component: {fileID: 1549248762}
   - component: {fileID: 1549248764}
-  - component: {fileID: 1549248763}
+  - component: {fileID: 1549248765}
   m_Layer: 5
   m_Name: SkillPanels
   m_TagString: Untagged
@@ -13263,34 +13264,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1549248763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1549248756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: eb0d114a76b393f48a8c2cc502dfd4ef, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1549248764}
-        m_TargetAssemblyTypeName: SkillPanelManager, Assembly-CSharp
-        m_MethodName: Refresh
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1549248764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13311,6 +13284,34 @@ MonoBehaviour:
   - {fileID: 2133220167}
   - {fileID: 1457412600}
   activeSkills: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
+--- !u!114 &1549248765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1549248756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6d3b5233ca4fb4da561610f3495401, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  variable: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1549248764}
+        m_TargetAssemblyTypeName: SkillPanelManager, Assembly-CSharp
+        m_MethodName: Refresh
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1570139050
 GameObject:
   m_ObjectHideFlags: 0

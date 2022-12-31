@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [CreateAssetMenu]
-public class FloatVariable : ScriptableObject, ISerializationCallbackReceiver
+public class FloatVariable : VariableBase, ISerializationCallbackReceiver
 {
 #if UNITY_EDITOR
     [Multiline]
@@ -18,26 +16,31 @@ public class FloatVariable : ScriptableObject, ISerializationCallbackReceiver
     public void SetValue(float value)
     {
         this.value = value;
+        this.variableChangeEvent.Raise();
     }
 
     public void SetValue(FloatVariable value)
     {
         this.value = value.value;
+        this.variableChangeEvent.Raise();
     }
 
     public void ApplyChange(float amount)
     {
         value += amount;
+        this.variableChangeEvent.Raise();
     }
 
     public void ApplyChange(FloatVariable amount)
     {
         value += amount.value;
+        this.variableChangeEvent.Raise();
     }
 
     public void Reset()
     {
         value = defaultValue;
+        this.variableChangeEvent.Raise();
     }
 
     public void OnAfterDeserialize()
