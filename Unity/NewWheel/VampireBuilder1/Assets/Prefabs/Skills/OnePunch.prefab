@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   mainSkill: {fileID: 11400000, guid: 9604fa81e88260d4b88e1ceb1fa1efa3, type: 2}
-  effect: {fileID: 0}
+  effect: {fileID: 4508964144433296285, guid: a501d824d089822479e49f5e85efcefa, type: 3}
   attackTargetSelectEvent:
     m_PersistentCalls:
       m_Calls:
