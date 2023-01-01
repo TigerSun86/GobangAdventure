@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeSkills: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
   inactiveSkills: {fileID: 11400000, guid: 45e5a03e739c22642b17942311356d33, type: 2}
-  skillName: One punch
+  skillName: One Punch
   description: One punch to hit an enemy
   defaultAttack: 20
   defaultCriticalRate: 0.2
   defaultCriticalAmount: 2
   defaultArea: 0
   defaultAttackDecrease: 0
-  attack: 25
+  attack: 20
   criticalRate: 0.2
   criticalAmount: 2
   area: 0
