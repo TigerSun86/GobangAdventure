@@ -37,6 +37,7 @@ public class MainSkill : ScriptableObject
 
     public void Enable()
     {
+        Reset();
         activeSkills.Add(this);
         inactiveSkills.Remove(this);
         activeSkills.NotifyChanged();
@@ -46,7 +47,6 @@ public class MainSkill : ScriptableObject
     {
         activeSkills.Remove(this);
         inactiveSkills.Add(this);
-        Reset();
     }
 
     public void Reset()

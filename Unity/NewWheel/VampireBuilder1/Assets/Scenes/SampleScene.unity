@@ -6251,6 +6251,8 @@ MonoBehaviour:
   skillNameAndPrefabs:
   - skillName: Chain Lightning
     prefab: {fileID: 3995482541262085184, guid: e8ae573a1b510214b89a13a1da98deae, type: 3}
+  - skillName: Explosion
+    prefab: {fileID: 585533040300446151, guid: 7fba6441f5972e34eafc66226db5c66f, type: 3}
 --- !u!114 &731787896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13290,7 +13292,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0

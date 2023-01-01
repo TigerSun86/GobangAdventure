@@ -577,7 +577,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533c223e74cd0064cad18e2816647f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackFactor: {fileID: 11400000, guid: edcccd69d220b4a4db7983418f2bee5d, type: 2}
 --- !u!114 &-336972625773581238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -591,8 +590,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackBase:
-    attackBase: 1
-    attackOption: 0
+    attack: 1
+    criticalRate: 0
+    criticalAmount: 2
   targetTag: Player
   attackTargetSelectEvent:
     m_PersistentCalls:
@@ -637,8 +637,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackBase:
-    attackBase: 1
-    attackOption: -1
+    attack: 1
+    criticalRate: 0
+    criticalAmount: 2
   targetTag: Bullet
   attackTargetSelectEvent:
     m_PersistentCalls:

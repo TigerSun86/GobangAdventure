@@ -1,16 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Explosion : MonoBehaviour
+public class Explosion : SkillPrefab
 {
     // Used to display Gizmos
     private static readonly float TIME_TO_LIVE = 1f;
 
-    [SerializeField] FloatVariable attackAreaFactor;
-
-    [SerializeField] AttackData attackBase;
+    [SerializeField] MainSkill mainSkill;
 
     [SerializeField] GameObject effect;
 
@@ -23,7 +19,8 @@ public class Explosion : MonoBehaviour
     private void Start()
     {
         timer = TIME_TO_LIVE;
-        radius = attackAreaFactor.value / 2f;
+        AttackData attackBase = new AttackData(mainSkill);
+        radius = mainSkill.area;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.gameObject.transform.position, radius);
         foreach (Collider2D collider in colliders)
         {

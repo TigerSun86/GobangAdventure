@@ -13,10 +13,23 @@ MonoBehaviour:
   m_Name: AttackDecrease
   m_EditorClassIdentifier: 
   skillName: Attack decrease rate
-  currentLevel: 0
+  currentLevel: 4
   gemType: 3
   levelInfos:
   - level: 1
     description: Reduce the attack decrease rate to 40%
     attributeType: 4
     value: 0.4
+  - level: 2
+    description: Reduce the attack decrease rate to 30%
+    attributeType: 4
+    value: 0.3
+  - level: 3
+    description: Reduce the attack decrease rate to 20%
+    attributeType: 4
+    value: 0.2
+  - level: 4
+    description: Reduce the attack decrease rate to 10%
+    attributeType: 4
+    value: 0.1
+  mainSkill: {fileID: 11400000, guid: cb978f8a679d8c84089b1cf365665943, type: 2}

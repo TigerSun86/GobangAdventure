@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Critical
   m_EditorClassIdentifier: 
   skillName: Critical rate
-  currentLevel: 0
+  currentLevel: 4
   gemType: 1
   levelInfos:
   - level: 1
@@ -24,3 +24,12 @@ MonoBehaviour:
     description: Increase the critical rate to 40%
     attributeType: 1
     value: 0.4
+  - level: 3
+    description: Increase the critical rate to 60%
+    attributeType: 1
+    value: 0.6
+  - level: 4
+    description: Increase the critical rate to 80%
+    attributeType: 1
+    value: 0.4
+  mainSkill: {fileID: 11400000, guid: cb978f8a679d8c84089b1cf365665943, type: 2}

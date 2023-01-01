@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70045fafb65c98d49940a1621fa1b79c, type: 3}
+  m_Name: Explosion
+  m_EditorClassIdentifier: 
+  activeSkills: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
+  inactiveSkills: {fileID: 11400000, guid: 45e5a03e739c22642b17942311356d33, type: 2}
+  skillName: Explosion
+  description: Explode after hit an enemy
+  defaultAttack: 10
+  defaultCriticalRate: 0
+  defaultCriticalAmount: 2
+  defaultArea: 1.5
+  defaultAttackDecrease: 0
+  attack: 12
+  criticalRate: 0.8
+  criticalAmount: 2
+  area: 3.5
+  attackDecrease: 0
+  subSkills:
+  - {fileID: 11400000, guid: 3646e76d150762547bcc5cdb9f055841, type: 2}
+  - {fileID: 11400000, guid: 8388c820a89991949a832c8c45aa508d, type: 2}
+  - {fileID: 11400000, guid: 4c1940c451efc304ab6ae2d14657e86f, type: 2}

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PlayerMaxHealthVariable
   m_EditorClassIdentifier: 
   DeveloperDescription: 
-  defaultValue: 100
+  defaultValue: 20
   value: 100
