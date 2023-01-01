@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c62e768544f5e794b916d86111e813fa, type: 3}
   m_Name: InactiveMainSkillSet
   m_EditorClassIdentifier: 
-  Items: []
+  Items:
+  - {fileID: 11400000, guid: 600f69af83ddf2744b8fb67c08512134, type: 2}
+  - {fileID: 11400000, guid: 9604fa81e88260d4b88e1ceb1fa1efa3, type: 2}
