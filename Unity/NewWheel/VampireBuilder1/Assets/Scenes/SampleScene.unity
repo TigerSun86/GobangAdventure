@@ -6244,7 +6244,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 19b692b5b0d06e7419a219ce6081fc54, type: 2}
   - {fileID: 11400000, guid: 443b30e1060464f4aa5a8e4d0299dc38, type: 2}
   - {fileID: 11400000, guid: d4bc365cfd361dd4789082f2860b543b, type: 2}
-  initialMainSkill: {fileID: 11400000, guid: cb978f8a679d8c84089b1cf365665943, type: 2}
+  initialMainSkill: {fileID: 11400000, guid: 78e923507018c574183097eaf8718dc2, type: 2}
   activeSkills: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
   inactiveSkills: {fileID: 11400000, guid: 45e5a03e739c22642b17942311356d33, type: 2}
   upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
@@ -6255,6 +6255,8 @@ MonoBehaviour:
     prefab: {fileID: 585533040300446151, guid: 7fba6441f5972e34eafc66226db5c66f, type: 3}
   - skillName: One Punch
     prefab: {fileID: 585533040300446151, guid: 760f289c9b8965a4c93d9cc86395869c, type: 3}
+  - skillName: Shock Wave
+    prefab: {fileID: 5897957824515767754, guid: 5ec3a7b8d9aad9741b4d62713dc88345, type: 3}
 --- !u!114 &731787896
 MonoBehaviour:
   m_ObjectHideFlags: 0

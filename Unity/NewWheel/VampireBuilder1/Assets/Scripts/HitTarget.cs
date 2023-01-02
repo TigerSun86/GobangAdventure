@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class HitTarget : MonoBehaviour
 {
-    [SerializeField] AttackData attackBase = new AttackData(1f);
+    public AttackData attackBase;
 
     [SerializeField] string targetTag;
 

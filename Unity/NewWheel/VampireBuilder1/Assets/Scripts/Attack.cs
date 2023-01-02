@@ -4,6 +4,11 @@ public class Attack : MonoBehaviour
 {
     public void AttackObject(GameObject gameObject, AttackData attackBase)
     {
+        if (gameObject == null)
+        {
+            return;
+        }
+
         float damage = attackBase.attack;
         DamageType damageType = DamageType.NORMAL_ATTACK;
         if (attackBase.criticalRate > 0)
