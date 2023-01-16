@@ -5723,23 +5723,46 @@ MonoBehaviour:
     enemies:
     - enemyType: 0
       minCount: 1
-      maxCount: 3
-  - waveNumber: 20
+      maxCount: 1
+      overrideHealth: 10
+  - waveNumber: 6
     enemies:
     - enemyType: 0
       minCount: 1
-      maxCount: 3
-    - enemyType: 1
-      minCount: 0
       maxCount: 1
-  - waveNumber: 40
+      overrideHealth: 20
+  - waveNumber: 11
     enemies:
     - enemyType: 0
       minCount: 2
-      maxCount: 3
-    - enemyType: 1
-      minCount: 1
       maxCount: 2
+      overrideHealth: 15
+  - waveNumber: 16
+    enemies:
+    - enemyType: 0
+      minCount: 2
+      maxCount: 2
+      overrideHealth: 20
+  - waveNumber: 21
+    enemies:
+    - enemyType: 0
+      minCount: 3
+      maxCount: 3
+      overrideHealth: 20
+  - waveNumber: 26
+    enemies:
+    - enemyType: 0
+      minCount: 4
+      maxCount: 4
+      overrideHealth: 25
+  - waveNumber: 31
+    enemies:
+    - enemyType: 0
+      minCount: 1
+      maxCount: 1
+      overrideHealth: 100
+  - waveNumber: 32
+    enemies: []
   currentWaveConfig:
     waveNumber: 0
     enemies: []

@@ -83,6 +83,11 @@ public class EnemyManager : MonoBehaviour
                 positionCandidates.RemoveAt(randomPositionIndex);
 
                 GameObject enemyObject = Instantiate(enemyPrefab, position, Quaternion.identity, this.transform);
+                if (spawnData.overrideHealth != 0)
+                {
+                    Health health = enemyObject.GetComponent<Health>();
+                    health.SetMaxHealth(spawnData.overrideHealth);
+                }
             }
         }
     }

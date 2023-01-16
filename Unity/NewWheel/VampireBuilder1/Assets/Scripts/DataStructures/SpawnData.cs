@@ -12,6 +12,8 @@ public class SpawnData
 
     public int maxCount;
 
+    public int overrideHealth;
+
     public bool isValid()
     {
         return minCount >= 0 && maxCount >= 0 && minCount <= maxCount;
@@ -19,6 +21,6 @@ public class SpawnData
 
     public override string ToString()
     {
-        return $"{enemyType},{minCount},{maxCount}";
+        return $"{enemyType},{minCount},{maxCount},{overrideHealth}";
     }
 }

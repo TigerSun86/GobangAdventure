@@ -42,7 +42,22 @@ public class Health : MonoBehaviour
         return applyChange(amount);
     }
 
+    public void SetMaxHealth(int value)
+    {
+        this.maxHealth = ScriptableObject.CreateInstance<IntVariable>();
+        this.maxHealth.SetValue(value);
+    }
+
     private void Awake()
+    {
+        if (maxHealth != null)
+        {
+            maxHealthValue = maxHealth.value;
+            health = maxHealth.value;
+        }
+    }
+
+    private void Start()
     {
         if (maxHealth != null)
         {

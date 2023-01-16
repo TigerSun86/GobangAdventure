@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DeveloperDescription: The factor used to calculate the interval of all types of
     attacks
-  defaultValue: 1
-  value: 1
+  defaultValue: 4
+  value: 4
