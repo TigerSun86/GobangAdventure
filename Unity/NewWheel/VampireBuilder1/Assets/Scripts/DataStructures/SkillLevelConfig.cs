@@ -7,7 +7,7 @@ public class SkillLevelConfig
 
     public string description;
 
-    public string attributeType;
+    public AttributeType attributeType;
 
     public float value;
 }

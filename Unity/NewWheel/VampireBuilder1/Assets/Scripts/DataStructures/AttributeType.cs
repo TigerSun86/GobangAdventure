@@ -4,6 +4,8 @@ using UnityEngine;
 
 public enum AttributeType
 {
+    NONE,
+
     ATTACK,
 
     CRITICAL_RATE,
