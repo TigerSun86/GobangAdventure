@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d8ded21114c7634ab6667fbb265698d, type: 3}
+  m_Name: TbSkillConfig
+  m_EditorClassIdentifier: 
+  skills:
+    m_keys:
+    - ChainLightning
+    m_values:
+    - id: ChainLightning
+      name: Chain Lightning
+      description: Chain Lightning desciprition
+      dependencies:
+      - Explosion
+      - Slow
+      levels:
+      - level: 1
+        description: level 1 des
+        attributeType: 1
+        value: 2.5
+      - level: 2
+        description: level 2 des
+        attributeType: 1
+        value: 4
+      - level: 3
+        description: level 3 des
+        attributeType: 2
+        value: 11
