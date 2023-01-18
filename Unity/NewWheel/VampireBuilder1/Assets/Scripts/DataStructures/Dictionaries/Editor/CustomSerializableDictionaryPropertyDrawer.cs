@@ -1,6 +1,6 @@
 using UnityEditor;
 
-[CustomPropertyDrawer(typeof(AttributeTypeFloatDictionary))]
-[CustomPropertyDrawer(typeof(StringSkillConfigDictionary))]
+[CustomPropertyDrawer(typeof(AttributeTypeToFloatDictionary))]
+[CustomPropertyDrawer(typeof(SkillIdToSkillConfigDictionary))]
 public class CustomSerializableDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer
 { }

@@ -13,15 +13,12 @@ MonoBehaviour:
   m_Name: TbSkillConfig
   m_EditorClassIdentifier: 
   skills:
-    m_keys:
-    - ChainLightning
+    m_keys: 01000000
     m_values:
-    - id: ChainLightning
+    - id: 1
       name: Chain Lightning
       description: Chain Lightning desciprition
-      dependencies:
-      - Explosion
-      - Slow
+      dependencies: 0200000003000000
       levels:
       - level: 1
         description: level 1 des
