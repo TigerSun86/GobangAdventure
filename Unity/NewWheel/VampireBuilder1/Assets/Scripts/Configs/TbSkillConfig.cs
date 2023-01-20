@@ -25,4 +25,9 @@ public class TbSkillConfig : ScriptableObject
 
         return skills[id];
     }
+
+    public IEnumerable<SkillConfig> GetAllSkillConfigs()
+    {
+        return skills.Values;
+    }
 }

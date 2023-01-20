@@ -9,8 +9,6 @@ public class ChainLightning : SkillPrefab
 
     private static readonly float ATTACK_AREA = 10f;
 
-    [SerializeField] MainSkill mainSkill;
-
     [SerializeField] UnityEvent<List<Vector3>> chainLightningRunEvent;
 
     [SerializeField] UnityEvent<GameObject, AttackData> attackTargetSelectEvent;
@@ -28,8 +26,8 @@ public class ChainLightning : SkillPrefab
     // Start is called before the first frame update
     void Start()
     {
-        remainingCount = (int)Math.Round(mainSkill.area);
-        currentAttack = mainSkill.attack;
+        remainingCount = (int)Math.Round(skillAttributes[AttributeType.AREA]);
+        currentAttack = skillAttributes[AttributeType.ATTACK];
         radius = ATTACK_AREA;
     }
 
@@ -52,12 +50,12 @@ public class ChainLightning : SkillPrefab
 
         remainingCount--;
 
-        attackTargetSelectEvent.Invoke(target, new AttackData(mainSkill)
+        attackTargetSelectEvent.Invoke(target, new AttackData(commonAttributes, skillAttributes)
         {
             attack = currentAttack
         });
 
-        currentAttack *= (1 - mainSkill.attackDecrease);
+        currentAttack *= (1 - skillAttributes[AttributeType.ATTACK_DECREASE]);
 
         debugPosition = this.transform.position;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, radius);

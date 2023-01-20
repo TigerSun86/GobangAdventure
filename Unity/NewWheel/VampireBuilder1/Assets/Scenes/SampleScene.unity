@@ -6280,6 +6280,20 @@ MonoBehaviour:
     prefab: {fileID: 585533040300446151, guid: 760f289c9b8965a4c93d9cc86395869c, type: 3}
   - skillName: Shock Wave
     prefab: {fileID: 5897957824515767754, guid: 5ec3a7b8d9aad9741b4d62713dc88345, type: 3}
+  commonAttributes:
+    m_keys: 
+    m_values: []
+  tbSkillConfig: {fileID: 11400000, guid: 1898367a88393754aa4eb483294cd9f8, type: 2}
+  skillIdToAttributes:
+    m_keys: 
+    m_values: []
+  initialSkill: 1
+  activeSkills2: 
+  inactiveSkills2: 
+  skillIdToPrefab:
+    m_keys: 01000000
+    m_values:
+    - {fileID: 3995482541262085184, guid: e8ae573a1b510214b89a13a1da98deae, type: 3}
 --- !u!114 &731787896
 MonoBehaviour:
   m_ObjectHideFlags: 0

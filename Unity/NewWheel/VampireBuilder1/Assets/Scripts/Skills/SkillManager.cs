@@ -19,6 +19,20 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] List<SkillNameAndPrefab> skillNameAndPrefabs;
 
+    [SerializeField] AttributeTypeToFloatDictionary commonAttributes;
+
+    [SerializeField] TbSkillConfig tbSkillConfig;
+
+    [SerializeField] SkillIdToAttributesDictionary skillIdToAttributes;
+
+    [SerializeField] SkillId initialSkill;
+
+    [SerializeField] List<SkillId> activeSkills2;
+
+    [SerializeField] List<SkillId> inactiveSkills2;
+
+    [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
+
     Dictionary<string, GameObject> skillNameAndPrefabMap;
 
     public void RefreshSkillUpgradeSequence()
@@ -53,27 +67,42 @@ public class SkillManager : MonoBehaviour
 
     public void InstantiateSkillPrefabs(Collider2D other, GameObject bullet)
     {
-        foreach (MainSkill mainSkill in activeSkills.Items)
+        foreach (SkillId skillId in activeSkills2)
         {
-            if (!skillNameAndPrefabMap.ContainsKey(mainSkill.skillName))
+            if (!skillIdToPrefab.ContainsKey(skillId))
             {
-                Debug.LogError($"Could not find prefab for skill [{mainSkill.skillName}]");
+                Debug.LogError($"Could not find prefab for skill [{skillId}]");
                 continue;
             }
 
-            GameObject prefab = skillNameAndPrefabMap[mainSkill.skillName];
+            GameObject prefab = skillIdToPrefab[skillId];
             GameObject instance = Instantiate(
                 prefab,
                 other.gameObject.transform.position,
                 Quaternion.identity,
                 this.transform);
-            instance.GetComponent<SkillPrefab>().target = other.gameObject;
+            SkillPrefab skillPrefab = instance.GetComponent<SkillPrefab>();
+            skillPrefab.target = other.gameObject;
+            skillPrefab.commonAttributes = commonAttributes;
+            skillPrefab.skillAttributes = skillIdToAttributes[SkillId.CHAIN_LIGHTNING];
         }
     }
 
     // Start is called before the first frame update
     private void Start()
     {
+        commonAttributes = AttributeTypeToFloatDictionary.CreateInstanceWithAllAttributes();
+
+        skillIdToAttributes.Clear();
+        foreach (SkillConfig skillConfig in tbSkillConfig.GetAllSkillConfigs())
+        {
+            skillIdToAttributes[skillConfig.id] = skillConfig.GetInitialAttributeDictionary();
+        }
+
+        activeSkills2.Clear();
+        activeSkills2.Add(initialSkill);
+
+
         skillNameAndPrefabMap = new Dictionary<string, GameObject>();
         foreach (SkillNameAndPrefab pair in skillNameAndPrefabs)
         {

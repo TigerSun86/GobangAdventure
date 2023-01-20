@@ -18,17 +18,24 @@ MonoBehaviour:
     - id: 1
       name: Chain Lightning
       description: Chain Lightning desciprition
+      initialAttributes:
+      - attributeType: 1
+        value: 8
+      - attributeType: 4
+        value: 3
+      - attributeType: 5
+        value: 0.15
       dependencies: 0200000003000000
       levels:
       - level: 1
         description: level 1 des
         attributeType: 1
-        value: 2.5
+        value: 9
       - level: 2
         description: level 2 des
         attributeType: 1
-        value: 4
+        value: 10
       - level: 3
         description: level 3 des
-        attributeType: 2
-        value: 11
+        attributeType: 4
+        value: 4
