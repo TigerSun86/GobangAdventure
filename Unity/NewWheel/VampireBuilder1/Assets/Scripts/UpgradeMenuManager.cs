@@ -21,6 +21,8 @@ public class UpgradeMenuManager : MonoBehaviour
 
     [SerializeField] UnityEvent pendingUpgradeChangeEvent;
 
+    [SerializeField] SkillIdGameEvent skillSelectedEvent;
+
     public void OpenMenu()
     {
         bool needRefresh = false;
@@ -77,8 +79,10 @@ public class UpgradeMenuManager : MonoBehaviour
             SkillUpgradeButton skillButton = skillButtons[i];
             if (i < upgradeOptionSequence.Items.Count)
             {
+                UpgradeOption upgradeOption = upgradeOptionSequence.Items[i];
                 skillButton.Enable();
-                skillButton.SetSkill(upgradeOptionSequence.Items[i]);
+                skillButton.SetSkill(upgradeOption);
+                skillButton.RegisterOnClickAction(() => skillSelectedEvent.Raise(upgradeOption.skillId));
                 if (isFirstButton)
                 {
                     isFirstButton = false;

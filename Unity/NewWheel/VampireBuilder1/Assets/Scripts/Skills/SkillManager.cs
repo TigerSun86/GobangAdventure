@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -33,32 +34,20 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
 
+    [SerializeField] SkillIdToIntDictionary skillToLevelDictionary;
+
     Dictionary<string, GameObject> skillNameAndPrefabMap;
 
     public void RefreshSkillUpgradeSequence()
     {
-        skillUpgradeSequence.Items.Clear();
-        skillUpgradeSequence.Items.AddRange(
-            skills
-                .Where(s => s.IsUpgradable())
-                .OrderBy(s => Random.value));
-
         List<UpgradeOption> upgradeOptions = new List<UpgradeOption>();
-
-        foreach (MainSkill mainSkill in activeSkills.Items)
+        foreach ((SkillId skillId, int level) in skillToLevelDictionary)
         {
-            foreach (SubSkill subSkill in mainSkill.subSkills)
+            SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
+            if (level < skillConfig.GetMaxLevel())
             {
-                if (subSkill.CanLevelUp())
-                {
-                    upgradeOptions.Add(new SubSkillUpgradeOption(subSkill));
-                }
+                upgradeOptions.Add(new SkillConfigUpgradeOption(skillConfig, level + 1));
             }
-        }
-
-        foreach (MainSkill mainSkill in inactiveSkills.Items)
-        {
-            upgradeOptions.Add(new MainSkillUpgradeOption(mainSkill));
         }
 
         upgradeOptionSequence.Items.Clear();
@@ -98,6 +87,13 @@ public class SkillManager : MonoBehaviour
         {
             skillIdToAttributes[skillConfig.id] = skillConfig.GetInitialAttributeDictionary();
         }
+
+        foreach (SkillId id in skillToLevelDictionary.Keys)
+        {
+            skillToLevelDictionary[id] = 0;
+        }
+
+        skillToLevelDictionary[initialSkill] = 1;
 
         activeSkills2.Clear();
         activeSkills2.Add(initialSkill);

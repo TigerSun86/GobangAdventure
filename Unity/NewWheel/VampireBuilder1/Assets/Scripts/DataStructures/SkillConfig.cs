@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 [Serializable]
 public class SkillConfig
@@ -25,5 +26,15 @@ public class SkillConfig
         }
 
         return dict;
+    }
+
+    public int GetMaxLevel()
+    {
+        return levels.Max(l => l.level);
+    }
+
+    public string GetLevelDescription(int level)
+    {
+        return levels.First(l => l.level == level).description;
     }
 }

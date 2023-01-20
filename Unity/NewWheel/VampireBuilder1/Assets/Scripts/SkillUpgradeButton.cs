@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ public class SkillUpgradeButton : MonoBehaviour
     [SerializeField] TextMeshProUGUI skillNameText;
     [SerializeField] TextMeshProUGUI levelText;
     [SerializeField] TextMeshProUGUI skillDescriptionText;
+
+    Action onClickAction;
 
     public void SetSkill(UpgradeOption skill)
     {
@@ -29,5 +32,15 @@ public class SkillUpgradeButton : MonoBehaviour
     public void Upgrade()
     {
         skill.TriggerUpgrade();
+    }
+
+    public void OnClick()
+    {
+        onClickAction.Invoke();
+    }
+
+    public void RegisterOnClickAction(Action action)
+    {
+        onClickAction = action;
     }
 }

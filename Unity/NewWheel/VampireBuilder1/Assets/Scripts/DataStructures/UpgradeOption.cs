@@ -3,6 +3,8 @@ using System;
 [Serializable]
 public class UpgradeOption
 {
+    public SkillId skillId;
+
     public string levelText;
 
     public string upgradeName;
