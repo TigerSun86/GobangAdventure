@@ -6190,31 +6190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
-  skillUpgradeSequence: {fileID: 11400000, guid: 42ef4a6af3c8632448cfad8b23201429, type: 2}
-  skills:
-  - {fileID: 11400000, guid: a11b8e158ff4a704bb9e496562d5bd43, type: 2}
-  - {fileID: 11400000, guid: f2bd3770cafce68438b3dd9aaf9b297e, type: 2}
-  - {fileID: 11400000, guid: e306b5f61118e284fb820df1cb2b19c6, type: 2}
-  - {fileID: 11400000, guid: a5b377c9c2044954ab3f8b8aa8788a66, type: 2}
-  - {fileID: 11400000, guid: 55b4978edc890914dad5ff607b4ca32d, type: 2}
-  - {fileID: 11400000, guid: cc0f4bb5911433944b9fbddbf892c072, type: 2}
-  - {fileID: 11400000, guid: c842eff84519994468ad6ec833b88b45, type: 2}
-  - {fileID: 11400000, guid: 19b692b5b0d06e7419a219ce6081fc54, type: 2}
-  - {fileID: 11400000, guid: 443b30e1060464f4aa5a8e4d0299dc38, type: 2}
-  - {fileID: 11400000, guid: d4bc365cfd361dd4789082f2860b543b, type: 2}
-  initialMainSkill: {fileID: 11400000, guid: 78e923507018c574183097eaf8718dc2, type: 2}
-  activeSkills: {fileID: 11400000, guid: 7cbf05949c2b5374aa1200c50044933a, type: 2}
-  inactiveSkills: {fileID: 11400000, guid: 45e5a03e739c22642b17942311356d33, type: 2}
   upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
-  skillNameAndPrefabs:
-  - skillName: Chain Lightning
-    prefab: {fileID: 3995482541262085184, guid: e8ae573a1b510214b89a13a1da98deae, type: 3}
-  - skillName: Explosion
-    prefab: {fileID: 585533040300446151, guid: 7fba6441f5972e34eafc66226db5c66f, type: 3}
-  - skillName: One Punch
-    prefab: {fileID: 585533040300446151, guid: 760f289c9b8965a4c93d9cc86395869c, type: 3}
-  - skillName: Shock Wave
-    prefab: {fileID: 5897957824515767754, guid: 5ec3a7b8d9aad9741b4d62713dc88345, type: 3}
   commonAttributes:
     m_keys: 
     m_values: []
@@ -6223,8 +6199,6 @@ MonoBehaviour:
     m_keys: 
     m_values: []
   initialSkill: 1
-  activeSkills2: 
-  inactiveSkills2: 
   skillIdToPrefab:
     m_keys: 01000000
     m_values:

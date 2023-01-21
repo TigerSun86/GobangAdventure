@@ -10,19 +10,7 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] IntVariable pendingUpgradeCount;
 
-    [SerializeField] SkillRuntimeSet skillUpgradeSequence;
-
-    [SerializeField] List<Skill> skills;
-
-    [SerializeField] MainSkill initialMainSkill;
-
-    [SerializeField] MainSkillRuntimeSet activeSkills;
-
-    [SerializeField] MainSkillRuntimeSet inactiveSkills;
-
     [SerializeField] UpgradeOptionRuntimeSet upgradeOptionSequence;
-
-    [SerializeField] List<SkillNameAndPrefab> skillNameAndPrefabs;
 
     [SerializeField] AttributeTypeToFloatDictionary commonAttributes;
 
@@ -32,17 +20,11 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] SkillId initialSkill;
 
-    [SerializeField] List<SkillId> activeSkills2;
-
-    [SerializeField] List<SkillId> inactiveSkills2;
-
     [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
 
     [SerializeField] SkillIdToIntDictionary skillToLevelDictionary;
 
     [SerializeField] GameEvent skillSelectionPendingEvent;
-
-    Dictionary<string, GameObject> skillNameAndPrefabMap;
 
     public void LevelUp()
     {
@@ -121,7 +103,10 @@ public class SkillManager : MonoBehaviour
 
     public void InstantiateSkillPrefabs(Collider2D other, GameObject bullet)
     {
-        foreach (SkillId skillId in activeSkills2)
+        IEnumerable<SkillId> activeSkillIds = skillToLevelDictionary
+            .Where(kvp => kvp.Value > 0)
+            .Select(kvp => kvp.Key);
+        foreach (SkillId skillId in activeSkillIds)
         {
             if (!skillIdToPrefab.ContainsKey(skillId))
             {
@@ -138,7 +123,7 @@ public class SkillManager : MonoBehaviour
             SkillPrefab skillPrefab = instance.GetComponent<SkillPrefab>();
             skillPrefab.target = other.gameObject;
             skillPrefab.commonAttributes = commonAttributes;
-            skillPrefab.skillAttributes = skillIdToAttributes[SkillId.CHAIN_LIGHTNING];
+            skillPrefab.skillAttributes = skillIdToAttributes[skillId];
         }
     }
 
@@ -159,19 +144,6 @@ public class SkillManager : MonoBehaviour
         }
 
         skillToLevelDictionary[initialSkill] = 1;
-
-        activeSkills2.Clear();
-        activeSkills2.Add(initialSkill);
-
-
-        skillNameAndPrefabMap = new Dictionary<string, GameObject>();
-        foreach (SkillNameAndPrefab pair in skillNameAndPrefabs)
-        {
-            skillNameAndPrefabMap[pair.skillName] = pair.prefab;
-        }
-
-        activeSkills.Clear();
-        initialMainSkill.Enable();
 
         RefreshSkillUpgradeSequence();
     }
