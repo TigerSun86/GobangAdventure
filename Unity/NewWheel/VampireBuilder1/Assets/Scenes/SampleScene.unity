@@ -6113,12 +6113,10 @@ GameObject:
   m_Component:
   - component: {fileID: 731787893}
   - component: {fileID: 731787895}
-  - component: {fileID: 731787897}
   - component: {fileID: 731787894}
   - component: {fileID: 731787896}
   - component: {fileID: 731787898}
   - component: {fileID: 731787900}
-  - component: {fileID: 731787899}
   m_Layer: 0
   m_Name: SkillManager
   m_TagString: Untagged
@@ -6263,26 +6261,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &731787897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 731787892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71f83c4bc6c984b45a460dff29581b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 1638313222}
-  skillButtons:
-  - {fileID: 132311443}
-  - {fileID: 53966339}
-  - {fileID: 681666257}
-  - {fileID: 447984461}
-  upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
-  skillSelectedEvent: {fileID: 11400000, guid: 67d87c173421042aa9019c0d609aae5c, type: 2}
 --- !u!114 &731787898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6303,34 +6281,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
         m_MethodName: InstantiateSkillPrefabs
         m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &731787899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 731787892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: d1c96950794114af3b6dc7e53b65293c, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 731787897}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: OpenMenu
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8199,6 +8149,87 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &937543847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 937543850}
+  - component: {fileID: 937543849}
+  - component: {fileID: 937543848}
+  m_Layer: 0
+  m_Name: UpgradeMenuManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &937543848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937543847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: d1c96950794114af3b6dc7e53b65293c, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 937543849}
+        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
+        m_MethodName: OpenMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &937543849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937543847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f83c4bc6c984b45a460dff29581b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 1638313222}
+  skillButtons:
+  - {fileID: 132311443}
+  - {fileID: 53966339}
+  - {fileID: 681666257}
+  - {fileID: 447984461}
+  upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
+  skillSelectedEvent: {fileID: 11400000, guid: 67d87c173421042aa9019c0d609aae5c, type: 2}
+--- !u!4 &937543850
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937543847}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &967501426
 GameObject:
   m_ObjectHideFlags: 0
