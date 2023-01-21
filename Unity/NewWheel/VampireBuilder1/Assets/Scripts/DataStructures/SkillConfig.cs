@@ -11,6 +11,8 @@ public class SkillConfig
 
     public string description;
 
+    public SkillType skillType;
+    
     public List<AttributeTypeAndFloat> initialAttributes;
 
     public List<SkillId> dependencies;

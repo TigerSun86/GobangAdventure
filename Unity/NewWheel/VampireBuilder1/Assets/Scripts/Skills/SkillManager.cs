@@ -20,6 +20,8 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] SkillId initialSkill;
 
+    [SerializeField] List<SkillId> enabledActiveSkills;
+
     [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
 
     [SerializeField] SkillIdToIntDictionary skillToLevelDictionary;
@@ -29,41 +31,6 @@ public class SkillManager : MonoBehaviour
     public void LevelUp()
     {
         IncreasePendingUpgradeCountAndRaiseEvent();
-    }
-
-    private void IncreasePendingUpgradeCountAndRaiseEvent()
-    {
-        UpdatePendingUpgradeCountAndRaiseEvent(1);
-    }
-
-    private void DecreasePendingUpgradeCountAndRaiseEvent()
-    {
-        UpdatePendingUpgradeCountAndRaiseEvent(-1);
-    }
-
-    private void UpdatePendingUpgradeCountAndRaiseEvent(int change)
-    {
-        if (change != 1 && change != -1)
-        {
-            Debug.LogError($"Invalid amount [{change}] to change pending upgrade count");
-            return;
-        }
-
-        bool needSelection = false;
-        lock (upgradeVariablesLock)
-        {
-            pendingUpgradeCount.ApplyChange(change);
-            if ((change > 0 && pendingUpgradeCount.value == 1)
-                || (change < 0 && pendingUpgradeCount.value > 0))
-            {
-                needSelection = true;
-            }
-        }
-
-        if (needSelection)
-        {
-            skillSelectionPendingEvent.Raise();
-        }
     }
 
     public void RefreshSkillUpgradeSequence()
@@ -92,10 +59,15 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
-        SkillLevelConfig nextLevelConfig = skillConfig.GetLevelConfig(nextLevel);
-        AttributeTypeToFloatDictionary skillAttributes = skillIdToAttributes[skillId];
-        skillAttributes[nextLevelConfig.attributeType] = nextLevelConfig.value;
         skillToLevelDictionary[skillId] = nextLevel;
+        if (skillConfig.skillType == SkillType.ACTIVE && nextLevel == 1)
+        {
+            enabledActiveSkills.Add(skillId);
+        }
+        else
+        {
+            UpgradeAttributes(skillConfig, nextLevel);
+        }
 
         RefreshSkillUpgradeSequence();
         DecreasePendingUpgradeCountAndRaiseEvent();
@@ -103,10 +75,7 @@ public class SkillManager : MonoBehaviour
 
     public void InstantiateSkillPrefabs(Collider2D other, GameObject bullet)
     {
-        IEnumerable<SkillId> activeSkillIds = skillToLevelDictionary
-            .Where(kvp => kvp.Value > 0)
-            .Select(kvp => kvp.Key);
-        foreach (SkillId skillId in activeSkillIds)
+        foreach (SkillId skillId in enabledActiveSkills)
         {
             if (!skillIdToPrefab.ContainsKey(skillId))
             {
@@ -144,7 +113,59 @@ public class SkillManager : MonoBehaviour
         }
 
         skillToLevelDictionary[initialSkill] = 1;
+        enabledActiveSkills.Add(initialSkill);
 
         RefreshSkillUpgradeSequence();
+    }
+
+    private void IncreasePendingUpgradeCountAndRaiseEvent()
+    {
+        UpdatePendingUpgradeCountAndRaiseEvent(1);
+    }
+
+    private void DecreasePendingUpgradeCountAndRaiseEvent()
+    {
+        UpdatePendingUpgradeCountAndRaiseEvent(-1);
+    }
+
+    private void UpdatePendingUpgradeCountAndRaiseEvent(int change)
+    {
+        if (change != 1 && change != -1)
+        {
+            Debug.LogError($"Invalid amount [{change}] to change pending upgrade count");
+            return;
+        }
+
+        bool needSelection = false;
+        lock (upgradeVariablesLock)
+        {
+            pendingUpgradeCount.ApplyChange(change);
+            if ((change > 0 && pendingUpgradeCount.value == 1)
+                || (change < 0 && pendingUpgradeCount.value > 0))
+            {
+                needSelection = true;
+            }
+        }
+
+        if (needSelection)
+        {
+            skillSelectionPendingEvent.Raise();
+        }
+    }
+
+    private void UpgradeAttributes(SkillConfig skillConfig, int level)
+    {
+        AttributeTypeToFloatDictionary skillAttributes = skillIdToAttributes[skillConfig.id];
+        if (skillConfig.skillType == SkillType.ACTIVE)
+        {
+            skillAttributes = skillIdToAttributes[skillConfig.id];
+        }
+        else
+        {
+            skillAttributes = commonAttributes;
+        }
+
+        SkillLevelConfig levelConfig = skillConfig.GetLevelConfig(level);
+        skillAttributes[levelConfig.attributeType] = levelConfig.value;
     }
 }
