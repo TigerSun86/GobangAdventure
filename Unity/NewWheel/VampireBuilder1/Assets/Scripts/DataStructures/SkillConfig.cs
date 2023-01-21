@@ -33,8 +33,13 @@ public class SkillConfig
         return levels.Max(l => l.level);
     }
 
+    public SkillLevelConfig GetLevelConfig(int level)
+    {
+        return levels.First(l => l.level == level);
+    }
+
     public string GetLevelDescription(int level)
     {
-        return levels.First(l => l.level == level).description;
+        return GetLevelConfig(level).description;
     }
 }

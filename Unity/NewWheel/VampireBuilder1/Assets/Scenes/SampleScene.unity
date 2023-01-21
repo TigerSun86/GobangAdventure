@@ -878,19 +878,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 53966339}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 731787897}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -951,6 +939,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -1268,19 +1257,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 88840394}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1341,6 +1318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -1437,19 +1415,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 132311443}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 731787897}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1510,6 +1476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -2058,6 +2025,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -2136,19 +2104,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 186653585}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3718,6 +3674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -3792,19 +3749,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 447984461}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 731787897}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5871,19 +5816,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 681666257}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 731787897}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5944,6 +5877,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -6183,6 +6117,8 @@ GameObject:
   - component: {fileID: 731787894}
   - component: {fileID: 731787896}
   - component: {fileID: 731787898}
+  - component: {fileID: 731787900}
+  - component: {fileID: 731787899}
   m_Layer: 0
   m_Name: SkillManager
   m_TagString: Untagged
@@ -6255,6 +6191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69b4f64c2ce7ccc4fb932ae1710ffa7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
   skillUpgradeSequence: {fileID: 11400000, guid: 42ef4a6af3c8632448cfad8b23201429, type: 2}
   skills:
   - {fileID: 11400000, guid: a11b8e158ff4a704bb9e496562d5bd43, type: 2}
@@ -6294,6 +6231,10 @@ MonoBehaviour:
     m_keys: 01000000
     m_values:
     - {fileID: 3995482541262085184, guid: e8ae573a1b510214b89a13a1da98deae, type: 3}
+  skillToLevelDictionary:
+    m_keys: 
+    m_values: 
+  skillSelectionPendingEvent: {fileID: 11400000, guid: d1c96950794114af3b6dc7e53b65293c, type: 2}
 --- !u!114 &731787896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6310,9 +6251,9 @@ MonoBehaviour:
   Response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 731787897}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: OpenMenu
+      - m_Target: {fileID: 731787895}
+        m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
+        m_MethodName: LevelUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6334,30 +6275,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71f83c4bc6c984b45a460dff29581b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
   panel: {fileID: 1638313222}
-  skillUpgradeSequence: {fileID: 11400000, guid: 42ef4a6af3c8632448cfad8b23201429, type: 2}
   skillButtons:
   - {fileID: 132311443}
   - {fileID: 53966339}
   - {fileID: 681666257}
   - {fileID: 447984461}
   upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
-  pendingUpgradeChangeEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: eb0d114a76b393f48a8c2cc502dfd4ef, type: 2}
-        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
-        m_MethodName: Raise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  skillSelectedEvent: {fileID: 11400000, guid: 67d87c173421042aa9019c0d609aae5c, type: 2}
 --- !u!114 &731787898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6377,6 +6302,62 @@ MonoBehaviour:
       - m_Target: {fileID: 731787895}
         m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
         m_MethodName: InstantiateSkillPrefabs
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &731787899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731787892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03d5c03af09f63143b3598b2809a4bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: d1c96950794114af3b6dc7e53b65293c, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 731787897}
+        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
+        m_MethodName: OpenMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &731787900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731787892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df4554bd2bbfbf4b83821edde99b654, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 67d87c173421042aa9019c0d609aae5c, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 731787895}
+        m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
+        m_MethodName: UpgradeSkill
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6443,6 +6424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -6521,19 +6503,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 736905097}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8381,6 +8351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
+    skillId: 0
     levelText: 
     upgradeName: 
     description: 
@@ -8459,19 +8430,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 969603445}
         m_TargetAssemblyTypeName: SkillUpgradeButton, Assembly-CSharp
-        m_MethodName: Upgrade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeMenuManager, Assembly-CSharp
-        m_MethodName: CloseMenu
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

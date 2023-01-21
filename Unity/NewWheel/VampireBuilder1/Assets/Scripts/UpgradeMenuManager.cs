@@ -7,68 +7,27 @@ using UnityEngine.EventSystems;
 
 public class UpgradeMenuManager : MonoBehaviour
 {
-    private readonly object upgradeVariablesLock = new object();
-
-    [SerializeField] IntVariable pendingUpgradeCount;
-
     [SerializeField] GameObject panel;
-
-    [SerializeField] SkillRuntimeSet skillUpgradeSequence;
 
     [SerializeField] List<SkillUpgradeButton> skillButtons;
 
     [SerializeField] UpgradeOptionRuntimeSet upgradeOptionSequence;
 
-    [SerializeField] UnityEvent pendingUpgradeChangeEvent;
-
     [SerializeField] SkillIdGameEvent skillSelectedEvent;
 
     public void OpenMenu()
     {
-        bool needRefresh = false;
-        lock (upgradeVariablesLock)
+        if (!panel.activeInHierarchy)
         {
-            pendingUpgradeCount.ApplyChange(1);
-            if (!panel.activeInHierarchy)
-            {
-                panel.SetActive(true);
-                needRefresh = true;
-            }
-
-            // Else, there is another upgrade waiting for user to select, no need to refresh.
+            panel.SetActive(true);
         }
 
-        pendingUpgradeChangeEvent.Invoke();
-
-        if (needRefresh)
-        {
-            RefreshMenu();
-        }
+        RefreshMenu();
     }
 
     public void CloseMenu()
     {
-        bool needRefresh = false;
-        lock (upgradeVariablesLock)
-        {
-            pendingUpgradeCount.ApplyChange(-1);
-            if (pendingUpgradeCount.value <= 0)
-            {
-                panel.SetActive(false);
-            }
-            else
-            {
-                // Still have pending upgrades.
-                needRefresh = true;
-            }
-        }
-
-        pendingUpgradeChangeEvent.Invoke();
-
-        if (needRefresh)
-        {
-            RefreshMenu();
-        }
+        panel.SetActive(false);
     }
 
     private void RefreshMenu()
@@ -82,7 +41,11 @@ public class UpgradeMenuManager : MonoBehaviour
                 UpgradeOption upgradeOption = upgradeOptionSequence.Items[i];
                 skillButton.Enable();
                 skillButton.SetSkill(upgradeOption);
-                skillButton.RegisterOnClickAction(() => skillSelectedEvent.Raise(upgradeOption.skillId));
+                skillButton.RegisterOnClickAction(() =>
+                {
+                    skillSelectedEvent.Raise(upgradeOption.skillId);
+                    CloseMenu();
+                });
                 if (isFirstButton)
                 {
                     isFirstButton = false;

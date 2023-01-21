@@ -6,6 +6,10 @@ using Random = UnityEngine.Random;
 
 public class SkillManager : MonoBehaviour
 {
+    private readonly object upgradeVariablesLock = new object();
+
+    [SerializeField] IntVariable pendingUpgradeCount;
+
     [SerializeField] SkillRuntimeSet skillUpgradeSequence;
 
     [SerializeField] List<Skill> skills;
@@ -36,7 +40,49 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] SkillIdToIntDictionary skillToLevelDictionary;
 
+    [SerializeField] GameEvent skillSelectionPendingEvent;
+
     Dictionary<string, GameObject> skillNameAndPrefabMap;
+
+    public void LevelUp()
+    {
+        IncreasePendingUpgradeCountAndRaiseEvent();
+    }
+
+    private void IncreasePendingUpgradeCountAndRaiseEvent()
+    {
+        UpdatePendingUpgradeCountAndRaiseEvent(1);
+    }
+
+    private void DecreasePendingUpgradeCountAndRaiseEvent()
+    {
+        UpdatePendingUpgradeCountAndRaiseEvent(-1);
+    }
+
+    private void UpdatePendingUpgradeCountAndRaiseEvent(int change)
+    {
+        if (change != 1 && change != -1)
+        {
+            Debug.LogError($"Invalid amount [{change}] to change pending upgrade count");
+            return;
+        }
+
+        bool needSelection = false;
+        lock (upgradeVariablesLock)
+        {
+            pendingUpgradeCount.ApplyChange(change);
+            if ((change > 0 && pendingUpgradeCount.value == 1)
+                || (change < 0 && pendingUpgradeCount.value > 0))
+            {
+                needSelection = true;
+            }
+        }
+
+        if (needSelection)
+        {
+            skillSelectionPendingEvent.Raise();
+        }
+    }
 
     public void RefreshSkillUpgradeSequence()
     {
@@ -52,6 +98,25 @@ public class SkillManager : MonoBehaviour
 
         upgradeOptionSequence.Items.Clear();
         upgradeOptionSequence.Items.AddRange(upgradeOptions.OrderBy(s => Random.value));
+    }
+
+    public void UpgradeSkill(SkillId skillId)
+    {
+        int nextLevel = skillToLevelDictionary[skillId] + 1;
+        SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
+        if (nextLevel > skillConfig.GetMaxLevel())
+        {
+            Debug.LogError($"Unsupport level {nextLevel} for skill [{skillId}]");
+            return;
+        }
+
+        SkillLevelConfig nextLevelConfig = skillConfig.GetLevelConfig(nextLevel);
+        AttributeTypeToFloatDictionary skillAttributes = skillIdToAttributes[skillId];
+        skillAttributes[nextLevelConfig.attributeType] = nextLevelConfig.value;
+        skillToLevelDictionary[skillId] = nextLevel;
+
+        RefreshSkillUpgradeSequence();
+        DecreasePendingUpgradeCountAndRaiseEvent();
     }
 
     public void InstantiateSkillPrefabs(Collider2D other, GameObject bullet)
