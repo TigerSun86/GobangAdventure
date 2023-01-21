@@ -52,7 +52,11 @@ public class Level : MonoBehaviour
         if (levelUpCount > 0)
         {
             levelValue.ApplyChange(levelUpCount);
-            levelUpEvent.Invoke();
+            while (levelUpCount > 0)
+            {
+                levelUpEvent.Invoke();
+                levelUpCount--;
+            }
         }
     }
 

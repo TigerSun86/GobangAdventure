@@ -43,8 +43,8 @@ public class UpgradeMenuManager : MonoBehaviour
                 skillButton.SetSkill(upgradeOption);
                 skillButton.RegisterOnClickAction(() =>
                 {
-                    skillSelectedEvent.Raise(upgradeOption.skillId);
                     CloseMenu();
+                    skillSelectedEvent.Raise(upgradeOption.skillId);
                 });
                 if (isFirstButton)
                 {
