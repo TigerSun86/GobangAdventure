@@ -1,5 +1,7 @@
 public enum AttributeType
 {
+    NONE,
+
     LEVEL,
 
     ATTACK,

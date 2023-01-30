@@ -140,13 +140,18 @@ public class SkillManager : MonoBehaviour
 
     private void UpgradeAttributes(SkillConfig skillConfig, int level)
     {
+        SkillLevelConfig levelConfig = skillConfig.GetLevelConfig(level);
+        if (levelConfig.attributeType == AttributeType.NONE)
+        {
+            return;
+        }
+
         SkillId skillId = SkillId.COMMON;
         if (skillConfig.skillType == SkillType.ACTIVE)
         {
             skillId = skillConfig.id;
         }
 
-        SkillLevelConfig levelConfig = skillConfig.GetLevelConfig(level);
         skillAttributeManager.SetAttribute(skillId, levelConfig.attributeType, levelConfig.value);
     }
 }
