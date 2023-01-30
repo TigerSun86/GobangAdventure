@@ -6191,13 +6191,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pendingUpgradeCount: {fileID: 11400000, guid: 3cc53a7b7f373a340aa28afbd4498daa, type: 2}
   upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
-  commonAttributes:
-    m_keys: 
-    m_values: []
   tbSkillConfig: {fileID: 11400000, guid: 1898367a88393754aa4eb483294cd9f8, type: 2}
-  skillIdToAttributes:
-    m_keys: 
-    m_values: []
+  skillAttributeManager: {fileID: 11400000, guid: f5c5a2bc3d1b80047a67c87641a7a624, type: 2}
   initialSkill: 1
   enabledActiveSkills: 
   skillIdToPrefab:
@@ -6205,7 +6200,7 @@ MonoBehaviour:
     m_values:
     - {fileID: 3995482541262085184, guid: e8ae573a1b510214b89a13a1da98deae, type: 3}
   skillToLevelDictionary:
-    m_keys: 0100000004000000
+    m_keys: 01000000e8030000
     m_values: 0000000000000000
   skillSelectionPendingEvent: {fileID: 11400000, guid: d1c96950794114af3b6dc7e53b65293c, type: 2}
 --- !u!114 &731787896

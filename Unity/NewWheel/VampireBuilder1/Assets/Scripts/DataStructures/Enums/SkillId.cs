@@ -1,12 +1,14 @@
 public enum SkillId
 {
-    NONE,
+    COMMON = 0,
 
     CHAIN_LIGHTNING,
 
     EXPLOSION,
 
-    SLOW,
+    ONE_PUNCH,
 
-    ATTACK,
+    SHOCK_WAVE,
+
+    ATTACK = 1000,
 }

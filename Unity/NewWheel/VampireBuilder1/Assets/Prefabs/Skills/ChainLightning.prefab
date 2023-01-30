@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  mainSkill: {fileID: 11400000, guid: cb978f8a679d8c84089b1cf365665943, type: 2}
+  skillAttributeManager: {fileID: 11400000, guid: f5c5a2bc3d1b80047a67c87641a7a624, type: 2}
   chainLightningRunEvent:
     m_PersistentCalls:
       m_Calls:
@@ -89,4 +89,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533c223e74cd0064cad18e2816647f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackFactor: {fileID: 11400000, guid: 8dc1894240e40824cb1fe72cae84fbbf, type: 2}

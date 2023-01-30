@@ -24,8 +24,10 @@ public class AttackData
         this.criticalAmount = mainSkill.criticalAmount;
     }
 
-    public AttackData(AttributeTypeToFloatDictionary commonAttributes, AttributeTypeToFloatDictionary skillAttributes, float? attackOverride = null)
+    public AttackData(SkillId skillId, SkillAttributeManager skillAttributeManager, float? attackOverride = null)
     {
+        AttributeTypeToFloatDictionary commonAttributes = skillAttributeManager.GetAttributes(SkillId.COMMON);
+        AttributeTypeToFloatDictionary skillAttributes = skillAttributeManager.GetAttributes(skillId);
         this.attack = attackOverride.HasValue ? attackOverride.Value : skillAttributes[AttributeType.ATTACK];
         this.attack *= commonAttributes[AttributeType.ATTACK];
         this.criticalRate = commonAttributes.GetValueOrDefault(AttributeType.CRITICAL_RATE, 0)

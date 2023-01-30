@@ -12,11 +12,9 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] UpgradeOptionRuntimeSet upgradeOptionSequence;
 
-    [SerializeField] AttributeTypeToFloatDictionary commonAttributes;
-
     [SerializeField] TbSkillConfig tbSkillConfig;
 
-    [SerializeField] SkillIdToAttributesDictionary skillIdToAttributes;
+    [SerializeField] SkillAttributeManager skillAttributeManager;
 
     [SerializeField] SkillId initialSkill;
 
@@ -91,20 +89,17 @@ public class SkillManager : MonoBehaviour
                 this.transform);
             SkillPrefab skillPrefab = instance.GetComponent<SkillPrefab>();
             skillPrefab.target = other.gameObject;
-            skillPrefab.commonAttributes = commonAttributes;
-            skillPrefab.skillAttributes = skillIdToAttributes[skillId];
+            skillPrefab.skillAttributeManager = skillAttributeManager;
         }
     }
 
     // Start is called before the first frame update
     private void Start()
     {
-        commonAttributes = AttributeTypeToFloatDictionary.CreateInstanceWithAllAttributes();
-
-        skillIdToAttributes.Clear();
+        skillAttributeManager.Clear();
         foreach (SkillConfig skillConfig in tbSkillConfig.GetAllSkillConfigs())
         {
-            skillIdToAttributes[skillConfig.id] = skillConfig.GetInitialAttributeDictionary();
+            skillAttributeManager.SetAttributes(skillConfig.id, skillConfig.GetInitialAttributeDictionary());
         }
 
         InitializeSkillLevels();
@@ -161,17 +156,13 @@ public class SkillManager : MonoBehaviour
 
     private void UpgradeAttributes(SkillConfig skillConfig, int level)
     {
-        AttributeTypeToFloatDictionary skillAttributes = skillIdToAttributes[skillConfig.id];
+        SkillId skillId = SkillId.COMMON;
         if (skillConfig.skillType == SkillType.ACTIVE)
         {
-            skillAttributes = skillIdToAttributes[skillConfig.id];
-        }
-        else
-        {
-            skillAttributes = commonAttributes;
+            skillId = skillConfig.id;
         }
 
         SkillLevelConfig levelConfig = skillConfig.GetLevelConfig(level);
-        skillAttributes[levelConfig.attributeType] = levelConfig.value;
+        skillAttributeManager.SetAttribute(skillId, levelConfig.attributeType, levelConfig.value);
     }
 }

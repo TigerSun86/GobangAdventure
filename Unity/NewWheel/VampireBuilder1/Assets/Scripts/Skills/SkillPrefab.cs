@@ -1,10 +1,15 @@
 using UnityEngine;
 
-public class SkillPrefab : MonoBehaviour
+public abstract class SkillPrefab : MonoBehaviour
 {
     public GameObject target;
 
-    public AttributeTypeToFloatDictionary commonAttributes;
+    public SkillAttributeManager skillAttributeManager;
 
-    public AttributeTypeToFloatDictionary skillAttributes;
+    public abstract SkillId GetSkillId();
+
+    public float GetSkillAttribute(AttributeType attributeType)
+    {
+        return skillAttributeManager.GetAttribute(GetSkillId(), attributeType);
+    }
 }

@@ -14,6 +14,11 @@ public class OnePunch : SkillPrefab
 
     float timer;
 
+    public override SkillId GetSkillId()
+    {
+        return SkillId.ONE_PUNCH;
+    }
+
     private void Start()
     {
         timer = TIME_TO_LIVE;

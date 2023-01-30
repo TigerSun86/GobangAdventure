@@ -16,6 +16,11 @@ public class Explosion : SkillPrefab
 
     float timer;
 
+    public override SkillId GetSkillId()
+    {
+        return SkillId.EXPLOSION;
+    }
+
     private void Start()
     {
         timer = TIME_TO_LIVE;

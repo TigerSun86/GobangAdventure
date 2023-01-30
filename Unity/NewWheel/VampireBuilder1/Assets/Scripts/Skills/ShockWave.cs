@@ -16,6 +16,11 @@ public class ShockWave : SkillPrefab
 
     HitTarget hitTarget;
 
+    public override SkillId GetSkillId()
+    {
+        return SkillId.SHOCK_WAVE;
+    }
+
     private void Start()
     {
         maxDistance = mainSkill.area;

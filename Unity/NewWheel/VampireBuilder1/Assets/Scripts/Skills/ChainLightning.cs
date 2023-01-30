@@ -26,8 +26,8 @@ public class ChainLightning : SkillPrefab
     // Start is called before the first frame update
     void Start()
     {
-        remainingCount = (int)Math.Round(skillAttributes[AttributeType.AREA]);
-        currentAttack = skillAttributes[AttributeType.ATTACK];
+        remainingCount = (int)Math.Round(GetSkillAttribute(AttributeType.AREA));
+        currentAttack = GetSkillAttribute(AttributeType.ATTACK);
         radius = ATTACK_AREA;
     }
 
@@ -50,9 +50,9 @@ public class ChainLightning : SkillPrefab
 
         remainingCount--;
 
-        attackTargetSelectEvent.Invoke(target, new AttackData(commonAttributes, skillAttributes, currentAttack));
+        attackTargetSelectEvent.Invoke(target, new AttackData(GetSkillId(), skillAttributeManager, currentAttack));
 
-        currentAttack *= (1 - skillAttributes[AttributeType.ATTACK_DECREASE]);
+        currentAttack *= (1 - GetSkillAttribute(AttributeType.ATTACK_DECREASE));
 
         debugPosition = this.transform.position;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, radius);
@@ -79,5 +79,10 @@ public class ChainLightning : SkillPrefab
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(debugPosition.Value, radius);
         }
+    }
+
+    public override SkillId GetSkillId()
+    {
+        return SkillId.CHAIN_LIGHTNING;
     }
 }

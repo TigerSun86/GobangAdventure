@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: TbSkillConfig
   m_EditorClassIdentifier: 
   skills:
-    m_keys: 0100000004000000
+    m_keys: 0000000001000000e8030000
     m_values:
+    - id: 0
+      name: COMMON
+      description: Not a skill
+      skillType: 1
+      initialAttributes:
+      - attributeType: 1
+        value: 1
+      - attributeType: 2
+        value: 0.05
+      - attributeType: 3
+        value: 2
+      - attributeType: 4
+        value: 1
+      - attributeType: 5
+        value: 1
+      dependencies: 
+      levels: []
     - id: 1
       name: Chain Lightning
       description: Chain Lightning desciprition
@@ -26,7 +43,7 @@ MonoBehaviour:
         value: 3
       - attributeType: 5
         value: 0.15
-      dependencies: 0200000003000000
+      dependencies: 
       levels:
       - level: 2
         description: level 2 des
@@ -40,7 +57,7 @@ MonoBehaviour:
         description: level 4 des
         attributeType: 4
         value: 4
-    - id: 4
+    - id: 1000
       name: Attack
       description: Attack description
       skillType: 1
