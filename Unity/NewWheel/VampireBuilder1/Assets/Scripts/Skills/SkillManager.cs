@@ -22,8 +22,6 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
 
-    [SerializeField] SkillIdToIntDictionary skillToLevelDictionary;
-
     [SerializeField] GameEvent skillSelectionPendingEvent;
 
     public void LevelUp()
@@ -34,8 +32,9 @@ public class SkillManager : MonoBehaviour
     public void RefreshSkillUpgradeSequence()
     {
         List<UpgradeOption> upgradeOptions = new List<UpgradeOption>();
-        foreach ((SkillId skillId, int level) in skillToLevelDictionary)
+        foreach (SkillId skillId in skillAttributeManager.GetAllSkills())
         {
+            int level = skillAttributeManager.GetLevel(skillId);
             SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
             if (level < skillConfig.GetMaxLevel())
             {
@@ -49,7 +48,7 @@ public class SkillManager : MonoBehaviour
 
     public void UpgradeSkill(SkillId skillId)
     {
-        int nextLevel = skillToLevelDictionary[skillId] + 1;
+        int nextLevel = skillAttributeManager.GetLevel(skillId) + 1;
         SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
         if (nextLevel > skillConfig.GetMaxLevel())
         {
@@ -57,7 +56,7 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
-        skillToLevelDictionary[skillId] = nextLevel;
+        skillAttributeManager.SetLevel(skillId, nextLevel);
         if (skillConfig.skillType == SkillType.ACTIVE && nextLevel == 1)
         {
             enabledActiveSkills.Add(skillId);
@@ -96,27 +95,12 @@ public class SkillManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        skillAttributeManager.Clear();
-        foreach (SkillConfig skillConfig in tbSkillConfig.GetAllSkillConfigs())
-        {
-            skillAttributeManager.SetAttributes(skillConfig.id, skillConfig.GetInitialAttributeDictionary());
-        }
+        skillAttributeManager.Initialize(tbSkillConfig);
+        skillAttributeManager.SetLevel(initialSkill, 1);
 
-        InitializeSkillLevels();
         enabledActiveSkills.Add(initialSkill);
 
         RefreshSkillUpgradeSequence();
-    }
-
-    private void InitializeSkillLevels()
-    {
-        List<SkillId> allSkills = skillToLevelDictionary.Keys.ToList();
-        foreach (SkillId id in allSkills)
-        {
-            skillToLevelDictionary[id] = 0;
-        }
-
-        skillToLevelDictionary[initialSkill] = 1;
     }
 
     private void IncreasePendingUpgradeCountAndRaiseEvent()

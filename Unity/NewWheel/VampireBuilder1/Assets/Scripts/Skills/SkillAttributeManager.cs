@@ -1,9 +1,28 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "OnlyOneOfEach/SkillAttributeManager")]
 public class SkillAttributeManager : ScriptableObject
 {
     [SerializeField] SkillIdToAttributesDictionary skillIdToAttributes;
+
+    [SerializeField] List<SkillId> allowedSkills;
+
+    public void Initialize(TbSkillConfig tbSkillConfig)
+    {
+        skillIdToAttributes.Clear();
+        foreach (SkillConfig skillConfig in tbSkillConfig.GetAllSkillConfigs())
+        {
+            if (skillConfig.id != SkillId.COMMON && !allowedSkills.Contains(skillConfig.id))
+            {
+                continue;
+            }
+
+            SetAttributes(skillConfig.id, skillConfig.GetInitialAttributeDictionary());
+            SetLevel(skillConfig.id, 0);
+        }
+    }
 
     public AttributeTypeToFloatDictionary GetAttributes(SkillId skillId)
     {
@@ -25,8 +44,18 @@ public class SkillAttributeManager : ScriptableObject
         GetAttributes(skillId)[attributeType] = value;
     }
 
-    public void Clear()
+    public IEnumerable<SkillId> GetAllSkills()
     {
-        skillIdToAttributes.Clear();
+        return skillIdToAttributes.Keys.Where(s => s != SkillId.COMMON);
+    }
+
+    public int GetLevel(SkillId skillId)
+    {
+        return (int)GetAttributes(skillId)[AttributeType.LEVEL];
+    }
+
+    public void SetLevel(SkillId skillId, int level)
+    {
+        GetAttributes(skillId)[AttributeType.LEVEL] = level;
     }
 }
