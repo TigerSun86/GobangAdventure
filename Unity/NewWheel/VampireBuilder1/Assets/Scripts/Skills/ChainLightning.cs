@@ -50,10 +50,7 @@ public class ChainLightning : SkillPrefab
 
         remainingCount--;
 
-        attackTargetSelectEvent.Invoke(target, new AttackData(commonAttributes, skillAttributes)
-        {
-            attack = currentAttack
-        });
+        attackTargetSelectEvent.Invoke(target, new AttackData(commonAttributes, skillAttributes, currentAttack));
 
         currentAttack *= (1 - skillAttributes[AttributeType.ATTACK_DECREASE]);
 
