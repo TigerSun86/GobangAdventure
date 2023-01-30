@@ -7,4 +7,6 @@ public enum SkillId
     EXPLOSION,
 
     SLOW,
+
+    ATTACK,
 }

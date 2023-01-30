@@ -107,15 +107,21 @@ public class SkillManager : MonoBehaviour
             skillIdToAttributes[skillConfig.id] = skillConfig.GetInitialAttributeDictionary();
         }
 
-        foreach (SkillId id in skillToLevelDictionary.Keys)
+        InitializeSkillLevels();
+        enabledActiveSkills.Add(initialSkill);
+
+        RefreshSkillUpgradeSequence();
+    }
+
+    private void InitializeSkillLevels()
+    {
+        List<SkillId> allSkills = skillToLevelDictionary.Keys.ToList();
+        foreach (SkillId id in allSkills)
         {
             skillToLevelDictionary[id] = 0;
         }
 
         skillToLevelDictionary[initialSkill] = 1;
-        enabledActiveSkills.Add(initialSkill);
-
-        RefreshSkillUpgradeSequence();
     }
 
     private void IncreasePendingUpgradeCountAndRaiseEvent()
