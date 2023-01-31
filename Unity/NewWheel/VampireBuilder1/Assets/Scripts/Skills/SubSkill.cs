@@ -10,7 +10,7 @@ public class SubSkill : ScriptableObject
 
     public int currentLevel;
 
-    public GemType gemType;
+    // public GemType gemType;
 
     public List<SubSkillLevelInfo> levelInfos;
 
