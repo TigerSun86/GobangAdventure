@@ -4,8 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(HitTarget))]
 public class ShockWave : SkillPrefab
 {
-    [SerializeField] MainSkill mainSkill;
-
     [SerializeField] float moveSpeed;
 
     float maxDistance;
@@ -23,12 +21,12 @@ public class ShockWave : SkillPrefab
 
     private void Start()
     {
-        maxDistance = mainSkill.area;
+        maxDistance = GetSkillAttribute(AttributeType.AREA);
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = Vector2.right * moveSpeed;
         initialPosition = rb.position;
         hitTarget = GetComponent<HitTarget>();
-        hitTarget.attackBase = new AttackData(mainSkill);
+        hitTarget.attackBase = new AttackData(GetSkillId(), skillAttributeManager);
     }
 
     private void Update()

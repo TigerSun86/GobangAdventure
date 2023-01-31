@@ -37,4 +37,4 @@ MonoBehaviour:
     - m_keys: 01000000
       m_values:
       - 0
-  allowedSkills: 0100000003000000e8030000
+  allowedSkills: 010000000300000004000000e8030000
