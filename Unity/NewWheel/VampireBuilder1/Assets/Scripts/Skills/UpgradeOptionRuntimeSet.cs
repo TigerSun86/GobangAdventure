@@ -1,5 +1,5 @@
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "OnlyOneOfEach/UpgradeOptionRuntimeSet")]
 public class UpgradeOptionRuntimeSet : RuntimeSet<UpgradeOption>
 { }

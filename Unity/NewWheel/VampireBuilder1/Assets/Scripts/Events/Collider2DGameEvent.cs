@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "Events/Collider2DGameEvent")]
 public class Collider2DGameEvent : ScriptableObject
 {
     /// <summary>

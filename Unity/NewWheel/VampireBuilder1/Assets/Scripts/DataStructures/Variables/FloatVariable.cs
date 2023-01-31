@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "Variables/FloatVariable")]
 public class FloatVariable : VariableBase, ISerializationCallbackReceiver
 {
 #if UNITY_EDITOR

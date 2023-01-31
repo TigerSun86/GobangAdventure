@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "Variables/IntVariable")]
 public class IntVariable : VariableBase, ISerializationCallbackReceiver
 {
 #if UNITY_EDITOR

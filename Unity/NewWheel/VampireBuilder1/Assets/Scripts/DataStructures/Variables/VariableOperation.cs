@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "Variables/VariableOperation")]
 public class VariableOperation : ScriptableObject
 {
     public OperationType operationType;
