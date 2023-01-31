@@ -11,7 +11,7 @@ public class ConfigsLoader : MonoBehaviour
 
     public void Load()
     {
-        string json = File.ReadAllText(Application.dataPath + "/../GenerateDatas/json/" + SKILL_CONFIG_FILE_NAME + ".json", System.Text.Encoding.UTF8);
+        string json = File.ReadAllText(Application.dataPath + "/../DesignerConfigs/GenerateDatas/json/" + SKILL_CONFIG_FILE_NAME + ".json", System.Text.Encoding.UTF8);
 
         tbSkillConfig.SetTbSkillConfig(Newtonsoft.Json.JsonConvert.DeserializeObject<List<SkillConfig>>(json));
 
