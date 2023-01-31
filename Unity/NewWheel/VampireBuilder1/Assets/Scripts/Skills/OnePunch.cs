@@ -6,8 +6,6 @@ public class OnePunch : SkillPrefab
     // Leave child effect some time to display
     private static readonly float TIME_TO_LIVE = 2f;
 
-    [SerializeField] MainSkill mainSkill;
-
     [SerializeField] GameObject effect;
 
     [SerializeField] UnityEvent<GameObject, AttackData> attackTargetSelectEvent;
@@ -22,7 +20,7 @@ public class OnePunch : SkillPrefab
     private void Start()
     {
         timer = TIME_TO_LIVE;
-        AttackData attackBase = new AttackData(mainSkill);
+        AttackData attackBase = new AttackData(GetSkillId(), skillAttributeManager);
         attackTargetSelectEvent.Invoke(target, attackBase);
 
         if (effect != null)

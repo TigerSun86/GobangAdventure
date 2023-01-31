@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TbSkillConfig
   m_EditorClassIdentifier: 
   skills:
-    m_keys: 0000000001000000e8030000
+    m_keys: 000000000100000003000000e8030000
     m_values:
     - id: 0
       name: COMMON
@@ -34,7 +34,8 @@ MonoBehaviour:
       levels: []
     - id: 1
       name: Chain Lightning
-      description: Chain Lightning desciprition
+      description: Hurls a bolt of lightning that bounces up to 3 times. Each jump
+        deals 15% less damage
       skillType: 0
       initialAttributes:
       - attributeType: 2
@@ -46,24 +47,52 @@ MonoBehaviour:
       dependencies: 
       levels:
       - level: 1
-        description: Chain Lightning desciprition
+        description: Hurls a bolt of lightning that bounces up to 3 times. Each jump
+          deals 15% less damage
         attributeType: 0
         value: 0
       - level: 2
-        description: level 2 des
+        description: Increase attack to 9
         attributeType: 2
         value: 9
       - level: 3
-        description: level 3 des
+        description: Increase attack to 10
         attributeType: 2
         value: 10
       - level: 4
-        description: level 4 des
+        description: Increase the bounce count to 4
         attributeType: 5
         value: 4
+    - id: 3
+      name: One Punch
+      description: One punch to hit an enemy
+      skillType: 0
+      initialAttributes:
+      - attributeType: 2
+        value: 20
+      - attributeType: 3
+        value: 0.15
+      dependencies: 
+      levels:
+      - level: 1
+        description: One punch to hit an enemy
+        attributeType: 0
+        value: 0
+      - level: 2
+        description: Increase the critical amount to 300%
+        attributeType: 4
+        value: 1
+      - level: 3
+        description: Increase the critical amount to 400%
+        attributeType: 4
+        value: 2
+      - level: 4
+        description: Increase the critical amount to 500%
+        attributeType: 4
+        value: 3
     - id: 1000
       name: Attack
-      description: Attack description
+      description: Increase the base attack factor
       skillType: 1
       initialAttributes: []
       dependencies: 
