@@ -6,8 +6,6 @@ public class Explosion : SkillPrefab
     // Used to display Gizmos
     private static readonly float TIME_TO_LIVE = 1f;
 
-    [SerializeField] MainSkill mainSkill;
-
     [SerializeField] GameObject effect;
 
     [SerializeField] UnityEvent<GameObject, AttackData> attackTargetSelectEvent;
@@ -24,8 +22,8 @@ public class Explosion : SkillPrefab
     private void Start()
     {
         timer = TIME_TO_LIVE;
-        AttackData attackBase = new AttackData(mainSkill);
-        radius = mainSkill.area;
+        AttackData attackBase = new AttackData(GetSkillId(), skillAttributeManager);
+        radius = GetSkillAttribute(AttributeType.AREA);
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.gameObject.transform.position, radius);
         foreach (Collider2D collider in colliders)
         {

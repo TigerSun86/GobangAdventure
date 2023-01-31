@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TbSkillConfig
   m_EditorClassIdentifier: 
   skills:
-    m_keys: 000000000100000003000000e8030000
+    m_keys: 0000000001000000020000000300000004000000e8030000
     m_values:
     - id: 0
       name: COMMON
@@ -63,6 +63,33 @@ MonoBehaviour:
         description: Increase the bounce count to 4
         attributeType: 5
         value: 4
+    - id: 2
+      name: Explosion
+      description: Explode after hit an enemy
+      skillType: 0
+      initialAttributes:
+      - attributeType: 2
+        value: 10
+      - attributeType: 5
+        value: 1.5
+      dependencies: 
+      levels:
+      - level: 1
+        description: Explode after hit an enemy
+        attributeType: 0
+        value: 0
+      - level: 2
+        description: Increase the area to 2
+        attributeType: 5
+        value: 2
+      - level: 3
+        description: Increase the area to 2.5
+        attributeType: 5
+        value: 2.5
+      - level: 4
+        description: Increase the area to 3
+        attributeType: 5
+        value: 3
     - id: 3
       name: One Punch
       description: One punch to hit an enemy
@@ -89,6 +116,33 @@ MonoBehaviour:
       - level: 4
         description: Increase the critical amount to 500%
         attributeType: 4
+        value: 3
+    - id: 4
+      name: Shock Wave
+      description: A wave of force causing damage to land units in a line
+      skillType: 0
+      initialAttributes:
+      - attributeType: 2
+        value: 10
+      - attributeType: 5
+        value: 1.5
+      dependencies: 
+      levels:
+      - level: 1
+        description: A wave of force causing damage to land units in a line
+        attributeType: 0
+        value: 0
+      - level: 2
+        description: Increase the area to 2
+        attributeType: 5
+        value: 2
+      - level: 3
+        description: Increase the area to 2.5
+        attributeType: 5
+        value: 2.5
+      - level: 4
+        description: Increase the area to 3
+        attributeType: 5
         value: 3
     - id: 1000
       name: Attack
