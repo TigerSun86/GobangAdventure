@@ -40,10 +40,14 @@ MonoBehaviour:
       initialAttributes:
       - attributeType: 2
         value: 8
-      - attributeType: 5
-        value: 3
       - attributeType: 6
         value: 0.15
+      - attributeType: 7
+        value: 2
+      - attributeType: 8
+        value: 1
+      - attributeType: 9
+        value: 3
       dependencies: 
       levels:
       - level: 1
@@ -61,7 +65,7 @@ MonoBehaviour:
         value: 10
       - level: 4
         description: Increase the bounce count to 4
-        attributeType: 5
+        attributeType: 9
         value: 4
     - id: 2
       name: Explosion
@@ -72,6 +76,12 @@ MonoBehaviour:
         value: 10
       - attributeType: 5
         value: 1.5
+      - attributeType: 7
+        value: 4
+      - attributeType: 8
+        value: 2
+      - attributeType: 9
+        value: 1
       dependencies: 
       levels:
       - level: 1
@@ -99,6 +109,12 @@ MonoBehaviour:
         value: 20
       - attributeType: 3
         value: 0.15
+      - attributeType: 7
+        value: 4
+      - attributeType: 8
+        value: 2
+      - attributeType: 9
+        value: 1
       dependencies: 
       levels:
       - level: 1
@@ -126,6 +142,12 @@ MonoBehaviour:
         value: 10
       - attributeType: 5
         value: 1.5
+      - attributeType: 7
+        value: 4
+      - attributeType: 8
+        value: 2
+      - attributeType: 9
+        value: 1
       dependencies: 
       levels:
       - level: 1

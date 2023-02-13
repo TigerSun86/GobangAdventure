@@ -13,4 +13,10 @@ public enum AttributeType
     AREA,
 
     ATTACK_DECREASE,
+
+    CD,
+
+    SPEED,
+
+    PIERCE,
 }

@@ -26,7 +26,7 @@ public class ChainLightning : SkillPrefab
     // Start is called before the first frame update
     void Start()
     {
-        remainingCount = (int)Math.Round(GetSkillAttribute(AttributeType.AREA));
+        remainingCount = (int)Math.Round(GetSkillAttribute(AttributeType.PIERCE));
         currentAttack = GetSkillAttribute(AttributeType.ATTACK);
         radius = ATTACK_AREA;
     }
