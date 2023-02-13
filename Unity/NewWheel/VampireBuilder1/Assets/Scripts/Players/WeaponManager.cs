@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Timers;
 using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
