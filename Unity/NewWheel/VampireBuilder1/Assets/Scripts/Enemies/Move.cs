@@ -7,7 +7,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Move : MonoBehaviour
 {
-    [SerializeField] FloatVariable defaultSpeed;
+    [SerializeField] public FloatVariable defaultSpeed;
 
     [SerializeField] Vector2 direction;
 

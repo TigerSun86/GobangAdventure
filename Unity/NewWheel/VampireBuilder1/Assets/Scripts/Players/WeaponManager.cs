@@ -46,6 +46,11 @@ public class WeaponManager : MonoBehaviour
         position.y = playerTransform.position.y;
 
         GameObject gameObject = Instantiate(prefab, position, Quaternion.identity, this.transform);
+
+        Move move = gameObject.GetComponent<Move>();
+        FloatVariable speed = ScriptableObject.CreateInstance<FloatVariable>();
+        speed.SetValue(skillAttributeManager.GetAttribute(skillId, AttributeType.SPEED));
+        move.defaultSpeed = speed;
     }
 
     private bool UpdateSkillTimer(SkillId skillId)
