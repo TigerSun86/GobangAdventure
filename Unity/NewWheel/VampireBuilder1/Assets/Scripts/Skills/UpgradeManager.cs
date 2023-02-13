@@ -67,6 +67,7 @@ public class UpgradeManager : MonoBehaviour
     {
         skillAttributeManager.Initialize(tbSkillConfig);
         skillAttributeManager.SetLevel(initialSkill, 1);
+        skillUpgradedEvent.Raise(SkillId.COMMON);
 
         RefreshSkillUpgradeSequence();
     }

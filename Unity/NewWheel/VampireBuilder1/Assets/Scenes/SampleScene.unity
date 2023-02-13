@@ -3094,6 +3094,7 @@ GameObject:
   m_Component:
   - component: {fileID: 528383924}
   - component: {fileID: 528383923}
+  - component: {fileID: 528383925}
   m_Layer: 0
   m_Name: WeaponManager
   m_TagString: Untagged
@@ -3113,9 +3114,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e52170ca6fa7bc4096aa965dd6fdd0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
-  attackInterval: {fileID: 11400000, guid: 2a6f1562002f3da42b4da2a838533da9, type: 2}
-  attackArea: {fileID: 11400000, guid: 0215f7f1056dd8244ae3e429900d3af0, type: 2}
+  skillAttributeManager: {fileID: 11400000, guid: f5c5a2bc3d1b80047a67c87641a7a624, type: 2}
+  skillIdToPrefab:
+    m_keys: 01000000
+    m_values:
+    - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
+  enabledSkills: 
 --- !u!4 &528383924
 Transform:
   m_ObjectHideFlags: 0
@@ -3124,13 +3128,41 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528383922}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.1876261, y: 1.5447136, z: -0.0168874}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &528383925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528383922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df4554bd2bbfbf4b83821edde99b654, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 5e2c35f92dc46874ab8463edcd12a5ce, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 528383923}
+        m_TargetAssemblyTypeName: WeaponManager, Assembly-CSharp
+        m_MethodName: RefreshEnabledSkills
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &537122824
 GameObject:
   m_ObjectHideFlags: 0
