@@ -4179,7 +4179,6 @@ GameObject:
   - component: {fileID: 731787893}
   - component: {fileID: 731787895}
   - component: {fileID: 731787898}
-  - component: {fileID: 731787899}
   m_Layer: 0
   m_Name: SkillManager
   m_TagString: Untagged
@@ -4222,7 +4221,6 @@ MonoBehaviour:
     - {fileID: 585533040300446151, guid: 7fba6441f5972e34eafc66226db5c66f, type: 3}
     - {fileID: 585533040300446151, guid: 760f289c9b8965a4c93d9cc86395869c, type: 3}
     - {fileID: 5897957824515767754, guid: 5ec3a7b8d9aad9741b4d62713dc88345, type: 3}
-  enabledSkills: 
 --- !u!114 &731787898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4243,34 +4241,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
         m_MethodName: InstantiateSkillPrefabs
         m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &731787899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 731787892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0df4554bd2bbfbf4b83821edde99b654, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 5e2c35f92dc46874ab8463edcd12a5ce, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 731787895}
-        m_TargetAssemblyTypeName: SkillManager, Assembly-CSharp
-        m_MethodName: RefreshEnabledSkills
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

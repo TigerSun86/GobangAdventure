@@ -47,6 +47,9 @@ public class WeaponManager : MonoBehaviour
 
         GameObject gameObject = Instantiate(prefab, position, Quaternion.identity, this.transform);
 
+        SkillStage1 skillStage1 = gameObject.GetComponent<SkillStage1>();
+        skillStage1.skillId = skillId;
+
         Move move = gameObject.GetComponent<Move>();
         FloatVariable speed = ScriptableObject.CreateInstance<FloatVariable>();
         speed.SetValue(skillAttributeManager.GetAttribute(skillId, AttributeType.SPEED));
