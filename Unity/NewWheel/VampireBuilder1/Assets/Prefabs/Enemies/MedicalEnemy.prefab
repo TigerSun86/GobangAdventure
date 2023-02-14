@@ -274,7 +274,6 @@ GameObject:
   - component: {fileID: -3405363415253002439}
   - component: {fileID: 1197466765642258717}
   - component: {fileID: -336972625773581238}
-  - component: {fileID: 2952684321595919202}
   m_Layer: 0
   m_Name: MedicalEnemy
   m_TagString: Enemy
@@ -613,41 +612,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: SelfDestroy, Assembly-CSharp
         m_MethodName: Destroy
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  enemyHitEvent:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &2952684321595919202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6902851330609279887}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aff83554db9861946abd78e19b523b7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackBase:
-    attack: 1
-    criticalRate: 0
-    criticalAmount: 2
-  targetTag: Bullet
-  attackTargetSelectEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1197466765642258717}
-        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
-        m_MethodName: AttackObject
-        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

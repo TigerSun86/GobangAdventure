@@ -13,9 +13,6 @@ GameObject:
   - component: {fileID: 2347540660389084045}
   - component: {fileID: 3807371709241022318}
   - component: {fileID: 2286131043201406279}
-  - component: {fileID: -6599833735012603784}
-  - component: {fileID: 3980965466641927810}
-  - component: {fileID: 7639509605694257794}
   - component: {fileID: -3553132888984764722}
   - component: {fileID: -8492735098726431486}
   - component: {fileID: 812945501768692959}
@@ -142,54 +139,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f714ea14a36b78245a9cec6cb1699703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-6599833735012603784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232792271753850171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01bf9a195f021274a87117abd8f66ed8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: {fileID: 11400000, guid: 7f73f97bdda8a0a4da18205097f05276, type: 2}
-  health: 0
-  healthChanged:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &3980965466641927810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232792271753850171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 802bde312a63d1f4ba099d21c79ecd33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onTakeDamage:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &7639509605694257794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232792271753850171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c5ca15bff45c504891b34c9b3691861, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deathEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  timeToLive: 0
 --- !u!114 &-3553132888984764722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,6 +174,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2286131043201406279}
+        m_TargetAssemblyTypeName: SelfDestroy, Assembly-CSharp
+        m_MethodName: Destroy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &-8492735098726431486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,7 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2d522daf2828624eb7140a78a603b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultSpeed: {fileID: 11400000, guid: 9e40faef6e1e08b45bdbb3469956eb30, type: 2}
+  defaultSpeed: {fileID: 0}
   direction: {x: 1, y: 0}
 --- !u!114 &812945501768692959
 MonoBehaviour:
