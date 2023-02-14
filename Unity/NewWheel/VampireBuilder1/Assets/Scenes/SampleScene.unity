@@ -3116,8 +3116,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillAttributeManager: {fileID: 11400000, guid: f5c5a2bc3d1b80047a67c87641a7a624, type: 2}
   skillIdToPrefab:
-    m_keys: 01000000
+    m_keys: 01000000020000000300000004000000
     m_values:
+    - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
+    - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
+    - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
     - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
   enabledSkills: 
 --- !u!4 &528383924
