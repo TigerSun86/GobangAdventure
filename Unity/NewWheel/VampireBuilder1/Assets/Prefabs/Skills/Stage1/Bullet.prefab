@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 2347540660389084045}
   - component: {fileID: 3807371709241022318}
   - component: {fileID: 2286131043201406279}
-  - component: {fileID: -3553132888984764722}
   - component: {fileID: -8492735098726431486}
   - component: {fileID: 812945501768692959}
+  - component: {fileID: -3553132888984764722}
+  - component: {fileID: 4517508093883063625}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Bullet
@@ -139,6 +140,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f714ea14a36b78245a9cec6cb1699703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-8492735098726431486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232792271753850171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2d522daf2828624eb7140a78a603b86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultSpeed: {fileID: 0}
+  direction: {x: 1, y: 0}
+--- !u!114 &812945501768692959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232792271753850171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb291efce7b4e4b96bc910e4fe39434f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillId: 0
 --- !u!114 &-3553132888984764722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +214,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &-8492735098726431486
+--- !u!114 &4517508093883063625
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -195,21 +223,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 5232792271753850171}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2d522daf2828624eb7140a78a603b86, type: 3}
+  m_Script: {fileID: 11500000, guid: aff83554db9861946abd78e19b523b7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultSpeed: {fileID: 0}
-  direction: {x: 1, y: 0}
---- !u!114 &812945501768692959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232792271753850171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb291efce7b4e4b96bc910e4fe39434f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillId: 0
+  attackBase:
+    attack: 0
+    criticalRate: 0
+    criticalAmount: 0
+  targetTag: Bound
+  attackTargetSelectEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  enemyHitEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2286131043201406279}
+        m_TargetAssemblyTypeName: SelfDestroy, Assembly-CSharp
+        m_MethodName: Destroy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

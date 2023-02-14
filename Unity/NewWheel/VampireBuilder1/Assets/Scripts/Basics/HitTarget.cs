@@ -15,7 +15,7 @@ public class HitTarget : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (DamagableUtilities.IsDamagable(other.gameObject, targetTag))
+        if (other.gameObject.tag == targetTag)
         {
             attackTargetSelectEvent.Invoke(other.gameObject, attackBase);
             enemyHitEvent.Invoke(other, gameObject);
