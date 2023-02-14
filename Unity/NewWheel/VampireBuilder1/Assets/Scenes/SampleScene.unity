@@ -3096,7 +3096,7 @@ GameObject:
   - component: {fileID: 528383923}
   - component: {fileID: 528383925}
   m_Layer: 0
-  m_Name: WeaponManager
+  m_Name: SkillStage1Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3136,7 +3136,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &528383925
 MonoBehaviour:
@@ -4169,7 +4169,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &731787892
 GameObject:
@@ -4183,7 +4183,7 @@ GameObject:
   - component: {fileID: 731787895}
   - component: {fileID: 731787898}
   m_Layer: 0
-  m_Name: SkillManager
+  m_Name: SkillStage2Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5889,7 +5889,7 @@ Transform:
   - {fileID: 277789403}
   - {fileID: 995508885}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &995508883
 GameObject:
@@ -6271,7 +6271,7 @@ Transform:
   m_Children:
   - {fileID: 33892340}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1130005821
 GameObject:
@@ -6408,7 +6408,7 @@ Transform:
   m_Children:
   - {fileID: 13995657}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1130005826
 MonoBehaviour:
@@ -7737,7 +7737,7 @@ Transform:
   m_Children:
   - {fileID: 1638281018}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1370159236
 MonoBehaviour:
