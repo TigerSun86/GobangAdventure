@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -57,5 +58,16 @@ public class SkillAttributeManager : ScriptableObject
     public void SetLevel(SkillId skillId, int level)
     {
         GetAttributes(skillId)[AttributeType.LEVEL] = level;
+    }
+
+    public SkillBehaviorType GetBehaviorType(SkillId skillId)
+    {
+        int enumValue = (int)GetAttributes(skillId)[AttributeType.BEHAVIOR_TYPE];
+        if (!Enum.IsDefined(typeof(SkillBehaviorType), enumValue))
+        {
+            throw new ArgumentException($"Value {enumValue} is not defined in enum type {nameof(SkillBehaviorType)}");
+        }
+
+        return (SkillBehaviorType)enumValue;
     }
 }

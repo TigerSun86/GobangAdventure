@@ -116,7 +116,7 @@ public class UpgradeManager : MonoBehaviour
         }
 
         SkillId skillId = SkillId.COMMON;
-        if (skillConfig.skillType == SkillType.ACTIVE)
+        if (skillAttributeManager.GetBehaviorType(skillConfig.id) == SkillBehaviorType.ACTIVE)
         {
             skillId = skillConfig.id;
         }

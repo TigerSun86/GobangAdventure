@@ -1,10 +1,12 @@
 public enum AttributeType
 {
-    NONE,
+    NONE = 0,
 
     LEVEL,
 
-    ATTACK,
+    BEHAVIOR_TYPE,
+
+    ATTACK = 10,
 
     CRITICAL_RATE,
 
