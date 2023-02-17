@@ -25,6 +25,11 @@ public class SkillAttributeManager : ScriptableObject
         }
     }
 
+    public bool ContainsAttribute(SkillId skillId, AttributeType attributeType)
+    {
+        return skillIdToAttributes[skillId].ContainsKey(attributeType);
+    }
+
     public AttributeTypeToFloatDictionary GetAttributes(SkillId skillId)
     {
         return skillIdToAttributes[skillId];
@@ -60,8 +65,13 @@ public class SkillAttributeManager : ScriptableObject
         GetAttributes(skillId)[AttributeType.LEVEL] = level;
     }
 
-    public SkillBehaviorType GetBehaviorType(SkillId skillId)
+    public SkillBehaviorType? GetBehaviorType(SkillId skillId)
     {
+        if (!ContainsAttribute(skillId, AttributeType.BEHAVIOR_TYPE))
+        {
+            return null;
+        }
+
         int enumValue = (int)GetAttributes(skillId)[AttributeType.BEHAVIOR_TYPE];
         if (!Enum.IsDefined(typeof(SkillBehaviorType), enumValue))
         {

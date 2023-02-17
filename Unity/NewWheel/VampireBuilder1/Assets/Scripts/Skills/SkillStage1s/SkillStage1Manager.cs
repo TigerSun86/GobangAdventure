@@ -18,7 +18,8 @@ public class SkillStage1Manager : MonoBehaviour
         foreach (SkillId skillId in skillAttributeManager.GetAllSkills())
         {
             int level = skillAttributeManager.GetLevel(skillId);
-            if (level > 0)
+            SkillBehaviorType? skillBehaviorType = skillAttributeManager.GetBehaviorType(skillId);
+            if (level > 0 && skillBehaviorType == SkillBehaviorType.ACTIVE)
             {
                 enabledSkills.Add(skillId);
             }
