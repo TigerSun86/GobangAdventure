@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TbSkillConfig
   m_EditorClassIdentifier: 
   skills:
-    m_keys: 0000000001000000020000000300000004000000e8030000
+    m_keys: 000000000100000002000000030000000400000005000000e8030000
     m_values:
     - id: 0
       name: COMMON
@@ -169,6 +169,40 @@ MonoBehaviour:
         description: Increase the area to 3
         attributeType: 13
         value: 3
+    - id: 5
+      name: Luo Han Quan
+      description: Basic kungfu attack straight
+      initialAttributes:
+      - attributeType: 2
+        value: 0
+      - attributeType: 10
+        value: 20
+      - attributeType: 11
+        value: 0.15
+      - attributeType: 15
+        value: 4
+      - attributeType: 16
+        value: 2
+      - attributeType: 17
+        value: 1
+      dependencies: 
+      levels:
+      - level: 1
+        description: Basic kungfu attack straight
+        attributeType: 0
+        value: 0
+      - level: 2
+        description: Attack one more enemy
+        attributeType: 17
+        value: 2
+      - level: 3
+        description: Attack one more enemy
+        attributeType: 17
+        value: 3
+      - level: 4
+        description: Attack one more enemy
+        attributeType: 17
+        value: 4
     - id: 1000
       name: Attack
       description: Increase the base attack factor

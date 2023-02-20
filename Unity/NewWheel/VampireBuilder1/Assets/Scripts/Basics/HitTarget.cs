@@ -9,26 +9,25 @@ public class HitTarget : MonoBehaviour
 
     public AttackData attackBase;
 
-    [SerializeField] string targetTag;
+    public string targetTag;
 
     [SerializeField] UnityEvent<GameObject, AttackData> attackTargetSelectEvent;
 
     [SerializeField] UnityEvent<Collider2D, GameObject> enemyHitEvent;
 
-    private int hitCount;
-
-    private void Start()
-    {
-        hitCount = maxHitCount;
-    }
+    [SerializeField] UnityEvent afterLastHitEvent;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == targetTag && hitCount > 0)
+        if (other.gameObject.tag == targetTag && maxHitCount > 0)
         {
-            hitCount--;
+            maxHitCount--;
             attackTargetSelectEvent.Invoke(other.gameObject, attackBase);
             enemyHitEvent.Invoke(other, gameObject);
+            if (maxHitCount == 0)
+            {
+                afterLastHitEvent.Invoke();
+            }
         }
     }
 }

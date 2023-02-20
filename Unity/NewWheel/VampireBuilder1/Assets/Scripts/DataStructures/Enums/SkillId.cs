@@ -2,13 +2,15 @@ public enum SkillId
 {
     COMMON = 0,
 
-    CHAIN_LIGHTNING,
+    CHAIN_LIGHTNING = 1,
 
-    EXPLOSION,
+    EXPLOSION = 2,
 
-    ONE_PUNCH,
+    ONE_PUNCH = 3,
 
-    SHOCK_WAVE,
+    SHOCK_WAVE = 4,
+
+    LUO_HAN_QUAN = 5,
 
     ATTACK = 1000,
 }

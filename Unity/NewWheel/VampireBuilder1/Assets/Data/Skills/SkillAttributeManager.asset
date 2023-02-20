@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SkillAttributeManager
   m_EditorClassIdentifier: 
   skillIdToAttributes:
-    m_keys: 0000000001000000020000000300000004000000e8030000
+    m_keys: 000000000100000002000000030000000400000005000000e8030000
     m_values:
     - m_keys: 0a0000000b0000000c0000000d0000000e00000001000000
       m_values:
@@ -31,7 +31,7 @@ MonoBehaviour:
       - 2
       - 1
       - 3
-      - 1
+      - 0
     - m_keys: 020000000a0000000d0000000f000000100000001100000001000000
       m_values:
       - 0
@@ -59,8 +59,17 @@ MonoBehaviour:
       - 2
       - 1
       - 0
+    - m_keys: 020000000a0000000b0000000f000000100000001100000001000000
+      m_values:
+      - 0
+      - 20
+      - 0.15
+      - 4
+      - 2
+      - 1
+      - 1
     - m_keys: 0200000001000000
       m_values:
       - 1
       - 0
-  allowedSkills: 01000000020000000300000004000000e8030000
+  allowedSkills: 01000000020000000300000004000000e803000005000000
