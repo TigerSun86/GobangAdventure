@@ -3103,13 +3103,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillAttributeManager: {fileID: 11400000, guid: f5c5a2bc3d1b80047a67c87641a7a624, type: 2}
   skillIdToPrefab:
-    m_keys: 0100000002000000030000000400000005000000
+    m_keys: 010000000200000003000000040000000500000006000000
     m_values:
     - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
     - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
     - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
     - {fileID: 5232792271753850171, guid: 18cc216b8cd9a50469b759cbd86d586a, type: 3}
     - {fileID: 5232792271753850171, guid: d5c4f2cb0b8817f43a00519615dcf5ff, type: 3}
+    - {fileID: 5232792271753850171, guid: 1f8f9857cb1a6ec4fb370fca558d0874, type: 3}
   enabledSkills: 
 --- !u!4 &528383924
 Transform:
@@ -4803,7 +4804,7 @@ MonoBehaviour:
   upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
   tbSkillConfig: {fileID: 11400000, guid: 1898367a88393754aa4eb483294cd9f8, type: 2}
   skillAttributeManager: {fileID: 11400000, guid: f5c5a2bc3d1b80047a67c87641a7a624, type: 2}
-  initialSkill: 5
+  initialSkill: 6
   skillSelectionPendingEvent: {fileID: 11400000, guid: d1c96950794114af3b6dc7e53b65293c, type: 2}
   skillUpgradedEvent: {fileID: 11400000, guid: 5e2c35f92dc46874ab8463edcd12a5ce, type: 2}
 --- !u!4 &834407687

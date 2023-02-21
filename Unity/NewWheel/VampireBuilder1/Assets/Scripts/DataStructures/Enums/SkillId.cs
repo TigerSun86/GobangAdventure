@@ -12,5 +12,7 @@ public enum SkillId
 
     LUO_HAN_QUAN = 5,
 
+    TIAN_SHAN_LIU_YANG_ZHANG = 6,
+
     ATTACK = 1000,
 }

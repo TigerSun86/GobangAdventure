@@ -51,10 +51,19 @@ public class SkillStage1Manager : MonoBehaviour
         SkillStage1 skillStage1 = gameObject.GetComponent<SkillStage1>();
         skillStage1.skillId = skillId;
 
-        Move move = gameObject.GetComponent<Move>();
         FloatVariable speed = ScriptableObject.CreateInstance<FloatVariable>();
         speed.SetValue(skillAttributeManager.GetAttribute(skillId, AttributeType.SPEED));
-        move.defaultSpeed = speed;
+        Move move = gameObject.GetComponent<Move>();
+        if (move != null)
+        {
+            move.defaultSpeed = speed;
+        }
+
+        MoveAlongPath moveAlongPath = gameObject.GetComponent<MoveAlongPath>();
+        if (moveAlongPath != null)
+        {
+            moveAlongPath.speed = speed.value;
+        }
     }
 
     private bool UpdateSkillTimer(SkillId skillId)

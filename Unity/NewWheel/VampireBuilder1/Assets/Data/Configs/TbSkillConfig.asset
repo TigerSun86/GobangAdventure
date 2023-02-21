@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TbSkillConfig
   m_EditorClassIdentifier: 
   skills:
-    m_keys: 000000000100000002000000030000000400000005000000e8030000
+    m_keys: 00000000010000000200000003000000040000000500000006000000e8030000
     m_values:
     - id: 0
       name: COMMON
@@ -203,6 +203,28 @@ MonoBehaviour:
         description: Attack one more enemy
         attributeType: 17
         value: 4
+    - id: 6
+      name: Tian Shan Liu Yang Zhang
+      description: Strike through the end and return back
+      initialAttributes:
+      - attributeType: 2
+        value: 0
+      - attributeType: 10
+        value: 20
+      - attributeType: 11
+        value: 0.15
+      - attributeType: 15
+        value: 4
+      - attributeType: 16
+        value: 2
+      - attributeType: 17
+        value: 4
+      dependencies: 
+      levels:
+      - level: 1
+        description: Strike through the end and return back
+        attributeType: 0
+        value: 0
     - id: 1000
       name: Attack
       description: Increase the base attack factor
