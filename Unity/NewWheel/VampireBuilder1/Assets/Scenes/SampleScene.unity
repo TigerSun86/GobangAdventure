@@ -4804,7 +4804,7 @@ MonoBehaviour:
   upgradeOptionSequence: {fileID: 11400000, guid: 976e919d76aa3be40b4a292e2da7477f, type: 2}
   tbSkillConfig: {fileID: 11400000, guid: 1898367a88393754aa4eb483294cd9f8, type: 2}
   skillAttributeManager: {fileID: 11400000, guid: f5c5a2bc3d1b80047a67c87641a7a624, type: 2}
-  initialSkill: 6
+  initialSkill: 5
   skillSelectionPendingEvent: {fileID: 11400000, guid: d1c96950794114af3b6dc7e53b65293c, type: 2}
   skillUpgradedEvent: {fileID: 11400000, guid: 5e2c35f92dc46874ab8463edcd12a5ce, type: 2}
 --- !u!4 &834407687

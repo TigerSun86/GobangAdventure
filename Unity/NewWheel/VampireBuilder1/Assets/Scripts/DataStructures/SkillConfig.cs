@@ -13,7 +13,7 @@ public class SkillConfig
 
     public List<AttributeTypeAndFloat> initialAttributes;
 
-    public List<SkillId> dependencies;
+    public List<SkillDependency> dependencies;
 
     public List<SkillLevelConfig> levels;
 

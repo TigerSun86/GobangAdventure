@@ -29,7 +29,7 @@ MonoBehaviour:
         value: 1
       - attributeType: 14
         value: 1
-      dependencies: 
+      dependencies: []
       levels: []
     - id: 1
       name: Chain Lightning
@@ -48,7 +48,7 @@ MonoBehaviour:
         value: 1
       - attributeType: 17
         value: 3
-      dependencies: 
+      dependencies: []
       levels:
       - level: 1
         description: Hurls a bolt of lightning that bounces up to 3 times. Each jump
@@ -83,7 +83,7 @@ MonoBehaviour:
         value: 2
       - attributeType: 17
         value: 1
-      dependencies: 
+      dependencies: []
       levels:
       - level: 1
         description: Explode after hit an enemy
@@ -117,7 +117,7 @@ MonoBehaviour:
         value: 2
       - attributeType: 17
         value: 1
-      dependencies: 
+      dependencies: []
       levels:
       - level: 1
         description: One punch to hit an enemy
@@ -151,7 +151,7 @@ MonoBehaviour:
         value: 2
       - attributeType: 17
         value: 1
-      dependencies: 
+      dependencies: []
       levels:
       - level: 1
         description: A wave of force causing damage to land units in a line
@@ -185,7 +185,7 @@ MonoBehaviour:
         value: 2
       - attributeType: 17
         value: 1
-      dependencies: 
+      dependencies: []
       levels:
       - level: 1
         description: Basic kungfu attack straight
@@ -219,7 +219,11 @@ MonoBehaviour:
         value: 2
       - attributeType: 17
         value: 4
-      dependencies: 
+      dependencies:
+      - skillId: 5
+        level: 4
+      - skillId: 1000
+        level: 1
       levels:
       - level: 1
         description: Strike through the end and return back
@@ -231,7 +235,7 @@ MonoBehaviour:
       initialAttributes:
       - attributeType: 2
         value: 1
-      dependencies: 
+      dependencies: []
       levels:
       - level: 1
         description: Increase attack by 10%

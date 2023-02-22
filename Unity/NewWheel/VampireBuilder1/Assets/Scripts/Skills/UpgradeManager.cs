@@ -32,10 +32,10 @@ public class UpgradeManager : MonoBehaviour
         List<UpgradeOption> upgradeOptions = new List<UpgradeOption>();
         foreach (SkillId skillId in skillAttributeManager.GetAllSkills())
         {
-            int level = skillAttributeManager.GetLevel(skillId);
-            SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
-            if (level < skillConfig.GetMaxLevel())
+            if (IsUpgradable(skillId))
             {
+                SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
+                int level = skillAttributeManager.GetLevel(skillId);
                 upgradeOptions.Add(new SkillConfigUpgradeOption(skillConfig, level + 1));
             }
         }
@@ -122,5 +122,26 @@ public class UpgradeManager : MonoBehaviour
         }
 
         skillAttributeManager.SetAttribute(skillId, levelConfig.attributeType, levelConfig.value);
+    }
+
+    private bool IsUpgradable(SkillId skillId)
+    {
+        SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
+        int level = skillAttributeManager.GetLevel(skillId);
+        if (level >= skillConfig.GetMaxLevel())
+        {
+            return false;
+        }
+
+        foreach (SkillDependency dependency in skillConfig.dependencies)
+        {
+            int dependencyCurrentLevel = skillAttributeManager.GetLevel(dependency.skillId);
+            if (dependencyCurrentLevel < dependency.level)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
