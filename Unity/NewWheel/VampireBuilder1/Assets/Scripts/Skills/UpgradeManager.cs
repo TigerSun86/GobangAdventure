@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class UpgradeManager : MonoBehaviour
 {
+    private static readonly int INVALID_LEVEL = -1;
+
     private readonly object upgradeVariablesLock = new object();
 
     [SerializeField] IntVariable pendingUpgradeCount;
@@ -56,6 +58,11 @@ public class UpgradeManager : MonoBehaviour
 
         skillAttributeManager.SetLevel(skillId, nextLevel);
         UpgradeAttributes(skillConfig, nextLevel);
+
+        if (skillConfig.dependencies.Any())
+        {
+            DisableBasicSkill(skillConfig);
+        }
 
         RefreshSkillUpgradeSequence();
         DecreasePendingUpgradeCountAndRaiseEvent();
@@ -128,7 +135,7 @@ public class UpgradeManager : MonoBehaviour
     {
         SkillConfig skillConfig = tbSkillConfig.GetSkillConfig(skillId);
         int level = skillAttributeManager.GetLevel(skillId);
-        if (level >= skillConfig.GetMaxLevel())
+        if (level >= skillConfig.GetMaxLevel() || level == INVALID_LEVEL)
         {
             return false;
         }
@@ -143,5 +150,16 @@ public class UpgradeManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void DisableBasicSkill(SkillConfig skillConfig)
+    {
+        foreach (SkillDependency dependency in skillConfig.dependencies)
+        {
+            if (skillAttributeManager.GetBehaviorType(dependency.skillId) == SkillBehaviorType.ACTIVE)
+            {
+                skillAttributeManager.SetLevel(dependency.skillId, INVALID_LEVEL);
+            }
+        }
     }
 }
