@@ -1,0 +1,74 @@
+using System;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+
+public class WaveManager : MonoBehaviour
+{
+    [SerializeField] TextMeshProUGUI timerText;
+    [SerializeField] TextMeshProUGUI waveText;
+
+    public static WaveManager Instance { get; private set; }
+
+    public bool IsWaveRunning { get; private set; }
+
+    static int currentWave = 0;
+
+    int currentWaveTime = 0;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        StartNewWave();
+    }
+
+    private void StartNewWave()
+    {
+        StopAllCoroutines();
+        currentWave++;
+        waveText.text = "Wave: " + currentWave;
+        currentWaveTime = 10;
+        IsWaveRunning = true;
+        StartCoroutine(WaveTimer());
+    }
+
+    private IEnumerator WaveTimer()
+    {
+        while (currentWaveTime > 0)
+        {
+            timerText.text = currentWaveTime.ToString();
+            yield return new WaitForSeconds(1);
+            currentWaveTime--;
+        }
+
+        IsWaveRunning = false;
+        timerText.text = "0";
+        WaveCompleted();
+    }
+
+    private void WaveCompleted()
+    {
+        EnemyManager.Instance.DestroyAllEnemies();
+        StopAllCoroutines();
+        SceneUtility.LoadShopScene();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!IsWaveRunning)
+            {
+                StartNewWave();
+            }
+        }
+    }
+}
