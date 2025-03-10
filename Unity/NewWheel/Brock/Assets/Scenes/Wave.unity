@@ -924,11 +924,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e453d0bcd2f08dc44ac029a3a34df1a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fleetConfig: {fileID: 11400000, guid: e16e387e783c70048bd3f8e1cf6beaff, type: 2}
   enemyPrefab: {fileID: 7228580095256117804, guid: 9283bb619ad44434ea5a864557e35590, type: 3}
-  weaponPrefabs:
-  - {fileID: 2443614357438714720, guid: 350385d272242514c9585bd286b0256d, type: 3}
-  - {fileID: 2443614357438714720, guid: ea511ee04c9aa884589e979d5be69e83, type: 3}
-  - {fileID: 2443614357438714720, guid: c3bc94d29d333484c9d2c9d94a1f726a, type: 3}
+  skillIdToPrefab:
+    m_keys: 000000000100000002000000
+    m_values:
+    - {fileID: 2443614357438714720, guid: 350385d272242514c9585bd286b0256d, type: 3}
+    - {fileID: 2443614357438714720, guid: ea511ee04c9aa884589e979d5be69e83, type: 3}
+    - {fileID: 2443614357438714720, guid: c3bc94d29d333484c9d2c9d94a1f726a, type: 3}
   maxEnemyCount: 1
 --- !u!4 &1328440673
 Transform:

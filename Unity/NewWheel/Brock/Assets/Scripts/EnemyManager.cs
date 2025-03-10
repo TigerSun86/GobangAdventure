@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    [SerializeField] FleetConfig fleetConfig;
+
     [SerializeField] GameObject enemyPrefab;
 
-    [SerializeField] GameObject[] weaponPrefabs;
+    [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
 
     [SerializeField] int maxEnemyCount;
 
@@ -42,8 +44,13 @@ public class EnemyManager : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        Vector3 position = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), 0);
-        GameObject enemyObject = Instantiate(enemyPrefab, position, Quaternion.identity, this.transform);
-        enemyObject.GetComponent<Enemy>().SetWeapon(weaponPrefabs[Random.Range(0, weaponPrefabs.Length)]);
+        Vector3 fleetPosition = new Vector3(Random.Range(0, 10), Random.Range(-2, 2), 0);
+        foreach (EnemyConfig enemyConfig in fleetConfig.enemyConfigs)
+        {
+            Vector3 enemyPosition = fleetPosition + (Vector3)enemyConfig.positionInFleet;
+            GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
+            GameObject weaponPrefab = skillIdToPrefab[enemyConfig.weaponBaseType];
+            enemyObject.GetComponent<Enemy>().SetWeapon(weaponPrefab);
+        }
     }
 }

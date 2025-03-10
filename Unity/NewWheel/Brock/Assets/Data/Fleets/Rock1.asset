@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a03f763e5a30faf4bb293a41a2d3c9ae, type: 3}
+  m_Name: Rock1
+  m_EditorClassIdentifier: 
+  enemyConfigs:
+  - weaponBaseType: 0
+    health: 40
+    attack: 10
+    positionInFleet: {x: 0, y: 1}
+  - weaponBaseType: 0
+    health: 20
+    attack: 5
+    positionInFleet: {x: 0, y: -1}
+  - weaponBaseType: 1
+    health: 20
+    attack: 5
+    positionInFleet: {x: 2, y: 0}
