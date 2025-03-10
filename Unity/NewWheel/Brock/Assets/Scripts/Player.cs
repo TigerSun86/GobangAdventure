@@ -15,26 +15,42 @@ public class Player : MonoBehaviour
     [SerializeField] ItemDb itemDb;
     [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
 
-    private Vector2[] defenceAreaOffsets;
+    public Vector2[] defenceAreaOffsets;
+    public Dictionary<int, ShopItem> idToWeapon = new Dictionary<int, ShopItem>();
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        idToWeapon = GetIdToWeapon();
         float radius = GetPlayerRadius();
         defenceAreaOffsets = GetDefenceAreaOffsets(radius, 4);
         defenceAreas = new GameObject[defenceAreaOffsets.Length];
         for (int i = 0; i < defenceAreaOffsets.Length; i++)
         {
+            if (!idToWeapon.ContainsKey(i))
+            {
+                continue;
+            }
             Vector3 position = (Vector2)transform.position + defenceAreaOffsets[i];
             defenceAreas[i] = Instantiate(teamMatePrefab, position, Quaternion.identity, this.transform);
-        }
-        for (int i = 0; i < Math.Min(defenceAreas.Length, itemDb.playerItemNames.Count); i++)
-        {
-            GameObject defenceArea = defenceAreas[i];
-            ShopItem shopItem = itemDb.GetShopItem(itemDb.playerItemNames[i]);
+            ShopItem shopItem = idToWeapon[i];
             GameObject weaponPrefab = skillIdToPrefab[shopItem.weaponBaseType];
-            defenceArea.GetComponent<DefenceArea>().SetWeapon(weaponPrefab, shopItem);
+            defenceAreas[i].GetComponent<DefenceArea>().SetWeapon(weaponPrefab, shopItem);
         }
+    }
+
+    private Dictionary<int, ShopItem> GetIdToWeapon()
+    {
+        int id = 0;
+        Dictionary<int, ShopItem> idToWeapon = new Dictionary<int, ShopItem>();
+        foreach (string itemName in itemDb.playerItemNames)
+        {
+            ShopItem shopItem = itemDb.GetShopItem(itemName);
+            idToWeapon[id] = shopItem;
+            id++;
+        }
+
+        return idToWeapon;
     }
 
     private void FixedUpdate()
@@ -44,7 +60,10 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < defenceAreas.Length; i++)
         {
-            defenceAreas[i].transform.position = (Vector2)transform.position + defenceAreaOffsets[i];
+            if (defenceAreas[i] != null)
+            {
+                defenceAreas[i].transform.position = (Vector2)transform.position + defenceAreaOffsets[i];
+            }
         }
     }
 
