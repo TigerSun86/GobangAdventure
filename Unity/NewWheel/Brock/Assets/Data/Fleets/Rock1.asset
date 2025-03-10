@@ -17,11 +17,14 @@ MonoBehaviour:
     health: 40
     attack: 10
     positionInFleet: {x: 0, y: 1}
+    aiStrategy: 1
   - weaponBaseType: 0
     health: 20
     attack: 5
     positionInFleet: {x: 0, y: -1}
+    aiStrategy: 1
   - weaponBaseType: 1
     health: 20
     attack: 5
     positionInFleet: {x: 2, y: 0}
+    aiStrategy: 0

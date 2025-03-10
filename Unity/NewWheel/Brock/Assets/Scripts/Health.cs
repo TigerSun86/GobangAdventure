@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] int maxHealth;
+    [SerializeField] public int maxHealth;
 
     [SerializeField] public int health;
 

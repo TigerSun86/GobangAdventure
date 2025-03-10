@@ -51,6 +51,7 @@ public class EnemyManager : MonoBehaviour
             GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
             GameObject weaponPrefab = skillIdToPrefab[enemyConfig.weaponBaseType];
             enemyObject.GetComponent<Enemy>().SetWeapon(weaponPrefab);
+            enemyObject.GetComponent<Enemy>().aiStrategy = enemyConfig.aiStrategy;
         }
     }
 }

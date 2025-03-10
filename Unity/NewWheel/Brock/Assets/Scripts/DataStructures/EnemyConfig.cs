@@ -12,6 +12,8 @@ public class EnemyConfig
 
     public Vector2 positionInFleet;
 
+    public AiStrategy aiStrategy;
+
     public override string ToString()
     {
         return $"{weaponBaseType},{health},{attack},{positionInFleet}";

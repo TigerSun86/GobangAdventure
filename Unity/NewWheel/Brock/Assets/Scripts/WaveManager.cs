@@ -12,9 +12,9 @@ public class WaveManager : MonoBehaviour
 
     public bool IsWaveRunning { get; private set; }
 
-    static int currentWave = 0;
+    public static int currentWave = 0;
 
-    int currentWaveTime = 0;
+    public int currentWaveTime = 0;
 
     private void Awake()
     {
