@@ -9,14 +9,12 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
 
     [SerializeField] GameObject teamMatePrefab;
-
     [SerializeField] GameObject[] defenceAreas;
     [SerializeField] float speed = 5f;
     [SerializeField] ItemDb itemDb;
     [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
-
-    public Vector2[] defenceAreaOffsets;
-    public Dictionary<int, ShopItem> idToWeapon = new Dictionary<int, ShopItem>();
+    [SerializeField] Vector2[] defenceAreaOffsets;
+    [SerializeField] Dictionary<int, ShopItem> idToWeapon;
 
     private void Awake()
     {
