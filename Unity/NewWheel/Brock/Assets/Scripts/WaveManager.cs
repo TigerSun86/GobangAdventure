@@ -65,10 +65,7 @@ public class WaveManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (!IsWaveRunning)
-            {
-                StartNewWave();
-            }
+            WaveCompleted();
         }
     }
 }
