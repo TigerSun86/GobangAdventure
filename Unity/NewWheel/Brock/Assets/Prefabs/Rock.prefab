@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 239469236147211426}
   - component: {fileID: 934833070128572888}
   - component: {fileID: 7445888378713958572}
+  - component: {fileID: 5238832665745280689}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -134,7 +135,8 @@ MonoBehaviour:
   target: {fileID: 0}
   attackActionStage: 0
   timeInCurrentStage: 0
-  attackCount: 0
+  pierceCount: 0
+  shopItem: {fileID: 0}
 --- !u!58 &7445888378713958572
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -171,3 +173,18 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &5238832665745280689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2443614357438714720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e343fcfbb6eb7344cacd6c851b00699a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillConfigs:
+  - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}
+  skills: []

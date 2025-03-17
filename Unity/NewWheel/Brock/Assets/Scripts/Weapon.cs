@@ -42,12 +42,12 @@ public class Weapon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        PerformAttackAction();
+        // PerformAttackAction();
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        DealDamage(other);
+        // DealDamage(other);
     }
 
     private void DealDamage(Collider2D other)

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 239469236147211426}
   - component: {fileID: 7191586999979902046}
   - component: {fileID: 934833070128572888}
+  - component: {fileID: -6132908606680618833}
   m_Layer: 0
   m_Name: Scissor
   m_TagString: Untagged
@@ -180,4 +181,20 @@ MonoBehaviour:
   target: {fileID: 0}
   attackActionStage: 0
   timeInCurrentStage: 0
-  attackCount: 0
+  pierceCount: 0
+  shopItem: {fileID: 0}
+--- !u!114 &-6132908606680618833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2443614357438714720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e343fcfbb6eb7344cacd6c851b00699a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillConfigs:
+  - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}
+  skills: []
