@@ -201,6 +201,11 @@ public class SkillBase
             return false;
         }
 
+        if (this.skillConfig.range < Vector3.Distance(target.transform.position, owner.transform.position))
+        {
+            return false;
+        }
+
         if (CheckExcludedFilter(TargetFilter.None)
             && CheckIncludedFilter(TargetFilter.All))
         {
