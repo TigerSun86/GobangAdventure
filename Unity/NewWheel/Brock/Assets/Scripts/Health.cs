@@ -45,6 +45,11 @@ public class Health : MonoBehaviour
         this.maxHealth = value;
     }
 
+    public bool IsFullHealth()
+    {
+        return health == maxHealth;
+    }
+
     private void Awake()
     {
         maxHealthValue = maxHealth;

@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Attack the target
   skillType: 0
   value: 10
-  cdTime: 5
+  cdTime: 3
   actionTime: 2
   recoveryTime: 1
   range: 5

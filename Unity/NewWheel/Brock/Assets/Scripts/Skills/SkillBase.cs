@@ -41,7 +41,13 @@ public class SkillBase
                     SwitchState(SkillState.WaitingAct);
                 }
                 break;
-            // Case SkillState.WaitingAct can only be triggered by the SkillActor.
+            case SkillState.WaitingAct:
+                if (!SelectTarget())
+                {
+                    // Lost the previous target during waiting act.
+                    SwitchState(SkillState.SelectingTarget);
+                }
+                break;
             case SkillState.Acting:
                 if (Act())
                 {
@@ -54,7 +60,9 @@ public class SkillBase
                     SwitchState(SkillState.Completed);
                 }
                 break;
-            // Case SkillState.Completed can only be triggered by the SkillActor.
+            case SkillState.Completed:
+                // Do nothing until SkillActor triggers CD.
+                break;
             default:
                 Debug.LogError($"Skill state {this.skillState} is not valid to update");
                 break;
@@ -64,6 +72,11 @@ public class SkillBase
     public bool IsWaitingAct()
     {
         return this.skillState == SkillState.WaitingAct;
+    }
+
+    public bool IsActInProgress()
+    {
+        return this.skillState == SkillState.Acting || this.skillState == SkillState.Recovering;
     }
 
     public bool IsCompleted()
@@ -95,14 +108,21 @@ public class SkillBase
         }
     }
 
+    // Returns true if finished.
     protected virtual bool Act()
     {
         throw new NotImplementedException();
     }
 
+    // Returns true if finished.
     protected virtual bool Recover()
     {
         throw new NotImplementedException();
+    }
+
+    protected virtual bool ForceExcludeTarget(GameObject target)
+    {
+        return false;
     }
 
     private void SwitchState(SkillState skillState)
@@ -173,6 +193,11 @@ public class SkillBase
         if (CheckIncludedFilter(TargetFilter.None))
         {
             Debug.LogError("None of the targets are included");
+            return false;
+        }
+
+        if (ForceExcludeTarget(target))
+        {
             return false;
         }
 

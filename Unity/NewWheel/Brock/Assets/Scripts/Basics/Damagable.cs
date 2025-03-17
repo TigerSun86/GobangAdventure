@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Health))]
 public class Damagable : MonoBehaviour
 {
     private Health health;
@@ -10,10 +11,6 @@ public class Damagable : MonoBehaviour
     private void Awake()
     {
         health = GetComponent<Health>();
-        if (health == null)
-        {
-            health = GetComponentInParent<Health>();
-        }
     }
 
     public void TakeDamage(int attack, DamageType damageType)

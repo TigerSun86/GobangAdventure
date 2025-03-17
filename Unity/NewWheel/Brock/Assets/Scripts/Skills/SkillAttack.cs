@@ -63,7 +63,7 @@ public class SkillAttack : SkillBase
 
         Damagable damagable = target.GetComponent<Damagable>();
 
-        double damage = 2;
+        double damage = this.skillConfig.value;
 
         DamageType damageType = DamageType.NORMAL_ATTACK;
         WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(owner.GetComponent<Weapon>().weaponBaseType, target.GetComponent<DefenceArea>().weaponBaseType);

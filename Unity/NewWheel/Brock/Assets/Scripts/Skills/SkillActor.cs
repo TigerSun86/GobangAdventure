@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SkillActor : MonoBehaviour
@@ -8,12 +9,12 @@ public class SkillActor : MonoBehaviour
 
     public SkillBase[] skills;
 
-    public Queue<SkillBase> skillActionQueue;
+    public LinkedList<SkillBase> skillActionQueue;
 
     private void Awake()
     {
-        skillActionQueue = new Queue<SkillBase>();
-        skills = new SkillBase[skillConfigs.Length];
+        this.skillActionQueue = new LinkedList<SkillBase>();
+        List<SkillBase> skillList = new List<SkillBase>();
         for (int i = 0; i < skillConfigs.Length; i++)
         {
             SkillConfig skillConfig = skillConfigs[i];
@@ -28,6 +29,9 @@ public class SkillActor : MonoBehaviour
                 case SkillType.Attack:
                     skill = new SkillAttack(gameObject, skillConfig);
                     break;
+                case SkillType.Heal:
+                    skill = new SkillHeal(gameObject, skillConfig);
+                    break;
                 default:
                     Debug.LogError($"Skill type {skillConfig.skillType} not found");
                     break;
@@ -35,31 +39,38 @@ public class SkillActor : MonoBehaviour
 
             if (skill != null)
             {
-                skills[i] = skill;
+                skillList.Add(skill);
             }
         }
+        this.skills = skillList.ToArray();
     }
 
     private void FixedUpdate()
     {
-        foreach (SkillBase skill in skills)
+        foreach (SkillBase skill in this.skills)
         {
             skill.UpdateState();
-            if (skill.IsWaitingAct() && !skillActionQueue.Contains(skill))
+            if (skill.IsWaitingAct() && !this.skillActionQueue.Contains(skill))
             {
-                skillActionQueue.Enqueue(skill);
+                this.skillActionQueue.AddLast(skill);
             }
         }
 
-        while (skillActionQueue.Count > 0 && skillActionQueue.Peek().IsCompleted())
+        SkillBase firstSkill = this.skillActionQueue.FirstOrDefault();
+        while (firstSkill != null && !firstSkill.IsWaitingAct() && !firstSkill.IsActInProgress())
         {
-            skillActionQueue.Peek().TriggerCd();
-            skillActionQueue.Dequeue();
+            if (firstSkill.IsCompleted())
+            {
+                firstSkill.TriggerCd();
+            }
+
+            this.skillActionQueue.RemoveFirst();
+            firstSkill = this.skillActionQueue.FirstOrDefault();
         }
 
-        if (skillActionQueue.Count > 0 && skillActionQueue.Peek().IsWaitingAct())
+        if (firstSkill != null && firstSkill.IsWaitingAct())
         {
-            skillActionQueue.Peek().TriggerAction();
+            firstSkill.TriggerAction();
         }
     }
 }
