@@ -207,14 +207,18 @@ public class SkillBase
             return true;
         }
 
-        if (target.GetComponent<DefenceArea>().gameObject == owner)
+        if (IsSelf(target))
         {
             return !CheckExcludedFilter(TargetFilter.Self)
                 && CheckIncludedFilter(TargetFilter.Self);
         }
 
-        Debug.LogError("Should never reach here");
-        return false;
+        return CheckIncludedFilter(TargetFilter.All);
+    }
+
+    private bool IsSelf(GameObject target)
+    {
+        return target.GetComponent<DefenceArea>().gameObject == this.owner.GetComponentInParent<DefenceArea>().gameObject;
     }
 
     private bool CheckExcludedFilter(TargetFilter targetFilter)
@@ -224,7 +228,7 @@ public class SkillBase
             return skillConfig.skillTargetConfig.excludedTarget == TargetFilter.None;
         }
 
-        return (skillConfig.skillTargetConfig.excludedTarget & targetFilter) != 0;
+        return (skillConfig.skillTargetConfig.excludedTarget & targetFilter) == targetFilter;
     }
 
     private bool CheckIncludedFilter(TargetFilter targetFilter)
@@ -234,6 +238,6 @@ public class SkillBase
             return skillConfig.skillTargetConfig.includedTarget == TargetFilter.None;
         }
 
-        return (skillConfig.skillTargetConfig.includedTarget & targetFilter) != 0;
+        return (skillConfig.skillTargetConfig.includedTarget & targetFilter) == targetFilter;
     }
 }
