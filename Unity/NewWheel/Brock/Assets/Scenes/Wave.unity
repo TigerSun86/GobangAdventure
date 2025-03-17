@@ -1105,6 +1105,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1185900175}
   waveText: {fileID: 295759933}
+  maxWaveTime: 20
+  currentWaveTime: 0
 --- !u!4 &1642601758
 Transform:
   m_ObjectHideFlags: 0

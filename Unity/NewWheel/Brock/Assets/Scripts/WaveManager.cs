@@ -7,6 +7,7 @@ public class WaveManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] TextMeshProUGUI waveText;
+    [SerializeField] int maxWaveTime;
 
     public static WaveManager Instance { get; private set; }
 
@@ -35,7 +36,7 @@ public class WaveManager : MonoBehaviour
         StopAllCoroutines();
         currentWave++;
         waveText.text = "Wave: " + currentWave;
-        currentWaveTime = 10;
+        currentWaveTime = maxWaveTime;
         IsWaveRunning = true;
         StartCoroutine(WaveTimer());
     }
