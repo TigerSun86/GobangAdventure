@@ -1,19 +1,31 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class SkillActor : MonoBehaviour
 {
+    public const int PriorityHigh = 1;
+    public const int PriorityNormal = 2;
+    public const int PriorityLow = 3;
+
     [SerializeField]
     SkillConfig[] skillConfigs;
 
     public SkillBase[] skills;
 
-    public LinkedList<SkillBase> skillActionQueue;
+    public PriorityQueue<SkillBase> skillActionQueue;
+
+    private Dictionary<SkillType, int> skillToPriorities;
+
+    public void SetSkillPriority(SkillType skillType, int priority)
+    {
+        skillToPriorities[skillType] = priority;
+    }
 
     private void Awake()
     {
-        this.skillActionQueue = new LinkedList<SkillBase>();
+        InitSkillToPriorities();
+        this.skillActionQueue = new PriorityQueue<SkillBase>();
         List<SkillBase> skillList = new List<SkillBase>();
         for (int i = 0; i < skillConfigs.Length; i++)
         {
@@ -52,11 +64,12 @@ public class SkillActor : MonoBehaviour
             skill.UpdateState();
             if (skill.IsWaitingAct() && !this.skillActionQueue.Contains(skill))
             {
-                this.skillActionQueue.AddLast(skill);
+                this.skillActionQueue.Enqueue(skill, this.skillToPriorities[skill.skillConfig.skillType]);
             }
         }
 
-        SkillBase firstSkill = this.skillActionQueue.FirstOrDefault();
+        // Remove the completed and lost target skills from the queue.
+        SkillBase firstSkill = this.skillActionQueue.Count() > 0 ? this.skillActionQueue.Peek() : null;
         while (firstSkill != null && !firstSkill.IsWaitingAct() && !firstSkill.IsActInProgress())
         {
             if (firstSkill.IsCompleted())
@@ -64,13 +77,23 @@ public class SkillActor : MonoBehaviour
                 firstSkill.TriggerCd();
             }
 
-            this.skillActionQueue.RemoveFirst();
-            firstSkill = this.skillActionQueue.FirstOrDefault();
+            // The skill state should be Completed Or SelectingTarget.
+            this.skillActionQueue.Dequeue();
+            firstSkill = this.skillActionQueue.Count() > 0 ? this.skillActionQueue.Peek() : null;
         }
 
         if (firstSkill != null && firstSkill.IsWaitingAct())
         {
             firstSkill.TriggerAction();
+        }
+    }
+
+    private void InitSkillToPriorities()
+    {
+        this.skillToPriorities = new Dictionary<SkillType, int>();
+        foreach (SkillType skillType in Enum.GetValues(typeof(SkillType)))
+        {
+            this.skillToPriorities[skillType] = PriorityNormal;
         }
     }
 }

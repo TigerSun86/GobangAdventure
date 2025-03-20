@@ -27,4 +27,4 @@ MonoBehaviour:
     health: 20
     attack: 5
     positionInFleet: {x: 2, y: 0}
-    aiStrategy: 0
+    aiStrategy: 2

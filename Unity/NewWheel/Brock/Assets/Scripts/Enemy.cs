@@ -13,11 +13,19 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-
         target = GameObject.Find("Player").transform;
         defenceArea = GetComponent<DefenceArea>();
         defenceArea.SetCharacter(gameObject);
         health = GetComponent<Health>();
+    }
+
+    private void Start()
+    {
+        if (aiStrategy.HasFlag(AiStrategy.Heal))
+        {
+            SkillActor skillActor = GetComponentInChildren<SkillActor>();
+            skillActor.SetSkillPriority(SkillType.Heal, SkillActor.PriorityHigh);
+        }
     }
 
     public void SetWeapon(GameObject weaponPrefab)
