@@ -16,9 +16,9 @@ MonoBehaviour:
   description: Heal the ally
   skillType: 1
   value: 5
-  cdTime: 3
+  cdTime: 1
   actionTime: 1
-  recoveryTime: 0.5
+  recoveryTime: 1
   range: 3
   skillTargetConfig:
     targetType: 1
