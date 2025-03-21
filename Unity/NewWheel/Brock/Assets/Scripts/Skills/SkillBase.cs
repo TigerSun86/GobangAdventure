@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 [Serializable]
@@ -30,7 +31,7 @@ public class SkillBase
         switch (this.skillState)
         {
             case SkillState.WaitingCd:
-                if (this.timeInCurrentState >= this.skillConfig.cdTime)
+                if (this.timeInCurrentState >= GetCalculatedCdTime())
                 {
                     SwitchState(SkillState.SelectingTarget);
                 }
@@ -129,6 +130,11 @@ public class SkillBase
     {
         this.skillState = skillState;
         this.timeInCurrentState = 0;
+    }
+
+    private float GetCalculatedCdTime()
+    {
+        return this.skillConfig.cdTime - this.skillConfig.actionTime - this.skillConfig.recoveryTime;
     }
 
     private bool SelectTarget()
