@@ -99,13 +99,25 @@ public class SkillBase
 
     public void TriggerCd()
     {
-        if (SkillState.Completed == this.skillState)
+        if (SkillState.Completed != this.skillState)
+        {
+            Debug.LogError($"Skill state {this.skillState} is not valid to trigger cd");
+            return;
+        }
+
+        if (GetCalculatedCdTime() > 0)
         {
             SwitchState(SkillState.WaitingCd);
+            return;
+        }
+
+        if (SelectTarget())
+        {
+            SwitchState(SkillState.WaitingAct);
         }
         else
         {
-            Debug.LogError($"Skill state {this.skillState} is not valid to trigger cd");
+            SwitchState(SkillState.SelectingTarget);
         }
     }
 

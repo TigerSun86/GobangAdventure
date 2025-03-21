@@ -17,6 +17,8 @@ public class SkillActor : MonoBehaviour
 
     private Dictionary<SkillType, int> skillToPriorities;
 
+    public SkillBase activeSkill;
+
     public void SetSkillPriority(SkillType skillType, int priority)
     {
         skillToPriorities[skillType] = priority;
@@ -24,8 +26,10 @@ public class SkillActor : MonoBehaviour
 
     private void Awake()
     {
-        InitSkillToPriorities();
+        this.activeSkill = null;
         this.skillActionQueue = new PriorityQueue<SkillBase>();
+        InitSkillToPriorities();
+
         List<SkillBase> skillList = new List<SkillBase>();
         for (int i = 0; i < skillConfigs.Length; i++)
         {
@@ -64,27 +68,34 @@ public class SkillActor : MonoBehaviour
             skill.UpdateState();
             if (skill.IsWaitingAct() && !this.skillActionQueue.Contains(skill))
             {
-                this.skillActionQueue.Enqueue(skill, this.skillToPriorities[skill.skillConfig.skillType]);
+                this.skillActionQueue.Enqueue(skill, GetSkillPriority(skill));
             }
         }
 
-        // Remove the completed and lost target skills from the queue.
-        SkillBase firstSkill = this.skillActionQueue.Count() > 0 ? this.skillActionQueue.Peek() : null;
-        while (firstSkill != null && !firstSkill.IsWaitingAct() && !firstSkill.IsActInProgress())
+        if (this.activeSkill != null && this.activeSkill.IsCompleted())
         {
-            if (firstSkill.IsCompleted())
+            this.activeSkill.TriggerCd();
+            if (this.activeSkill.IsWaitingAct())
             {
-                firstSkill.TriggerCd();
+                this.skillActionQueue.Enqueue(this.activeSkill, GetSkillPriority(this.activeSkill));
             }
 
-            // The skill state should be Completed Or SelectingTarget.
-            this.skillActionQueue.Dequeue();
-            firstSkill = this.skillActionQueue.Count() > 0 ? this.skillActionQueue.Peek() : null;
+            this.activeSkill = null;
         }
 
-        if (firstSkill != null && firstSkill.IsWaitingAct())
+        if (this.activeSkill == null)
         {
-            firstSkill.TriggerAction();
+            this.activeSkill = this.skillActionQueue.DequeueOrDefault();
+            // Skip the skill if it lost the target.
+            while (this.activeSkill != null && !this.activeSkill.IsWaitingAct())
+            {
+                this.activeSkill = this.skillActionQueue.DequeueOrDefault();
+            }
+
+            if (this.activeSkill != null)
+            {
+                this.activeSkill.TriggerAction();
+            }
         }
     }
 
@@ -95,5 +106,10 @@ public class SkillActor : MonoBehaviour
         {
             this.skillToPriorities[skillType] = PriorityNormal;
         }
+    }
+
+    private int GetSkillPriority(SkillBase skill)
+    {
+        return this.skillToPriorities[skill.skillConfig.skillType];
     }
 }

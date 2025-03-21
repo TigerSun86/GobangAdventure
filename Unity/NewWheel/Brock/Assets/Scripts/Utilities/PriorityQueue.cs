@@ -22,8 +22,13 @@ public class PriorityQueue<T>
         id++;
     }
 
-    public T Dequeue()
+    public T DequeueOrDefault()
     {
+        if (_list.Count == 0)
+        {
+            return default;
+        }
+
         T item = Peek();
         _list.RemoveAt(0);
         return item;
