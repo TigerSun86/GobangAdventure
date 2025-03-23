@@ -36,6 +36,12 @@ public class SkillActor : MonoBehaviour
         return null;
     }
 
+    public bool IsHealing()
+    {
+        return this.activeSkill != null
+            && this.activeSkill.skillConfig.skillType == SkillType.Heal;
+    }
+
     private void Awake()
     {
         this.activeSkill = null;

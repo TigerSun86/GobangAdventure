@@ -38,6 +38,12 @@ public class Enemy : MonoBehaviour
     {
         if (target != null)
         {
+            if (IsHealing())
+            {
+                // Stay.
+                return;
+            }
+
             if (aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
                 && health.health < (health.maxHealth / 2f))
             {
@@ -50,6 +56,11 @@ public class Enemy : MonoBehaviour
                 MoveToTarget();
             }
         }
+    }
+
+    private bool IsHealing()
+    {
+        return this.skillActor.IsHealing();
     }
 
     private void MoveAway()
