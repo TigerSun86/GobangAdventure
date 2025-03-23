@@ -24,6 +24,18 @@ public class SkillActor : MonoBehaviour
         skillToPriorities[skillType] = priority;
     }
 
+    public SkillBase GetSkillAttack()
+    {
+        foreach (SkillBase skill in this.skills)
+        {
+            if (skill is SkillAttack)
+            {
+                return skill;
+            }
+        }
+        return null;
+    }
+
     private void Awake()
     {
         this.activeSkill = null;

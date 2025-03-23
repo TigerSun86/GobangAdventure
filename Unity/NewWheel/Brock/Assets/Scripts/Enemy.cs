@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
 
     DefenceArea defenceArea;
     Health health;
+    SkillActor skillActor;
 
     private void Awake()
     {
@@ -21,10 +22,10 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        this.skillActor = GetComponentInChildren<SkillActor>();
         if (aiStrategy.HasFlag(AiStrategy.Heal))
         {
-            SkillActor skillActor = GetComponentInChildren<SkillActor>();
-            skillActor.SetSkillPriority(SkillType.Heal, SkillActor.PriorityHigh);
+            this.skillActor.SetSkillPriority(SkillType.Heal, SkillActor.PriorityHigh);
         }
     }
 
@@ -37,23 +38,46 @@ public class Enemy : MonoBehaviour
     {
         if (target != null)
         {
-            Vector3 direction = target.position - transform.position;
-            if (direction.magnitude <= GetShortestWeaponRange() - 0.2 && !aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth))
+            if (aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
+                && health.health < (health.maxHealth / 2f))
             {
+                MoveAway();
                 return;
             }
-            if (aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth) && health.health < (health.maxHealth / 2f))
+
+            if (IsTargetFarAway())
             {
-                direction *= -1;
+                MoveToTarget();
             }
-            direction.Normalize();
-            transform.position += direction * speed * Time.deltaTime;
         }
     }
 
+    private void MoveAway()
+    {
+        Vector3 direction = transform.position - target.position;
+        direction.Normalize();
+        transform.position += direction * speed * Time.deltaTime;
+    }
+
+    private void MoveToTarget()
+    {
+        Vector3 direction = target.position - transform.position;
+        direction.Normalize();
+        transform.position += direction * speed * Time.deltaTime;
+    }
+
+    private bool IsTargetFarAway()
+    {
+        return Vector3.Distance(transform.position, target.position)
+            > GetShortestWeaponRange() - 0.2;
+    }
 
     private float GetShortestWeaponRange()
     {
-        return this.defenceArea.weapon.range;
+        if (this.skillActor.GetSkillAttack() != null)
+        {
+            return this.skillActor.GetSkillAttack().skillConfig.range;
+        }
+        return 0;
     }
 }
