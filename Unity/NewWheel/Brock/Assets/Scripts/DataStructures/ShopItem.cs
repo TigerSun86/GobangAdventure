@@ -15,6 +15,8 @@ public class ShopItem : ScriptableObject
 
     public int price;
 
+    public SkillConfig[] skills;
+
     public override string ToString()
     {
         return $"{displayName},{weaponBaseType},{level},{attack},{price}";

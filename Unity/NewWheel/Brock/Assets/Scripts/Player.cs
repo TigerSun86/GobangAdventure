@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
             Vector3 position = (Vector2)transform.position + defenceAreaOffsets[i];
             defenceAreas[i] = Instantiate(teamMatePrefab, position, Quaternion.identity, this.transform);
             ShopItem shopItem = idToWeapon[i];
-            // defenceAreas[i].GetComponent<DefenceArea>().SetWeapon(shopItem.weaponBaseType, shopItem);
+            defenceAreas[i].GetComponent<DefenceArea>().SetWeapon(shopItem.weaponBaseType, shopItem.skills);
         }
     }
 

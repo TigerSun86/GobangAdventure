@@ -18,3 +18,5 @@ MonoBehaviour:
   level: 1
   attack: 4
   price: 1
+  skills:
+  - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}
