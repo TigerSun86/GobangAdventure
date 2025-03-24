@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e4419fc5acd534ca819ceaa9f579d0, type: 3}
   m_Name: Enemy1
   m_EditorClassIdentifier: 
+  weaponConfig: {fileID: 11400000, guid: dfeae6a19b266ec43af3b80e6a26acc4, type: 2}
   weaponBaseType: 0
   health: 40
   attack: 10
-  positionInFleet: {x: 0, y: 0}
   aiStrategy: 1
   skills:
   - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}

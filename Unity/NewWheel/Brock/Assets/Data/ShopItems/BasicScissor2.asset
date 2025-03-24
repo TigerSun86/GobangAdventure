@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Basic Scissor
   weaponBaseType: 2
   level: 2
-  attack: 4
   price: 2
   skills:
   - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}
+  weaponConfig: {fileID: 11400000, guid: b78e4d55596848045b6193dbbeea5bcc, type: 2}

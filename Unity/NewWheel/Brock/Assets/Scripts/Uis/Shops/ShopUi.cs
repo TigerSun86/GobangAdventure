@@ -18,8 +18,8 @@ public class ShopUi : MonoBehaviour
 
         itemUi.SetImage(item.image);
         itemUi.SetName(item.displayName);
-        itemUi.SetCategory(item.level, item.weaponBaseType.ToString());
-        itemUi.SetSkills(item.skills);
+        itemUi.SetCategory(item.level, item.weaponConfig.weaponBaseType.ToString());
+        itemUi.SetSkills(item.weaponConfig.skills);
         itemUi.SetPrice(item.price);
 
         itemUi.OnItemPurchase(item.name, OnItemPurchased);

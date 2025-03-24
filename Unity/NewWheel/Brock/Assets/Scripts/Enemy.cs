@@ -28,9 +28,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void SetWeapon(WeaponBaseType weaponBaseType, SkillConfig[] skills)
+    public void SetWeapon(WeaponConfig weaponConfig)
     {
-        this.defenceArea.SetWeapon(weaponBaseType, skills);
+        this.defenceArea.SetWeapon(weaponConfig);
     }
 
     private void FixedUpdate()

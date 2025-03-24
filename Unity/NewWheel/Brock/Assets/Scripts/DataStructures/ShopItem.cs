@@ -7,11 +7,9 @@ public class ShopItem : ScriptableObject
 
     public string displayName;
 
-    public WeaponBaseType weaponBaseType;
-
     public int level;
 
     public int price;
 
-    public SkillConfig[] skills;
+    public WeaponConfig weaponConfig;
 }
