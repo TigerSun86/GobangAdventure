@@ -125,6 +125,8 @@ public class SkillActor : MonoBehaviour
         {
             this.skillToPriorities[skillType] = PriorityNormal;
         }
+
+        SetSkillPriority(SkillType.Heal, SkillActor.PriorityHigh);
     }
 
     private int GetSkillPriority(SkillBase skill)

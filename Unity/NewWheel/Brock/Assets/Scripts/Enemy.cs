@@ -22,10 +22,6 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         this.skillActor = GetComponentInChildren<SkillActor>();
-        if (aiStrategy.HasFlag(AiStrategy.Heal))
-        {
-            this.skillActor.SetSkillPriority(SkillType.Heal, SkillActor.PriorityHigh);
-        }
     }
 
     public void SetWeapon(WeaponConfig weaponConfig)
