@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using System.Linq;
 
 public class ItemUi : MonoBehaviour
 {
@@ -27,9 +28,10 @@ public class ItemUi : MonoBehaviour
         categoryText.text = "Level " + level + " " + category;
     }
 
-    public void SetAttack(float attack)
+    public void SetSkills(SkillConfig[] skillConfigs)
     {
-        statsText.text = "Attack: " + attack.ToString();
+        statsText.text = string.Join("\n",
+            skillConfigs.Select(skill => $"{skill.skillName}: {skill.value}\n {skill.description}"));
     }
 
     public void SetPrice(int price)

@@ -16,7 +16,6 @@ public class Enemy : MonoBehaviour
     {
         target = GameObject.Find("Player").transform;
         defenceArea = GetComponent<DefenceArea>();
-        defenceArea.SetCharacter(gameObject);
         health = GetComponent<Health>();
     }
 
