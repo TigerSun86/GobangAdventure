@@ -43,12 +43,12 @@ public class EnemyManager : MonoBehaviour
     private void SpawnEnemies()
     {
         Vector3 fleetPosition = new Vector3(Random.Range(0, 10), Random.Range(-2, 2), 0);
-        foreach (EnemyConfig enemyConfig in fleetConfig.enemyConfigs)
+        foreach (EnemyInFleetConfig enemyInFleetConfig in fleetConfig.enemyInFleetConfig)
         {
-            Vector3 enemyPosition = fleetPosition + (Vector3)enemyConfig.positionInFleet;
+            Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;
             GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
-            enemyObject.GetComponent<Enemy>().SetWeapon(enemyConfig.weaponBaseType);
-            enemyObject.GetComponent<Enemy>().aiStrategy = enemyConfig.aiStrategy;
+            enemyObject.GetComponent<Enemy>().SetWeapon(enemyInFleetConfig.enemyConfig.weaponBaseType, enemyInFleetConfig.enemyConfig.skills);
+            enemyObject.GetComponent<Enemy>().aiStrategy = enemyInFleetConfig.enemyConfig.aiStrategy;
         }
     }
 }

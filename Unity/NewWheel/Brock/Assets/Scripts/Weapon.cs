@@ -22,6 +22,10 @@ public class Weapon : MonoBehaviour
 
     public ShopItem shopItem;
 
+    public SkillActor skillActor;
+
+    public SkillConfig[] skills;
+
     private Dictionary<AttackActionStage, float> attackActionStageDuration = new Dictionary<AttackActionStage, float>
     {
         { AttackActionStage.ANTICIPATION, 0.2f },
@@ -34,6 +38,11 @@ public class Weapon : MonoBehaviour
     {
         { AttackActionStage.ANTICIPATION, 0.05f },
     };
+
+    public void SetSkill(SkillConfig[] skills)
+    {
+        GetComponent<SkillActor>().Initialize(skills);
+    }
 
     private void Awake()
     {

@@ -42,8 +42,9 @@ public class SkillActor : MonoBehaviour
             && this.activeSkill.skillConfig.skillType == SkillType.Heal;
     }
 
-    private void Awake()
+    public void Initialize(SkillConfig[] skillConfigs)
     {
+        this.skillConfigs = skillConfigs;
         this.activeSkill = null;
         this.skillActionQueue = new PriorityQueue<SkillBase>();
         InitSkillToPriorities();

@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public class EnemyConfig
+[CreateAssetMenu(menuName = "EnemyConfig")]
+public class EnemyConfig : ScriptableObject
 {
     public WeaponBaseType weaponBaseType;
 
@@ -10,12 +10,7 @@ public class EnemyConfig
 
     public int attack;
 
-    public Vector2 positionInFleet;
-
     public AiStrategy aiStrategy;
 
-    public override string ToString()
-    {
-        return $"{weaponBaseType},{health},{attack},{positionInFleet}";
-    }
+    public SkillConfig[] skills;
 }
