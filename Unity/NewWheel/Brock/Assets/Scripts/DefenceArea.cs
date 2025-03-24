@@ -10,13 +10,16 @@ public class DefenceArea : MonoBehaviour
     [SerializeField]
     public Vector2 offset;
 
+    [SerializeField] GameObject weaponPrefab;
+
     public Weapon weapon;
 
-    public void SetWeapon(GameObject weaponPrefab, ShopItem shopItem = null)
+    public void SetWeapon(WeaponBaseType weaponBaseType, ShopItem shopItem = null)
     {
-        GameObject weaponObject = Instantiate(weaponPrefab, this.transform.position, Quaternion.identity, this.transform);
+        this.weaponBaseType = weaponBaseType;
+        GameObject weaponObject = Instantiate(this.weaponPrefab, this.transform.position, Quaternion.identity, this.transform);
         this.weapon = weaponObject.GetComponent<Weapon>();
-        this.weaponBaseType = this.weapon.weaponBaseType;
+        this.weapon.weaponBaseType = weaponBaseType;
         this.weapon.shopItem = shopItem;
     }
 

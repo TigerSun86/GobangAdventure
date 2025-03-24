@@ -12,7 +12,6 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject[] defenceAreas;
     [SerializeField] float speed = 5f;
     [SerializeField] ItemDb itemDb;
-    [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
     [SerializeField] Vector2[] defenceAreaOffsets;
     [SerializeField] Dictionary<int, ShopItem> idToWeapon;
 
@@ -32,8 +31,7 @@ public class Player : MonoBehaviour
             Vector3 position = (Vector2)transform.position + defenceAreaOffsets[i];
             defenceAreas[i] = Instantiate(teamMatePrefab, position, Quaternion.identity, this.transform);
             ShopItem shopItem = idToWeapon[i];
-            GameObject weaponPrefab = skillIdToPrefab[shopItem.weaponBaseType];
-            defenceAreas[i].GetComponent<DefenceArea>().SetWeapon(weaponPrefab, shopItem);
+            defenceAreas[i].GetComponent<DefenceArea>().SetWeapon(shopItem.weaponBaseType, shopItem);
         }
     }
 

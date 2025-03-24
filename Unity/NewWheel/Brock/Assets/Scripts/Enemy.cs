@@ -29,9 +29,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void SetWeapon(GameObject weaponPrefab)
+    public void SetWeapon(WeaponBaseType weaponBaseType)
     {
-        this.defenceArea.SetWeapon(weaponPrefab);
+        this.defenceArea.SetWeapon(weaponBaseType, null);
     }
 
     private void FixedUpdate()

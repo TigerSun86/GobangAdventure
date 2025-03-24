@@ -391,6 +391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponBaseType: 0
   offset: {x: 0, y: 0}
+  weaponPrefab: {fileID: 2443614357438714720, guid: 350385d272242514c9585bd286b0256d, type: 3}
   weapon: {fileID: 0}
 --- !u!114 &7921575432005991264
 MonoBehaviour:

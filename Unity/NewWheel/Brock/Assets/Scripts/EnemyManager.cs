@@ -6,8 +6,6 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] GameObject enemyPrefab;
 
-    [SerializeField] SkillIdToGameObjectDictionary skillIdToPrefab;
-
     [SerializeField] int maxEnemyCount;
 
     public static EnemyManager Instance { get; private set; }
@@ -49,8 +47,7 @@ public class EnemyManager : MonoBehaviour
         {
             Vector3 enemyPosition = fleetPosition + (Vector3)enemyConfig.positionInFleet;
             GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
-            GameObject weaponPrefab = skillIdToPrefab[enemyConfig.weaponBaseType];
-            enemyObject.GetComponent<Enemy>().SetWeapon(weaponPrefab);
+            enemyObject.GetComponent<Enemy>().SetWeapon(enemyConfig.weaponBaseType);
             enemyObject.GetComponent<Enemy>().aiStrategy = enemyConfig.aiStrategy;
         }
     }

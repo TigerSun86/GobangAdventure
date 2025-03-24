@@ -40,6 +40,31 @@ public class Weapon : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
+    private void Start()
+    {
+        ChangeSprite();
+    }
+
+    private void ChangeSprite()
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        switch (this.weaponBaseType)
+        {
+            case WeaponBaseType.ROCK:
+                spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Circle");
+                break;
+            case WeaponBaseType.PAPER:
+                spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Square");
+                break;
+            case WeaponBaseType.SCISSOR:
+                spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Triangle");
+                break;
+            default:
+                Debug.LogError("Invalid weapon base type");
+                break;
+        }
+    }
+
     private void FixedUpdate()
     {
         // PerformAttackAction();
