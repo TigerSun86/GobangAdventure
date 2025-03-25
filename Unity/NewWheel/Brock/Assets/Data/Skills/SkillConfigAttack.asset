@@ -15,11 +15,11 @@ MonoBehaviour:
   skillName: Attack
   description: Attack the target
   skillType: 0
-  value: 10
+  value: 20
   cdTime: 2
   actionTime: 1
   recoveryTime: 0.5
-  range: 5
+  range: 2
   skillTargetConfig:
     targetType: 0
     targetOrdering: 0

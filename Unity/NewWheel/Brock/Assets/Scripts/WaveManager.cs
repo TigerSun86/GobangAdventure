@@ -8,6 +8,7 @@ public class WaveManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] TextMeshProUGUI waveText;
     [SerializeField] int maxWaveTime;
+    [SerializeField] ItemDb itemDb;
 
     public static WaveManager Instance { get; private set; }
 
@@ -67,6 +68,15 @@ public class WaveManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             WaveCompleted();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            itemDb.playerItemNames.Add("BasicRock1");
+            itemDb.playerItemNames.Add("BasicPaper1");
+            itemDb.playerItemNames.Add("BasicScissor1");
+
+            GameObject.Find("Player").GetComponent<Player>().InitializeWeapons();
         }
     }
 }

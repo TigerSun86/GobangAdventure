@@ -15,11 +15,11 @@ MonoBehaviour:
   skillName: Heal
   description: Heal the ally
   skillType: 1
-  value: 5
+  value: 10
   cdTime: 1
   actionTime: 1
   recoveryTime: 1
-  range: 3
+  range: 2
   skillTargetConfig:
     targetType: 1
     targetOrdering: 0

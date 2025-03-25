@@ -121,6 +121,23 @@ public class SkillBase
         }
     }
 
+    public GameObject[] GetTargets(float? range = null)
+    {
+        if (skillConfig.skillTargetConfig.maxTargets == 0)
+        {
+            Debug.LogError("Max targets is 0");
+            return new GameObject[0];
+        }
+
+        float rangeToFilter = range ?? this.skillConfig.range;
+        IEnumerable<GameObject> targetCandidates = GameObject.FindGameObjectsWithTag(GetTargetTag());
+        IEnumerable<GameObject> result = targetCandidates
+            .Where(target => FilterTarget(target, rangeToFilter))
+            .OrderBy(target => OrderTarget(target))
+            .Take(skillConfig.skillTargetConfig.maxTargets);
+        return result.ToArray();
+    }
+
     // Returns true if finished.
     protected virtual bool Act()
     {
@@ -151,14 +168,7 @@ public class SkillBase
 
     private bool SelectTarget()
     {
-        if (skillConfig.skillTargetConfig.maxTargets == 0)
-        {
-            Debug.LogError("Max targets is 0");
-            return false;
-        }
-        IEnumerable<GameObject> targetCandidates = GameObject.FindGameObjectsWithTag(GetTargetTag());
-        IEnumerable<GameObject> result = targetCandidates.Where(target => FilterTarget(target)).OrderBy(target => OrderTarget(target)).Take(skillConfig.skillTargetConfig.maxTargets);
-        this.targets = result.ToArray();
+        this.targets = GetTargets();
         return this.targets.Length > 0;
     }
 
@@ -200,7 +210,7 @@ public class SkillBase
         }
     }
 
-    private bool FilterTarget(GameObject target)
+    private bool FilterTarget(GameObject target, float range)
     {
         if (CheckExcludedFilter(TargetFilter.All))
         {
@@ -219,7 +229,7 @@ public class SkillBase
             return false;
         }
 
-        if (this.skillConfig.range < Vector3.Distance(target.transform.position, owner.transform.position))
+        if (range < Vector3.Distance(target.transform.position, owner.transform.position))
         {
             return false;
         }

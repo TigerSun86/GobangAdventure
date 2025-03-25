@@ -15,9 +15,8 @@ public class Player : MonoBehaviour
     [SerializeField] Vector2[] defenceAreaOffsets;
     [SerializeField] Dictionary<int, ShopItem> idToWeapon;
 
-    private void Awake()
+    public void InitializeWeapons()
     {
-        rb = GetComponent<Rigidbody2D>();
         idToWeapon = GetIdToWeapon();
         float radius = GetPlayerRadius();
         defenceAreaOffsets = GetDefenceAreaOffsets(radius, 4);
@@ -33,6 +32,12 @@ public class Player : MonoBehaviour
             ShopItem shopItem = idToWeapon[i];
             defenceAreas[i].GetComponent<DefenceArea>().SetWeapon(shopItem.weaponConfig);
         }
+    }
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        InitializeWeapons();
     }
 
     private Dictionary<int, ShopItem> GetIdToWeapon()

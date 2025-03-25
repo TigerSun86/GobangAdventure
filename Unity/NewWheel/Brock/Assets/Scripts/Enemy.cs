@@ -14,7 +14,6 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        target = GameObject.Find("Player").transform;
         defenceArea = GetComponent<DefenceArea>();
         health = GetComponent<Health>();
     }
@@ -31,6 +30,8 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
+        GameObject[] targets = this.skillActor.GetSkillAttack()?.GetTargets(range: 999);
+        this.target = (targets != null && targets.Length > 0) ? targets[0].transform : null;
         if (target != null)
         {
             if (IsHealing())
@@ -75,7 +76,7 @@ public class Enemy : MonoBehaviour
     private bool IsTargetFarAway()
     {
         return Vector3.Distance(transform.position, target.position)
-            > GetShortestWeaponRange() - 0.2;
+            > GetShortestWeaponRange();
     }
 
     private float GetShortestWeaponRange()

@@ -42,7 +42,7 @@ public class EnemyManager : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        Vector3 fleetPosition = new Vector3(Random.Range(0, 10), Random.Range(-2, 2), 0);
+        Vector3 fleetPosition = new Vector3(Random.Range(0, 5), Random.Range(-2, 2), 0);
         foreach (EnemyInFleetConfig enemyInFleetConfig in fleetConfig.enemyInFleetConfig)
         {
             Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;

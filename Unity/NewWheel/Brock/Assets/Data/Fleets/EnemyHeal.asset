@@ -12,11 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e4419fc5acd534ca819ceaa9f579d0, type: 3}
   m_Name: EnemyHeal
   m_EditorClassIdentifier: 
-  weaponConfig: {fileID: 11400000, guid: 7994bdf32ba57504680111950b868c52, type: 2}
-  weaponBaseType: 1
-  health: 20
-  attack: 5
+  weaponConfig: {fileID: 11400000, guid: e92c7a46c7f4d0d4dbc95ecdccd9e625, type: 2}
   aiStrategy: 2
-  skills:
-  - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}
-  - {fileID: 11400000, guid: 16b36a75cb5576941a0a1b0b4a415b2e, type: 2}
