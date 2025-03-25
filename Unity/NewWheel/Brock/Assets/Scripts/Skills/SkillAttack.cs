@@ -1,4 +1,3 @@
-using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -18,7 +17,7 @@ public class SkillAttack : SkillBase
         }
 
         float remainingTime = skillConfig.actionTime - timeInCurrentState;
-        Move(owner.transform, targets[0].transform, remainingTime);
+        owner.GetComponent<Weapon>().MoveToTarget(targets[0].transform, remainingTime);
         if (remainingTime <= 0)
         {
             foreach (GameObject target in targets)
@@ -34,24 +33,9 @@ public class SkillAttack : SkillBase
     protected override bool Recover()
     {
         float remainingTime = skillConfig.recoveryTime - timeInCurrentState;
-        Move(owner.transform, owner.transform.parent, remainingTime);
+        owner.GetComponent<Weapon>().ReturnToDefenceArea(remainingTime);
+
         return remainingTime <= 0;
-    }
-
-
-    private void Move(Transform source, Transform target, float remainingTime)
-    {
-        if (remainingTime > 0.01f && !source.IsDestroyed() && !target.IsDestroyed())
-        {
-            Vector3 direction = target.position - source.position;
-            float dynamicSpeed = direction.magnitude / remainingTime;
-            direction.Normalize();
-            owner.GetComponent<Rigidbody2D>().linearVelocity = dynamicSpeed * direction;
-        }
-        else
-        {
-            owner.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-        }
     }
 
     private void DealDamage(GameObject target)
