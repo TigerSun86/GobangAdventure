@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.ShaderGraph.Internal;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -153,6 +153,22 @@ public class SkillBase
     protected virtual bool ForceExcludeTarget(GameObject target)
     {
         return false;
+    }
+
+    protected bool AreTargetsValid()
+    {
+        if (targets == null || targets.Length == 0)
+        {
+            Debug.LogError("No target to attack");
+            return false;
+        }
+
+        if (targets[0].IsDestroyed())
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private void SwitchState(SkillState skillState)

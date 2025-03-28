@@ -10,9 +10,8 @@ public class SkillAttack : SkillBase
     // Returns true if finished.
     protected override bool Act()
     {
-        if (targets == null || targets.Length == 0)
+        if (!AreTargetsValid())
         {
-            Debug.LogError("No target to attack");
             return true;
         }
 
