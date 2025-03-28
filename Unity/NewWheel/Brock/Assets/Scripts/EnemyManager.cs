@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] FleetConfig fleetConfig;
+    [SerializeField] FleetConfig[] fleetConfigs;
 
     [SerializeField] GameObject enemyPrefab;
 
@@ -10,11 +10,14 @@ public class EnemyManager : MonoBehaviour
 
     public static EnemyManager Instance { get; private set; }
 
+    public int fleetIndex;
+
     void Start()
     {
         if (Instance == null)
         {
             Instance = this;
+            this.fleetIndex = 0;
         }
     }
 
@@ -42,13 +45,19 @@ public class EnemyManager : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        Vector3 fleetPosition = new Vector3(Random.Range(0, 5), Random.Range(-2, 2), 0);
-        foreach (EnemyInFleetConfig enemyInFleetConfig in fleetConfig.enemyInFleetConfig)
+        Vector3 fleetPosition = new Vector3(Random.Range(6, 8), Random.Range(-2, 2), 0);
+        foreach (EnemyInFleetConfig enemyInFleetConfig in fleetConfigs[this.fleetIndex].enemyInFleetConfig)
         {
             Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;
             GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
             enemyObject.GetComponent<Enemy>().SetWeapon(enemyInFleetConfig.enemyConfig.weaponConfig);
             enemyObject.GetComponent<Enemy>().aiStrategy = enemyInFleetConfig.enemyConfig.aiStrategy;
+        }
+
+        this.fleetIndex++;
+        if (this.fleetIndex >= fleetConfigs.Length)
+        {
+            this.fleetIndex = 0;
         }
     }
 }
