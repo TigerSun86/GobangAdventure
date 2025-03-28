@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e4419fc5acd534ca819ceaa9f579d0, type: 3}
   m_Name: EnemyWeakScissor
   m_EditorClassIdentifier: 
-  weaponConfig: {fileID: 11400000, guid: b270d7b1a5639904bad29177c5df528a, type: 2}
+  weaponConfig: {fileID: 11400000, guid: f5095594e8e553640b4ac248781d1caa, type: 2}
   aiStrategy: 1

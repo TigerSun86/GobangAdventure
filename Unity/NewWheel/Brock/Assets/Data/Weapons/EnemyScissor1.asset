@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5cf72f726ffa734d88e0955e130ddd4, type: 3}
   m_Name: EnemyScissor1
   m_EditorClassIdentifier: 
-  weaponBaseType: 0
-  health: 160
+  weaponBaseType: 2
+  health: 100
   skills:
   - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}
