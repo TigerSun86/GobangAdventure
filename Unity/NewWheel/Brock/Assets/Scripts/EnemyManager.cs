@@ -2,11 +2,9 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] FleetConfig[] fleetConfigs;
+    [SerializeField] WaveConfig[] waveConfigs;
 
     [SerializeField] GameObject enemyPrefab;
-
-    [SerializeField] int maxEnemyCount;
 
     public static EnemyManager Instance { get; private set; }
 
@@ -29,9 +27,23 @@ public class EnemyManager : MonoBehaviour
         }
 
         int enemyCount = GetComponentsInChildren<Enemy>().Length;
-        if (enemyCount < maxEnemyCount)
+        if (enemyCount <= 0)
         {
-            SpawnEnemies();
+            if (WaveManager.currentWave > waveConfigs.Length)
+            {
+                Debug.LogError("Wave config has not setup for wave " + WaveManager.currentWave);
+                return;
+            }
+
+            if (this.fleetIndex >= waveConfigs[WaveManager.currentWave - 1].fleetConfigs.Length)
+            {
+                this.fleetIndex = 0;
+                WaveManager.Instance.WaveCompleted();
+            }
+            else
+            {
+                SpawnEnemies();
+            }
         }
     }
 
@@ -46,6 +58,7 @@ public class EnemyManager : MonoBehaviour
     private void SpawnEnemies()
     {
         Vector3 fleetPosition = new Vector3(Random.Range(6, 8), Random.Range(-2, 2), 0);
+        FleetConfig[] fleetConfigs = waveConfigs[WaveManager.currentWave - 1].fleetConfigs;
         foreach (EnemyInFleetConfig enemyInFleetConfig in fleetConfigs[this.fleetIndex].enemyInFleetConfig)
         {
             Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;
@@ -55,9 +68,5 @@ public class EnemyManager : MonoBehaviour
         }
 
         this.fleetIndex++;
-        if (this.fleetIndex >= fleetConfigs.Length)
-        {
-            this.fleetIndex = 0;
-        }
     }
 }

@@ -18,6 +18,14 @@ public class WaveManager : MonoBehaviour
 
     public int currentWaveTime = 0;
 
+    public void WaveCompleted()
+    {
+        IsWaveRunning = false;
+        EnemyManager.Instance.DestroyAllEnemies();
+        StopAllCoroutines();
+        SceneUtility.LoadShopScene();
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -51,16 +59,8 @@ public class WaveManager : MonoBehaviour
             currentWaveTime--;
         }
 
-        IsWaveRunning = false;
         timerText.text = "0";
         WaveCompleted();
-    }
-
-    private void WaveCompleted()
-    {
-        EnemyManager.Instance.DestroyAllEnemies();
-        StopAllCoroutines();
-        SceneUtility.LoadShopScene();
     }
 
     void Update()

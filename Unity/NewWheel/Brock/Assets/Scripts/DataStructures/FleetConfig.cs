@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "FleetConfig")]
-public class FleetConfig : ScriptableObject
+[Serializable]
+public class FleetConfig
 {
     [SerializeField] public EnemyInFleetConfig[] enemyInFleetConfig;
 }
