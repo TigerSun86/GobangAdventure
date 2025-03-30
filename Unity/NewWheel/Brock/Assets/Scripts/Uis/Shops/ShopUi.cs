@@ -4,6 +4,7 @@ public class ShopUi : MonoBehaviour
 {
     [SerializeField] ItemDb itemDb;
     [SerializeField] GameObject itemUiPrefab;
+    [SerializeField] Player playerUi;
 
     void Awake()
     {
@@ -38,6 +39,7 @@ public class ShopUi : MonoBehaviour
     void OnItemPurchased(string itemName)
     {
         itemDb.playerItemNames.Add(itemName);
+        playerUi.InitializeWeapons();
         itemDb.DecreaseCountToBuy();
         if (itemDb.CountToBuy > 0)
         {
