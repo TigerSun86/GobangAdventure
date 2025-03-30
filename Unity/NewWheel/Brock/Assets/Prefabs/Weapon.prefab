@@ -79,9 +79,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 11
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.16353682, g: 0.33939418, b: 0.990566, a: 1}
+  m_Color: {r: 0, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -131,12 +131,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponBaseType: 0
-  range: 2
-  target: {fileID: 0}
-  attackActionStage: 0
-  timeInCurrentStage: 0
-  pierceCount: 0
-  shopItem: {fileID: 0}
+  skills: []
+  isMovingCount: 0
 --- !u!58 &7445888378713958572
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -188,3 +184,8 @@ MonoBehaviour:
   skillConfigs:
   - {fileID: 11400000, guid: 030932b2b5744694cb367f13c64717d3, type: 2}
   skills: []
+  activeSkill:
+    skillConfig: {fileID: 0}
+    skillState: 0
+    timeInCurrentState: 0
+    targets: []
