@@ -25,3 +25,12 @@ MonoBehaviour:
       positionInFleet: {x: 0, y: -1}
     - enemyConfig: {fileID: 11400000, guid: 3f607bd21bae71b419b33d4d10a23cfb, type: 2}
       positionInFleet: {x: 1, y: 0}
+  - enemyInFleetConfig:
+    - enemyConfig: {fileID: 11400000, guid: aacfea737ec7da5489d08e727f8b15fb, type: 2}
+      positionInFleet: {x: 0, y: 1}
+    - enemyConfig: {fileID: 11400000, guid: 284c98ca7371c624d9582836831fb9bf, type: 2}
+      positionInFleet: {x: 1, y: -1}
+    - enemyConfig: {fileID: 11400000, guid: 3f607bd21bae71b419b33d4d10a23cfb, type: 2}
+      positionInFleet: {x: 1, y: 0}
+    - enemyConfig: {fileID: 11400000, guid: 284c98ca7371c624d9582836831fb9bf, type: 2}
+      positionInFleet: {x: 1, y: 1}

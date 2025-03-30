@@ -921,8 +921,9 @@ MonoBehaviour:
   waveConfigs:
   - {fileID: 11400000, guid: 8bd89e540fb8d8d4fb561f606ac608a2, type: 2}
   - {fileID: 11400000, guid: edfdede290d9dd74b81796be4b75826f, type: 2}
+  - {fileID: 11400000, guid: 4426853dfba19d444bce80d578d50e27, type: 2}
+  - {fileID: 11400000, guid: 4426853dfba19d444bce80d578d50e27, type: 2}
   enemyPrefab: {fileID: 7228580095256117804, guid: 9283bb619ad44434ea5a864557e35590, type: 3}
-  maxEnemyCount: 1
   fleetIndex: 0
 --- !u!4 &1328440673
 Transform:
