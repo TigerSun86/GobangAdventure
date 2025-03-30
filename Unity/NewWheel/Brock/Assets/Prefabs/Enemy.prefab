@@ -478,7 +478,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deathEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
+        m_TargetAssemblyTypeName: ItemDb, Assembly-CSharp
+        m_MethodName: IncreaseCountToBuy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   timeToLive: 0
 --- !u!61 &1316624031414154631
 BoxCollider2D:

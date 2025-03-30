@@ -43,6 +43,11 @@ public class ItemUi : MonoBehaviour
     {
         purchaseButton.onClick.RemoveAllListeners();
         purchaseButton.onClick.AddListener(() => action.Invoke(itemName));
-        purchaseButton.onClick.AddListener(() => purchaseButton.gameObject.SetActive(false));
+        purchaseButton.onClick.AddListener(() => DisablePurchaseButton());
+    }
+
+    public void DisablePurchaseButton()
+    {
+        purchaseButton.gameObject.SetActive(false);
     }
 }

@@ -5,7 +5,6 @@ public class ShopUi : MonoBehaviour
     [SerializeField] ItemDb itemDb;
     [SerializeField] GameObject itemUiPrefab;
 
-
     void Awake()
     {
         //Fill the shop's UI list with items
@@ -39,5 +38,21 @@ public class ShopUi : MonoBehaviour
     void OnItemPurchased(string itemName)
     {
         itemDb.playerItemNames.Add(itemName);
+        itemDb.DecreaseCountToBuy();
+        if (itemDb.countToBuy > 0)
+        {
+            foreach (ItemUi itemUi in GetComponentsInChildren<ItemUi>())
+            {
+                Destroy(itemUi.gameObject);
+            }
+            GenerateShopItemsUI();
+        }
+        else
+        {
+            foreach (ItemUi itemUi in GetComponentsInChildren<ItemUi>())
+            {
+                itemUi.DisablePurchaseButton();
+            }
+        }
     }
 }

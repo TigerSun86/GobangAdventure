@@ -23,6 +23,7 @@ public class WaveManager : MonoBehaviour
         IsWaveRunning = false;
         EnemyManager.Instance.DestroyAllEnemies();
         StopAllCoroutines();
+        this.itemDb.IncreaseCountToBuy();
         SceneUtility.LoadShopScene();
     }
 
