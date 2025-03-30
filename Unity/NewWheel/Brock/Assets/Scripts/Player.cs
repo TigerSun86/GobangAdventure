@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour
 {
     Rigidbody2D rb;
@@ -14,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] ItemDb itemDb;
     [SerializeField] Vector2[] defenceAreaOffsets;
     [SerializeField] Dictionary<int, ShopItem> idToWeapon;
+    [SerializeField] bool isShopping = false;
 
     public void InitializeWeapons()
     {
@@ -36,7 +36,11 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        if (!isShopping)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
+
         InitializeWeapons();
     }
 
@@ -56,6 +60,11 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isShopping)
+        {
+            return;
+        }
+
         Vector2 move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
         rb.linearVelocity = speed * move;
 
@@ -70,12 +79,7 @@ public class Player : MonoBehaviour
 
     private float GetPlayerRadius()
     {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Get the size of the sprite (assuming the sprite is a perfect circle)
-        float spriteWidth = spriteRenderer.sprite.bounds.size.x;  // Diameter
-        // Take the scale into account
-        float radius = (spriteWidth * transform.localScale.x) / 2f;
+        float radius = transform.localScale.x / 2f;
         return radius;
     }
 

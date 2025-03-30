@@ -673,8 +673,8 @@ Transform:
   m_GameObject: {fileID: 480696840}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.04, y: 0.42, z: 0}
-  m_LocalScale: {x: 2.2368, y: 2.2368, z: 0}
+  m_LocalPosition: {x: -5, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -700,6 +700,7 @@ MonoBehaviour:
   speed: 5
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   defenceAreaOffsets: []
+  isShopping: 0
 --- !u!50 &480696844
 Rigidbody2D:
   serializedVersion: 5
