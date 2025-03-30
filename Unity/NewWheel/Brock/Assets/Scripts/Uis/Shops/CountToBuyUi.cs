@@ -9,7 +9,7 @@ public class CountToBuyUi : MonoBehaviour
 
     public void SetCount()
     {
-        SetCount(itemDb.countToBuy);
+        SetCount(itemDb.CountToBuy);
     }
 
     private void SetCount(int count)
@@ -19,6 +19,6 @@ public class CountToBuyUi : MonoBehaviour
 
     private void Start()
     {
-        SetCount(itemDb.countToBuy);
+        SetCount();
     }
 }

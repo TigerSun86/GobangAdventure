@@ -11,7 +11,12 @@ public class ItemDb : ScriptableObject
 
     public List<string> playerItemNames = new List<string>();
 
-    public int countToBuy;
+    private float countToBuy;
+
+    public int CountToBuy
+    {
+        get { return (int)countToBuy; }
+    }
 
     public ShopItem GetShopItem(string itemName)
     {
@@ -28,25 +33,25 @@ public class ItemDb : ScriptableObject
 
     public void IncreaseCountToBuy()
     {
-        this.countToBuy++;
+        this.countToBuy += 0.5f;
         this.countToBuyChangeEvent.Invoke();
     }
 
     public void DecreaseCountToBuy()
     {
-        this.countToBuy--;
+        this.countToBuy -= 1;
         this.countToBuyChangeEvent.Invoke();
     }
 
     public void OnEnable()
     {
         this.playerItemNames.Clear();
-        this.countToBuy = 1;
+        this.countToBuy = 2;
     }
 
     public void OnDisable()
     {
         this.playerItemNames.Clear();
-        this.countToBuy = 1;
+        this.countToBuy = 2;
     }
 }

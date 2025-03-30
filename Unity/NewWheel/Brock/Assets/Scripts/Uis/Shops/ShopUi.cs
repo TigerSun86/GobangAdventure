@@ -39,7 +39,7 @@ public class ShopUi : MonoBehaviour
     {
         itemDb.playerItemNames.Add(itemName);
         itemDb.DecreaseCountToBuy();
-        if (itemDb.countToBuy > 0)
+        if (itemDb.CountToBuy > 0)
         {
             foreach (ItemUi itemUi in GetComponentsInChildren<ItemUi>())
             {

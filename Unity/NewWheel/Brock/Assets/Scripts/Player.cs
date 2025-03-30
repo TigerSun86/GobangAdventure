@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     {
         idToWeapon = GetIdToWeapon();
         float radius = GetPlayerRadius();
-        defenceAreaOffsets = GetDefenceAreaOffsets(radius, 4);
+        defenceAreaOffsets = GetDefenceAreaOffsets(radius, 8);
         defenceAreas = new GameObject[defenceAreaOffsets.Length];
         for (int i = 0; i < defenceAreaOffsets.Length; i++)
         {
