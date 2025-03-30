@@ -315,6 +315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   itemUiPrefab: {fileID: 3070152592146369352, guid: 675999831a357524386e2cde899254bf, type: 3}
+  playerUi: {fileID: 470714295}
 --- !u!1 &470714291
 GameObject:
   m_ObjectHideFlags: 0
