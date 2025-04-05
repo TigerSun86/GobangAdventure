@@ -5,13 +5,13 @@ public class Draggable : MonoBehaviour
     public bool isBeingDragged = false;
     private bool waitingForMouseRelease = false;
 
-    void Update()
+    private void Update()
     {
         if (isBeingDragged)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0f;
-            transform.parent.position = mousePosition;
+            transform.position = mousePosition;
 
             if (!waitingForMouseRelease && Input.GetMouseButtonDown(0))
             {
@@ -22,6 +22,17 @@ public class Draggable : MonoBehaviour
             {
                 isBeingDragged = false;
                 waitingForMouseRelease = false;
+                WeaponUiManager.Instance.currentlyDragging = null;
+
+                PulseOnHover hoverTarget = WeaponUiManager.Instance.currentHoverTarget;
+
+                if (hoverTarget != null)
+                {
+                    transform.parent.SetParent(hoverTarget.transform);
+                    transform.parent.localPosition = Vector3.zero;
+                    transform.parent.localRotation = Quaternion.identity;
+                    hoverTarget.StopPulse();
+                }
             }
         }
     }
@@ -30,5 +41,6 @@ public class Draggable : MonoBehaviour
     {
         isBeingDragged = true;
         waitingForMouseRelease = false;
+        WeaponUiManager.Instance.currentlyDragging = this;
     }
 }
