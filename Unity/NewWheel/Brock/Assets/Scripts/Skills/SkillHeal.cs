@@ -44,7 +44,7 @@ public class SkillHeal : SkillBase
 
     private void Heal(GameObject target)
     {
-        if (target.IsDestroyed() || target.GetComponent<DefenceArea>() == null)
+        if (target.IsDestroyed() || target.GetComponent<WeaponStand>() == null)
         {
             return;
         }

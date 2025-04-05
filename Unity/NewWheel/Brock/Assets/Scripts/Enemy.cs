@@ -8,13 +8,13 @@ public class Enemy : MonoBehaviour
 
     Transform target;
 
-    DefenceArea defenceArea;
+    WeaponStand defenceArea;
     Health health;
     SkillActor skillActor;
 
     private void Awake()
     {
-        defenceArea = GetComponent<DefenceArea>();
+        defenceArea = GetComponent<WeaponStand>();
         health = GetComponent<Health>();
     }
 

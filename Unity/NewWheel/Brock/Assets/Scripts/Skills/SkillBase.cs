@@ -267,7 +267,7 @@ public class SkillBase
 
     private bool IsSelf(GameObject target)
     {
-        return target.GetComponent<DefenceArea>().gameObject == this.owner.GetComponentInParent<DefenceArea>().gameObject;
+        return target.GetComponent<WeaponStand>().gameObject == this.owner.GetComponentInParent<WeaponStand>().gameObject;
     }
 
     private bool CheckExcludedFilter(TargetFilter targetFilter)

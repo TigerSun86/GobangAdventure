@@ -16,7 +16,7 @@ public class SkillAttack : SkillBase
         }
 
         float remainingTime = skillConfig.actionTime - timeInCurrentState;
-        owner.GetComponent<Weapon>().MoveToTarget(targets[0].transform, remainingTime);
+        owner.GetComponent<WeaponItem>().MoveToTarget(targets[0].transform, remainingTime);
         if (remainingTime <= 0)
         {
             foreach (GameObject target in targets)
@@ -32,14 +32,14 @@ public class SkillAttack : SkillBase
     protected override bool Recover()
     {
         float remainingTime = skillConfig.recoveryTime - timeInCurrentState;
-        owner.GetComponent<Weapon>().ReturnToDefenceArea(remainingTime);
+        owner.GetComponent<WeaponItem>().ReturnToDefenceArea(remainingTime);
 
         return remainingTime <= 0;
     }
 
     private void DealDamage(GameObject target)
     {
-        if (target.IsDestroyed() || target.GetComponent<DefenceArea>() == null)
+        if (target.IsDestroyed() || target.GetComponent<WeaponStand>() == null)
         {
             return;
         }
@@ -49,7 +49,7 @@ public class SkillAttack : SkillBase
         double damage = this.skillConfig.value;
 
         DamageType damageType = DamageType.NORMAL_ATTACK;
-        WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(owner.GetComponent<Weapon>().weaponBaseType, target.GetComponent<DefenceArea>().weaponBaseType);
+        WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(owner.GetComponent<WeaponItem>().weaponBaseType, target.GetComponent<WeaponStand>().weaponBaseType);
         if (matchResult == WeaponBaseTypeMatchResult.STRONG)
         {
             damageType = DamageType.CRITICAL_HIT;
