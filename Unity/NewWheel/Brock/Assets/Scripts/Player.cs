@@ -7,30 +7,31 @@ public class Player : MonoBehaviour
 {
     Rigidbody2D rb;
 
+    [SerializeField] GameObject weaponSlotPrefab;
     [SerializeField] GameObject teamMatePrefab;
     [SerializeField] GameObject[] defenceAreas;
     [SerializeField] float speed = 5f;
     [SerializeField] ItemDb itemDb;
-    [SerializeField] Vector2[] defenceAreaOffsets;
     [SerializeField] Dictionary<int, ShopItem> idToWeapon;
     [SerializeField] bool isShopping = false;
+
+    private GameObject[] weaponSlots;
 
     public void InitializeWeapons()
     {
         idToWeapon = GetIdToWeapon();
-        float radius = GetPlayerRadius();
-        defenceAreaOffsets = GetDefenceAreaOffsets(radius, 8);
-        defenceAreas = new GameObject[defenceAreaOffsets.Length];
-        for (int i = 0; i < defenceAreaOffsets.Length; i++)
+        DestroyAllDefenceAreas();
+        defenceAreas = new GameObject[weaponSlots.Length];
+        for (int id = 0; id < weaponSlots.Length; id++)
         {
-            if (!idToWeapon.ContainsKey(i))
+            if (!idToWeapon.ContainsKey(id))
             {
                 continue;
             }
-            Vector3 position = (Vector2)transform.position + defenceAreaOffsets[i];
-            defenceAreas[i] = Instantiate(teamMatePrefab, position, Quaternion.identity, this.transform);
-            ShopItem shopItem = idToWeapon[i];
-            defenceAreas[i].GetComponent<DefenceArea>().SetWeapon(shopItem.weaponConfig);
+            Vector3 position = weaponSlots[id].transform.position;
+            defenceAreas[id] = Instantiate(teamMatePrefab, position, Quaternion.identity, weaponSlots[id].transform);
+            ShopItem shopItem = idToWeapon[id];
+            defenceAreas[id].GetComponent<DefenceArea>().SetWeapon(shopItem.weaponConfig);
         }
     }
 
@@ -41,7 +42,39 @@ public class Player : MonoBehaviour
             rb = GetComponent<Rigidbody2D>();
         }
 
+        InitializeWeaponSlots();
         InitializeWeapons();
+    }
+
+    private void FixedUpdate()
+    {
+        if (isShopping)
+        {
+            return;
+        }
+
+        Vector2 move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+        rb.linearVelocity = speed * move;
+
+        for (int id = 0; id < defenceAreas.Length; id++)
+        {
+            if (defenceAreas[id] != null)
+            {
+                defenceAreas[id].transform.position = weaponSlots[id].transform.position;
+            }
+        }
+    }
+
+    private void InitializeWeaponSlots()
+    {
+        float radius = GetPlayerRadius();
+        Vector2[] defenceAreaOffsets = GetDefenceAreaOffsets(radius, 8);
+        weaponSlots = new GameObject[defenceAreaOffsets.Length];
+        for (int i = 0; i < defenceAreaOffsets.Length; i++)
+        {
+            Vector3 position = (Vector2)transform.position + defenceAreaOffsets[i];
+            weaponSlots[i] = Instantiate(weaponSlotPrefab, position, Quaternion.identity, this.transform);
+        }
     }
 
     private Dictionary<int, ShopItem> GetIdToWeapon()
@@ -58,21 +91,18 @@ public class Player : MonoBehaviour
         return idToWeapon;
     }
 
-    private void FixedUpdate()
+    private void DestroyAllDefenceAreas()
     {
-        if (isShopping)
+        if (defenceAreas == null)
         {
             return;
         }
 
-        Vector2 move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-        rb.linearVelocity = speed * move;
-
-        for (int i = 0; i < defenceAreas.Length; i++)
+        foreach (GameObject defenceArea in defenceAreas)
         {
-            if (defenceAreas[i] != null)
+            if (defenceArea != null)
             {
-                defenceAreas[i].transform.position = (Vector2)transform.position + defenceAreaOffsets[i];
+                Destroy(defenceArea);
             }
         }
     }

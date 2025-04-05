@@ -374,6 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481516941c27d714a9f5102045c2716d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponSlotPrefab: {fileID: 9115577987707012777, guid: e08c6427308e8374bb4ff3703b293ebe, type: 3}
   teamMatePrefab: {fileID: 1514124960582225316, guid: 1503a522704111645a5a27289e63966f, type: 3}
   defenceAreas: []
   speed: 5
