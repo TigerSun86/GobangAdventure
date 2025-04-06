@@ -8,16 +8,17 @@ public class SkillActor : MonoBehaviour
     public const int PriorityNormal = 2;
     public const int PriorityLow = 3;
 
-    [SerializeField]
-    SkillConfig[] skillConfigs;
+    [SerializeField] SkillConfig[] skillConfigs;
 
     public SkillBase[] skills;
 
+    public SkillBase activeSkill;
+
     public PriorityQueue<SkillBase> skillActionQueue;
 
-    private Dictionary<SkillType, int> skillToPriorities;
+    private WeaponSuit weaponSuit;
 
-    public SkillBase activeSkill;
+    private Dictionary<SkillType, int> skillToPriorities;
 
     public void SetSkillPriority(SkillType skillType, int priority)
     {
@@ -42,17 +43,18 @@ public class SkillActor : MonoBehaviour
             && this.activeSkill.skillConfig.skillType == SkillType.Heal;
     }
 
-    public void Initialize(SkillConfig[] skillConfigs)
+    public void Initialize(WeaponSuit weaponSuit)
     {
-        this.skillConfigs = skillConfigs;
+        this.weaponSuit = weaponSuit;
+        this.skillConfigs = this.weaponSuit.weaponConfig.skills;
         this.activeSkill = null;
         this.skillActionQueue = new PriorityQueue<SkillBase>();
         InitSkillToPriorities();
 
         List<SkillBase> skillList = new List<SkillBase>();
-        for (int i = 0; i < skillConfigs.Length; i++)
+        for (int i = 0; i < this.skillConfigs.Length; i++)
         {
-            SkillConfig skillConfig = skillConfigs[i];
+            SkillConfig skillConfig = this.skillConfigs[i];
             if (skillConfig == null || skillConfig.skillTargetConfig == null)
             {
                 Debug.LogError($"Skill config {i} is not valid");
@@ -62,10 +64,10 @@ public class SkillActor : MonoBehaviour
             switch (skillConfig.skillType)
             {
                 case SkillType.Attack:
-                    skill = new SkillAttack(gameObject, skillConfig);
+                    skill = new SkillAttack(this.weaponSuit, skillConfig);
                     break;
                 case SkillType.Heal:
-                    skill = new SkillHeal(gameObject, skillConfig);
+                    skill = new SkillHeal(this.weaponSuit, skillConfig);
                     break;
                 default:
                     Debug.LogError($"Skill type {skillConfig.skillType} not found");
@@ -77,6 +79,7 @@ public class SkillActor : MonoBehaviour
                 skillList.Add(skill);
             }
         }
+
         this.skills = skillList.ToArray();
     }
 

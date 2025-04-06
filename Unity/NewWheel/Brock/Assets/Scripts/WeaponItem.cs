@@ -3,15 +3,13 @@ using UnityEngine;
 
 public class WeaponItem : MonoBehaviour
 {
-    public WeaponBaseType weaponBaseType;
-
-    public SkillConfig[] skills;
-
     public int isMovingCount;
 
-    public void SetSkill(SkillConfig[] skills)
+    private WeaponSuit weaponSuit;
+
+    public void Initialize(WeaponSuit weaponSuit)
     {
-        GetComponent<SkillActor>().Initialize(skills);
+        this.weaponSuit = weaponSuit;
     }
 
     public void MoveToTarget(Transform target, float remainingTime)
@@ -19,9 +17,9 @@ public class WeaponItem : MonoBehaviour
         Move(target, remainingTime);
     }
 
-    public void ReturnToDefenceArea(float remainingTime)
+    public void ReturnToStand(float remainingTime)
     {
-        Move(transform.parent, remainingTime);
+        Move(this.weaponSuit.transform, remainingTime);
     }
 
     private void Start()
@@ -45,7 +43,7 @@ public class WeaponItem : MonoBehaviour
     private void ChangeSprite()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        switch (this.weaponBaseType)
+        switch (this.weaponSuit.weaponBaseType)
         {
             case WeaponBaseType.ROCK:
                 spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Circle");

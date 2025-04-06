@@ -1,25 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using Timers;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(SelfDestroy))]
 public class Death : MonoBehaviour
 {
     [SerializeField] public UnityEvent<GameObject> deathEvent;
 
     [SerializeField] public float timeToLive = 0f;
 
-    SelfDestroy selfDestroy;
+    [SerializeField, Required] Health health;
 
-    private void Awake()
+    [SerializeField, AssignedInCode] SelfDestroy selfDestroy;
+
+    private void Start()
     {
-        Health health = GetComponent<Health>();
-        if (health != null)
-        {
-            health.healthChanged.AddListener(CheckDeathByHealth);
-        }
+        health.healthChanged.AddListener(CheckDeathByHealth);
 
         selfDestroy = GetComponent<SelfDestroy>();
 
@@ -29,7 +25,7 @@ public class Death : MonoBehaviour
         }
     }
 
-    public void CheckDeathByHealth(int health)
+    private void CheckDeathByHealth(int health)
     {
         if (health <= 0)
         {
@@ -37,7 +33,7 @@ public class Death : MonoBehaviour
         }
     }
 
-    void Die()
+    private void Die()
     {
         deathEvent.Invoke(gameObject);
         if (selfDestroy != null)

@@ -1,9 +1,8 @@
 using Unity.VisualScripting;
-using UnityEngine;
 
 public class SkillAttack : SkillBase
 {
-    public SkillAttack(GameObject owner, SkillConfig skillConfig) : base(owner, skillConfig)
+    public SkillAttack(WeaponSuit weaponSuit, SkillConfig skillConfig) : base(weaponSuit, skillConfig)
     {
     }
 
@@ -16,10 +15,10 @@ public class SkillAttack : SkillBase
         }
 
         float remainingTime = skillConfig.actionTime - timeInCurrentState;
-        owner.GetComponent<WeaponItem>().MoveToTarget(targets[0].transform, remainingTime);
+        weaponSuit.weaponItem.MoveToTarget(targets[0].transform, remainingTime);
         if (remainingTime <= 0)
         {
-            foreach (GameObject target in targets)
+            foreach (WeaponSuit target in targets)
             {
                 DealDamage(target);
             }
@@ -32,24 +31,23 @@ public class SkillAttack : SkillBase
     protected override bool Recover()
     {
         float remainingTime = skillConfig.recoveryTime - timeInCurrentState;
-        owner.GetComponent<WeaponItem>().ReturnToDefenceArea(remainingTime);
+        weaponSuit.weaponItem.ReturnToStand(remainingTime);
 
         return remainingTime <= 0;
     }
 
-    private void DealDamage(GameObject target)
+    private void DealDamage(WeaponSuit target)
     {
-        if (target.IsDestroyed() || target.GetComponent<WeaponStand>() == null)
+        if (target.IsDestroyed())
         {
             return;
         }
 
-        Damagable damagable = target.GetComponent<Damagable>();
-
         double damage = this.skillConfig.value;
-
         DamageType damageType = DamageType.NORMAL_ATTACK;
-        WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(owner.GetComponent<WeaponItem>().weaponBaseType, target.GetComponent<WeaponStand>().weaponBaseType);
+        WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(
+            weaponSuit.weaponBaseType,
+            target.weaponBaseType);
         if (matchResult == WeaponBaseTypeMatchResult.STRONG)
         {
             damageType = DamageType.CRITICAL_HIT;
@@ -60,6 +58,8 @@ public class SkillAttack : SkillBase
             damageType = DamageType.WEAK_ATTACK;
             damage /= 2;
         }
+
+        Damagable damagable = target.weaponStand.GetComponent<Damagable>();
         damagable.TakeDamage((int)damage, damageType);
     }
 }

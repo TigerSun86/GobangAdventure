@@ -692,12 +692,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponSlotPrefab: {fileID: 9115577987707012777, guid: e08c6427308e8374bb4ff3703b293ebe, type: 3}
-  teamMatePrefab: {fileID: 1514124960582225316, guid: 1503a522704111645a5a27289e63966f, type: 3}
-  defenceAreas:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  weaponSuitPrefab: {fileID: 973336722079467576, guid: 35dca496204cf834f843098fdcd06f45, type: 3}
+  weaponSuits: []
   speed: 5
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   isShopping: 0

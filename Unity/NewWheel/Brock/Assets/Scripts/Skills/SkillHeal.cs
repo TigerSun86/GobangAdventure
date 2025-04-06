@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SkillHeal : SkillBase
 {
-    public SkillHeal(GameObject owner, SkillConfig skillConfig) : base(owner, skillConfig)
+    public SkillHeal(WeaponSuit weaponSuit, SkillConfig skillConfig) : base(weaponSuit, skillConfig)
     {
     }
 
@@ -19,7 +19,7 @@ public class SkillHeal : SkillBase
         float remainingTime = skillConfig.actionTime - timeInCurrentState;
         if (remainingTime <= 0)
         {
-            foreach (GameObject target in targets)
+            foreach (WeaponSuit target in targets)
             {
                 Heal(target);
             }
@@ -36,27 +36,27 @@ public class SkillHeal : SkillBase
         return remainingTime <= 0;
     }
 
-    protected override bool ForceExcludeTarget(GameObject target)
+    protected override bool ForceExcludeTarget(WeaponSuit target)
     {
-        Healable healable = target.GetComponent<Healable>();
+        Healable healable = target.weaponStand.GetComponent<Healable>();
         return healable == null || healable.IsFullHealth();
     }
 
-    private void Heal(GameObject target)
+    private void Heal(WeaponSuit target)
     {
-        if (target.IsDestroyed() || target.GetComponent<WeaponStand>() == null)
+        if (target.IsDestroyed())
         {
             return;
         }
 
-        Healable healable = target.GetComponent<Healable>();
+        Healable healable = target.weaponStand.GetComponent<Healable>();
         healable.TakeHealing((int)this.skillConfig.value);
     }
 
     private void ChangeOwnerSpriteColorGradually(Color color)
     {
         float progress = Mathf.Clamp01(timeInCurrentState / skillConfig.actionTime);
-        Color targetColor = Color.Lerp(owner.GetComponent<SpriteRenderer>().color, color, progress);
-        owner.GetComponent<SpriteRenderer>().color = targetColor;
+        Color targetColor = Color.Lerp(weaponSuit.weaponItem.GetComponent<SpriteRenderer>().color, color, progress);
+        weaponSuit.weaponItem.GetComponent<SpriteRenderer>().color = targetColor;
     }
 }

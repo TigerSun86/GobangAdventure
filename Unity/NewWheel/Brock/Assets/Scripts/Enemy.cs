@@ -1,36 +1,31 @@
 using UnityEngine;
 
+[RequireComponent(typeof(DieWithDependency))]
 public class Enemy : MonoBehaviour
 {
     [SerializeField] float speed;
+
+    [SerializeField] GameObject weaponSuitPrefab;
 
     public AiStrategy aiStrategy;
 
     Transform target;
 
-    WeaponStand defenceArea;
-    Health health;
-    SkillActor skillActor;
-
-    private void Awake()
-    {
-        defenceArea = GetComponent<WeaponStand>();
-        health = GetComponent<Health>();
-    }
-
-    private void Start()
-    {
-        this.skillActor = GetComponentInChildren<SkillActor>();
-    }
+    WeaponSuit weaponSuit;
 
     public void SetWeapon(WeaponConfig weaponConfig)
     {
-        this.defenceArea.SetWeapon(weaponConfig);
+        GameObject weaponSuitObject = Instantiate(weaponSuitPrefab, transform.position, Quaternion.identity, transform);
+        weaponSuitObject.tag = "EnemyWeapon";
+        this.weaponSuit = weaponSuitObject.GetComponent<WeaponSuit>();
+        this.weaponSuit.Initialize(weaponConfig);
+        DieWithDependency death = GetComponent<DieWithDependency>();
+        death.dependency = weaponSuitObject;
     }
 
     private void FixedUpdate()
     {
-        GameObject[] targets = this.skillActor.GetSkillAttack()?.GetTargets(range: 999);
+        WeaponSuit[] targets = this.weaponSuit.skillActor.GetSkillAttack()?.GetTargets(range: 999);
         this.target = (targets != null && targets.Length > 0) ? targets[0].transform : null;
         if (target != null)
         {
@@ -41,7 +36,7 @@ public class Enemy : MonoBehaviour
             }
 
             if (aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
-                && health.health < (health.maxHealth / 2f))
+                && weaponSuit.GetHealth().health < (weaponSuit.GetHealth().maxHealth / 2f))
             {
                 MoveAway();
                 return;
@@ -56,7 +51,7 @@ public class Enemy : MonoBehaviour
 
     private bool IsHealing()
     {
-        return this.skillActor.IsHealing();
+        return this.weaponSuit.skillActor.IsHealing();
     }
 
     private void MoveAway()
@@ -81,9 +76,9 @@ public class Enemy : MonoBehaviour
 
     private float GetShortestWeaponRange()
     {
-        if (this.skillActor.GetSkillAttack() != null)
+        if (this.weaponSuit.skillActor.GetSkillAttack() != null)
         {
-            return this.skillActor.GetSkillAttack().skillConfig.range;
+            return this.weaponSuit.skillActor.GetSkillAttack().skillConfig.range;
         }
         return 0;
     }

@@ -7,7 +7,7 @@ using UnityEngine;
 [Serializable]
 public class SkillBase
 {
-    protected GameObject owner;
+    protected WeaponSuit weaponSuit;
 
     public SkillConfig skillConfig;
 
@@ -15,11 +15,11 @@ public class SkillBase
 
     public float timeInCurrentState;
 
-    public GameObject[] targets;
+    public WeaponSuit[] targets;
 
-    public SkillBase(GameObject owner, SkillConfig skillConfig)
+    public SkillBase(WeaponSuit weaponSuit, SkillConfig skillConfig)
     {
-        this.owner = owner;
+        this.weaponSuit = weaponSuit;
         this.skillConfig = skillConfig;
         this.skillState = SkillState.WaitingCd;
         this.timeInCurrentState = 0;
@@ -121,17 +121,18 @@ public class SkillBase
         }
     }
 
-    public GameObject[] GetTargets(float? range = null)
+    public WeaponSuit[] GetTargets(float? range = null)
     {
         if (skillConfig.skillTargetConfig.maxTargets == 0)
         {
             Debug.LogError("Max targets is 0");
-            return new GameObject[0];
+            return new WeaponSuit[0];
         }
 
         float rangeToFilter = range ?? this.skillConfig.range;
-        IEnumerable<GameObject> targetCandidates = GameObject.FindGameObjectsWithTag(GetTargetTag());
-        IEnumerable<GameObject> result = targetCandidates
+        IEnumerable<WeaponSuit> targetCandidates = GameObject.FindGameObjectsWithTag(GetTargetTag())
+            .Select(o => o.GetComponent<WeaponSuit>());
+        IEnumerable<WeaponSuit> result = targetCandidates
             .Where(target => FilterTarget(target, rangeToFilter))
             .OrderBy(target => OrderTarget(target))
             .Take(skillConfig.skillTargetConfig.maxTargets);
@@ -150,7 +151,7 @@ public class SkillBase
         throw new NotImplementedException();
     }
 
-    protected virtual bool ForceExcludeTarget(GameObject target)
+    protected virtual bool ForceExcludeTarget(WeaponSuit target)
     {
         return false;
     }
@@ -188,22 +189,17 @@ public class SkillBase
         return this.targets.Length > 0;
     }
 
-    private String GetParentTag()
-    {
-        return owner.transform.parent.tag;
-    }
-
     private String GetTargetTag()
     {
         TargetType targetType = skillConfig.skillTargetConfig.targetType;
-        String tag = GetParentTag();
-        if (tag == "Player")
+        String tag = weaponSuit.transform.tag;
+        if (tag == "PlayerWeapon")
         {
-            return targetType == TargetType.Ally ? "Player" : "Enemy";
+            return targetType == TargetType.Ally ? "PlayerWeapon" : "EnemyWeapon";
         }
-        else if (tag == "Enemy")
+        else if (tag == "EnemyWeapon")
         {
-            return targetType == TargetType.Ally ? "Enemy" : "Player";
+            return targetType == TargetType.Ally ? "EnemyWeapon" : "PlayerWeapon";
         }
         else
         {
@@ -212,12 +208,12 @@ public class SkillBase
         }
     }
 
-    private float OrderTarget(GameObject target)
+    private float OrderTarget(WeaponSuit target)
     {
         switch (skillConfig.skillTargetConfig.targetOrdering)
         {
             case TargetOrdering.Closest:
-                return Vector3.Distance(target.transform.position, owner.transform.position);
+                return Vector3.Distance(target.transform.position, weaponSuit.transform.position);
             case TargetOrdering.LowestHealth:
                 throw new NotImplementedException();
             default:
@@ -226,7 +222,7 @@ public class SkillBase
         }
     }
 
-    private bool FilterTarget(GameObject target, float range)
+    private bool FilterTarget(WeaponSuit target, float range)
     {
         if (CheckExcludedFilter(TargetFilter.All))
         {
@@ -245,7 +241,7 @@ public class SkillBase
             return false;
         }
 
-        if (range < Vector3.Distance(target.transform.position, owner.transform.position))
+        if (range < Vector3.Distance(target.transform.position, weaponSuit.transform.position))
         {
             return false;
         }
@@ -265,9 +261,9 @@ public class SkillBase
         return CheckIncludedFilter(TargetFilter.All);
     }
 
-    private bool IsSelf(GameObject target)
+    private bool IsSelf(WeaponSuit target)
     {
-        return target.GetComponent<WeaponStand>().gameObject == this.owner.GetComponentInParent<WeaponStand>().gameObject;
+        return target.gameObject == this.weaponSuit.gameObject;
     }
 
     private bool CheckExcludedFilter(TargetFilter targetFilter)
