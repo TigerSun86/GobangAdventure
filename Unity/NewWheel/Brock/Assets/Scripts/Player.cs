@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
 
     public void InitializeWeapons()
     {
-        idToWeapon = GetIdToWeapon();
+        UpdateIdToWeapon();
         DestroyAllWeapons();
         weaponSuits = new GameObject[weaponSlots.Length];
         for (int id = 0; id < weaponSlots.Length; id++)
@@ -36,6 +36,31 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void MoveWeapon(WeaponSuit weapon, GameObject targetSlot)
+    {
+        if (weapon == null || targetSlot == null)
+        {
+            Debug.LogError("Weapon or target slot is null");
+            return;
+        }
+
+        GameObject sourceSlot = weapon.transform.parent.gameObject;
+        int sourceId = GetWeaponSlotId(weapon.transform.parent.gameObject);
+        if (sourceId < 0)
+        {
+            Debug.LogError("Invalid source slot ID: " + sourceId);
+            return;
+        }
+        int targetId = GetWeaponSlotId(targetSlot);
+        if (targetId < 0)
+        {
+            Debug.LogError("Invalid source slot ID: " + targetId);
+            return;
+        }
+        SwapIdToWeapon(sourceId, targetId);
+        SwapWeaponSuit(sourceSlot, targetSlot);
+    }
+
     private void Awake()
     {
         if (!isShopping)
@@ -43,6 +68,7 @@ public class Player : MonoBehaviour
             rb = GetComponent<Rigidbody2D>();
         }
 
+        idToWeapon = new Dictionary<int, ShopItem>();
         InitializeWeaponSlots();
         InitializeWeapons();
     }
@@ -78,18 +104,25 @@ public class Player : MonoBehaviour
         }
     }
 
-    private Dictionary<int, ShopItem> GetIdToWeapon()
+    private void UpdateIdToWeapon()
     {
         int id = 0;
-        Dictionary<int, ShopItem> idToWeapon = new Dictionary<int, ShopItem>();
         foreach (string itemName in itemDb.playerItemNames)
         {
             ShopItem shopItem = itemDb.GetShopItem(itemName);
+            if (idToWeapon.ContainsValue(shopItem))
+            {
+                continue;
+            }
+
+            while (idToWeapon.ContainsKey(id))
+            {
+                id++;
+            }
+
             idToWeapon[id] = shopItem;
             id++;
         }
-
-        return idToWeapon;
     }
 
     private void DestroyAllWeapons()
@@ -123,5 +156,61 @@ public class Player : MonoBehaviour
             offsets[i] = new Vector2(radius * Mathf.Cos(angle), radius * Mathf.Sin(angle));
         }
         return offsets;
+    }
+
+    private int GetWeaponSlotId(GameObject slot)
+    {
+        for (int i = 0; i < weaponSlots.Length; i++)
+        {
+            if (weaponSlots[i] == slot)
+            {
+                return i;
+            }
+        }
+        return -1; // Return -1 if the slot is not found
+    }
+
+    private void SwapIdToWeapon(int sourceId, int targetId)
+    {
+        if (idToWeapon.ContainsKey(sourceId) && idToWeapon.ContainsKey(targetId))
+        {
+            ShopItem temp = idToWeapon[sourceId];
+            idToWeapon[sourceId] = idToWeapon[targetId];
+            idToWeapon[targetId] = temp;
+        }
+        else if (idToWeapon.ContainsKey(sourceId))
+        {
+            idToWeapon[targetId] = idToWeapon[sourceId];
+            idToWeapon.Remove(sourceId);
+        }
+        else if (idToWeapon.ContainsKey(targetId))
+        {
+            idToWeapon[sourceId] = idToWeapon[targetId];
+            idToWeapon.Remove(targetId);
+        }
+    }
+
+    private void SwapWeaponSuit(GameObject sourceSlot, GameObject targetSlot)
+    {
+        int sourceId = GetWeaponSlotId(sourceSlot);
+        int targetId = GetWeaponSlotId(targetSlot);
+
+        GameObject sourceWeapon = weaponSuits[sourceId];
+        GameObject targetWeapon = weaponSuits[targetId];
+
+        if (sourceWeapon != null)
+        {
+            sourceWeapon.transform.SetParent(targetSlot.transform);
+            sourceWeapon.transform.position = targetSlot.transform.position;
+        }
+
+        if (targetWeapon != null)
+        {
+            targetWeapon.transform.SetParent(sourceSlot.transform);
+            targetWeapon.transform.position = sourceSlot.transform.position;
+        }
+
+        weaponSuits[sourceId] = targetWeapon;
+        weaponSuits[targetId] = sourceWeapon;
     }
 }

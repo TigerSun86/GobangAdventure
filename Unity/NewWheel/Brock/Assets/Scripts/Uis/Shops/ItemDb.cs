@@ -11,7 +11,7 @@ public class ItemDb : ScriptableObject
 
     public List<string> playerItemNames = new List<string>();
 
-    private float countToBuy;
+    [SerializeField] private float countToBuy;
 
     public int CountToBuy
     {

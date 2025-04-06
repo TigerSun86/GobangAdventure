@@ -19,22 +19,18 @@ public class Draggable : MonoBehaviour
                 waitingForMouseRelease = true;
             }
 
-            if (waitingForMouseRelease && Input.GetMouseButtonUp(0))
+            PulseOnHover hoverTarget = WeaponUiManager.Instance.currentHoverTarget;
+            if (waitingForMouseRelease && Input.GetMouseButtonUp(0) && hoverTarget != null)
             {
                 isBeingDragged = false;
                 waitingForMouseRelease = false;
                 WeaponUiManager.Instance.currentlyDragging = null;
                 SetCollidersEnabled(true);
 
-                PulseOnHover hoverTarget = WeaponUiManager.Instance.currentHoverTarget;
+                Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+                player.MoveWeapon(GetComponent<WeaponSuit>(), hoverTarget.gameObject);
 
-                if (hoverTarget != null)
-                {
-                    transform.SetParent(hoverTarget.transform);
-                    transform.localPosition = Vector3.zero;
-                    transform.localRotation = Quaternion.identity;
-                    hoverTarget.StopPulse();
-                }
+                hoverTarget.StopPulse();
             }
         }
     }
