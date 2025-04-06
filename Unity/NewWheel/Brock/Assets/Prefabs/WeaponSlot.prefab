@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7125473977035233007}
   - component: {fileID: 3810921193682267179}
   - component: {fileID: -2311830182665944329}
+  - component: {fileID: -630777323145250463}
   m_Layer: 0
   m_Name: WeaponSlot
   m_TagString: Untagged
@@ -140,3 +141,16 @@ MonoBehaviour:
   minAlpha: 0.3
   maxAlpha: 1
   pulseSpeed: 2
+--- !u!114 &-630777323145250463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9115577987707012777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c821d10ce2662445b53f2b326cfe64a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSlotUiPrefab: {fileID: 6849723373806481485, guid: ca8c5781adc4615408b09d25bd91276d, type: 3}
