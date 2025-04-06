@@ -3,12 +3,12 @@ using UnityEngine.UI;
 
 public class WeaponMenuClickInteraction : MonoBehaviour
 {
-    public GameObject menuPrefab;
+    [SerializeField, Required] public GameObject menuPrefab;
     private GameObject menuInstance;
 
     void OnMouseEnter()
     {
-        if (menuInstance == null)
+        if (menuInstance == null && WeaponUiManager.Instance.currentlyDragging == null)
         {
             menuInstance = Instantiate(menuPrefab, gameObject.transform.position, Quaternion.identity);
             // Hook up button dynamically
@@ -16,7 +16,7 @@ public class WeaponMenuClickInteraction : MonoBehaviour
             Draggable draggable = GetComponent<Draggable>();
             if (moveButton != null && draggable != null)
             {
-                moveButton.onClick.AddListener(draggable.StartDragging);
+                moveButton.onClick.AddListener(() => { draggable.StartDragging(); Destroy(menuInstance); });
             }
         }
     }
