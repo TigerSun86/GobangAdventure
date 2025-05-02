@@ -120,19 +120,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6555764033768721152}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 9207684202733552426}
-        m_TargetAssemblyTypeName: WeaponSlotButton, Assembly-CSharp
-        m_MethodName: EnableMenu
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &9207684202733552426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,7 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c0b1c90062a6a408515283b9618ce9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuPrefab: {fileID: 1206984521089701763, guid: a81b306ee009d60449589f7bed43418d, type: 3}
+  dragSourceMenuPrefab: {fileID: 1206984521089701763, guid: a81b306ee009d60449589f7bed43418d, type: 3}
+  dragTargetMenuPrefab: {fileID: 1206984521089701763, guid: 7eeb1f335fe14684fa324b0e2b871cb8, type: 3}
 --- !u!1 &6849723373806481485
 GameObject:
   m_ObjectHideFlags: 0

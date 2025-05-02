@@ -5,6 +5,11 @@ public class WeaponSlot : MonoBehaviour
     [SerializeField, Required] public GameObject weaponSlotUiPrefab;
     [SerializeField, AssignedInCode] public GameObject weaponSlotUiInstance;
 
+    public WeaponSuit GetWeaponSuit()
+    {
+        return GetComponentInChildren<WeaponSuit>();
+    }
+
     void Start()
     {
         weaponSlotUiInstance = Instantiate(weaponSlotUiPrefab, gameObject.transform.position, Quaternion.identity, gameObject.transform);
@@ -13,7 +18,7 @@ public class WeaponSlot : MonoBehaviour
 
     void Update()
     {
-        if (GetComponentInChildren<WeaponSuit>() != null)
+        if (GetWeaponSuit() != null || WeaponUiManager.Instance.currentlyDragging != null)
         {
             weaponSlotUiInstance.SetActive(true);
         }

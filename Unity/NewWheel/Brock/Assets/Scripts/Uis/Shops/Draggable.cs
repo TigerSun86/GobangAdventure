@@ -39,7 +39,7 @@ public class Draggable : MonoBehaviour
     {
         isBeingDragged = true;
         waitingForMouseRelease = false;
-        WeaponUiManager.Instance.currentlyDragging = this;
+        // WeaponUiManager.Instance.currentlyDragging = this;
         // Disable colliders to prevent interaction with PulseOnHover's
         // OnMouseEnter and OnMouseExit while dragging.
         SetCollidersEnabled(false);

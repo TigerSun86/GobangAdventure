@@ -4,7 +4,7 @@ public class WeaponUiManager : MonoBehaviour
 {
     public static WeaponUiManager Instance;
 
-    [AssignedInCode] public Draggable currentlyDragging;
+    [AssignedInCode] public WeaponSuit currentlyDragging;
     [AssignedInCode] public PulseOnHover currentHoverTarget;
 
     private void Awake()
