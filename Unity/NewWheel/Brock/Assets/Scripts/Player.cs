@@ -12,26 +12,26 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject[] weaponSuits;
     [SerializeField] float speed = 5f;
     [SerializeField] ItemDb itemDb;
-    [SerializeField] Dictionary<int, ShopItem> idToWeapon;
     [SerializeField] bool isShopping = false;
 
     private GameObject[] weaponSlots;
 
     public void InitializeWeapons()
     {
-        UpdateIdToWeapon();
+        itemDb.UpdateSlotIdToShopItem();
         DestroyAllWeapons();
         weaponSuits = new GameObject[weaponSlots.Length];
         for (int id = 0; id < weaponSlots.Length; id++)
         {
-            if (!idToWeapon.ContainsKey(id))
+            ShopItem shopItem = itemDb.GetShopItemBySlotId(id);
+            if (shopItem == null)
             {
                 continue;
             }
+
             Vector3 position = weaponSlots[id].transform.position;
             weaponSuits[id] = Instantiate(weaponSuitPrefab, position, Quaternion.identity, weaponSlots[id].transform);
             weaponSuits[id].tag = "PlayerWeapon";
-            ShopItem shopItem = idToWeapon[id];
             weaponSuits[id].GetComponent<WeaponSuit>().Initialize(shopItem.weaponConfig);
         }
     }
@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
             Debug.LogError("Invalid source slot ID: " + targetId);
             return;
         }
-        SwapIdToWeapon(sourceId, targetId);
+        itemDb.SwapSlotIdToShopItem(sourceId, targetId);
         SwapWeaponSuit(sourceSlot, targetSlot);
     }
 
@@ -68,7 +68,6 @@ public class Player : MonoBehaviour
             rb = GetComponent<Rigidbody2D>();
         }
 
-        idToWeapon = new Dictionary<int, ShopItem>();
         InitializeWeaponSlots();
         InitializeWeapons();
     }
@@ -101,27 +100,6 @@ public class Player : MonoBehaviour
         {
             Vector3 position = (Vector2)transform.position + offsets[i];
             weaponSlots[i] = Instantiate(weaponSlotPrefab, position, Quaternion.identity, this.transform);
-        }
-    }
-
-    private void UpdateIdToWeapon()
-    {
-        int id = 0;
-        foreach (string itemName in itemDb.playerItemNames)
-        {
-            ShopItem shopItem = itemDb.GetShopItem(itemName);
-            if (idToWeapon.ContainsValue(shopItem))
-            {
-                continue;
-            }
-
-            while (idToWeapon.ContainsKey(id))
-            {
-                id++;
-            }
-
-            idToWeapon[id] = shopItem;
-            id++;
         }
     }
 
@@ -168,26 +146,6 @@ public class Player : MonoBehaviour
             }
         }
         return -1; // Return -1 if the slot is not found
-    }
-
-    private void SwapIdToWeapon(int sourceId, int targetId)
-    {
-        if (idToWeapon.ContainsKey(sourceId) && idToWeapon.ContainsKey(targetId))
-        {
-            ShopItem temp = idToWeapon[sourceId];
-            idToWeapon[sourceId] = idToWeapon[targetId];
-            idToWeapon[targetId] = temp;
-        }
-        else if (idToWeapon.ContainsKey(sourceId))
-        {
-            idToWeapon[targetId] = idToWeapon[sourceId];
-            idToWeapon.Remove(sourceId);
-        }
-        else if (idToWeapon.ContainsKey(targetId))
-        {
-            idToWeapon[sourceId] = idToWeapon[targetId];
-            idToWeapon.Remove(targetId);
-        }
     }
 
     private void SwapWeaponSuit(GameObject sourceSlot, GameObject targetSlot)
