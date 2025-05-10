@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -67,13 +68,29 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         Button moveHereButton = dragTargetMenuInstance.transform.Find("Panel").Find("MoveHereButton").GetComponent<Button>();
         if (moveHereButton != null)
         {
-            moveHereButton.onClick.AddListener(() =>
+            if (HasWeaponSuit())
             {
-                WeaponUiManager.Instance.UnhideSelectables();
-                MoveHere();
-                Destroy(dragTargetMenuInstance);
-            });
+                moveHereButton.GetComponentInChildren<TextMeshProUGUI>().text = "Combine";
+                moveHereButton.onClick.AddListener(() =>
+                {
+                });
+            }
+            else
+            {
+                moveHereButton.GetComponentInChildren<TextMeshProUGUI>().text = "Move Here";
+                moveHereButton.onClick.AddListener(() =>
+                {
+                    WeaponUiManager.Instance.UnhideSelectables();
+                    MoveHere();
+                    Destroy(dragTargetMenuInstance);
+                });
+            }
         }
+    }
+
+    private bool HasWeaponSuit()
+    {
+        return GetWeaponSlot().GetWeaponSuit() != null;
     }
 
     private WeaponSlot GetWeaponSlot()
