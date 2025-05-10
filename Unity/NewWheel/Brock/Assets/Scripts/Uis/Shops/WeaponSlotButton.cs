@@ -51,7 +51,12 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         Button moveButton = dragSourceMenuInstance.transform.Find("Panel").Find("MoveButton").GetComponent<Button>();
         if (moveButton != null)
         {
-            moveButton.onClick.AddListener(() => { StartDragging(); Destroy(dragSourceMenuInstance); });
+            moveButton.onClick.AddListener(() =>
+            {
+                WeaponUiManager.Instance.UnhideSelectables();
+                StartDragging();
+                Destroy(dragSourceMenuInstance);
+            });
         }
     }
 
@@ -62,7 +67,12 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         Button moveHereButton = dragTargetMenuInstance.transform.Find("Panel").Find("MoveHereButton").GetComponent<Button>();
         if (moveHereButton != null)
         {
-            moveHereButton.onClick.AddListener(() => { MoveHere(); Destroy(dragTargetMenuInstance); });
+            moveHereButton.onClick.AddListener(() =>
+            {
+                WeaponUiManager.Instance.UnhideSelectables();
+                MoveHere();
+                Destroy(dragTargetMenuInstance);
+            });
         }
     }
 
@@ -112,12 +122,22 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
             {
                 button.interactable = enable;
             }
+
+            if (enable)
+            {
+                WeaponUiManager.Instance.HideAllOtherSelectables(dragSourceMenuInstance.GetComponentsInChildren<Button>());
+            }
         }
         else if (dragTargetMenuInstance != null)
         {
             foreach (Button button in dragTargetMenuInstance.GetComponentsInChildren<Button>())
             {
                 button.interactable = enable;
+            }
+
+            if (enable)
+            {
+                WeaponUiManager.Instance.HideAllOtherSelectables(dragTargetMenuInstance.GetComponentsInChildren<Button>());
             }
         }
     }

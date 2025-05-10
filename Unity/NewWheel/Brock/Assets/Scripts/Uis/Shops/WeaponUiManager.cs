@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WeaponUiManager : MonoBehaviour
 {
@@ -6,6 +9,42 @@ public class WeaponUiManager : MonoBehaviour
 
     [AssignedInCode] public WeaponSuit currentlyDragging;
     [AssignedInCode] public PulseOnHover currentHoverTarget;
+
+    private Selectable[] allSelectable;
+
+    public void HideAllOtherSelectables(Selectable[] selectables)
+    {
+        allSelectable = Selectable.allSelectablesArray;
+
+        foreach (Selectable selectable in allSelectable)
+        {
+            selectable.interactable = false;
+        }
+
+        foreach (Selectable selectable in selectables)
+        {
+            selectable.interactable = true;
+        }
+    }
+
+    public void UnhideSelectables()
+    {
+        if (allSelectable == null)
+        {
+            Debug.LogError("Should run HideAllOtherSelectables before this method");
+            return;
+        }
+
+        foreach (Selectable selectable in allSelectable)
+        {
+            if (selectable != null && !selectable.IsDestroyed())
+            {
+                selectable.interactable = true;
+            }
+        }
+
+        allSelectable = null;
+    }
 
     private void Awake()
     {
