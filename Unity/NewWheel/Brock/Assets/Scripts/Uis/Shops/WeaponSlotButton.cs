@@ -118,26 +118,30 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
     {
         if (dragSourceMenuInstance != null)
         {
-            foreach (Button button in dragSourceMenuInstance.GetComponentsInChildren<Button>())
-            {
-                button.interactable = enable;
-            }
+            EnableMenu(enable, dragSourceMenuInstance);
 
-            if (enable)
-            {
-                WeaponUiManager.Instance.HideAllOtherSelectables(dragSourceMenuInstance.GetComponentsInChildren<Button>());
-            }
         }
         else if (dragTargetMenuInstance != null)
         {
-            foreach (Button button in dragTargetMenuInstance.GetComponentsInChildren<Button>())
-            {
-                button.interactable = enable;
-            }
+            EnableMenu(enable, dragTargetMenuInstance);
+        }
+    }
 
-            if (enable)
+    private void EnableMenu(bool enable, GameObject menu)
+    {
+        foreach (Button button in menu.GetComponentsInChildren<Button>())
+        {
+            button.interactable = enable;
+        }
+        if (enable)
+        {
+            WeaponUiManager.Instance.HideAllOtherSelectables(menu.GetComponentsInChildren<Button>());
+            // Select the first button.
+            Button firstButton = menu.GetComponentsInChildren<Button>().FirstOrDefault();
+            if (firstButton != null)
             {
-                WeaponUiManager.Instance.HideAllOtherSelectables(dragTargetMenuInstance.GetComponentsInChildren<Button>());
+                EventSystem.current.SetSelectedGameObject(null);
+                EventSystem.current.SetSelectedGameObject(firstButton.gameObject);
             }
         }
     }
