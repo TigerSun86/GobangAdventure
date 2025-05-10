@@ -28,7 +28,7 @@ public class Draggable : MonoBehaviour
                 SetCollidersEnabled(true);
 
                 Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-                player.MoveWeapon(GetComponent<WeaponSuit>(), hoverTarget.gameObject);
+                player.SwapWeapon(GetComponent<WeaponSuit>(), hoverTarget.gameObject);
 
                 hoverTarget.StopPulse();
             }

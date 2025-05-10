@@ -68,23 +68,23 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         Button moveHereButton = dragTargetMenuInstance.transform.Find("Panel").Find("MoveHereButton").GetComponent<Button>();
         if (moveHereButton != null)
         {
+            string buttonText;
             if (HasWeaponSuit())
             {
-                moveHereButton.GetComponentInChildren<TextMeshProUGUI>().text = "Combine";
-                moveHereButton.onClick.AddListener(() =>
-                {
-                });
+                buttonText = "Swap";
             }
             else
             {
-                moveHereButton.GetComponentInChildren<TextMeshProUGUI>().text = "Move Here";
-                moveHereButton.onClick.AddListener(() =>
-                {
-                    WeaponUiManager.Instance.UnhideSelectables();
-                    MoveHere();
-                    Destroy(dragTargetMenuInstance);
-                });
+                buttonText = "Move Here";
             }
+
+            moveHereButton.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
+            moveHereButton.onClick.AddListener(() =>
+            {
+                WeaponUiManager.Instance.UnhideSelectables();
+                SwapHere();
+                Destroy(dragTargetMenuInstance);
+            });
         }
     }
 
@@ -109,7 +109,7 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         WeaponUiManager.Instance.currentlyDragging = GetWeaponSlot().GetWeaponSuit();
     }
 
-    private void MoveHere()
+    private void SwapHere()
     {
         if (WeaponUiManager.Instance.currentlyDragging == null)
         {
@@ -117,7 +117,7 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         }
 
         Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        player.MoveWeapon(WeaponUiManager.Instance.currentlyDragging, GetWeaponSlot().gameObject);
+        player.SwapWeapon(WeaponUiManager.Instance.currentlyDragging, GetWeaponSlot().gameObject);
         WeaponUiManager.Instance.currentlyDragging = null;
     }
 

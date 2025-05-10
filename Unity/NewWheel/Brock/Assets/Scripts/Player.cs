@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void MoveWeapon(WeaponSuit weapon, GameObject targetSlot)
+    public void SwapWeapon(WeaponSuit weapon, GameObject targetSlot)
     {
         if (weapon == null || targetSlot == null)
         {
