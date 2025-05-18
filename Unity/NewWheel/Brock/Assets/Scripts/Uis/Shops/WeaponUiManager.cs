@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +10,18 @@ public class WeaponUiManager : MonoBehaviour
 
     private Selectable[] allSelectable;
 
+    public bool IsHiding { get; private set; }
+
     public void HideAllOtherSelectables(Selectable[] selectables)
     {
+        if (IsHiding)
+        {
+            Debug.LogError("Already hiding selectables");
+            return;
+        }
+
+        IsHiding = true;
+
         allSelectable = Selectable.allSelectablesArray;
 
         foreach (Selectable selectable in allSelectable)
@@ -29,6 +37,14 @@ public class WeaponUiManager : MonoBehaviour
 
     public void UnhideSelectables()
     {
+        if (!IsHiding)
+        {
+            Debug.LogError("Not hiding selectables");
+            return;
+        }
+
+        IsHiding = false;
+
         if (allSelectable == null)
         {
             Debug.LogError("Should run HideAllOtherSelectables before this method");
