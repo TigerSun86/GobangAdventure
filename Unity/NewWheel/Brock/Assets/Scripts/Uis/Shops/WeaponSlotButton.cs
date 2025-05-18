@@ -27,11 +27,11 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         // Destroy the menu if the menu hasn't been enabled yet.
         if (dragSourceMenuInstance != null && !dragSourceMenuInstance.IsEnabled)
         {
-            Destroy(dragSourceMenuInstance);
+            dragSourceMenuInstance.Destroy();
         }
         if (dragTargetMenuInstance != null && !dragTargetMenuInstance.IsEnabled)
         {
-            Destroy(dragTargetMenuInstance);
+            dragTargetMenuInstance.Destroy();
         }
     }
 
