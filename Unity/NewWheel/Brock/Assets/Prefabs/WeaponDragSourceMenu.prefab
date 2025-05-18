@@ -236,8 +236,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 547f3a34c8afaf14f86cc0b56e9a961b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSlot: {fileID: 0}
-  moveButton: {fileID: 6852037124343960440}
 --- !u!1 &1469320554354219766
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,6 +624,7 @@ GameObject:
   - component: {fileID: 4776823548472118304}
   - component: {fileID: 775709356593740498}
   - component: {fileID: 6852037124343960440}
+  - component: {fileID: 5581859241187498425}
   m_Layer: 5
   m_Name: MoveButton
   m_TagString: Untagged
@@ -734,4 +733,54 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 775709356593740498}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5581859241187498425}
+        m_TargetAssemblyTypeName: WeaponStartDragButton, Assembly-CSharp
+        m_MethodName: StartDrag
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7649262028158133849}
+        m_TargetAssemblyTypeName: WeaponOperationMenu, Assembly-CSharp
+        m_MethodName: UndoHideOtherMenus
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7649262028158133849}
+        m_TargetAssemblyTypeName: WeaponOperationMenu, Assembly-CSharp
+        m_MethodName: Destroy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5581859241187498425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8667637214502911008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b9d8df7a6390b94fada7cb37aa1259d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSlot: {fileID: 0}
+  button: {fileID: 6852037124343960440}

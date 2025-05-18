@@ -6,8 +6,8 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     [SerializeField, Required] public GameObject dragSourceMenuPrefab;
     [SerializeField, Required] public GameObject dragTargetMenuPrefab;
-    private DragSourceMenu dragSourceMenuInstance;
-    private DragTargetMenu dragTargetMenuInstance;
+    private WeaponOperationMenu dragSourceMenuInstance;
+    private WeaponOperationMenu dragTargetMenuInstance;
 
     public void OnSelect(BaseEventData eventData)
     {
@@ -42,14 +42,14 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
 
     private void CreateDragSourceMenu()
     {
-        dragSourceMenuInstance = Instantiate(dragSourceMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<DragSourceMenu>();
-        dragSourceMenuInstance.weaponSlot = GetWeaponSlot();
+        dragSourceMenuInstance = Instantiate(dragSourceMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<WeaponOperationMenu>();
+        dragSourceMenuInstance.GetComponentInChildren<WeaponStartDragButton>().weaponSlot = GetWeaponSlot();
     }
 
     private void CreateDragTargetMenu()
     {
-        dragTargetMenuInstance = Instantiate(dragTargetMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<DragTargetMenu>();
-        dragTargetMenuInstance.weaponSlot = GetWeaponSlot();
+        dragTargetMenuInstance = Instantiate(dragTargetMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<WeaponOperationMenu>();
+        dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragButton>().weaponSlot = GetWeaponSlot();
     }
 
     private WeaponSlot GetWeaponSlot()
