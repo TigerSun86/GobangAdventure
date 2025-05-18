@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,8 +6,8 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     [SerializeField, Required] public GameObject dragSourceMenuPrefab;
     [SerializeField, Required] public GameObject dragTargetMenuPrefab;
-    private GameObject dragSourceMenuInstance;
-    private GameObject dragTargetMenuInstance;
+    private DragSourceMenu dragSourceMenuInstance;
+    private DragTargetMenu dragTargetMenuInstance;
 
     public void OnSelect(BaseEventData eventData)
     {
@@ -28,13 +25,11 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
     public void OnDeselect(BaseEventData eventData)
     {
         // Destroy the menu if the menu hasn't been enabled yet.
-        if (dragSourceMenuInstance != null
-            && dragSourceMenuInstance.GetComponentsInChildren<Button>().All(b => !b.IsInteractable()))
+        if (dragSourceMenuInstance != null && !dragSourceMenuInstance.IsEnabled)
         {
             Destroy(dragSourceMenuInstance);
         }
-        if (dragTargetMenuInstance != null
-            && dragTargetMenuInstance.GetComponentsInChildren<Button>().All(b => !b.IsInteractable()))
+        if (dragTargetMenuInstance != null && !dragTargetMenuInstance.IsEnabled)
         {
             Destroy(dragTargetMenuInstance);
         }
@@ -47,50 +42,14 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
 
     private void CreateDragSourceMenu()
     {
-        dragSourceMenuInstance = Instantiate(dragSourceMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent);
-        DisableMenu();
-        Button moveButton = dragSourceMenuInstance.transform.Find("Panel").Find("MoveButton").GetComponent<Button>();
-        if (moveButton != null)
-        {
-            moveButton.onClick.AddListener(() =>
-            {
-                WeaponUiManager.Instance.UnhideSelectables();
-                StartDragging();
-                Destroy(dragSourceMenuInstance);
-            });
-        }
+        dragSourceMenuInstance = Instantiate(dragSourceMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<DragSourceMenu>();
+        dragSourceMenuInstance.weaponSlot = GetWeaponSlot();
     }
 
     private void CreateDragTargetMenu()
     {
-        dragTargetMenuInstance = Instantiate(dragTargetMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent);
-        DisableMenu();
-        Button moveHereButton = dragTargetMenuInstance.transform.Find("Panel").Find("MoveHereButton").GetComponent<Button>();
-        if (moveHereButton != null)
-        {
-            string buttonText;
-            if (HasWeaponSuit())
-            {
-                buttonText = "Swap";
-            }
-            else
-            {
-                buttonText = "Move Here";
-            }
-
-            moveHereButton.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
-            moveHereButton.onClick.AddListener(() =>
-            {
-                WeaponUiManager.Instance.UnhideSelectables();
-                SwapHere();
-                Destroy(dragTargetMenuInstance);
-            });
-        }
-    }
-
-    private bool HasWeaponSuit()
-    {
-        return GetWeaponSlot().GetWeaponSuit() != null;
+        dragTargetMenuInstance = Instantiate(dragTargetMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<DragTargetMenu>();
+        dragTargetMenuInstance.weaponSlot = GetWeaponSlot();
     }
 
     private WeaponSlot GetWeaponSlot()
@@ -99,67 +58,15 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         return transform.parent.GetComponentInParent<WeaponSlot>();
     }
 
-    private void StartDragging()
-    {
-        if (WeaponUiManager.Instance.currentlyDragging != null)
-        {
-            throw new Exception("Already dragging a weapon.");
-        }
-
-        WeaponUiManager.Instance.currentlyDragging = GetWeaponSlot().GetWeaponSuit();
-    }
-
-    private void SwapHere()
-    {
-        if (WeaponUiManager.Instance.currentlyDragging == null)
-        {
-            throw new Exception("Should be dragging a weapon.");
-        }
-
-        Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        player.SwapWeapon(WeaponUiManager.Instance.currentlyDragging, GetWeaponSlot().gameObject);
-        WeaponUiManager.Instance.currentlyDragging = null;
-    }
-
     private void EnableMenu()
-    {
-        EnableMenu(true);
-    }
-
-    private void DisableMenu()
-    {
-        EnableMenu(false);
-    }
-
-    private void EnableMenu(bool enable)
     {
         if (dragSourceMenuInstance != null)
         {
-            EnableMenu(enable, dragSourceMenuInstance);
-
+            dragSourceMenuInstance.Enable();
         }
         else if (dragTargetMenuInstance != null)
         {
-            EnableMenu(enable, dragTargetMenuInstance);
-        }
-    }
-
-    private void EnableMenu(bool enable, GameObject menu)
-    {
-        foreach (Button button in menu.GetComponentsInChildren<Button>())
-        {
-            button.interactable = enable;
-        }
-        if (enable)
-        {
-            WeaponUiManager.Instance.HideAllOtherSelectables(menu.GetComponentsInChildren<Button>());
-            // Select the first button.
-            Button firstButton = menu.GetComponentsInChildren<Button>().FirstOrDefault();
-            if (firstButton != null)
-            {
-                EventSystem.current.SetSelectedGameObject(null);
-                EventSystem.current.SetSelectedGameObject(firstButton.gameObject);
-            }
+            dragTargetMenuInstance.Enable();
         }
     }
 }

@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 6333869234394134450}
   - component: {fileID: 4308026093801749461}
   - component: {fileID: 2903780172945544690}
+  - component: {fileID: 7649262028158133849}
   m_Layer: 5
   m_Name: WeaponDragSourceMenu
   m_TagString: Untagged
@@ -223,6 +224,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7649262028158133849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1206984521089701763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 547f3a34c8afaf14f86cc0b56e9a961b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSlot: {fileID: 0}
+  moveButton: {fileID: 6852037124343960440}
 --- !u!1 &1469320554354219766
 GameObject:
   m_ObjectHideFlags: 0
