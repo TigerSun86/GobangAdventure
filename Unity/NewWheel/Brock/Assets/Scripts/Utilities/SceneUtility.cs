@@ -11,4 +11,9 @@ public static class SceneUtility
     {
         SceneManager.LoadScene("Wave");
     }
+
+    public static bool IsWaveSceneActive()
+    {
+        return SceneManager.GetActiveScene().name == "Wave";
+    }
 }

@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WaveManager : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI timerText;
-    [SerializeField] TextMeshProUGUI waveText;
     [SerializeField] int maxWaveTime;
     [SerializeField] ItemDb itemDb;
 
@@ -14,7 +13,7 @@ public class WaveManager : MonoBehaviour
 
     public bool IsWaveRunning { get; private set; }
 
-    public static int currentWave = 0;
+    public int currentWave = 0;
 
     public int currentWaveTime = 0;
 
@@ -32,20 +31,28 @@ public class WaveManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+            IsWaveRunning = SceneUtility.IsWaveSceneActive();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject); // Prevent duplicates
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        StartNewWave();
+        if (SceneUtility.IsWaveSceneActive())
+        {
+            StartNewWave();
+        }
     }
 
     private void StartNewWave()
     {
         StopAllCoroutines();
         currentWave++;
-        waveText.text = "Wave: " + currentWave;
         currentWaveTime = maxWaveTime;
         IsWaveRunning = true;
         StartCoroutine(WaveTimer());
@@ -55,12 +62,10 @@ public class WaveManager : MonoBehaviour
     {
         while (currentWaveTime > 0)
         {
-            timerText.text = currentWaveTime.ToString();
             yield return new WaitForSeconds(1);
             currentWaveTime--;
         }
 
-        timerText.text = "0";
         WaveCompleted();
     }
 

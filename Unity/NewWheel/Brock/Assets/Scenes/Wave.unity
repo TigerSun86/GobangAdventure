@@ -429,6 +429,7 @@ GameObject:
   - component: {fileID: 295759932}
   - component: {fileID: 295759934}
   - component: {fileID: 295759933}
+  - component: {fileID: 295759935}
   m_Layer: 5
   m_Name: WaveText
   m_TagString: Untagged
@@ -554,6 +555,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 295759931}
   m_CullTransparentMesh: 1
+--- !u!114 &295759935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 295759931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43912a3996ac4204b82adf931a3e6d9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 295759933}
 --- !u!1 &306139585
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,7 +710,6 @@ MonoBehaviour:
   weaponSuits: []
   speed: 5
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
-  isShopping: 0
 --- !u!50 &480696844
 Rigidbody2D:
   serializedVersion: 5
@@ -1202,6 +1215,7 @@ GameObject:
   - component: {fileID: 1185900174}
   - component: {fileID: 1185900176}
   - component: {fileID: 1185900175}
+  - component: {fileID: 1185900177}
   m_Layer: 5
   m_Name: TimerText
   m_TagString: Untagged
@@ -1327,6 +1341,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1185900173}
   m_CullTransparentMesh: 1
+--- !u!114 &1185900177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185900173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f664d9ea40498441bb4c3964c90e748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 1185900175}
 --- !u!1 &1328440671
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,10 +1560,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9e6ffce185aef4885fdaa15b23320d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timerText: {fileID: 1185900175}
-  waveText: {fileID: 295759933}
   maxWaveTime: 60
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
+  currentWave: 0
   currentWaveTime: 0
 --- !u!4 &1642601758
 Transform:

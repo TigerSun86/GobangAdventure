@@ -12,7 +12,6 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject[] weaponSuits;
     [SerializeField] float speed = 5f;
     [SerializeField] ItemDb itemDb;
-    [SerializeField] bool isShopping = false;
 
     private GameObject[] weaponSlots;
 
@@ -61,9 +60,9 @@ public class Player : MonoBehaviour
         SwapWeaponSuit(sourceSlot, targetSlot);
     }
 
-    private void Awake()
+    private void Start()
     {
-        if (!isShopping)
+        if (WaveManager.Instance.IsWaveRunning)
         {
             rb = GetComponent<Rigidbody2D>();
         }
@@ -74,7 +73,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isShopping)
+        if (!WaveManager.Instance.IsWaveRunning)
         {
             return;
         }
