@@ -1,0 +1,7 @@
+﻿name,level,weaponBaseType,price,health,skill1,skill2,attackValue,attackCdTime,attackActionTime,attackRecoveryTime,attackRange,spritePath
+Basic Rock,1,ROCK,1,400,,,20,2,1,0.5,2,Sprites/Circle
+Basic Rock,2,ROCK,1,400,,,20,2,1,0.5,2,Sprites/Circle
+Basic Paper,1,PAPER,1,200,Heal1,,20,2,1,0.5,2,Sprites/Square
+Basic Paper,2,PAPER,1,200,Heal1,,20,2,1,0.5,2,Sprites/Square
+Basic Scissor,1,Scissor,1,300,,,20,2,1,0.5,2,Sprites/Triangle
+Basic Scissor,2,Scissor,1,300,,,20,2,1,0.5,2,Sprites/Triangle

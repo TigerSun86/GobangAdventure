@@ -5,6 +5,8 @@ public class SkillConfig : ScriptableObject
 {
     public string skillName;
 
+    public int level;
+
     public string description;
 
     public SkillType skillType;
