@@ -1531,6 +1531,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1557182526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1557182528}
+  - component: {fileID: 1557182527}
+  m_Layer: 0
+  m_Name: ConfigDb
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1557182527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557182526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99c82b2eb9f372549b39e650153bbc49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillConfigCsv: {fileID: 4900000, guid: e755ca29f290b9546bb9063b223ecb1f, type: 3}
+  weaponConfigCsv: {fileID: 4900000, guid: 9c1ed5aba3edad64797ac31a74c54628, type: 3}
+  skillConfigs: []
+  weaponConfigs: []
+--- !u!4 &1557182528
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557182526}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1642601756
 GameObject:
   m_ObjectHideFlags: 0
@@ -2019,3 +2067,4 @@ SceneRoots:
   - {fileID: 1549449239}
   - {fileID: 1642601758}
   - {fileID: 858159425}
+  - {fileID: 1557182528}
