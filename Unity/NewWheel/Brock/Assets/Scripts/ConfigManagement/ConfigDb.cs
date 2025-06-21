@@ -9,16 +9,10 @@ public class ConfigDb : MonoBehaviour
     [SerializeField, Required]
     TextAsset weaponConfigCsv;
 
-    // Just for debugging in Unity Editor.
-    public List<SkillConfig> skillConfigs;
-
-    // Just for debugging in Unity Editor.
-    public List<WeaponConfig2> weaponConfigs;
-
-    [AssignedInCode]
+    [SerializeField, AssignedInCode]
     public SkillConfigDb skillConfigDb;
 
-    [AssignedInCode]
+    [SerializeField, AssignedInCode]
     public WeaponConfigDb weaponConfigDb;
 
     public static ConfigDb Instance { get; private set; }
@@ -30,12 +24,12 @@ public class ConfigDb : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            this.skillConfigs = CsvLoader.LoadFromCSV(skillConfigCsv, new SkillConfigParser());
-            this.skillConfigDb = new SkillConfigDb(this.skillConfigs);
-            this.weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
-            this.weaponConfigDb = new WeaponConfigDb(this.weaponConfigs);
+            List<SkillConfig> skillConfigs = CsvLoader.LoadFromCSV(skillConfigCsv, new SkillConfigParser());
+            this.skillConfigDb = new SkillConfigDb(skillConfigs);
+            List<WeaponConfig2> weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
+            this.weaponConfigDb = new WeaponConfigDb(weaponConfigs);
 
-            Debug.Log($"Loaded {this.skillConfigs.Count} skills and {this.weaponConfigs.Count} weapons.");
+            Debug.Log($"Loaded {skillConfigs.Count} skills and {weaponConfigs.Count} weapons.");
         }
         else
         {

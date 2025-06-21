@@ -709,7 +709,6 @@ MonoBehaviour:
   weaponSuitPrefab: {fileID: 973336722079467576, guid: 35dca496204cf834f843098fdcd06f45, type: 3}
   weaponSuits: []
   speed: 5
-  itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
 --- !u!50 &480696844
 Rigidbody2D:
   serializedVersion: 5
@@ -1564,6 +1563,10 @@ MonoBehaviour:
   weaponConfigCsv: {fileID: 4900000, guid: 9c1ed5aba3edad64797ac31a74c54628, type: 3}
   skillConfigs: []
   weaponConfigs: []
+  weaponConfigDb:
+    weaponConfigMap:
+      m_keys: []
+      m_values: []
 --- !u!4 &1557182528
 Transform:
   m_ObjectHideFlags: 0
@@ -1609,7 +1612,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxWaveTime: 60
-  itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   moneyManager: {fileID: 0}
   currentWave: 0
   currentWaveTime: 0
@@ -1708,7 +1710,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 1668987207}
-  itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   moneyManager: {fileID: 0}
 --- !u!114 &1668987207
 MonoBehaviour:

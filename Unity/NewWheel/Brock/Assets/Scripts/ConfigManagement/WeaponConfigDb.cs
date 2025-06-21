@@ -1,13 +1,16 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class WeaponConfigDb
 {
-    private Dictionary<string, WeaponConfig2> weaponConfigMap;
+    [SerializeField]
+    private StringToWeaponConfigDictionary weaponConfigMap;
 
     public WeaponConfigDb(List<WeaponConfig2> weaponConfigs)
     {
-        this.weaponConfigMap = new Dictionary<string, WeaponConfig2>();
+        this.weaponConfigMap = new StringToWeaponConfigDictionary();
         foreach (WeaponConfig2 weapon in weaponConfigs)
         {
             string key = weapon.weaponName + weapon.level;

@@ -1,5 +1,6 @@
 using UnityEditor;
 
-[CustomPropertyDrawer(typeof(SkillIdToGameObjectDictionary))]
+[CustomPropertyDrawer(typeof(StringToSkillConfigDictionary))]
+[CustomPropertyDrawer(typeof(StringToWeaponConfigDictionary))]
 public class CustomSerializableDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer
 { }

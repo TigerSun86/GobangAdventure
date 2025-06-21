@@ -149,7 +149,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxWaveTime: 60
-  itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   moneyManager: {fileID: 0}
   currentWave: 0
   currentWaveTime: 0
@@ -362,7 +361,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab087cb93f0d4674eb45530fe2de0711, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   itemUiPrefab: {fileID: 3070152592146369352, guid: 675999831a357524386e2cde899254bf, type: 3}
   playerUi: {fileID: 470714295}
   moneyManager: {fileID: 0}
@@ -428,7 +426,6 @@ MonoBehaviour:
   weaponSuitPrefab: {fileID: 973336722079467576, guid: 35dca496204cf834f843098fdcd06f45, type: 3}
   weaponSuits: []
   speed: 5
-  itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
 --- !u!212 &470714296
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1131,8 +1128,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillConfigCsv: {fileID: 4900000, guid: e755ca29f290b9546bb9063b223ecb1f, type: 3}
   weaponConfigCsv: {fileID: 4900000, guid: 9c1ed5aba3edad64797ac31a74c54628, type: 3}
-  skillConfigs: []
-  weaponConfigs: []
+  skillConfigDb:
+    skillConfigMap:
+      m_keys: []
+      m_values: []
+  weaponConfigDb:
+    weaponConfigMap:
+      m_keys: []
+      m_values: []
 --- !u!4 &1752699909
 Transform:
   m_ObjectHideFlags: 0
@@ -1246,7 +1249,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 2098421703}
-  itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   moneyManager: {fileID: 0}
 --- !u!114 &2098421703
 MonoBehaviour:

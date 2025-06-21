@@ -1,13 +1,17 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class SkillConfigDb
 {
-    private Dictionary<string, SkillConfig> skillConfigMap;
+
+    [SerializeField]
+    private StringToSkillConfigDictionary skillConfigMap;
 
     public SkillConfigDb(List<SkillConfig> skillConfigs)
     {
-        this.skillConfigMap = new Dictionary<string, SkillConfig>();
+        this.skillConfigMap = new StringToSkillConfigDictionary();
         foreach (SkillConfig skill in skillConfigs)
         {
             string key = skill.skillName + skill.level;
