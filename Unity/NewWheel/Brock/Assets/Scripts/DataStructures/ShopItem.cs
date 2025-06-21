@@ -12,4 +12,6 @@ public class ShopItem : ScriptableObject
     public int price;
 
     public WeaponConfig weaponConfig;
+
+    public WeaponConfig2 weaponConfig2;
 }
