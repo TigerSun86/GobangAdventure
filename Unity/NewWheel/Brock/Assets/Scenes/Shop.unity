@@ -150,6 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxWaveTime: 60
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
+  moneyManager: {fileID: 0}
   currentWave: 0
   currentWaveTime: 0
 --- !u!4 &27079194
@@ -364,6 +365,7 @@ MonoBehaviour:
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
   itemUiPrefab: {fileID: 3070152592146369352, guid: 675999831a357524386e2cde899254bf, type: 3}
   playerUi: {fileID: 470714295}
+  moneyManager: {fileID: 0}
 --- !u!1 &470714291
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,6 +724,66 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &817164963
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 817164965}
+  - component: {fileID: 817164964}
+  m_Layer: 0
+  m_Name: MoneyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &817164964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817164963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c802997c76cc4a488e0cf2d1eeabd4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  countToBuyChangeEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 49971baf112fc0146917331ab232c370, type: 2}
+        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  countToBuy: 0
+--- !u!4 &817164965
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817164963}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1474628588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,6 +1247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 2098421703}
   itemDb: {fileID: 11400000, guid: f723cfe77d2ed8248a3568dbd8baef64, type: 2}
+  moneyManager: {fileID: 0}
 --- !u!114 &2098421703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1324,3 +1387,4 @@ SceneRoots:
   - {fileID: 27079194}
   - {fileID: 1752699909}
   - {fileID: 1629884866}
+  - {fileID: 817164965}

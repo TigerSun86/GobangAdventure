@@ -7,9 +7,12 @@ public class CountToBuyUi : MonoBehaviour
 
     [SerializeField] ItemDb itemDb;
 
+    [SerializeField, AssignedInCode]
+    MoneyManager moneyManager;
+
     public void SetCount()
     {
-        SetCount(itemDb.CountToBuy);
+        SetCount(this.moneyManager.CountToBuy);
     }
 
     private void SetCount(int count)
@@ -19,6 +22,7 @@ public class CountToBuyUi : MonoBehaviour
 
     private void Start()
     {
+        this.moneyManager = MoneyManager.Instance;
         SetCount();
     }
 }

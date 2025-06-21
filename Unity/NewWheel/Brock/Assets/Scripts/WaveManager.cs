@@ -9,6 +9,9 @@ public class WaveManager : MonoBehaviour
     [SerializeField] int maxWaveTime;
     [SerializeField] ItemDb itemDb;
 
+    [SerializeField, AssignedInCode]
+    private MoneyManager moneyManager;
+
     public static WaveManager Instance { get; private set; }
 
     public bool IsWaveRunning { get; private set; }
@@ -22,7 +25,11 @@ public class WaveManager : MonoBehaviour
         IsWaveRunning = false;
         EnemyManager.Instance.DestroyAllEnemies();
         StopAllCoroutines();
-        this.itemDb.IncreaseCountToBuy();
+        if (this.moneyManager == null)
+        {
+            this.moneyManager = MoneyManager.Instance;
+        }
+        this.moneyManager.IncreaseCountToBuy();
         SceneUtility.LoadShopScene();
     }
 

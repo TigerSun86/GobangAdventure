@@ -6,10 +6,14 @@ public class ShopUi : MonoBehaviour
     [SerializeField] GameObject itemUiPrefab;
     [SerializeField] Player playerUi;
 
+    [SerializeField, AssignedInCode]
+    private MoneyManager moneyManager;
+
     private PlayerShopItemManager playerShopItemManager;
 
     void Start()
     {
+        this.moneyManager = MoneyManager.Instance;
         this.playerShopItemManager = PlayerShopItemManager.Instance;
         this.playerShopItemManager.InitializeIfNeeded();
 
@@ -49,8 +53,8 @@ public class ShopUi : MonoBehaviour
         }
 
         playerUi.InitializeWeapons();
-        itemDb.DecreaseCountToBuy();
-        if (itemDb.CountToBuy > 0)
+        this.moneyManager.DecreaseCountToBuy();
+        if (this.moneyManager.CountToBuy > 0)
         {
             foreach (ItemUi itemUi in GetComponentsInChildren<ItemUi>())
             {
