@@ -11,7 +11,6 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject weaponSuitPrefab;
     [SerializeField] GameObject[] weaponSuits;
     [SerializeField] float speed = 5f;
-    [SerializeField] ItemDb itemDb;
 
     private GameObject[] weaponSlots;
 

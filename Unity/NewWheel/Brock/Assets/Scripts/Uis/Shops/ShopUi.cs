@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class ShopUi : MonoBehaviour
 {
-    [SerializeField] ItemDb itemDb;
     [SerializeField] GameObject itemUiPrefab;
     [SerializeField] Player playerUi;
 

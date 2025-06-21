@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class WaveManager : MonoBehaviour
 {
     [SerializeField] int maxWaveTime;
-    [SerializeField] ItemDb itemDb;
 
     [SerializeField, AssignedInCode]
     private MoneyManager moneyManager;

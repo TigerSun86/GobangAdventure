@@ -5,8 +5,6 @@ public class CountToBuyUi : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI text;
 
-    [SerializeField] ItemDb itemDb;
-
     [SerializeField, AssignedInCode]
     MoneyManager moneyManager;
 
