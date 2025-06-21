@@ -45,7 +45,7 @@ public class ShopItemDb
     {
         ShopItem shopItem = ScriptableObject.CreateInstance<ShopItem>();
         shopItem.image = weaponConfig.sprite;
-        shopItem.displayName = $"{weaponConfig.weaponName} {weaponConfig.level}";
+        shopItem.displayName = weaponConfig.GetId();
         shopItem.level = weaponConfig.level;
         shopItem.price = weaponConfig.price;
         shopItem.weaponConfig2 = weaponConfig;

@@ -23,6 +23,11 @@ public class WeaponConfig2
 
     public Sprite sprite;
 
+    public string GetId()
+    {
+        return $"{weaponName} {level}";
+    }
+
     public SkillConfig[] GetSkills()
     {
         List<SkillConfig> skills = new List<SkillConfig>

@@ -13,7 +13,7 @@ public class WeaponConfigDb
         this.weaponConfigMap = new StringToWeaponConfigDictionary();
         foreach (WeaponConfig2 weapon in weaponConfigs)
         {
-            string key = weapon.weaponName + weapon.level;
+            string key = weapon.GetId();
             if (this.weaponConfigMap.ContainsKey(key))
             {
                 Debug.LogWarning($"Duplicate weapon config found: {key}. Skipping.");
@@ -22,11 +22,6 @@ public class WeaponConfigDb
 
             this.weaponConfigMap.Add(key, weapon);
         }
-    }
-
-    public WeaponConfig2 Get(string name, int level)
-    {
-        return Get(name + level);
     }
 
     public WeaponConfig2 Get(string id)
