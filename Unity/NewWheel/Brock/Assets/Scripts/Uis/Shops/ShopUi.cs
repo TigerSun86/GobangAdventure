@@ -6,8 +6,13 @@ public class ShopUi : MonoBehaviour
     [SerializeField] GameObject itemUiPrefab;
     [SerializeField] Player playerUi;
 
-    void Awake()
+    private PlayerShopItemManager playerShopItemManager;
+
+    void Start()
     {
+        this.playerShopItemManager = PlayerShopItemManager.Instance;
+        this.playerShopItemManager.InitializeIfNeeded();
+
         //Fill the shop's UI list with items
         GenerateShopItemsUI();
     }
@@ -18,19 +23,18 @@ public class ShopUi : MonoBehaviour
 
         itemUi.SetImage(item.image);
         itemUi.SetName(item.displayName);
-        itemUi.SetCategory(item.level, item.weaponConfig.weaponBaseType.ToString());
-        itemUi.SetSkills(item.weaponConfig.skills);
+        itemUi.SetCategory(item.level, item.weaponConfig2.weaponBaseType.ToString());
+        itemUi.SetSkills(item.weaponConfig2.GetSkills());
         itemUi.SetPrice(item.price);
 
-        itemUi.OnItemPurchase(item.name, OnItemPurchased);
+        itemUi.OnItemPurchase(item.displayName, OnItemPurchased);
     }
 
     void GenerateShopItemsUI()
     {
         for (int i = 0; i < 4; i++)
         {
-            int randomIndex = Random.Range(0, itemDb.shopItems.Length);
-            ShopItem item = itemDb.shopItems[randomIndex];
+            ShopItem item = this.playerShopItemManager.GetShopItemDb().GetRandomShopItem();
             ItemUi itemUi = Instantiate(itemUiPrefab, transform).GetComponent<ItemUi>();
             SetItemUi(itemUi, item);
         }
@@ -38,7 +42,12 @@ public class ShopUi : MonoBehaviour
 
     void OnItemPurchased(string itemName)
     {
-        itemDb.playerItemNames.Add(itemName);
+        if (!this.playerShopItemManager.TryAdd(itemName))
+        {
+            // Weapon slots are full.
+            return;
+        }
+
         playerUi.InitializeWeapons();
         itemDb.DecreaseCountToBuy();
         if (itemDb.CountToBuy > 0)

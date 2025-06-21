@@ -1,9 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShopItemDb : MonoBehaviour
+public class ShopItemDb
 {
-    [SerializeField, AssignedInCode] public List<ShopItem> shopItems;
+    private List<ShopItem> shopItems;
+
+    public ShopItemDb()
+    {
+        this.shopItems = new List<ShopItem>();
+        foreach (WeaponConfig2 weaponConfig in ConfigDb.Instance.weaponConfigDb.GetAll())
+        {
+            ShopItem shopItem = WeaponConfigToShopItem(weaponConfig);
+            this.shopItems.Add(shopItem);
+        }
+    }
 
     public ShopItem GetShopItem(string itemName)
     {
@@ -19,14 +29,16 @@ public class ShopItemDb : MonoBehaviour
         return null;
     }
 
-    private void Start()
+    public ShopItem GetRandomShopItem()
     {
-        this.shopItems = new List<ShopItem>();
-        foreach (WeaponConfig2 weaponConfig in ConfigDb.Instance.weaponConfigDb.GetAll())
+        if (shopItems.Count == 0)
         {
-            ShopItem shopItem = WeaponConfigToShopItem(weaponConfig);
-            this.shopItems.Add(shopItem);
+            Debug.LogError("No shop items available.");
+            return null;
         }
+
+        int randomIndex = Random.Range(0, shopItems.Count);
+        return shopItems[randomIndex];
     }
 
     private ShopItem WeaponConfigToShopItem(WeaponConfig2 weaponConfig)

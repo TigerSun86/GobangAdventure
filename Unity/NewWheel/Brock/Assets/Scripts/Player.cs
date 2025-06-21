@@ -15,14 +15,15 @@ public class Player : MonoBehaviour
 
     private GameObject[] weaponSlots;
 
+    private PlayerShopItemManager playerShopItemManager;
+
     public void InitializeWeapons()
     {
-        itemDb.UpdateSlotIdToShopItem();
         DestroyAllWeapons();
         weaponSuits = new GameObject[weaponSlots.Length];
         for (int id = 0; id < weaponSlots.Length; id++)
         {
-            ShopItem shopItem = itemDb.GetShopItemBySlotId(id);
+            ShopItem shopItem = this.playerShopItemManager.Get(id);
             if (shopItem == null)
             {
                 continue;
@@ -56,7 +57,7 @@ public class Player : MonoBehaviour
             Debug.LogError("Invalid source slot ID: " + targetId);
             return;
         }
-        itemDb.SwapSlotIdToShopItem(sourceId, targetId);
+        this.playerShopItemManager.Swap(sourceId, targetId);
         SwapWeaponSuit(sourceSlot, targetSlot);
     }
 
@@ -68,6 +69,11 @@ public class Player : MonoBehaviour
         }
 
         InitializeWeaponSlots();
+
+        this.playerShopItemManager = PlayerShopItemManager.Instance;
+        this.playerShopItemManager.InitializeIfNeeded();
+        this.playerShopItemManager.SetMaxStorage(this.weaponSlots.Length);
+
         InitializeWeapons();
     }
 
