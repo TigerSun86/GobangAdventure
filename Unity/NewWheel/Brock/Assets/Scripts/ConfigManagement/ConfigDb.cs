@@ -21,13 +21,25 @@ public class ConfigDb : MonoBehaviour
     [AssignedInCode]
     public WeaponConfigDb weaponConfigDb;
 
+    public static ConfigDb Instance { get; private set; }
+
     private void Awake()
     {
-        this.skillConfigs = CsvLoader.LoadFromCSV(skillConfigCsv, new SkillConfigParser());
-        this.skillConfigDb = new SkillConfigDb(this.skillConfigs);
-        this.weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
-        this.weaponConfigDb = new WeaponConfigDb(this.weaponConfigs);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
 
-        Debug.Log($"Loaded {this.skillConfigs.Count} skills and {this.weaponConfigs.Count} weapons.");
+            this.skillConfigs = CsvLoader.LoadFromCSV(skillConfigCsv, new SkillConfigParser());
+            this.skillConfigDb = new SkillConfigDb(this.skillConfigs);
+            this.weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
+            this.weaponConfigDb = new WeaponConfigDb(this.weaponConfigs);
+
+            Debug.Log($"Loaded {this.skillConfigs.Count} skills and {this.weaponConfigs.Count} weapons.");
+        }
+        else
+        {
+            Destroy(gameObject); // Prevent duplicates
+        }
     }
 }
