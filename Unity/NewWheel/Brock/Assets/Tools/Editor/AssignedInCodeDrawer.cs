@@ -15,8 +15,19 @@ public class AssignedInCodeDrawer : PropertyDrawer
         // Prefix the label with the icon
         label.text = $"{iconAttr.icon} {label.text}";
 
-        // Draw the field normally
-        EditorGUI.PropertyField(position, property, label);
+        // Required for prefab override handling
+        EditorGUI.BeginProperty(position, label, property);
+
+        // Draw the property (Unity handles foldout)
+        EditorGUI.PropertyField(position, property, label, includeChildren: true);
+
+        EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        // Get height including children if expanded
+        return EditorGUI.GetPropertyHeight(property, label, includeChildren: true);
     }
 }
 #endif

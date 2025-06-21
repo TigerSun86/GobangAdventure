@@ -8,8 +8,8 @@ public class AssignedInCodeAttribute : PropertyAttribute
 {
     public string icon;
 
-    /// <param name="icon">Optional custom icon (e.g., "🔧", "🧠")</param>
-    public AssignedInCodeAttribute(string icon = "🛠️")
+    /// <param name="icon">Optional custom icon (e.g., "🔧", "🧠", "🛠️")</param>
+    public AssignedInCodeAttribute(string icon = "👀")
     {
         this.icon = icon;
     }

@@ -21,10 +21,16 @@ public class RequiredPropertyDrawer : PropertyDrawer
         }
         else
         {
-            EditorGUI.PropertyField(position, property, label);
+            EditorGUI.PropertyField(position, property, label, includeChildren: true);
         }
 
         EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        // Get height including children if expanded
+        return EditorGUI.GetPropertyHeight(property, label, includeChildren: true);
     }
 }
 #endif
