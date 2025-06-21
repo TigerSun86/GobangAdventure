@@ -20,6 +20,8 @@ public class WaveManager : MonoBehaviour
 
     public int currentWaveTime = 0;
 
+    private PlayerShopItemManager playerShopItemManager;
+
     public void WaveCompleted()
     {
         IsWaveRunning = false;
@@ -85,9 +87,15 @@ public class WaveManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            itemDb.playerItemNames.Add("BasicRock1");
-            itemDb.playerItemNames.Add("BasicPaper1");
-            itemDb.playerItemNames.Add("BasicScissor1");
+            if (this.playerShopItemManager == null)
+            {
+                this.playerShopItemManager = PlayerShopItemManager.Instance;
+                this.playerShopItemManager.InitializeIfNeeded();
+            }
+
+            this.playerShopItemManager.TryAdd("Basic Rock 1");
+            this.playerShopItemManager.TryAdd("Basic Paper 1");
+            this.playerShopItemManager.TryAdd("Basic Scissor 1");
 
             GameObject.Find("Player").GetComponent<Player>().InitializeWeapons();
         }
