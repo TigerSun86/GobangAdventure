@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
             Vector3 position = weaponSlots[id].transform.position;
             weaponSuits[id] = Instantiate(weaponSuitPrefab, position, Quaternion.identity, weaponSlots[id].transform);
             weaponSuits[id].tag = "PlayerWeapon";
-            weaponSuits[id].GetComponent<WeaponSuit>().Initialize(shopItem.weaponConfig);
+            weaponSuits[id].GetComponent<WeaponSuit>().Initialize(shopItem.weaponConfig2);
         }
     }
 
