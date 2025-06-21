@@ -5,7 +5,7 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig2>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "name","level","weaponBaseType","price","health","skill1","skill2","attackValue","attackCdTime","attackActionTime","attackRecoveryTime","attackRange","spritePath"
+        "weaponName","level","weaponBaseType","price","health","skill1","skill2","attackValue","attackCdTime","attackActionTime","attackRecoveryTime","attackRange","spritePath"
     };
 
     private bool validated = false;
@@ -40,8 +40,8 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig2>
 
             switch (header)
             {
-                case "name":
-                    result.name = value;
+                case "weaponName":
+                    result.weaponName = value;
                     break;
                 case "level":
                     result.level = ParserUtility.ParseIntSafe(value, "level");

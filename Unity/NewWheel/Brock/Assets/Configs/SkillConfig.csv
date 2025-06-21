@@ -1,2 +1,2 @@
-﻿name,level,skillType,value,cdTime,actionTime,recoveryTime,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,description
+﻿skillName,level,skillType,value,cdTime,actionTime,recoveryTime,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,description
 Heal,1,Heal,10,1,1,1,2,Ally,Closest,1,Self,All,Heal the ally

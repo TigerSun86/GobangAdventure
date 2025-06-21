@@ -5,7 +5,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "name","level","skillType","value","cdTime","actionTime","recoveryTime","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","description"
+        "skillName","level","skillType","value","cdTime","actionTime","recoveryTime","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","description"
     };
 
     private bool validated = false;
@@ -28,7 +28,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
 
             switch (header)
             {
-                case "name":
+                case "skillName":
                     result.skillName = value;
                     break;
                 case "level":

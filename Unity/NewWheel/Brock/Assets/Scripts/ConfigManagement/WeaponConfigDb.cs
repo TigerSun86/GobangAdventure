@@ -8,16 +8,16 @@ public class WeaponConfigDb
     public WeaponConfigDb(List<WeaponConfig2> weaponConfigs)
     {
         this.weaponConfigMap = new Dictionary<string, WeaponConfig2>();
-        foreach (WeaponConfig2 skill in weaponConfigs)
+        foreach (WeaponConfig2 weapon in weaponConfigs)
         {
-            string key = skill.name + skill.level;
+            string key = weapon.weaponName + weapon.level;
             if (this.weaponConfigMap.ContainsKey(key))
             {
                 Debug.LogWarning($"Duplicate weapon config found: {key}. Skipping.");
                 continue;
             }
 
-            this.weaponConfigMap.Add(key, skill);
+            this.weaponConfigMap.Add(key, weapon);
         }
     }
 
@@ -35,5 +35,10 @@ public class WeaponConfigDb
 
         Debug.LogWarning($"Weapon config not found for id: {id}");
         return null;
+    }
+
+    public IEnumerable<WeaponConfig2> GetAll()
+    {
+        return weaponConfigMap.Values;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class WeaponConfig2
 {
-    public string name;
+    public string weaponName;
 
     public int level;
 
