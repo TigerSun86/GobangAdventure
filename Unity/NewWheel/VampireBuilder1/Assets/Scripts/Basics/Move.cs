@@ -57,6 +57,6 @@ public class Move : MonoBehaviour
 
     private void SetSpeed(float s)
     {
-        rb.velocity = direction * s;
+        rb.linearVelocity = direction * s;
     }
 }

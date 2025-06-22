@@ -13,7 +13,7 @@ public class ConfigsLoader : MonoBehaviour
     {
         string json = File.ReadAllText(Application.dataPath + "/../DesignerConfigs/GenerateDatas/json/" + SKILL_CONFIG_FILE_NAME + ".json", System.Text.Encoding.UTF8);
 
-        tbSkillConfig.SetTbSkillConfig(Newtonsoft.Json.JsonConvert.DeserializeObject<List<SkillConfig>>(json));
+        tbSkillConfig.SetTbSkillConfig(JsonUtility.FromJson<List<SkillConfig>>(json));
 
         EditorUtility.SetDirty(tbSkillConfig);
     }

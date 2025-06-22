@@ -23,7 +23,7 @@ public class ShockWaveStage2 : SkillStage2
     {
         maxDistance = GetSkillAttribute(AttributeType.AREA);
         rb = GetComponent<Rigidbody2D>();
-        rb.velocity = Vector2.right * moveSpeed;
+        rb.linearVelocity = Vector2.right * moveSpeed;
         initialPosition = rb.position;
         hitTarget = GetComponent<HitTarget>();
         hitTarget.attackBase = new AttackData(GetSkillId(), skillAttributeManager);

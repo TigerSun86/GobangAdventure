@@ -18,6 +18,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movementVector = new Vector3();
         movementVector.y = Input.GetAxisRaw("Vertical");
 
-        rb.velocity = speed * movementVector;
+        rb.linearVelocity = speed * movementVector;
     }
 }
