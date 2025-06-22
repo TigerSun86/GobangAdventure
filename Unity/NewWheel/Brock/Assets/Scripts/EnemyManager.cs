@@ -2,20 +2,25 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    public static EnemyManager Instance { get; private set; }
+
     [SerializeField] WaveConfig[] waveConfigs;
 
     [SerializeField] GameObject enemyPrefab;
 
-    public static EnemyManager Instance { get; private set; }
+    [SerializeField, AssignedInCode]
+    private EnemyConfigDb enemyConfigDb;
 
-    public int fleetIndex;
+
+    public bool hasSpawnedEnemies;
 
     void Start()
     {
         if (Instance == null)
         {
             Instance = this;
-            this.fleetIndex = 0;
+            this.hasSpawnedEnemies = false;
+            this.enemyConfigDb = ConfigDb.Instance.enemyConfigDb;
         }
     }
 
@@ -29,19 +34,20 @@ public class EnemyManager : MonoBehaviour
         int enemyCount = GetComponentsInChildren<Enemy>().Length;
         if (enemyCount <= 0)
         {
-            if (WaveManager.Instance.currentWave > waveConfigs.Length)
+            if (WaveManager.Instance.currentWave >= this.enemyConfigDb.GetWaveCount())
             {
                 Debug.LogError("Wave config has not setup for wave " + WaveManager.Instance.currentWave);
                 return;
             }
 
-            if (this.fleetIndex >= waveConfigs[WaveManager.Instance.currentWave - 1].fleetConfigs.Length)
+            if (this.hasSpawnedEnemies)
             {
-                this.fleetIndex = 0;
+                this.hasSpawnedEnemies = false;
                 WaveManager.Instance.WaveCompleted();
             }
             else
             {
+                this.hasSpawnedEnemies = true;
                 SpawnEnemies();
             }
         }
@@ -58,15 +64,13 @@ public class EnemyManager : MonoBehaviour
     private void SpawnEnemies()
     {
         Vector3 fleetPosition = new Vector3(Random.Range(6, 8), Random.Range(-2, 2), 0);
-        FleetConfig[] fleetConfigs = waveConfigs[WaveManager.Instance.currentWave - 1].fleetConfigs;
-        foreach (EnemyInFleetConfig enemyInFleetConfig in fleetConfigs[this.fleetIndex].enemyInFleetConfig)
+        EnemyInFleetConfig[] enemyInFleetConfigs = this.enemyConfigDb.GetWaveConfig(WaveManager.Instance.currentWave - 1).enemyInFleetConfigs;
+        foreach (EnemyInFleetConfig enemyInFleetConfig in enemyInFleetConfigs)
         {
             Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;
             GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
-            enemyObject.GetComponent<Enemy>().SetWeapon(enemyInFleetConfig.enemyConfig.weaponConfig);
+            enemyObject.GetComponent<Enemy>().SetWeapon(enemyInFleetConfig.enemyConfig.weaponConfig2);
             enemyObject.GetComponent<Enemy>().aiStrategy = enemyInFleetConfig.enemyConfig.aiStrategy;
         }
-
-        this.fleetIndex++;
     }
 }

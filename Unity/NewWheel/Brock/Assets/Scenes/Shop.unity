@@ -1128,6 +1128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillConfigCsv: {fileID: 4900000, guid: e755ca29f290b9546bb9063b223ecb1f, type: 3}
   weaponConfigCsv: {fileID: 4900000, guid: 9c1ed5aba3edad64797ac31a74c54628, type: 3}
+  enemyConfigCsv: {fileID: 4900000, guid: aff259aeb8c57f740a5f41e5350676d7, type: 3}
   skillConfigDb:
     skillConfigMap:
       m_keys: []
@@ -1136,6 +1137,8 @@ MonoBehaviour:
     weaponConfigMap:
       m_keys: []
       m_values: []
+  enemyConfigDb:
+    waveConfigs: []
 --- !u!4 &1752699909
 Transform:
   m_ObjectHideFlags: 0

@@ -4,4 +4,6 @@ using UnityEngine;
 public class WaveConfig : ScriptableObject
 {
     [SerializeField] public FleetConfig[] fleetConfigs;
+
+    [SerializeField] public EnemyInFleetConfig[] enemyInFleetConfigs;
 }

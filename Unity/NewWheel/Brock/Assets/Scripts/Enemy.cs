@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
 
     WeaponSuit weaponSuit;
 
-    public void SetWeapon(WeaponConfig weaponConfig)
+    public void SetWeapon(WeaponConfig2 weaponConfig)
     {
         GameObject weaponSuitObject = Instantiate(weaponSuitPrefab, transform.position, Quaternion.identity, transform);
         weaponSuitObject.tag = "EnemyWeapon";
