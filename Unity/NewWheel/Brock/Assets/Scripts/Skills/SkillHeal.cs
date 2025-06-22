@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class SkillHeal : SkillBase
 {
-    public SkillHeal(WeaponSuit weaponSuit, SkillConfig skillConfig) : base(weaponSuit, skillConfig)
-    {
-    }
-
     // Returns true if finished.
     protected override bool Act()
     {

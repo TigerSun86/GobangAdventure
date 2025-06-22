@@ -2,10 +2,6 @@ using Unity.VisualScripting;
 
 public class SkillAttack : SkillBase
 {
-    public SkillAttack(WeaponSuit weaponSuit, SkillConfig skillConfig) : base(weaponSuit, skillConfig)
-    {
-    }
-
     // Returns true if finished.
     protected override bool Act()
     {

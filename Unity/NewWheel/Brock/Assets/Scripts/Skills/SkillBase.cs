@@ -4,8 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[Serializable]
-public class SkillBase
+public class SkillBase : MonoBehaviour
 {
     protected WeaponSuit weaponSuit;
 
@@ -17,7 +16,7 @@ public class SkillBase
 
     public WeaponSuit[] targets;
 
-    public SkillBase(WeaponSuit weaponSuit, SkillConfig skillConfig)
+    public virtual void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig)
     {
         this.weaponSuit = weaponSuit;
         this.skillConfig = skillConfig;

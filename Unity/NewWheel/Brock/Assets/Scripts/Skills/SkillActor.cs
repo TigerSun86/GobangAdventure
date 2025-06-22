@@ -10,6 +10,9 @@ public class SkillActor : MonoBehaviour
 
     [SerializeField] SkillConfig[] skillConfigs;
 
+    [SerializeField, AssignedInCode]
+    private SkillPrefabDb skillPrefabDb;
+
     public SkillBase[] skills;
 
     public SkillBase activeSkill;
@@ -45,6 +48,7 @@ public class SkillActor : MonoBehaviour
 
     public void Initialize(WeaponSuit weaponSuit)
     {
+        this.skillPrefabDb = SkillPrefabDb.Instance;
         this.weaponSuit = weaponSuit;
         this.skillConfigs = this.weaponSuit.weaponConfig.GetSkills();
         this.activeSkill = null;
@@ -60,27 +64,18 @@ public class SkillActor : MonoBehaviour
                 Debug.LogError($"Skill config {i} is not valid");
                 continue;
             }
-            SkillBase skill = null;
-            switch (skillConfig.skillType)
-            {
-                case SkillType.Attack:
-                    skill = new SkillAttack(this.weaponSuit, skillConfig);
-                    break;
-                case SkillType.Heal:
-                    skill = new SkillHeal(this.weaponSuit, skillConfig);
-                    break;
-                case SkillType.Shot:
-                    skill = new SkillShot(this.weaponSuit, skillConfig);
-                    break;
-                default:
-                    Debug.LogError($"Skill type {skillConfig.skillType} not found");
-                    break;
-            }
 
-            if (skill != null)
+            GameObject skillPrefab = this.skillPrefabDb.GetSkillPrefab(skillConfig.skillType);
+            if (skillPrefab == null)
             {
-                skillList.Add(skill);
+                Debug.LogError($"Skill prefab for {skillConfig.skillType} is not found");
+                continue;
             }
+            GameObject skillObject = Instantiate(skillPrefab, this.transform.position, Quaternion.identity, this.transform);
+
+            SkillBase skill = skillObject.GetComponent<SkillBase>();
+            skill.Initialize(this.weaponSuit, skillConfig);
+            skillList.Add(skill);
         }
 
         this.skills = skillList.ToArray();
