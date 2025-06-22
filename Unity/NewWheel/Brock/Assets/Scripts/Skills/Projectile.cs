@@ -19,6 +19,12 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(GameObject target, float speed)
     {
+        if (speed == 0)
+        {
+            Debug.LogWarning("Projectile speed cannot be zero. Setting to default value of 1.");
+            speed = 1f; // Default speed if not set
+        }
+
         this.target = target;
         this.speed = speed;
     }

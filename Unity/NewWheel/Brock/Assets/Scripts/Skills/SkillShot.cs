@@ -19,7 +19,7 @@ public class SkillShot : SkillBase
         {
             GameObject projectileObject = Instantiate(projectilePrefab, transform.position, Quaternion.identity, this.transform);
             Projectile projectile = projectileObject.GetComponent<Projectile>();
-            projectile.Initialize(targets[0].weaponStand.gameObject, 4.0f);
+            projectile.Initialize(targets[0].weaponStand.gameObject, this.skillConfig.projectileSpeed);
             projectile.onHitTarget.AddListener(OnProjectileHit);
             return true;
         }

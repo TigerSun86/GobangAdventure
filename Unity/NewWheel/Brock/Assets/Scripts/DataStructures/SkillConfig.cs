@@ -19,6 +19,8 @@ public class SkillConfig
 
     public float recoveryTime;
 
+    public float projectileSpeed;
+
     public float range;
 
     public SkillTargetConfig skillTargetConfig;

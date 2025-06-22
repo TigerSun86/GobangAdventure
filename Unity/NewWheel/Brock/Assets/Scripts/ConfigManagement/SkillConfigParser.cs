@@ -5,7 +5,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "skillName","level","skillType","value","cdTime","actionTime","recoveryTime","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","description"
+        "skillName","level","skillType","value","cdTime","actionTime","recoveryTime","projectileSpeed","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","description"
     };
 
     private bool validated = false;
@@ -48,6 +48,9 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
                     break;
                 case "recoveryTime":
                     result.recoveryTime = ParserUtility.ParseFloatSafe(value, "recoveryTime");
+                    break;
+                case "projectileSpeed":
+                    result.projectileSpeed = ParserUtility.ParseFloatSafe(value, "projectileSpeed");
                     break;
                 case "range":
                     result.range = ParserUtility.ParseFloatSafe(value, "range");
