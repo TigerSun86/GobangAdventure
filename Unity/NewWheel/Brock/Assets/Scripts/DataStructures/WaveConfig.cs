@@ -1,9 +1,7 @@
-using UnityEngine;
+using System;
 
-[CreateAssetMenu(menuName = "WaveConfig")]
-public class WaveConfig : ScriptableObject
+[Serializable]
+public class WaveConfig
 {
-    [SerializeField] public FleetConfig[] fleetConfigs;
-
-    [SerializeField] public EnemyInFleetConfig[] enemyInFleetConfigs;
+    public EnemyInFleetConfig[] enemyInFleetConfigs;
 }

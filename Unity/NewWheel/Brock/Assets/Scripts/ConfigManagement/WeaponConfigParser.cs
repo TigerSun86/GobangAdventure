@@ -25,7 +25,7 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
         }
 
         WeaponConfig result = new WeaponConfig();
-        result.attackSkill = ScriptableObject.CreateInstance<SkillConfig>();
+        result.attackSkill = new SkillConfig();
         result.attackSkill.skillName = "Attack";
         result.attackSkill.skillTargetConfig = new SkillTargetConfig();
         result.attackSkill.skillTargetConfig.targetType = TargetType.Opponent;
@@ -57,10 +57,10 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
                     result.health = ParserUtility.ParseIntSafe(value, "health");
                     break;
                 case "skill1":
-                    result.skill1 = string.IsNullOrWhiteSpace(value) ? null : skillConfigDb.Get(value);
+                    result.skill1 = string.IsNullOrWhiteSpace(value) ? new SkillConfig() : skillConfigDb.Get(value);
                     break;
                 case "skill2":
-                    result.skill2 = string.IsNullOrWhiteSpace(value) ? null : skillConfigDb.Get(value);
+                    result.skill2 = string.IsNullOrWhiteSpace(value) ? new SkillConfig() : skillConfigDb.Get(value);
                     break;
                 case "attackValue":
                     result.attackSkill.value = ParserUtility.ParseFloatSafe(value, "attackValue");

@@ -18,7 +18,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
             validated = true;
         }
 
-        SkillConfig result = ScriptableObject.CreateInstance<SkillConfig>();
+        SkillConfig result = new SkillConfig();
         result.skillTargetConfig = new SkillTargetConfig();
 
         for (int i = 0; i < headers.Length; i++)

@@ -26,7 +26,7 @@ public class EnemyConfigParser : ICsvRowParser<RawEnemyConfig>
 
         RawEnemyConfig result = new RawEnemyConfig();
         result.enemyInFleetConfig = new EnemyInFleetConfig();
-        result.enemyInFleetConfig.enemyConfig = ScriptableObject.CreateInstance<EnemyConfig>();
+        result.enemyInFleetConfig.enemyConfig = new EnemyConfig();
         result.enemyInFleetConfig.positionInFleet = Vector2.zero;
 
         for (int i = 0; i < headers.Length; i++)

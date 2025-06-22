@@ -1,7 +1,7 @@
-using UnityEngine;
+using System;
 
-[CreateAssetMenu(menuName = "SkillConfig")]
-public class SkillConfig : ScriptableObject
+[Serializable]
+public class SkillConfig
 {
     public string skillName;
 

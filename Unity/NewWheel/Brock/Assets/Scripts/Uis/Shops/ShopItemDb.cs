@@ -43,7 +43,7 @@ public class ShopItemDb
 
     private ShopItem WeaponConfigToShopItem(WeaponConfig weaponConfig)
     {
-        ShopItem shopItem = ScriptableObject.CreateInstance<ShopItem>();
+        ShopItem shopItem = new ShopItem();
         shopItem.image = weaponConfig.sprite;
         shopItem.displayName = weaponConfig.GetId();
         shopItem.level = weaponConfig.level;

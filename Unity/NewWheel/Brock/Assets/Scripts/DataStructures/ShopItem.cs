@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ShopItem")]
-public class ShopItem : ScriptableObject
+[Serializable]
+public class ShopItem
 {
     public Sprite image;
 

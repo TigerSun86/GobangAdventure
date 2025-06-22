@@ -1,7 +1,7 @@
-using UnityEngine;
+using System;
 
-[CreateAssetMenu(menuName = "EnemyConfig")]
-public class EnemyConfig : ScriptableObject
+[Serializable]
+public class EnemyConfig
 {
     public WeaponConfig weaponConfig;
 

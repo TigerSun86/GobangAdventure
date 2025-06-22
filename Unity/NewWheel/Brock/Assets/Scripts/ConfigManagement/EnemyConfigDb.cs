@@ -65,7 +65,7 @@ public class EnemyConfigDb
                 continue;
             }
 
-            WaveConfig waveConfig = ScriptableObject.CreateInstance<WaveConfig>();
+            WaveConfig waveConfig = new WaveConfig();
             waveConfig.enemyInFleetConfigs = new EnemyInFleetConfig[enemyInFleetConfigs.Count];
             for (int enemyId = 0; enemyId < enemyInFleetConfigs.Count; enemyId++)
             {

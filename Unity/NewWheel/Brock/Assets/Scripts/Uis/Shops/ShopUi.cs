@@ -22,7 +22,7 @@ public class ShopUi : MonoBehaviour
 
     private void SetItemUi(ItemUi itemUi, ShopItem item)
     {
-        itemUi.gameObject.name = "Item" + "-" + item.name;
+        itemUi.gameObject.name = "Item" + "-" + item.displayName;
 
         itemUi.SetImage(item.image);
         itemUi.SetName(item.displayName);

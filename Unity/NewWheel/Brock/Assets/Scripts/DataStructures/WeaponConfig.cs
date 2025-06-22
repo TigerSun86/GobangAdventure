@@ -35,12 +35,12 @@ public class WeaponConfig
             attackSkill
         };
 
-        if (skill1 != null)
+        if (!string.IsNullOrWhiteSpace(skill1.skillName))
         {
             skills.Add(skill1);
         }
 
-        if (skill2 != null)
+        if (!string.IsNullOrWhiteSpace(skill2.skillName))
         {
             skills.Add(skill2);
         }
