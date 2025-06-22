@@ -68,7 +68,7 @@ public class EnemyManager : MonoBehaviour
         {
             Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;
             GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
-            enemyObject.GetComponent<Enemy>().SetConfig(enemyInFleetConfig.enemyConfig);
+            enemyObject.GetComponent<Enemy>().Initialize(enemyInFleetConfig.enemyConfig);
         }
     }
 }

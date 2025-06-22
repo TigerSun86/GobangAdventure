@@ -10,21 +10,21 @@ public class Enemy : MonoBehaviour
     private GameObject weaponSuitPrefab;
 
     [SerializeField, AssignedInCode]
-    private AiStrategy aiStrategy;
+    private EnemyConfig enemyConfig;
 
     private Transform target;
 
     private WeaponSuit weaponSuit;
 
-    public void SetConfig(EnemyConfig enemyConfig)
+    public void Initialize(EnemyConfig enemyConfig)
     {
+        this.enemyConfig = enemyConfig;
         GameObject weaponSuitObject = Instantiate(weaponSuitPrefab, transform.position, Quaternion.identity, transform);
         weaponSuitObject.tag = "EnemyWeapon";
         this.weaponSuit = weaponSuitObject.GetComponent<WeaponSuit>();
-        this.weaponSuit.Initialize(enemyConfig.weaponConfig);
+        this.weaponSuit.Initialize(this.enemyConfig.weaponConfig);
         DieWithDependency death = GetComponent<DieWithDependency>();
         death.dependency = weaponSuitObject;
-        this.aiStrategy = enemyConfig.aiStrategy;
     }
 
     private void FixedUpdate()
@@ -39,7 +39,7 @@ public class Enemy : MonoBehaviour
                 return;
             }
 
-            if (aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
+            if (this.enemyConfig.aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
                 && weaponSuit.GetHealth().health < (weaponSuit.GetHealth().maxHealth / 2f))
             {
                 MoveAway();
