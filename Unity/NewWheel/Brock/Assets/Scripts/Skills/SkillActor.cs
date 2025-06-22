@@ -69,6 +69,9 @@ public class SkillActor : MonoBehaviour
                 case SkillType.Heal:
                     skill = new SkillHeal(this.weaponSuit, skillConfig);
                     break;
+                case SkillType.Shot:
+                    skill = new SkillShot(this.weaponSuit, skillConfig);
+                    break;
                 default:
                     Debug.LogError($"Skill type {skillConfig.skillType} not found");
                     break;
