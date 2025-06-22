@@ -1,7 +1,11 @@
 using Unity.VisualScripting;
+using UnityEngine;
 
 public class SkillShot : SkillBase
 {
+    [SerializeField, Required]
+    private GameObject projectilePrefab;
+
     // Returns true if finished.
     protected override bool Act()
     {
@@ -13,12 +17,13 @@ public class SkillShot : SkillBase
         float remainingTime = skillConfig.actionTime - timeInCurrentState;
         if (remainingTime <= 0)
         {
-            foreach (WeaponSuit target in targets)
-            {
-                DealDamage(target);
-            }
+            GameObject projectileObject = Instantiate(projectilePrefab, transform.position, Quaternion.identity, this.transform);
+            Projectile projectile = projectileObject.GetComponent<Projectile>();
+            projectile.Initialize(targets[0].weaponStand.gameObject, 4.0f);
+            projectile.onHitTarget.AddListener(OnProjectileHit);
             return true;
         }
+
         return false;
     }
 
@@ -29,16 +34,18 @@ public class SkillShot : SkillBase
         return remainingTime <= 0;
     }
 
-    private void DealDamage(WeaponSuit target)
+    private void OnProjectileHit(GameObject targetObject)
     {
-        if (target.IsDestroyed())
+        if (targetObject.IsDestroyed())
         {
             return;
         }
 
+        WeaponStand target = targetObject.GetComponent<WeaponStand>();
+
         double damage = this.skillConfig.value;
         DamageType damageType = DamageType.NORMAL_ATTACK;
-        Damagable damagable = target.weaponStand.GetComponent<Damagable>();
+        Damagable damagable = target.GetComponent<Damagable>();
         damagable.TakeDamage((int)damage, damageType);
     }
 }

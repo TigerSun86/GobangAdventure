@@ -63,3 +63,4 @@ MonoBehaviour:
   skillState: 0
   timeInCurrentState: 0
   targets: []
+  projectilePrefab: {fileID: 258733114946505681, guid: 99f0dff148b06e3429216802fd77a997, type: 3}
