@@ -4,15 +4,14 @@ public class EnemyManager : MonoBehaviour
 {
     public static EnemyManager Instance { get; private set; }
 
-    [SerializeField] WaveConfig[] waveConfigs;
-
-    [SerializeField] GameObject enemyPrefab;
+    [SerializeField, Required]
+    private GameObject enemyPrefab;
 
     [SerializeField, AssignedInCode]
     private EnemyConfigDb enemyConfigDb;
 
-
-    public bool hasSpawnedEnemies;
+    [SerializeField]
+    private bool hasSpawnedEnemies;
 
     void Start()
     {
@@ -69,8 +68,7 @@ public class EnemyManager : MonoBehaviour
         {
             Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;
             GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
-            enemyObject.GetComponent<Enemy>().SetWeapon(enemyInFleetConfig.enemyConfig.weaponConfig2);
-            enemyObject.GetComponent<Enemy>().aiStrategy = enemyInFleetConfig.enemyConfig.aiStrategy;
+            enemyObject.GetComponent<Enemy>().SetConfig(enemyInFleetConfig.enemyConfig);
         }
     }
 }

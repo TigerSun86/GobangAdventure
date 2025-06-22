@@ -52,7 +52,7 @@ public class EnemyConfigParser : ICsvRowParser<RawEnemyConfig>
                     result.enemyInFleetConfig.enemyConfig.aiStrategy = ParserUtility.ParseEnum<AiStrategy>(value, ignoreCase: true);
                     break;
                 case "weapon":
-                    result.enemyInFleetConfig.enemyConfig.weaponConfig2 = this.weaponConfigDb.Get(value);
+                    result.enemyInFleetConfig.enemyConfig.weaponConfig = this.weaponConfigDb.Get(value);
                     break;
                 default:
                     Debug.LogWarning($"Unrecognized header '{header}' in CSV");

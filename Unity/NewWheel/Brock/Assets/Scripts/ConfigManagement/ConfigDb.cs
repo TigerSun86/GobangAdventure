@@ -32,7 +32,7 @@ public class ConfigDb : MonoBehaviour
 
             List<SkillConfig> skillConfigs = CsvLoader.LoadFromCSV(skillConfigCsv, new SkillConfigParser());
             this.skillConfigDb = new SkillConfigDb(skillConfigs);
-            List<WeaponConfig2> weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
+            List<WeaponConfig> weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
             this.weaponConfigDb = new WeaponConfigDb(weaponConfigs);
             List<RawEnemyConfig> enemyConfigs = CsvLoader.LoadFromCSV(enemyConfigCsv, new EnemyConfigParser(this.weaponConfigDb));
             this.enemyConfigDb = new EnemyConfigDb(enemyConfigs);

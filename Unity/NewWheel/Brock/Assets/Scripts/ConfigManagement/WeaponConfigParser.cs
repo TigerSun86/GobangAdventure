@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponConfigParser : ICsvRowParser<WeaponConfig2>
+public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
@@ -16,7 +16,7 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig2>
         this.skillConfigDb = skillConfigDb;
     }
 
-    public WeaponConfig2 ParseRow(string[] values, string[] headers)
+    public WeaponConfig ParseRow(string[] values, string[] headers)
     {
         if (!validated)
         {
@@ -24,7 +24,7 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig2>
             validated = true;
         }
 
-        WeaponConfig2 result = new WeaponConfig2();
+        WeaponConfig result = new WeaponConfig();
         result.attackSkill = ScriptableObject.CreateInstance<SkillConfig>();
         result.attackSkill.skillName = "Attack";
         result.attackSkill.skillTargetConfig = new SkillTargetConfig();

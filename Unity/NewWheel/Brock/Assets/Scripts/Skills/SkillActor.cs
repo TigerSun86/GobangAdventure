@@ -46,7 +46,7 @@ public class SkillActor : MonoBehaviour
     public void Initialize(WeaponSuit weaponSuit)
     {
         this.weaponSuit = weaponSuit;
-        this.skillConfigs = this.weaponSuit.GetSkills();
+        this.skillConfigs = this.weaponSuit.weaponConfig.GetSkills();
         this.activeSkill = null;
         this.skillActionQueue = new PriorityQueue<SkillBase>();
         InitSkillToPriorities();

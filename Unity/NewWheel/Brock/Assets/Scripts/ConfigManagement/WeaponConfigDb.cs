@@ -8,10 +8,10 @@ public class WeaponConfigDb
     [SerializeField]
     private StringToWeaponConfigDictionary weaponConfigMap;
 
-    public WeaponConfigDb(List<WeaponConfig2> weaponConfigs)
+    public WeaponConfigDb(List<WeaponConfig> weaponConfigs)
     {
         this.weaponConfigMap = new StringToWeaponConfigDictionary();
-        foreach (WeaponConfig2 weapon in weaponConfigs)
+        foreach (WeaponConfig weapon in weaponConfigs)
         {
             string key = weapon.GetId();
             if (this.weaponConfigMap.ContainsKey(key))
@@ -24,9 +24,9 @@ public class WeaponConfigDb
         }
     }
 
-    public WeaponConfig2 Get(string id)
+    public WeaponConfig Get(string id)
     {
-        if (weaponConfigMap.TryGetValue(id, out WeaponConfig2 skill))
+        if (weaponConfigMap.TryGetValue(id, out WeaponConfig skill))
         {
             return skill;
         }
@@ -35,7 +35,7 @@ public class WeaponConfigDb
         return null;
     }
 
-    public IEnumerable<WeaponConfig2> GetAll()
+    public IEnumerable<WeaponConfig> GetAll()
     {
         return weaponConfigMap.Values;
     }

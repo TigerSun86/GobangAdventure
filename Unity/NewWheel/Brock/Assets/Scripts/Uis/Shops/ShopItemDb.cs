@@ -8,7 +8,7 @@ public class ShopItemDb
     public ShopItemDb()
     {
         this.shopItems = new List<ShopItem>();
-        foreach (WeaponConfig2 weaponConfig in ConfigDb.Instance.weaponConfigDb.GetAll())
+        foreach (WeaponConfig weaponConfig in ConfigDb.Instance.weaponConfigDb.GetAll())
         {
             ShopItem shopItem = WeaponConfigToShopItem(weaponConfig);
             this.shopItems.Add(shopItem);
@@ -41,14 +41,14 @@ public class ShopItemDb
         return shopItems[randomIndex];
     }
 
-    private ShopItem WeaponConfigToShopItem(WeaponConfig2 weaponConfig)
+    private ShopItem WeaponConfigToShopItem(WeaponConfig weaponConfig)
     {
         ShopItem shopItem = ScriptableObject.CreateInstance<ShopItem>();
         shopItem.image = weaponConfig.sprite;
         shopItem.displayName = weaponConfig.GetId();
         shopItem.level = weaponConfig.level;
         shopItem.price = weaponConfig.price;
-        shopItem.weaponConfig2 = weaponConfig;
+        shopItem.weaponConfig = weaponConfig;
         return shopItem;
     }
 }

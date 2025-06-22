@@ -3,24 +3,28 @@ using UnityEngine;
 [RequireComponent(typeof(DieWithDependency))]
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] float speed;
+    [SerializeField]
+    private float speed;
 
-    [SerializeField] GameObject weaponSuitPrefab;
+    [SerializeField, Required]
+    private GameObject weaponSuitPrefab;
 
-    public AiStrategy aiStrategy;
+    [SerializeField, AssignedInCode]
+    private AiStrategy aiStrategy;
 
-    Transform target;
+    private Transform target;
 
-    WeaponSuit weaponSuit;
+    private WeaponSuit weaponSuit;
 
-    public void SetWeapon(WeaponConfig2 weaponConfig)
+    public void SetConfig(EnemyConfig enemyConfig)
     {
         GameObject weaponSuitObject = Instantiate(weaponSuitPrefab, transform.position, Quaternion.identity, transform);
         weaponSuitObject.tag = "EnemyWeapon";
         this.weaponSuit = weaponSuitObject.GetComponent<WeaponSuit>();
-        this.weaponSuit.Initialize(weaponConfig);
+        this.weaponSuit.Initialize(enemyConfig.weaponConfig);
         DieWithDependency death = GetComponent<DieWithDependency>();
         death.dependency = weaponSuitObject;
+        this.aiStrategy = enemyConfig.aiStrategy;
     }
 
     private void FixedUpdate()
