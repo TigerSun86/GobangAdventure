@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -83221498786863290}
   - component: {fileID: 303178027058660786}
   - component: {fileID: 6724713495814208420}
+  - component: {fileID: 2852976292321115431}
   m_Layer: 0
   m_Name: WeaponSuit
   m_TagString: Untagged
@@ -49,7 +50,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c84ea722798564ba6851385c91abcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponConfig: {fileID: 0}
+  weaponConfig:
+    weaponName: 
+    level: 0
+    weaponBaseType: 0
+    price: 0
+    health: 0
+    attackSkill:
+      skillName: 
+      level: 0
+      description: 
+      skillType: 0
+      value: 0
+      cdTime: 0
+      actionTime: 0
+      recoveryTime: 0
+      projectileSpeed: 0
+      range: 0
+      skillTargetConfig:
+        targetType: 0
+        targetOrdering: 0
+        maxTargets: 0
+        excludedTarget: 0
+        includedTarget: 3
+    skill1:
+      skillName: 
+      level: 0
+      description: 
+      skillType: 0
+      value: 0
+      cdTime: 0
+      actionTime: 0
+      recoveryTime: 0
+      projectileSpeed: 0
+      range: 0
+      skillTargetConfig:
+        targetType: 0
+        targetOrdering: 0
+        maxTargets: 0
+        excludedTarget: 0
+        includedTarget: 3
+    skill2:
+      skillName: 
+      level: 0
+      description: 
+      skillType: 0
+      value: 0
+      cdTime: 0
+      actionTime: 0
+      recoveryTime: 0
+      projectileSpeed: 0
+      range: 0
+      skillTargetConfig:
+        targetType: 0
+        targetOrdering: 0
+        maxTargets: 0
+        excludedTarget: 0
+        includedTarget: 3
+    sprite: {fileID: 0}
   weaponItem: {fileID: 0}
   weaponStand: {fileID: 0}
   skillActor: {fileID: 0}
@@ -84,6 +142,19 @@ MonoBehaviour:
   timeToLive: 0
   health: {fileID: 5216957209064090488}
   selfDestroy: {fileID: 0}
+--- !u!114 &2852976292321115431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973336722079467576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e6cf6ebec97abe4d8f3133683e5d745, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeBuffs: []
 --- !u!1 &1479917027771085383
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,12 +200,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillConfigs: []
+  skillPrefabDb: {fileID: 0}
   skills: []
-  activeSkill:
-    skillConfig: {fileID: 0}
-    skillState: 0
-    timeInCurrentState: 0
-    targets: []
+  activeSkill: {fileID: 0}
 --- !u!1 &2207035178379061263
 GameObject:
   m_ObjectHideFlags: 0
