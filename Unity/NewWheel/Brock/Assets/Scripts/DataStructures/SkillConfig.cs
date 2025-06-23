@@ -24,4 +24,6 @@ public class SkillConfig
     public float range;
 
     public SkillTargetConfig skillTargetConfig;
+
+    public Buff buff1;
 }

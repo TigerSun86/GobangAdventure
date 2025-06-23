@@ -5,7 +5,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "skillName","level","skillType","value","cdTime","actionTime","recoveryTime","projectileSpeed","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","description"
+        "skillName","level","skillType","value","cdTime","actionTime","recoveryTime","projectileSpeed","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","buffType1","buffDuration1","buffValue1","description"
     };
 
     private bool validated = false;
@@ -20,6 +20,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
 
         SkillConfig result = new SkillConfig();
         result.skillTargetConfig = new SkillTargetConfig();
+        result.buff1 = new Buff();
 
         for (int i = 0; i < headers.Length; i++)
         {
@@ -69,6 +70,15 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
                     break;
                 case "includedTarget":
                     result.skillTargetConfig.includedTarget = ParserUtility.ParseEnum<TargetFilter>(value, true);
+                    break;
+                case "buffType1":
+                    result.buff1.buffType = ParserUtility.ParseEnum<BuffType>(value, true);
+                    break;
+                case "buffDuration1":
+                    result.buff1.duration = ParserUtility.ParseFloatSafe(value, "buffDuration1");
+                    break;
+                case "buffValue1":
+                    result.buff1.value = ParserUtility.ParseFloatSafe(value, "buffValue1");
                     break;
                 case "description":
                     result.description = value;

@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4632151438772904637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2047295665061938007}
+  - component: {fileID: 2949757863962706505}
+  m_Layer: 0
+  m_Name: SkillStun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2047295665061938007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4632151438772904637}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2949757863962706505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4632151438772904637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4653b3c25063e98458b6a090f9803569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillConfig:
+    skillName: 
+    level: 0
+    description: 
+    skillType: 0
+    value: 0
+    cdTime: 0
+    actionTime: 0
+    recoveryTime: 0
+    projectileSpeed: 0
+    range: 0
+    skillTargetConfig:
+      targetType: 0
+      targetOrdering: 0
+      maxTargets: 0
+      excludedTarget: 0
+      includedTarget: 3
+    buff1:
+      buffType: 0
+      duration: 0
+      value: 0
+      startTime: 0
+  skillState: 0
+  timeInCurrentState: 0
+  targets: []
+  projectilePrefab: {fileID: 258733114946505681, guid: 99f0dff148b06e3429216802fd77a997, type: 3}

@@ -1,3 +1,4 @@
-﻿skillName,level,skillType,value,cdTime,actionTime,recoveryTime,projectileSpeed,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,description
-Heal,1,Heal,10,1,1,1,0,2,Ally,Closest,1,Self,All,Heal the ally
-Shot,1,Shot,100,5,1,1,4,5,Opponent,Closest,1,None,All,Shot the enemy
+﻿skillName,level,skillType,value,cdTime,actionTime,recoveryTime,projectileSpeed,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,buffType1,buffDuration1,buffValue1,description
+Heal,1,Heal,10,1,1,1,0,2,Ally,Closest,1,Self,All,None,0,0,Heal the ally
+Shot,1,Shot,100,5,1,1,4,5,Opponent,Closest,1,None,All,None,0,0,Shot the enemy
+Stun,1,Stun,50,3,0.2,0.2,4,5,Opponent,Closest,1,None,All,Stun,5,0,Stun the enemy
