@@ -60,6 +60,11 @@ public class Enemy : MonoBehaviour
 
     private void MoveAway()
     {
+        if (!this.weaponSuit.capabilityController.Can(CapabilityType.Move))
+        {
+            return;
+        }
+
         Vector3 direction = transform.position - target.position;
         direction.Normalize();
         transform.position += direction * speed * Time.deltaTime;
@@ -67,6 +72,11 @@ public class Enemy : MonoBehaviour
 
     private void MoveToTarget()
     {
+        if (!this.weaponSuit.capabilityController.Can(CapabilityType.Move))
+        {
+            return;
+        }
+
         Vector3 direction = target.position - transform.position;
         direction.Normalize();
         transform.position += direction * speed * Time.deltaTime;

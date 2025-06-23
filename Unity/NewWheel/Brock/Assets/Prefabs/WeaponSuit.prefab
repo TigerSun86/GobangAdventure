@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 303178027058660786}
   - component: {fileID: 6724713495814208420}
   - component: {fileID: 2852976292321115431}
+  - component: {fileID: -530033714497838428}
   m_Layer: 0
   m_Name: WeaponSuit
   m_TagString: Untagged
@@ -73,6 +74,11 @@ MonoBehaviour:
         maxTargets: 0
         excludedTarget: 0
         includedTarget: 3
+      buff1:
+        buffType: 0
+        duration: 0
+        value: 0
+        startTime: 0
     skill1:
       skillName: 
       level: 0
@@ -90,6 +96,11 @@ MonoBehaviour:
         maxTargets: 0
         excludedTarget: 0
         includedTarget: 3
+      buff1:
+        buffType: 0
+        duration: 0
+        value: 0
+        startTime: 0
     skill2:
       skillName: 
       level: 0
@@ -107,10 +118,16 @@ MonoBehaviour:
         maxTargets: 0
         excludedTarget: 0
         includedTarget: 3
+      buff1:
+        buffType: 0
+        duration: 0
+        value: 0
+        startTime: 0
     sprite: {fileID: 0}
   weaponItem: {fileID: 0}
   weaponStand: {fileID: 0}
   skillActor: {fileID: 0}
+  capabilityController: {fileID: 0}
 --- !u!114 &303178027058660786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,6 +172,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeBuffs: []
+--- !u!114 &-530033714497838428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973336722079467576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848b8ca0f72ab3c498d3f12b3882562b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1479917027771085383
 GameObject:
   m_ObjectHideFlags: 0

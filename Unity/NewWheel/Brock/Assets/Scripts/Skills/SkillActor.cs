@@ -103,6 +103,11 @@ public class SkillActor : MonoBehaviour
             this.activeSkill = null;
         }
 
+        if (!this.weaponSuit.capabilityController.Can(CapabilityType.CastSkill))
+        {
+            return;
+        }
+
         if (this.activeSkill == null)
         {
             this.activeSkill = this.skillActionQueue.DequeueOrDefault();

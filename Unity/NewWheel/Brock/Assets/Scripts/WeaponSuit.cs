@@ -7,6 +7,7 @@ public class WeaponSuit : MonoBehaviour
     public WeaponStand weaponStand;
     public SkillActor skillActor;
     public WeaponBaseType weaponBaseType => weaponConfig.weaponBaseType;
+    public CapabilityController capabilityController;
 
     public void Initialize(WeaponConfig weaponConfig)
     {
@@ -15,6 +16,7 @@ public class WeaponSuit : MonoBehaviour
         this.weaponItem.Initialize(this);
         this.weaponStand = GetComponentInChildren<WeaponStand>();
         this.weaponStand.Initialize(this);
+        this.capabilityController = GetComponent<CapabilityController>();
         this.skillActor = GetComponentInChildren<SkillActor>();
         this.skillActor.Initialize(this);
     }

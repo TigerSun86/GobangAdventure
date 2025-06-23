@@ -15,6 +15,11 @@ public class BuffTracker : MonoBehaviour
         StartCoroutine(RemoveBuffAfterDuration(buff));
     }
 
+    public bool Contains(BuffType buffType)
+    {
+        return activeBuffs.Any(buff => buff.buffType == buffType);
+    }
+
     public IEnumerable<Buff> Get(BuffType buffType)
     {
         return activeBuffs.Where(buff => buff.buffType == buffType);
