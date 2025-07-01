@@ -5,7 +5,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "skillName","level","skillType","value","cdTime","actionTime","recoveryTime","projectileSpeed","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","buffType1","buffDuration1","buffValue1","description"
+        "skillName","level","skillType","skillActivationType","value","cdTime","actionTime","recoveryTime","projectileSpeed","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","buff1Type","buff1Duration","buff1Value1","buff1Value2","description"
     };
 
     private bool validated = false;
@@ -37,6 +37,9 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
                     break;
                 case "skillType":
                     result.skillType = ParserUtility.ParseEnum<SkillType>(value, true);
+                    break;
+                case "skillActivationType":
+                    result.skillActivationType = ParserUtility.ParseEnum<SkillActivationType>(value, true);
                     break;
                 case "value":
                     result.value = ParserUtility.ParseFloatSafe(value, "value");
@@ -71,14 +74,17 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
                 case "includedTarget":
                     result.skillTargetConfig.includedTarget = ParserUtility.ParseEnum<TargetFilter>(value, true);
                     break;
-                case "buffType1":
+                case "buff1Type":
                     result.buff1.buffType = ParserUtility.ParseEnum<BuffType>(value, true);
                     break;
-                case "buffDuration1":
-                    result.buff1.duration = ParserUtility.ParseFloatSafe(value, "buffDuration1");
+                case "buff1Duration":
+                    result.buff1.duration = ParserUtility.ParseFloatSafe(value, "buff1Duration");
                     break;
-                case "buffValue1":
-                    result.buff1.value = ParserUtility.ParseFloatSafe(value, "buffValue1");
+                case "buff1Value1":
+                    result.buff1.value1 = ParserUtility.ParseFloatSafe(value, "buff1Value1");
+                    break;
+                case "buff1Value2":
+                    result.buff1.value2 = ParserUtility.ParseFloatSafe(value, "buff1Value2");
                     break;
                 case "description":
                     result.description = value;

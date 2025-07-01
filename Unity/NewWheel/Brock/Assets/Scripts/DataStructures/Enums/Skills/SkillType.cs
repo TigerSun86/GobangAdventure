@@ -4,4 +4,5 @@ public enum SkillType
     Heal,
     Shot,
     Stun,
+    CriticalHit,
 }

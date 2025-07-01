@@ -1,10 +1,17 @@
+using System;
+
+[Flags]
 public enum DamageType
 {
-    NORMAL_ATTACK,
+    NONE = 0,
 
-    HEALING,
+    NORMAL_ATTACK = 1 << 0,
 
-    CRITICAL_HIT,
+    WEAK_ATTACK = 1 << 1,
 
-    WEAK_ATTACK,
+    STRONG_ATTACK = 1 << 2,
+
+    HEALING = 1 << 3,
+
+    CRITICAL_HIT = 1 << 4,
 }

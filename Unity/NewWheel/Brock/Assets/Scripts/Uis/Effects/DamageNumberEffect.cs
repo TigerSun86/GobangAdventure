@@ -44,25 +44,25 @@ public class DamageNumberEffect : MonoBehaviour
     {
         transform.position = damageData.gameObject.transform.position;
         text.text = damageData.actualAmount.ToString();
-        Color textColor;
-        switch (damageData.damageType)
+        Color textColor = Color.white; // Default color
+
+        if ((damageData.damageType & DamageType.HEALING) != 0)
         {
-            case DamageType.HEALING:
-                textColor = Color.cyan;
-                break;
-            case DamageType.CRITICAL_HIT:
-                textColor = Color.red;
-                break;
-            case DamageType.NORMAL_ATTACK:
-                textColor = Color.yellow;
-                break;
-            case DamageType.WEAK_ATTACK:
-                // Dark gray.
-                textColor = new Color(0.3f, 0.3f, 0.3f, 1f);
-                break;
-            default:
-                textColor = Color.yellow;
-                break;
+            textColor = Color.cyan;
+        }
+        if ((damageData.damageType & DamageType.CRITICAL_HIT) != 0)
+        {
+            text.text = "!" + text.text;
+        }
+        if ((damageData.damageType & DamageType.WEAK_ATTACK) != 0)
+        {
+            // Dark gray.
+            textColor = new Color(0.3f, 0.3f, 0.3f, 1f);
+        }
+        if ((damageData.damageType & DamageType.STRONG_ATTACK) != 0)
+        {
+            // Dark gray.
+            textColor = Color.red;
         }
 
         text.color = textColor;

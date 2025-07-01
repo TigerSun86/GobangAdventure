@@ -1,4 +1,5 @@
-﻿skillName,level,skillType,value,cdTime,actionTime,recoveryTime,projectileSpeed,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,buffType1,buffDuration1,buffValue1,description
-Heal,1,Heal,10,1,1,1,0,2,Ally,Closest,1,Self,All,None,0,0,Heal the ally
-Shot,1,Shot,100,5,1,1,4,5,Opponent,Closest,1,None,All,None,0,0,Shot the enemy
-Stun,1,Stun,50,3,0.2,0.2,4,5,Opponent,Closest,1,None,All,Stun,5,0,Stun the enemy
+﻿skillName,level,skillType,skillActivationType,value,cdTime,actionTime,recoveryTime,projectileSpeed,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,buff1Type,buff1Duration,buff1Value1,buff1Value2,description
+Heal,1,Heal,Active,10,1,1,1,0,2,Ally,Closest,1,Self,All,None,0,0,0,Heal the ally
+Shot,1,Shot,Active,100,5,1,1,4,5,Opponent,Closest,1,None,All,None,0,0,0,Shot the enemy
+Stun,1,Stun,Active,50,3,0.2,0.2,4,5,Opponent,Closest,1,None,All,Stun,5,0,0,Stun the enemy
+CriticalHit,1,CriticalHit,Passive,0,0,0,0,0,0,Ally,Closest,1,None,All,CriticalHit,Infinity,0.5,3,Make a critical hit by chance

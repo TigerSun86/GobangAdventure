@@ -7,7 +7,9 @@ public class Buff
 
     public float duration;
 
-    public float value;
+    public float value1;
+
+    public float value2;
 
     // Set internally.
     public float startTime;

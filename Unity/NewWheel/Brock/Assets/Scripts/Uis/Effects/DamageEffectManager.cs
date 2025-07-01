@@ -15,11 +15,12 @@ public class DamageEffectManager : MonoBehaviour
         }
 
         List<GameObject> effects = effectPrefabs
-            .Where(o => o.damageType == damageData.damageType)
+            .Where(o => (o.damageType & damageData.damageType) > 0)
             .Select(o => o.effectPrefab)
             .ToList();
         if (!effects.Any())
         {
+            Debug.LogWarning($"No effects found for damage type: {damageData.damageType}");
             return;
         }
 

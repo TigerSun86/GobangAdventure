@@ -1219,12 +1219,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillPrefabs:
-    m_keys: 00000000010000000200000003000000
+    m_keys: 0000000001000000020000000300000004000000
     m_values:
     - {fileID: 7031605176509100956, guid: f2c9308317606644ca47df8815c4ac72, type: 3}
     - {fileID: 4227046053058796825, guid: 278bdcee4e8c62140aa0efdf5120dc3d, type: 3}
     - {fileID: 4632151438772904637, guid: 0189be1643e0ae8409afd16cc505fdf5, type: 3}
     - {fileID: 4632151438772904637, guid: 53135703fa5f18d42ab135ff261b0354, type: 3}
+    - {fileID: 7031605176509100956, guid: 85c51ee4fee8472409c7ab3ca78591c8, type: 3}
 --- !u!1 &1105161431
 GameObject:
   m_ObjectHideFlags: 0
@@ -1588,13 +1589,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectPrefabs:
-  - damageType: 0
-    effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
   - damageType: 1
     effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
   - damageType: 2
     effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
-  - damageType: 3
+  - damageType: 4
+    effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
+  - damageType: 8
+    effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
+  - damageType: 16
     effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
 --- !u!4 &1471139599
 Transform:

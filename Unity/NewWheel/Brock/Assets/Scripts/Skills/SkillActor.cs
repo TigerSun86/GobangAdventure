@@ -85,6 +85,11 @@ public class SkillActor : MonoBehaviour
     {
         foreach (SkillBase skill in this.skills)
         {
+            if (skill.skillConfig.skillActivationType != SkillActivationType.Active)
+            {
+                continue; // Skip passive skills in the update loop.
+            }
+
             skill.UpdateState();
             if (skill.IsWaitingAct() && !this.skillActionQueue.Contains(skill))
             {

@@ -53,7 +53,7 @@ public class SkillStun : SkillBase
         {
             buffType = BuffType.Stun,
             duration = this.skillConfig.buff1.duration,
-            value = this.skillConfig.buff1.value
+            value1 = this.skillConfig.buff1.value1
         });
     }
 }

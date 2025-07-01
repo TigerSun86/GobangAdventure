@@ -17,6 +17,11 @@ public static class CsvLoader
         string line;
         while ((line = reader.ReadLine()) != null)
         {
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
             string[] values = line.Split(',');
             T item = parser.ParseRow(values, headers);
             result.Add(item);

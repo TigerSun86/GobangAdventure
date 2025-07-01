@@ -11,6 +11,8 @@ public class SkillConfig
 
     public SkillType skillType;
 
+    public SkillActivationType skillActivationType;
+
     public float value;
 
     public float cdTime;
