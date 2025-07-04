@@ -118,6 +118,9 @@ public class Player : MonoBehaviour
         {
             if (weapon != null)
             {
+                // Only destroy is not enough because it happens in the end of the frame.
+                // So we need to disable it first to avoid FindGameObjectsWithTag returning it.
+                weapon.SetActive(false);
                 Destroy(weapon);
             }
         }
