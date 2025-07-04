@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -6,6 +5,18 @@ using UnityEngine;
 
 public class SkillAttack : SkillBase
 {
+    private BuffTracker buffTracker;
+
+    public override void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig)
+    {
+        base.Initialize(weaponSuit, skillConfig);
+        this.buffTracker = this.weaponSuit.GetComponent<BuffTracker>();
+        if (this.buffTracker == null)
+        {
+            Debug.LogError("WeaponSuit does not have a BuffTracker component.");
+        }
+    }
+
     // Returns true if finished.
     protected override bool Act()
     {
@@ -44,6 +55,7 @@ public class SkillAttack : SkillBase
         }
 
         double damage = this.skillConfig.value;
+        damage = CalculateAttackIncrease(damage);
         DamageType damageType = DamageType.NORMAL_ATTACK;
         WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(
             weaponSuit.weaponBaseType,
@@ -70,16 +82,16 @@ public class SkillAttack : SkillBase
         damagable.TakeDamage((int)damage, damageType);
     }
 
+    private double CalculateAttackIncrease(double baseDamage)
+    {
+        double damageDelta = this.buffTracker.Get(BuffType.AttackAmountChange)
+            .Sum(b => b.value1);
+        return baseDamage + damageDelta;
+    }
+
     private Buff CalculateCriticalHit()
     {
-        BuffTracker buffTracker = this.weaponSuit.GetComponent<BuffTracker>();
-        if (buffTracker == null)
-        {
-            Debug.LogError("WeaponSuit does not have a BuffTracker component.");
-            return null;
-        }
-
-        IEnumerable<Buff> criticalBuffs = buffTracker.Get(BuffType.CriticalHit)
+        IEnumerable<Buff> criticalBuffs = this.buffTracker.Get(BuffType.CriticalHit)
             .OrderByDescending(b => b.value2) // Sort by value2 (critical hit multiplier).
             .Where(b => b.value1 > UnityEngine.Random.value); // If true, then this is a critical hit.
         return criticalBuffs.FirstOrDefault();

@@ -13,4 +13,9 @@ public class Buff
 
     // Set internally.
     public float startTime;
+
+    public virtual Buff Clone()
+    {
+        return (Buff)this.MemberwiseClone();
+    }
 }

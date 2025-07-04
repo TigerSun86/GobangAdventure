@@ -18,11 +18,15 @@ public class WeaponSuit : MonoBehaviour
         this.weaponStand.Initialize(this);
         this.capabilityController = GetComponent<CapabilityController>();
         this.skillActor = GetComponentInChildren<SkillActor>();
-        this.skillActor.Initialize(this);
     }
 
     public Health GetHealth()
     {
         return weaponStand.health;
+    }
+
+    private void Start()
+    {
+        this.skillActor.Initialize(this);
     }
 }

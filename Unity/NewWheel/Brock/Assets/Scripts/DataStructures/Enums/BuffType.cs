@@ -5,4 +5,6 @@ public enum BuffType
     Stun,
 
     CriticalHit,
+
+    AttackAmountChange,
 }

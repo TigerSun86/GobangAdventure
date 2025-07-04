@@ -5,4 +5,5 @@ public enum SkillType
     Shot,
     Stun,
     CriticalHit,
+    NeighbourAttackIncrease,
 }

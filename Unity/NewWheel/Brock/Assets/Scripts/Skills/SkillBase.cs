@@ -132,9 +132,9 @@ public class SkillBase : MonoBehaviour
         IEnumerable<WeaponSuit> targetCandidates = GameObject.FindGameObjectsWithTag(GetTargetTag())
             .Select(o => o.GetComponent<WeaponSuit>());
         IEnumerable<WeaponSuit> result = targetCandidates
-            .Where(target => FilterTarget(target, rangeToFilter))
-            .OrderBy(target => OrderTarget(target))
-            .Take(skillConfig.skillTargetConfig.maxTargets);
+                .Where(target => FilterTarget(target, rangeToFilter))
+                .OrderBy(target => OrderTarget(target))
+                .Take(skillConfig.skillTargetConfig.maxTargets);
         return result.ToArray();
     }
 
@@ -171,6 +171,12 @@ public class SkillBase : MonoBehaviour
         return true;
     }
 
+    protected bool SelectTarget()
+    {
+        this.targets = GetTargets();
+        return this.targets.Length > 0;
+    }
+
     private void SwitchState(SkillState skillState)
     {
         this.skillState = skillState;
@@ -180,12 +186,6 @@ public class SkillBase : MonoBehaviour
     private float GetCalculatedCdTime()
     {
         return this.skillConfig.cdTime - this.skillConfig.actionTime - this.skillConfig.recoveryTime;
-    }
-
-    private bool SelectTarget()
-    {
-        this.targets = GetTargets();
-        return this.targets.Length > 0;
     }
 
     private String GetTargetTag()
