@@ -1546,7 +1546,7 @@ MonoBehaviour:
   - damageType: 8
     effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
   - damageType: 16
-    effectPrefab: {fileID: 3110406082768156154, guid: 3a88d527cccb5a74abe1464057fd10cf, type: 3}
+    effectPrefab: {fileID: 3110406082768156154, guid: 791028ce14efa8540959c3c5abe9cec7, type: 3}
 --- !u!4 &1471139599
 Transform:
   m_ObjectHideFlags: 0

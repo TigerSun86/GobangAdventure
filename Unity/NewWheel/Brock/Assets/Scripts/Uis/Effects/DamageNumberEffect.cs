@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 
@@ -42,17 +39,19 @@ public class DamageNumberEffect : MonoBehaviour
 
     private void SetDamageData(DamageData damageData)
     {
-        transform.position = damageData.gameObject.transform.position;
+        Vector3 randomPositionOffset = new Vector3(
+            Random.Range(-0.5f, 0.5f),
+            Random.Range(0.5f, 1.5f),
+            0f
+        );
+
+        transform.position = damageData.gameObject.transform.position + randomPositionOffset;
         text.text = damageData.actualAmount.ToString();
         Color textColor = Color.white; // Default color
 
         if ((damageData.damageType & DamageType.HEALING) != 0)
         {
             textColor = Color.cyan;
-        }
-        if ((damageData.damageType & DamageType.CRITICAL_HIT) != 0)
-        {
-            text.text = "!" + text.text;
         }
         if ((damageData.damageType & DamageType.WEAK_ATTACK) != 0)
         {
@@ -61,7 +60,6 @@ public class DamageNumberEffect : MonoBehaviour
         }
         if ((damageData.damageType & DamageType.STRONG_ATTACK) != 0)
         {
-            // Dark gray.
             textColor = Color.red;
         }
 
