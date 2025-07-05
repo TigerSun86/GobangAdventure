@@ -1027,6 +1027,8 @@ MonoBehaviour:
     m_keys: 01000000
     m_values:
     - {fileID: 2851224052423624244, guid: 837498846a7883d44a41fcfff2aa6d6d, type: 3}
+  prefab: {fileID: 21300000, guid: 7a88a6ca81ad34e469016546cee84f4d, type: 3}
+  cdPrefab: {fileID: 1660521058258928910, guid: ae2053a4ffd226543bfe2ac2c12bc13a, type: 3}
 --- !u!4 &700991604
 Transform:
   m_ObjectHideFlags: 0

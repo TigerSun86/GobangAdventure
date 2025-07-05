@@ -30,6 +30,11 @@ public class BuffTracker : MonoBehaviour
         return activeBuffs.Where(buff => buff.buffType == buffType);
     }
 
+    public IEnumerable<Buff> GetAll()
+    {
+        return activeBuffs;
+    }
+
     private IEnumerator RemoveBuffAfterDuration(Buff buff)
     {
         yield return new WaitForSeconds(buff.duration);
