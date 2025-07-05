@@ -251,13 +251,37 @@ public class SkillBase : MonoBehaviour
             return true;
         }
 
-        if (IsSelf(target))
+        // Exclude section.
+        bool isSelf = IsSelf(target);
+        if (isSelf && CheckExcludedFilter(TargetFilter.Self))
         {
-            return !CheckExcludedFilter(TargetFilter.Self)
-                && CheckIncludedFilter(TargetFilter.Self);
+            return false;
         }
 
-        return CheckIncludedFilter(TargetFilter.All);
+        Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        bool AreNeighbours = player.AreNeighbours(this.weaponSuit, target);
+        if (AreNeighbours && CheckExcludedFilter(TargetFilter.Neighbours))
+        {
+            return false;
+        }
+
+        // Include section.
+        if (CheckIncludedFilter(TargetFilter.All))
+        {
+            return true;
+        }
+
+        if (isSelf && CheckIncludedFilter(TargetFilter.Self))
+        {
+            return true;
+        }
+
+        if (AreNeighbours && CheckIncludedFilter(TargetFilter.Neighbours))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private bool IsSelf(WeaponSuit target)

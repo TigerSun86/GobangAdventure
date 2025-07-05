@@ -60,6 +60,24 @@ public class Player : MonoBehaviour
         SwapWeaponSuit(sourceSlot, targetSlot);
     }
 
+    public bool AreNeighbours(WeaponSuit weapon1, WeaponSuit weapon2)
+    {
+        if (weapon1 == null || weapon2 == null)
+        {
+            return false;
+        }
+
+        int slotId1 = GetWeaponSlotId(weapon1.transform.parent.gameObject);
+        int slotId2 = GetWeaponSlotId(weapon2.transform.parent.gameObject);
+        if (slotId1 < 0 || slotId2 < 0 || slotId1 >= weaponSlots.Length || slotId2 >= weaponSlots.Length)
+        {
+            return false;
+        }
+
+        int difference = Mathf.Abs(slotId1 - slotId2);
+        return difference == 1 || difference == weaponSlots.Length - 1;
+    }
+
     private void Start()
     {
         if (WaveManager.Instance.IsWaveRunning)

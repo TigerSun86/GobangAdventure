@@ -23,6 +23,8 @@ public class SkillActor : MonoBehaviour
 
     private Dictionary<SkillType, int> skillToPriorities;
 
+    private bool isInitialized = false;
+
     public void SetSkillPriority(SkillType skillType, int priority)
     {
         skillToPriorities[skillType] = priority;
@@ -79,10 +81,17 @@ public class SkillActor : MonoBehaviour
         }
 
         this.skills = skillList.ToArray();
+        this.isInitialized = true;
     }
 
     private void FixedUpdate()
     {
+        if (!this.isInitialized)
+        {
+            // The Initialize is called in WeaponSuit.Start, which could be after this method.
+            return;
+        }
+
         foreach (SkillBase skill in this.skills)
         {
             if (skill.skillConfig.skillActivationType != SkillActivationType.Active)
