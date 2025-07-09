@@ -62,7 +62,7 @@ public class EnemyManager : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        Vector3 fleetPosition = new Vector3(Random.Range(6, 8), Random.Range(-2, 2), 0);
+        Vector3 fleetPosition = new Vector3(Random.Range(5, 6), Random.Range(10, 11), 0);
         EnemyInFleetConfig[] enemyInFleetConfigs = this.enemyConfigDb.GetWaveConfig(WaveManager.Instance.currentWave - 1).enemyInFleetConfigs;
         foreach (EnemyInFleetConfig enemyInFleetConfig in enemyInFleetConfigs)
         {
