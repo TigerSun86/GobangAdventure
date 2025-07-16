@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     {
         WeaponSuit[] targets = this.weaponSuit.skillActor.GetSkillAttack()?.GetTargets(range: 999);
         this.target = (targets != null && targets.Length > 0) ? targets[0].transform : null;
-        if (target != null)
+        if (this.target != null)
         {
             if (IsHealing())
             {
@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
             }
 
             if (this.enemyConfig.aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
-                && weaponSuit.GetHealth().health < (weaponSuit.GetHealth().maxHealth / 2f))
+                && this.weaponSuit.GetHealth().health < (this.weaponSuit.GetHealth().maxHealth / 2f))
             {
                 MoveAway();
                 return;
@@ -50,6 +50,11 @@ public class Enemy : MonoBehaviour
             {
                 MoveToTarget();
             }
+        }
+        else
+        {
+            this.target = GameObject.Find("AllyTower")?.transform;
+            MoveToTarget();
         }
     }
 
