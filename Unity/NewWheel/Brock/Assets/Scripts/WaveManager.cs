@@ -92,11 +92,23 @@ public class WaveManager : MonoBehaviour
                 this.playerShopItemManager.InitializeIfNeeded();
             }
 
-            this.playerShopItemManager.TryAdd("Basic Rock 1");
-            this.playerShopItemManager.TryAdd("Basic Paper 1");
-            this.playerShopItemManager.TryAdd("Basic Scissor 1");
+            if (s)
+            {
+                this.playerShopItemManager.TryAdd("Basic Scissor 1");
+                s = false;
+            }
+            else
+            {
+                this.playerShopItemManager.TryAdd("Attack Buff Scissor 1");
 
-            GameObject.Find("Player").GetComponent<Player>().InitializeWeapons();
+                s = true;
+            }
+            // this.playerShopItemManager.TryAdd("Basic Rock 1");
+            // this.playerShopItemManager.TryAdd("Basic Paper 1");
+
+
+            GameObject.Find("Player").GetComponent<Player>().RefreshWeapons();
         }
     }
+    private bool s = false;
 }

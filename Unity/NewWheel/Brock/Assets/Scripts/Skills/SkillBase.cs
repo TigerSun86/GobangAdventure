@@ -258,8 +258,8 @@ public class SkillBase : MonoBehaviour
             return false;
         }
 
-        Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        bool AreNeighbours = player.AreNeighbours(this.weaponSuit, target);
+        WeaponLayout weaponLayout = GameObject.FindGameObjectWithTag("Player").GetComponent<WeaponLayout>();
+        bool AreNeighbours = weaponLayout.AreNeighbours(this.weaponSuit, target);
         if (AreNeighbours && CheckExcludedFilter(TargetFilter.Neighbours))
         {
             return false;

@@ -51,7 +51,7 @@ public class ShopUi : MonoBehaviour
             return;
         }
 
-        playerUi.InitializeWeapons();
+        this.playerUi.RefreshWeapons();
         this.moneyManager.DecreaseCountToBuy();
         if (this.moneyManager.CountToBuy > 0)
         {
