@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class SkillBase : MonoBehaviour
 {
+    private static readonly HashSet<string> AllyWeaponTags = new HashSet<string> { Tags.PlayerWeapon, Tags.AllyTowerWeapon };
+    private static readonly HashSet<string> EnemyWeaponTags = new HashSet<string> { Tags.EnemyWeapon };
+
     protected WeaponSuit weaponSuit;
 
     public SkillConfig skillConfig;
@@ -129,7 +132,8 @@ public class SkillBase : MonoBehaviour
         }
 
         float rangeToFilter = range ?? this.skillConfig.range;
-        IEnumerable<WeaponSuit> targetCandidates = GameObject.FindGameObjectsWithTag(GetTargetTag())
+        IEnumerable<WeaponSuit> targetCandidates = GetTargetTags()
+            .SelectMany(tag => GameObject.FindGameObjectsWithTag(tag))
             .Select(o => o.GetComponent<WeaponSuit>());
         IEnumerable<WeaponSuit> result = targetCandidates
                 .Where(target => FilterTarget(target, rangeToFilter))
@@ -188,23 +192,25 @@ public class SkillBase : MonoBehaviour
         return this.skillConfig.cdTime - this.skillConfig.actionTime - this.skillConfig.recoveryTime;
     }
 
-    private String GetTargetTag()
+    private IEnumerable<string> GetTargetTags()
     {
-        TargetType targetType = skillConfig.skillTargetConfig.targetType;
-        String tag = weaponSuit.transform.tag;
-        if (tag == "PlayerWeapon")
-        {
-            return targetType == TargetType.Ally ? "PlayerWeapon" : "EnemyWeapon";
-        }
-        else if (tag == "EnemyWeapon")
-        {
-            return targetType == TargetType.Ally ? "EnemyWeapon" : "PlayerWeapon";
-        }
-        else
+        string tag = weaponSuit.transform.tag;
+        bool isAlly = SkillBase.AllyWeaponTags.Contains(tag);
+        bool isEnemy = SkillBase.EnemyWeaponTags.Contains(tag);
+
+        if (!isAlly && !isEnemy)
         {
             Debug.LogError("Invalid tag");
-            return null;
+            return Enumerable.Empty<string>();
         }
+
+        bool targetIsAlly = skillConfig.skillTargetConfig.targetType == TargetType.Ally;
+        if (isAlly == targetIsAlly)
+        {
+            return SkillBase.AllyWeaponTags;
+        }
+
+        return SkillBase.EnemyWeaponTags;
     }
 
     private float OrderTarget(WeaponSuit target)

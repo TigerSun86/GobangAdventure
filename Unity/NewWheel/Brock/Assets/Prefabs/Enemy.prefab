@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 8644479846204265070}
   - component: {fileID: 1176418192858397027}
   - component: {fileID: 1316624031414154631}
+  - component: {fileID: 6448034563340824883}
   - component: {fileID: 7921575432005991264}
   - component: {fileID: 1382945294837798714}
   - component: {fileID: 1234746736937531338}
@@ -419,6 +420,42 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!58 &6448034563340824883
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7228580095256117804}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 6
 --- !u!114 &7921575432005991264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,7 +470,87 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.5
   weaponSuitPrefab: {fileID: 973336722079467576, guid: 35dca496204cf834f843098fdcd06f45, type: 3}
-  aiStrategy: 0
+  enemyConfig:
+    weaponConfig:
+      weaponName: 
+      level: 0
+      weaponBaseType: 0
+      price: 0
+      health: 0
+      attackSkill:
+        skillName: 
+        level: 0
+        description: 
+        skillType: 0
+        skillActivationType: 0
+        value: 0
+        cdTime: 0
+        actionTime: 0
+        recoveryTime: 0
+        projectileSpeed: 0
+        range: 0
+        skillTargetConfig:
+          targetType: 0
+          targetOrdering: 0
+          maxTargets: 0
+          excludedTarget: 0
+          includedTarget: 7
+        buff1:
+          buffType: 0
+          duration: 0
+          value1: 0
+          value2: 0
+          startTime: 0
+      skill1:
+        skillName: 
+        level: 0
+        description: 
+        skillType: 0
+        skillActivationType: 0
+        value: 0
+        cdTime: 0
+        actionTime: 0
+        recoveryTime: 0
+        projectileSpeed: 0
+        range: 0
+        skillTargetConfig:
+          targetType: 0
+          targetOrdering: 0
+          maxTargets: 0
+          excludedTarget: 0
+          includedTarget: 7
+        buff1:
+          buffType: 0
+          duration: 0
+          value1: 0
+          value2: 0
+          startTime: 0
+      skill2:
+        skillName: 
+        level: 0
+        description: 
+        skillType: 0
+        skillActivationType: 0
+        value: 0
+        cdTime: 0
+        actionTime: 0
+        recoveryTime: 0
+        projectileSpeed: 0
+        range: 0
+        skillTargetConfig:
+          targetType: 0
+          targetOrdering: 0
+          maxTargets: 0
+          excludedTarget: 0
+          includedTarget: 7
+        buff1:
+          buffType: 0
+          duration: 0
+          value1: 0
+          value2: 0
+          startTime: 0
+      sprite: {fileID: 0}
+    aiStrategy: 0
 --- !u!114 &1382945294837798714
 MonoBehaviour:
   m_ObjectHideFlags: 0

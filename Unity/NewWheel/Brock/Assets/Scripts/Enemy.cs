@@ -12,7 +12,11 @@ public class Enemy : MonoBehaviour
     [SerializeField, AssignedInCode]
     private EnemyConfig enemyConfig;
 
-    private Transform target;
+    private Vector3 targetPosition;
+
+    private Vector3 allyTowerPosition;
+
+    private Transform playerWeaponTransform;
 
     private WeaponSuit weaponSuit;
 
@@ -20,41 +24,79 @@ public class Enemy : MonoBehaviour
     {
         this.enemyConfig = enemyConfig;
         GameObject weaponSuitObject = Instantiate(weaponSuitPrefab, transform.position, Quaternion.identity, transform);
-        weaponSuitObject.tag = "EnemyWeapon";
+        weaponSuitObject.tag = Tags.EnemyWeapon;
         this.weaponSuit = weaponSuitObject.GetComponent<WeaponSuit>();
         this.weaponSuit.Initialize(this.enemyConfig.weaponConfig);
         DieWithDependency death = GetComponent<DieWithDependency>();
         death.dependency = weaponSuitObject;
     }
 
+    private void Start()
+    {
+        GameObject allyTower = GameObject.Find("AllyTower");
+        if (allyTower == null)
+        {
+            Debug.LogError("AllyTower not found in the scene. Enemy cannot initialize without it.");
+            return;
+        }
+
+        this.allyTowerPosition = allyTower.transform.position;
+
+        this.playerWeaponTransform = null;
+    }
+
     private void FixedUpdate()
     {
-        WeaponSuit[] targets = this.weaponSuit.skillActor.GetSkillAttack()?.GetTargets(range: 999);
-        this.target = (targets != null && targets.Length > 0) ? targets[0].transform : null;
-        if (this.target != null)
+        if (this.playerWeaponTransform != null && !this.playerWeaponTransform.gameObject.activeInHierarchy)
         {
-            if (IsHealing())
-            {
-                // Stay.
-                return;
-            }
+            // Player weapon might be destroyed while within the enemy detecting range.
+            this.playerWeaponTransform = null;
+        }
 
-            if (this.enemyConfig.aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
-                && this.weaponSuit.GetHealth().health < (this.weaponSuit.GetHealth().maxHealth / 2f))
-            {
-                MoveAway();
-                return;
-            }
-
-            if (IsTargetFarAway())
-            {
-                MoveToTarget();
-            }
+        // If player weapon is detected, use it as target; otherwise, use ally tower position.
+        if (this.playerWeaponTransform != null)
+        {
+            this.targetPosition = this.playerWeaponTransform.position;
         }
         else
         {
-            this.target = GameObject.Find("AllyTower")?.transform;
+            this.targetPosition = this.allyTowerPosition;
+        }
+
+        if (IsHealing())
+        {
+            // Stay.
+            return;
+        }
+
+        if (this.enemyConfig.aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
+            && this.weaponSuit.GetHealth().health < (this.weaponSuit.GetHealth().maxHealth / 2f)
+            // When attacking ally tower don't run away because tower cannot chase.
+            && this.targetPosition != this.allyTowerPosition)
+        {
+            MoveAway();
+            return;
+        }
+
+        if (IsTargetFarAway())
+        {
             MoveToTarget();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag(Tags.PlayerWeapon))
+        {
+            this.playerWeaponTransform = collision.transform;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (this.playerWeaponTransform != null && collision.transform == this.playerWeaponTransform)
+        {
+            this.playerWeaponTransform = null;
         }
     }
 
@@ -70,9 +112,9 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        Vector3 direction = transform.position - target.position;
+        Vector3 direction = this.transform.position - this.targetPosition;
         direction.Normalize();
-        transform.position += direction * speed * Time.deltaTime;
+        this.transform.position += direction * speed * Time.deltaTime;
     }
 
     private void MoveToTarget()
@@ -82,14 +124,14 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        Vector3 direction = target.position - transform.position;
+        Vector3 direction = this.targetPosition - this.transform.position;
         direction.Normalize();
-        transform.position += direction * speed * Time.deltaTime;
+        this.transform.position += direction * speed * Time.deltaTime;
     }
 
     private bool IsTargetFarAway()
     {
-        return Vector3.Distance(transform.position, target.position)
+        return Vector3.Distance(this.transform.position, this.targetPosition)
             > GetShortestWeaponRange();
     }
 

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2852976292321115431}
   - component: {fileID: -530033714497838428}
   - component: {fileID: 215842279329844913}
+  - component: {fileID: -4646313148022650395}
   m_Layer: 0
   m_Name: WeaponSuit
   m_TagString: Untagged
@@ -225,6 +226,42 @@ MonoBehaviour:
     - {fileID: 4004708080983207187, guid: 3918119a47598d24c8309bd8660e63e6, type: 3}
     - {fileID: 7482667652216324306, guid: 311f913eff4fe7c4ba9b0e14b43b0113, type: 3}
   uiPrefab: {fileID: 1660521058258928910, guid: ae2053a4ffd226543bfe2ac2c12bc13a, type: 3}
+--- !u!58 &-4646313148022650395
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973336722079467576}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
 --- !u!1 &1479917027771085383
 GameObject:
   m_ObjectHideFlags: 0
