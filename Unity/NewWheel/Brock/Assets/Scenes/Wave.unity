@@ -5462,6 +5462,7 @@ GameObject:
   - component: {fileID: 1215010276}
   - component: {fileID: 1215010275}
   - component: {fileID: 1215010282}
+  - component: {fileID: 1215010283}
   m_Layer: 0
   m_Name: AllyTower
   m_TagString: Untagged
@@ -5624,7 +5625,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b49d616741dc7d47ac1f9de2cafc307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponLayout: {fileID: 1215010283}
+--- !u!114 &1215010283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215010274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6964ab1e2207f2241877769262ec99a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSlotCount: 3
+  weaponTag: PlayerWeapon
+  weaponSlotPrefab: {fileID: 9115577987707012777, guid: e08c6427308e8374bb4ff3703b293ebe, type: 3}
   weaponSuitPrefab: {fileID: 973336722079467576, guid: 35dca496204cf834f843098fdcd06f45, type: 3}
+  weaponSlots: []
+  weaponSuits: []
+  weaponConfigs: []
 --- !u!1 &1253361177
 GameObject:
   m_ObjectHideFlags: 0

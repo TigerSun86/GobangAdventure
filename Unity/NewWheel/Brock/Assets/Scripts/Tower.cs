@@ -3,17 +3,13 @@ using UnityEngine;
 public class Tower : MonoBehaviour
 {
     [SerializeField, Required]
-    private GameObject weaponSuitPrefab;
-
-    private WeaponSuit weaponSuit;
+    private WeaponLayout weaponLayout;
 
     private void Start()
     {
-        WeaponConfig weaponConfig = ConfigDb.Instance.weaponConfigDb.Get("Basic Rock 1");
-
-        GameObject weaponSuitObject = Instantiate(this.weaponSuitPrefab, transform.position, Quaternion.identity, transform);
-        weaponSuitObject.tag = "PlayerWeapon";
-        this.weaponSuit = weaponSuitObject.GetComponent<WeaponSuit>();
-        this.weaponSuit.Initialize(weaponConfig);
+        this.weaponLayout.SetWeaponConfig(0, ConfigDb.Instance.weaponConfigDb.Get("Basic Rock 1"));
+        this.weaponLayout.SetWeaponConfig(1, ConfigDb.Instance.weaponConfigDb.Get("Basic Paper 1"));
+        this.weaponLayout.SetWeaponConfig(2, ConfigDb.Instance.weaponConfigDb.Get("Basic Scissor 1"));
+        this.weaponLayout.RefreshWeapons();
     }
 }
