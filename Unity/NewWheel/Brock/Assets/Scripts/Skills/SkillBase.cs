@@ -7,7 +7,7 @@ using UnityEngine;
 public class SkillBase : MonoBehaviour
 {
     private static readonly HashSet<string> AllyWeaponTags = new HashSet<string> { Tags.PlayerWeapon, Tags.AllyTowerWeapon };
-    private static readonly HashSet<string> EnemyWeaponTags = new HashSet<string> { Tags.EnemyWeapon };
+    private static readonly HashSet<string> EnemyWeaponTags = new HashSet<string> { Tags.EnemyWeapon, Tags.EnemyTowerWeapon };
 
     protected WeaponSuit weaponSuit;
 

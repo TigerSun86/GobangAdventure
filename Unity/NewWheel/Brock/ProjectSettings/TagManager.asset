@@ -8,6 +8,7 @@ TagManager:
   - EnemyWeapon
   - PlayerWeapon
   - AllyTowerWeapon
+  - EnemyTowerWeapon
   layers:
   - Default
   - TransparentFX
