@@ -24,7 +24,11 @@ public class WaveManager : MonoBehaviour
     public void WaveCompleted()
     {
         IsWaveRunning = false;
-        EnemyManager.Instance.DestroyAllEnemies();
+        if (EnemyManager.Instance.gameObject.activeInHierarchy)
+        {
+            EnemyManager.Instance.DestroyAllEnemies();
+        }
+
         StopAllCoroutines();
         if (this.moneyManager == null)
         {
