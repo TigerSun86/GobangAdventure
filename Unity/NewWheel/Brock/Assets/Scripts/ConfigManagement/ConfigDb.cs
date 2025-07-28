@@ -45,7 +45,7 @@ public class ConfigDb : MonoBehaviour
             List<EnemyInWaveConfig> waveConfigs = CsvLoader.LoadFromCSV(waveConfigCsv, new WaveConfigParser(this.enemyConfigDb));
             this.waveConfigDb = new WaveConfigDb(waveConfigs);
 
-            Debug.Log($"Loaded {skillConfigs.Count} skills, {weaponConfigs.Count} weapons, {enemyConfigs.Count} enemies, {waveConfigs.Count} waves.");
+            Debug.Log($"Loaded {skillConfigs.Count} skills, {weaponConfigs.Count} weapons, {enemyConfigs.Count} enemies, {waveConfigs.Count} wave fleets.");
         }
         else
         {

@@ -55,6 +55,11 @@ public class WaveConfigParser : ICsvRowParser<EnemyInWaveConfig>
                     break;
                 case "spawnInterval":
                     result.spawnInterval = ParserUtility.ParseFloatSafe(value, "spawnInterval");
+                    if (result.spawnInterval < 0.5f)
+                    {
+                        Debug.LogWarning($"Invalid spawn interval: {result.spawnInterval}. Setting to default value of 1.");
+                        result.spawnInterval = 1f;
+                    }
                     break;
                 default:
                     Debug.LogWarning($"Unrecognized header '{header}' in CSV");
