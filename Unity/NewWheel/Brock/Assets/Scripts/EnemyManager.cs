@@ -8,18 +8,42 @@ public class EnemyManager : MonoBehaviour
     private GameObject enemyPrefab;
 
     [SerializeField, AssignedInCode]
-    private EnemyConfigDb enemyConfigDb;
+    private WaveConfigDb waveConfigDb;
 
-    [SerializeField]
-    private bool hasSpawnedEnemies;
+    [SerializeField, Required]
+    private GameObject spawnPointMiddle;
 
-    void Start()
+    [SerializeField, Required]
+    private GameObject spawnPointDown;
+
+    private float spawnTimer;
+
+    private EnemyInWaveConfig[] currentWaveEnemyConfigs;
+
+    private float[] enemySpawnTimers;
+
+    public void DestroyAllEnemies()
+    {
+        foreach (Enemy enemy in GetComponentsInChildren<Enemy>())
+        {
+            Destroy(enemy.gameObject);
+        }
+    }
+
+    private void Start()
     {
         if (Instance == null)
         {
             Instance = this;
-            this.hasSpawnedEnemies = false;
-            this.enemyConfigDb = ConfigDb.Instance.enemyConfigDb;
+            this.waveConfigDb = ConfigDb.Instance.waveConfigDb;
+            this.spawnTimer = 0f;
+
+            this.currentWaveEnemyConfigs = this.waveConfigDb.GetWaveConfig(WaveManager.Instance.currentWave - 1).enemyInWaveConfigs;
+            this.enemySpawnTimers = new float[this.currentWaveEnemyConfigs.Length];
+        }
+        else
+        {
+            Destroy(gameObject); // Prevent duplicates
         }
     }
 
@@ -30,45 +54,49 @@ public class EnemyManager : MonoBehaviour
             return;
         }
 
-        int enemyCount = GetComponentsInChildren<Enemy>().Length;
-        if (enemyCount <= 0)
+        this.spawnTimer += Time.fixedDeltaTime;
+
+        for (int i = 0; i < this.currentWaveEnemyConfigs.Length; i++)
         {
-            if (WaveManager.Instance.currentWave >= this.enemyConfigDb.GetWaveCount())
+            EnemyInWaveConfig enemyInWaveConfig = currentWaveEnemyConfigs[i];
+            if (this.spawnTimer < enemyInWaveConfig.spawnDelay)
             {
-                Debug.LogError("Wave config has not setup for wave " + WaveManager.Instance.currentWave);
-                return;
+                continue;
             }
 
-            if (this.hasSpawnedEnemies)
+            // Check if it's time to spawn the next enemy in this slot
+            if (enemySpawnTimers[i] <= 0f)
             {
-                this.hasSpawnedEnemies = false;
-                WaveManager.Instance.WaveCompleted();
+                SpawnEnemies(enemyInWaveConfig);
+
+                this.enemySpawnTimers[i] = enemyInWaveConfig.spawnInterval;
             }
             else
             {
-                this.hasSpawnedEnemies = true;
-                SpawnEnemies();
+                this.enemySpawnTimers[i] -= Time.fixedDeltaTime;
             }
         }
     }
 
-    public void DestroyAllEnemies()
+
+    private void SpawnEnemies(EnemyInWaveConfig enemyInWaveConfig)
     {
-        foreach (Enemy enemy in GetComponentsInChildren<Enemy>())
-        {
-            Destroy(enemy.gameObject);
-        }
+        Vector3 enemyPosition = GetSpawnPosition(enemyInWaveConfig.spawnPoint) + (Vector3)enemyInWaveConfig.positionInFleet;
+        GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
+        enemyObject.GetComponent<Enemy>().Initialize(enemyInWaveConfig.enemyConfig);
     }
 
-    private void SpawnEnemies()
+    private Vector3 GetSpawnPosition(SpawnPoint spawnPoint)
     {
-        Vector3 fleetPosition = new Vector3(Random.Range(5, 6), Random.Range(10, 11), 0);
-        EnemyInFleetConfig[] enemyInFleetConfigs = this.enemyConfigDb.GetWaveConfig(WaveManager.Instance.currentWave - 1).enemyInFleetConfigs;
-        foreach (EnemyInFleetConfig enemyInFleetConfig in enemyInFleetConfigs)
+        switch (spawnPoint)
         {
-            Vector3 enemyPosition = fleetPosition + (Vector3)enemyInFleetConfig.positionInFleet;
-            GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
-            enemyObject.GetComponent<Enemy>().Initialize(enemyInFleetConfig.enemyConfig);
+            case SpawnPoint.Middle:
+                return spawnPointMiddle.transform.position;
+            case SpawnPoint.Down:
+                return spawnPointDown.transform.position;
+            default:
+                Debug.LogError($"Unknown spawn point: {spawnPoint}");
+                return Vector3.zero;
         }
     }
 }

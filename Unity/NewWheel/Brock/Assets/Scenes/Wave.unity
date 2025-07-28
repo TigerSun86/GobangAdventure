@@ -3981,6 +3981,68 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4085020156788331288, guid: 7220ac55ff667134b8251aeec17d985a, type: 3}
   m_PrefabInstance: {fileID: 714401238}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &751819700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 751819701}
+  m_Layer: 0
+  m_Name: SpawnPointMiddle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &751819701
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751819700}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.94, y: 17.84, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1328440673}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &766841906
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 766841907}
+  m_Layer: 0
+  m_Name: SpawnPointDown
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &766841907
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766841906}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 24.96, y: 15.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1328440673}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &775843355
 GameObject:
   m_ObjectHideFlags: 0
@@ -6041,9 +6103,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 7228580095256117804, guid: 9283bb619ad44434ea5a864557e35590, type: 3}
-  enemyConfigDb:
+  waveConfigDb:
     waveConfigs: []
-  hasSpawnedEnemies: 0
+  spawnPointMiddle: {fileID: 751819700}
+  spawnPointDown: {fileID: 766841906}
 --- !u!4 &1328440673
 Transform:
   m_ObjectHideFlags: 0
@@ -6056,7 +6119,9 @@ Transform:
   m_LocalPosition: {x: 4.4913216, y: 1.6201994, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 751819701}
+  - {fileID: 766841907}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1330228081
@@ -26677,6 +26742,7 @@ MonoBehaviour:
   skillConfigCsv: {fileID: 4900000, guid: e755ca29f290b9546bb9063b223ecb1f, type: 3}
   weaponConfigCsv: {fileID: 4900000, guid: 9c1ed5aba3edad64797ac31a74c54628, type: 3}
   enemyConfigCsv: {fileID: 4900000, guid: aff259aeb8c57f740a5f41e5350676d7, type: 3}
+  waveConfigCsv: {fileID: 4900000, guid: 5de75d1c02f621a4290501d3c7499c62, type: 3}
   skillConfigDb:
     skillConfigMap:
       m_keys: []
@@ -26686,6 +26752,10 @@ MonoBehaviour:
       m_keys: []
       m_values: []
   enemyConfigDb:
+    enemyConfigMap:
+      m_keys: []
+      m_values: []
+  waveConfigDb:
     waveConfigs: []
 --- !u!4 &1557182528
 Transform:

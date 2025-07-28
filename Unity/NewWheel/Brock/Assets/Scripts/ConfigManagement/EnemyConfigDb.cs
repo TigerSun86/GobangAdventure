@@ -6,81 +6,37 @@ using UnityEngine;
 public class EnemyConfigDb
 {
     [SerializeField]
-    private WaveConfig[] waveConfigs;
+    private StringToEnemyConfigDictionary enemyConfigMap;
 
-    public EnemyConfigDb(List<RawEnemyConfig> enemyConfigs)
+    public EnemyConfigDb(List<EnemyConfig> enemyConfigs)
     {
-        this.waveConfigs = CreateWaveConfigs(enemyConfigs);
-    }
-
-    public WaveConfig GetWaveConfig(int waveId)
-    {
-        if (waveId < 0 || waveId >= this.waveConfigs.Length)
+        this.enemyConfigMap = new StringToEnemyConfigDictionary();
+        foreach (EnemyConfig enemy in enemyConfigs)
         {
-            Debug.LogWarning($"Wave config not found for id: {waveId}");
-            return null;
-        }
-
-        return this.waveConfigs[waveId];
-    }
-
-    public int GetWaveCount()
-    {
-        return this.waveConfigs.Length;
-    }
-
-    private WaveConfig[] CreateWaveConfigs(List<RawEnemyConfig> enemyConfigs)
-    {
-        Dictionary<int, Dictionary<int, EnemyInFleetConfig>> waveIdToEnemyIdToConfig = new Dictionary<int, Dictionary<int, EnemyInFleetConfig>>();
-        foreach (RawEnemyConfig enemyConfig in enemyConfigs)
-        {
-            if (enemyConfig.waveId < 0 || enemyConfig.enemyId < 0)
+            string key = enemy.enemyId;
+            if (this.enemyConfigMap.ContainsKey(key))
             {
-                Debug.LogWarning($"Invalid enemy config found, wave: {enemyConfig.waveId}, enemy: {enemyConfig.enemyId}. Skipping.");
+                Debug.LogWarning($"Duplicate enemy config found: {key}. Skipping.");
                 continue;
             }
 
-            Dictionary<int, EnemyInFleetConfig> waveConfig = waveIdToEnemyIdToConfig.GetValueOrDefault(enemyConfig.waveId);
-            if (waveConfig == null)
-            {
-                waveConfig = new Dictionary<int, EnemyInFleetConfig>();
-                waveIdToEnemyIdToConfig[enemyConfig.waveId] = waveConfig;
-            }
-
-            if (waveConfig.ContainsKey(enemyConfig.enemyId))
-            {
-                Debug.LogWarning($"Duplicate enemy config found, wave: {enemyConfig.waveId}, enemy: {enemyConfig.enemyId}. Skipping.");
-                continue;
-            }
-
-            waveConfig[enemyConfig.enemyId] = enemyConfig.enemyInFleetConfig;
+            this.enemyConfigMap.Add(key, enemy);
         }
+    }
 
-        List<WaveConfig> waveConfigList = new List<WaveConfig>();
-        for (int waveId = 0; waveId < waveIdToEnemyIdToConfig.Count; waveId++)
+    public EnemyConfig Get(string id)
+    {
+        if (enemyConfigMap.TryGetValue(id, out EnemyConfig skill))
         {
-            if (!waveIdToEnemyIdToConfig.TryGetValue(waveId, out Dictionary<int, EnemyInFleetConfig> enemyInFleetConfigs))
-            {
-                Debug.LogWarning($"No enemy configs found for wave: {waveId}. Skipping.");
-                continue;
-            }
-
-            WaveConfig waveConfig = new WaveConfig();
-            waveConfig.enemyInFleetConfigs = new EnemyInFleetConfig[enemyInFleetConfigs.Count];
-            for (int enemyId = 0; enemyId < enemyInFleetConfigs.Count; enemyId++)
-            {
-                if (!enemyInFleetConfigs.TryGetValue(enemyId, out EnemyInFleetConfig enemyInFleetConfig))
-                {
-                    Debug.LogWarning($"No enemy config found for wave: {waveId}, enemy: {enemyId}. Skipping.");
-                    continue;
-                }
-
-                waveConfig.enemyInFleetConfigs[enemyId] = enemyInFleetConfig;
-            }
-
-            waveConfigList.Add(waveConfig);
+            return skill;
         }
 
-        return waveConfigList.ToArray();
+        Debug.LogWarning($"enemy config not found for id: {id}");
+        return null;
+    }
+
+    public IEnumerable<EnemyConfig> GetAll()
+    {
+        return enemyConfigMap.Values;
     }
 }

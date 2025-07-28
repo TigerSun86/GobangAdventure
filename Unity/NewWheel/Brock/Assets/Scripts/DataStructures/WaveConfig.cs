@@ -3,5 +3,5 @@ using System;
 [Serializable]
 public class WaveConfig
 {
-    public EnemyInFleetConfig[] enemyInFleetConfigs;
+    public EnemyInWaveConfig[] enemyInWaveConfigs;
 }

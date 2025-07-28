@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyConfigParser : ICsvRowParser<RawEnemyConfig>
+public class EnemyConfigParser : ICsvRowParser<EnemyConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "waveId","enemyId","positionX","positionY","aiStrategy","weapon"
+        "enemyId","weapon","aiStrategy"
     };
 
     private bool validated = false;
@@ -16,7 +16,7 @@ public class EnemyConfigParser : ICsvRowParser<RawEnemyConfig>
         this.weaponConfigDb = weaponConfigDb;
     }
 
-    public RawEnemyConfig ParseRow(string[] values, string[] headers)
+    public EnemyConfig ParseRow(string[] values, string[] headers)
     {
         if (!validated)
         {
@@ -24,11 +24,7 @@ public class EnemyConfigParser : ICsvRowParser<RawEnemyConfig>
             validated = true;
         }
 
-        RawEnemyConfig result = new RawEnemyConfig();
-        result.enemyInFleetConfig = new EnemyInFleetConfig();
-        result.enemyInFleetConfig.enemyConfig = new EnemyConfig();
-        result.enemyInFleetConfig.positionInFleet = Vector2.zero;
-
+        EnemyConfig result = new EnemyConfig();
         for (int i = 0; i < headers.Length; i++)
         {
             string header = headers[i].Trim();
@@ -36,23 +32,14 @@ public class EnemyConfigParser : ICsvRowParser<RawEnemyConfig>
 
             switch (header)
             {
-                case "waveId":
-                    result.waveId = ParserUtility.ParseIntSafe(value, "waveId");
-                    break;
                 case "enemyId":
-                    result.enemyId = ParserUtility.ParseIntSafe(value, "enemyId");
-                    break;
-                case "positionX":
-                    result.enemyInFleetConfig.positionInFleet.x = ParserUtility.ParseFloatSafe(value, "positionX");
-                    break;
-                case "positionY":
-                    result.enemyInFleetConfig.positionInFleet.y = ParserUtility.ParseFloatSafe(value, "positionY");
-                    break;
-                case "aiStrategy":
-                    result.enemyInFleetConfig.enemyConfig.aiStrategy = ParserUtility.ParseEnum<AiStrategy>(value, ignoreCase: true);
+                    result.enemyId = value;
                     break;
                 case "weapon":
-                    result.enemyInFleetConfig.enemyConfig.weaponConfig = this.weaponConfigDb.Get(value);
+                    result.weaponConfig = this.weaponConfigDb.Get(value);
+                    break;
+                case "aiStrategy":
+                    result.aiStrategy = ParserUtility.ParseEnum<AiStrategy>(value, ignoreCase: true);
                     break;
                 default:
                     Debug.LogWarning($"Unrecognized header '{header}' in CSV");
