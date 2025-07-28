@@ -12,9 +12,10 @@ public class Enemy : MonoBehaviour
     [SerializeField, AssignedInCode]
     private EnemyConfig enemyConfig;
 
+    [SerializeField, AssignedInCode]
     private Vector3 targetPosition;
 
-    private Vector3 allyTowerPosition;
+    private Vector3 defaultTargetPosition;
 
     private Transform playerWeaponTransform;
 
@@ -23,6 +24,16 @@ public class Enemy : MonoBehaviour
     public void Initialize(EnemyConfig enemyConfig)
     {
         this.enemyConfig = enemyConfig;
+        GameObject allyTower = GameObject.Find("AllyTower");
+        if (allyTower == null)
+        {
+            Debug.LogError("AllyTower not found in the scene. Enemy cannot initialize without it.");
+            return;
+        }
+
+        // The default target position should be set by DirectionTrigger. This setup is just for extra safety.
+        this.defaultTargetPosition = allyTower.transform.position;
+
         GameObject weaponSuitObject = Instantiate(weaponSuitPrefab, transform.position, Quaternion.identity, transform);
         weaponSuitObject.tag = Tags.EnemyWeapon;
         this.weaponSuit = weaponSuitObject.GetComponent<WeaponSuit>();
@@ -31,17 +42,13 @@ public class Enemy : MonoBehaviour
         death.dependency = weaponSuitObject;
     }
 
+    public void ChangeDefaultTargetPosition(Vector3 newDefaultTargetPosition)
+    {
+        this.defaultTargetPosition = newDefaultTargetPosition;
+    }
+
     private void Start()
     {
-        GameObject allyTower = GameObject.Find("AllyTower");
-        if (allyTower == null)
-        {
-            Debug.LogError("AllyTower not found in the scene. Enemy cannot initialize without it.");
-            return;
-        }
-
-        this.allyTowerPosition = allyTower.transform.position;
-
         this.playerWeaponTransform = null;
     }
 
@@ -60,7 +67,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            this.targetPosition = this.allyTowerPosition;
+            this.targetPosition = this.defaultTargetPosition;
         }
 
         if (IsHealing())
@@ -72,7 +79,7 @@ public class Enemy : MonoBehaviour
         if (this.enemyConfig.aiStrategy.HasFlag(AiStrategy.RunAwayWhenLowHealth)
             && this.weaponSuit.GetHealth().health < (this.weaponSuit.GetHealth().maxHealth / 2f)
             // When attacking ally tower don't run away because tower cannot chase.
-            && this.targetPosition != this.allyTowerPosition)
+            && this.targetPosition != this.defaultTargetPosition)
         {
             MoveAway();
             return;
