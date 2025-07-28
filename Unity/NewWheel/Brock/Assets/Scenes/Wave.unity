@@ -27155,7 +27155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9e6ffce185aef4885fdaa15b23320d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxWaveTime: 60
+  maxWaveTime: 300
   moneyManager: {fileID: 0}
   currentWave: 0
   currentWaveTime: 0
