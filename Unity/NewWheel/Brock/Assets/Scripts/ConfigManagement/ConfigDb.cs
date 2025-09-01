@@ -7,6 +7,9 @@ public class ConfigDb : MonoBehaviour
     TextAsset skillConfigCsv;
 
     [SerializeField, Required]
+    TextAsset itemConfigCsv;
+
+    [SerializeField, Required]
     TextAsset weaponConfigCsv;
 
     [SerializeField, Required]
@@ -17,6 +20,9 @@ public class ConfigDb : MonoBehaviour
 
     [SerializeField, AssignedInCode]
     public SkillConfigDb skillConfigDb;
+
+    [SerializeField, AssignedInCode]
+    public ItemConfigDb itemConfigDb;
 
     [SerializeField, AssignedInCode]
     public WeaponConfigDb weaponConfigDb;
@@ -40,12 +46,14 @@ public class ConfigDb : MonoBehaviour
             this.skillConfigDb = new SkillConfigDb(skillConfigs);
             List<WeaponConfig> weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
             this.weaponConfigDb = new WeaponConfigDb(weaponConfigs);
+            List<ItemConfig> itemConfigs = CsvLoader.LoadFromCSV(itemConfigCsv, new ItemConfigParser());
+            this.itemConfigDb = new ItemConfigDb(itemConfigs);
             List<EnemyConfig> enemyConfigs = CsvLoader.LoadFromCSV(enemyConfigCsv, new EnemyConfigParser(this.weaponConfigDb));
             this.enemyConfigDb = new EnemyConfigDb(enemyConfigs);
             List<EnemyInWaveConfig> waveConfigs = CsvLoader.LoadFromCSV(waveConfigCsv, new WaveConfigParser(this.enemyConfigDb));
             this.waveConfigDb = new WaveConfigDb(waveConfigs);
 
-            Debug.Log($"Loaded {skillConfigs.Count} skills, {weaponConfigs.Count} weapons, {enemyConfigs.Count} enemies, {waveConfigs.Count} wave fleets.");
+            Debug.Log($"Loaded {skillConfigs.Count} skills, {weaponConfigs.Count} weapons, {itemConfigs.Count} items, {enemyConfigs.Count} enemies, {waveConfigs.Count} wave fleets.");
         }
         else
         {
