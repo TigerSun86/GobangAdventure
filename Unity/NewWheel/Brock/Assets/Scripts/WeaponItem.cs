@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class WeaponItem : MonoBehaviour
 {
     public int isMovingCount;
@@ -43,21 +44,7 @@ public class WeaponItem : MonoBehaviour
     private void ChangeSprite()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        switch (this.weaponSuit.weaponBaseType)
-        {
-            case WeaponBaseType.ROCK:
-                spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Circle");
-                break;
-            case WeaponBaseType.PAPER:
-                spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Square");
-                break;
-            case WeaponBaseType.SCISSOR:
-                spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Triangle");
-                break;
-            default:
-                Debug.LogError("Invalid weapon base type");
-                break;
-        }
+        spriteRenderer.sprite = this.weaponSuit.weaponConfig.sprite;
     }
 
     private void Move(Transform target, float remainingTime)
