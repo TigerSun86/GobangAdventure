@@ -13,4 +13,16 @@ public class ShopItem
     public int price;
 
     public WeaponConfig weaponConfig;
+
+    public ItemConfig itemConfig;
+
+    public bool IsWeapon()
+    {
+        return weaponConfig != null;
+    }
+
+    public bool IsItem()
+    {
+        return itemConfig != null;
+    }
 }

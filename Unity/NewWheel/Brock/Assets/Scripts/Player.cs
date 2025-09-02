@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    private PlayerShopItemManager playerShopItemManager;
+    private WeaponInventory weaponInventory;
 
     public void RefreshWeapons()
     {
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     {
         int sourceId = this.weaponLayout.GetWeaponSlotIdByWeapon(weapon);
         int targetId = this.weaponLayout.GetWeaponSlotIdBySlot(targetSlot);
-        this.playerShopItemManager.Swap(sourceId, targetId);
+        this.weaponInventory.Swap(sourceId, targetId);
         this.weaponLayout.SwapWeapon(sourceId, targetId);
         RefreshWeaponConfigs();
     }
@@ -34,9 +34,8 @@ public class Player : MonoBehaviour
             this.rb = GetComponent<Rigidbody2D>();
         }
 
-        this.playerShopItemManager = PlayerShopItemManager.Instance;
-        this.playerShopItemManager.InitializeIfNeeded();
-        this.playerShopItemManager.SetMaxStorage(this.weaponLayout.GetWeaponSlotCount());
+        this.weaponInventory = ConfigDb.Instance.weaponInventory;
+        this.weaponInventory.SetMaxStorage(this.weaponLayout.GetWeaponSlotCount());
 
         RefreshWeapons();
     }
@@ -56,7 +55,7 @@ public class Player : MonoBehaviour
     {
         for (int id = 0; id < this.weaponLayout.GetWeaponSlotCount(); id++)
         {
-            ShopItem shopItem = this.playerShopItemManager.Get(id);
+            ShopItem shopItem = this.weaponInventory.Get(id);
             this.weaponLayout.SetWeaponConfig(id, shopItem?.weaponConfig);
         }
     }

@@ -19,7 +19,7 @@ public class WaveManager : MonoBehaviour
 
     public int currentWaveTime = 0;
 
-    private PlayerShopItemManager playerShopItemManager;
+    private WeaponInventory weaponInventory;
 
     public void WaveCompleted()
     {
@@ -90,26 +90,22 @@ public class WaveManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (this.playerShopItemManager == null)
+            if (this.weaponInventory == null)
             {
-                this.playerShopItemManager = PlayerShopItemManager.Instance;
-                this.playerShopItemManager.InitializeIfNeeded();
+                this.weaponInventory = ConfigDb.Instance.weaponInventory;
             }
 
             if (s)
             {
-                this.playerShopItemManager.TryAdd("Basic Scissor 1");
+                this.weaponInventory.TryAdd("Basic Scissor 1");
                 s = false;
             }
             else
             {
-                this.playerShopItemManager.TryAdd("Attack Buff Scissor 1");
+                this.weaponInventory.TryAdd("Attack Buff Scissor 1");
 
                 s = true;
             }
-            // this.playerShopItemManager.TryAdd("Basic Rock 1");
-            // this.playerShopItemManager.TryAdd("Basic Paper 1");
-
 
             GameObject.Find("Player").GetComponent<Player>().RefreshWeapons();
         }
