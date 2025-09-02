@@ -1,4 +1,4 @@
-﻿enemyId,weapon,aiStrategy
-Basic Rock 1,Basic Rock 1,RunAwayWhenLowHealth
-Basic Paper 1,Basic Paper 1,Heal
-Basic Scissor 1,Basic Scissor 1,RunAwayWhenLowHealth
+﻿enemyId,weapon,aiStrategy,goldDropRate,weaponDropRate,itemDropRate
+Basic Rock 1,Basic Rock 1,RunAwayWhenLowHealth,1,,
+Basic Paper 1,Basic Paper 1,Heal,,,1
+Basic Scissor 1,Basic Scissor 1,RunAwayWhenLowHealth,,1,

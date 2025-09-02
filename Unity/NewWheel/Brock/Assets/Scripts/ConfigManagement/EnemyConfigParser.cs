@@ -5,7 +5,7 @@ public class EnemyConfigParser : ICsvRowParser<EnemyConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "enemyId","weapon","aiStrategy"
+        "enemyId", "weapon", "aiStrategy", "goldDropRate", "weaponDropRate", "itemDropRate"
     };
 
     private bool validated = false;
@@ -25,6 +25,7 @@ public class EnemyConfigParser : ICsvRowParser<EnemyConfig>
         }
 
         EnemyConfig result = new EnemyConfig();
+        result.lootConfig = new LootConfig();
         for (int i = 0; i < headers.Length; i++)
         {
             string header = headers[i].Trim();
@@ -40,6 +41,15 @@ public class EnemyConfigParser : ICsvRowParser<EnemyConfig>
                     break;
                 case "aiStrategy":
                     result.aiStrategy = ParserUtility.ParseEnum<AiStrategy>(value, ignoreCase: true);
+                    break;
+                case "goldDropRate":
+                    result.lootConfig.goldDropRate = ParserUtility.ParseFloatSafe(value, "goldDropRate");
+                    break;
+                case "weaponDropRate":
+                    result.lootConfig.weaponDropRate = ParserUtility.ParseFloatSafe(value, "weaponDropRate");
+                    break;
+                case "itemDropRate":
+                    result.lootConfig.itemDropRate = ParserUtility.ParseFloatSafe(value, "itemDropRate");
                     break;
                 default:
                     Debug.LogWarning($"Unrecognized header '{header}' in CSV");

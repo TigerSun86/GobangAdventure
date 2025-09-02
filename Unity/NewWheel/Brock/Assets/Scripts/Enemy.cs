@@ -47,6 +47,11 @@ public class Enemy : MonoBehaviour
         this.defaultTargetPosition = newDefaultTargetPosition;
     }
 
+    public void GenerateLoot()
+    {
+        LootManager.Instance.GenerateLoot(this.enemyConfig.lootConfig, this.transform.position);
+    }
+
     private void Start()
     {
         this.playerWeaponTransform = null;

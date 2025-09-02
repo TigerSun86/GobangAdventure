@@ -28841,6 +28841,56 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2, y: 3}
   m_EdgeRadius: 0
+--- !u!1 &1930311465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1930311467}
+  - component: {fileID: 1930311466}
+  m_Layer: 0
+  m_Name: LootManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1930311466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930311465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e50ce47bf127bd46b72754d8ac1ae42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldCount: 0
+  weaponCount: 0
+  itemCount: 0
+  goldLootPrefab: {fileID: 7743631794309417056, guid: 6e87618ac0ba59148981d9d4326ea67a, type: 3}
+  weaponLootPrefab: {fileID: 7743631794309417056, guid: a06495d0024c39147aa63f70262c6000, type: 3}
+  itemLootPrefab: {fileID: 7743631794309417056, guid: 15a30c3c478fb46478251612bc572b84, type: 3}
+--- !u!4 &1930311467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930311465}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1971823011
 GameObject:
   m_ObjectHideFlags: 0
@@ -29798,6 +29848,7 @@ SceneRoots:
   - {fileID: 5930795002493772310}
   - {fileID: 1706879836}
   - {fileID: 235325066}
+  - {fileID: 1930311467}
   - {fileID: 806068125}
   - {fileID: 1863739001}
   - {fileID: 127229022}

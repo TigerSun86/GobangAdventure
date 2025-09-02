@@ -8,4 +8,6 @@ public class EnemyConfig
     public WeaponConfig weaponConfig;
 
     public AiStrategy aiStrategy;
+
+    public LootConfig lootConfig;
 }
