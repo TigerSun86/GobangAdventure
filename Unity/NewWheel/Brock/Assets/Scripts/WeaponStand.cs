@@ -11,7 +11,8 @@ public class WeaponStand : MonoBehaviour
     public void Initialize(WeaponSuit weaponSuit)
     {
         this.weaponSuit = weaponSuit;
-        this.health.SetMaxHealth(this.weaponSuit.weaponConfig.health);
+        float maxHealth = StatsManager.Instance.maxHealth + this.weaponSuit.weaponConfig.health;
+        this.health.SetMaxHealth((int)maxHealth);
     }
 
     public WeaponSuit GetWeaponSuit()

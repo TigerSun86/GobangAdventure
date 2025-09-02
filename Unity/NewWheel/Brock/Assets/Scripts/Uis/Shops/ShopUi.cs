@@ -69,8 +69,6 @@ public class ShopUi : MonoBehaviour
                 // Weapon slots are full.
                 return;
             }
-
-            this.playerUi.RefreshWeapons();
         }
         else if (item.IsItem())
         {
@@ -81,6 +79,8 @@ public class ShopUi : MonoBehaviour
             Debug.LogError($"Unknown item type: {id}");
             return;
         }
+
+        this.playerUi.RefreshWeapons();
 
         this.moneyManager.DecreaseCountToBuy();
         if (this.moneyManager.CountToBuy > 0)

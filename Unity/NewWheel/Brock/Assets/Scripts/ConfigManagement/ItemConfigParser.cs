@@ -5,7 +5,7 @@ public class ItemConfigParser : ICsvRowParser<ItemConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "itemName","level","price","spritePath"
+        "itemName", "level", "price", "spritePath", "maxHealth", "attack"
     };
 
     private bool validated = false;
@@ -42,6 +42,12 @@ public class ItemConfigParser : ICsvRowParser<ItemConfig>
                     break;
                 case "spritePath":
                     result.sprite = Resources.Load<Sprite>(value);
+                    break;
+                case "maxHealth":
+                    result.maxHealth = ParserUtility.ParseFloatSafe(value, "maxHealth");
+                    break;
+                case "attack":
+                    result.attack = ParserUtility.ParseFloatSafe(value, "attack");
                     break;
                 default:
                     Debug.LogWarning($"[ItemConfigParser] Unrecognized header '{header}' in CSV");

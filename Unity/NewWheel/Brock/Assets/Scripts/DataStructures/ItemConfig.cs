@@ -12,6 +12,10 @@ public class ItemConfig
 
     public Sprite sprite;
 
+    public float maxHealth;
+
+    public float attack;
+
     public string GetId()
     {
         return $"{itemName} {level}";

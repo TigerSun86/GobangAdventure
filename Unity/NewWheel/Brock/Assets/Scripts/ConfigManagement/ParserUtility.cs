@@ -30,6 +30,11 @@ public static class ParserUtility
 
     public static int ParseIntSafe(string value, string fieldName)
     {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return 0;
+        }
+
         if (!int.TryParse(value, out int result))
         {
             Debug.LogWarning($"Failed to parse '{fieldName}' with value '{value}'");
@@ -40,6 +45,11 @@ public static class ParserUtility
 
     public static float ParseFloatSafe(string value, string fieldName)
     {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return 0;
+        }
+
         if (!float.TryParse(value, out float result))
         {
             Debug.LogWarning($"Failed to parse '{fieldName}' with value '{value}'");

@@ -1,3 +1,3 @@
-﻿itemName,level,price,spritePath
-Add Attack,2,1,Sprites/Triangle
-Add Health,1,1,Sprites/Square
+﻿itemName,level,price,spritePath,maxHealth,attack
+Add Attack,2,1,Sprites/Triangle,,2
+Add Health,1,1,Sprites/Square,10,

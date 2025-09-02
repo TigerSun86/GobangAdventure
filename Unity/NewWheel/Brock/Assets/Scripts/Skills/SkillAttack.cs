@@ -54,7 +54,7 @@ public class SkillAttack : SkillBase
             return;
         }
 
-        double damage = this.skillConfig.value;
+        double damage = this.skillConfig.value + StatsManager.Instance.attack;
         damage = CalculateAttackIncrease(damage);
         DamageType damageType = DamageType.NORMAL_ATTACK;
         WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(

@@ -32,6 +32,7 @@ public class ItemInventory
         }
 
         this.ownedItems.Add(shopItem.itemConfig);
+        StatsManager.Instance.ApplyItemStats(shopItem.itemConfig);
         return true;
     }
 }
