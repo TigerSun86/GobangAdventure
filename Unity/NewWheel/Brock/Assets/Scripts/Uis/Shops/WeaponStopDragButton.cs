@@ -5,20 +5,34 @@ using UnityEngine.UI;
 
 public class WeaponStopDragButton : MonoBehaviour
 {
-    [AssignedInCode] public WeaponSlot weaponSlot;
+    [SerializeField, AssignedInCode]
+    private int slotId;
 
-    [SerializeField, Required] Button button;
+    [SerializeField, Required]
+    private Button button;
+
+    public void SetSlotId(int slotId)
+    {
+        if (slotId < 0)
+        {
+            Debug.LogError("Slot ID cannot be negative.");
+            return;
+        }
+
+        this.slotId = slotId;
+    }
 
     public void DragHere()
     {
-        if (WeaponUiManager.Instance.currentlyDragging == null)
+        if (!WeaponUiManager.Instance.IsDragging())
         {
-            throw new Exception("Should be dragging a weapon.");
+            Debug.LogError("Should be dragging a weapon.");
+            return;
         }
 
         Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        player.SwapWeapon(WeaponUiManager.Instance.currentlyDragging, weaponSlot.gameObject);
-        WeaponUiManager.Instance.currentlyDragging = null;
+        player.SwapWeapon(WeaponUiManager.Instance.GetDraggingSlotId(), slotId);
+        WeaponUiManager.Instance.ClearDragging();
     }
 
     void Start()
@@ -38,6 +52,6 @@ public class WeaponStopDragButton : MonoBehaviour
 
     private bool HasWeaponSuit()
     {
-        return weaponSlot.GetWeaponSuit() != null;
+        return !ConfigDb.Instance.weaponInventory.IsSlotEmpty(slotId);
     }
 }

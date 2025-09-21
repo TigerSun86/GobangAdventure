@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Brock.sln"
+    "dotnet.defaultSolution": "Brock.sln",
+    "dotnet.projects.enableFileBasedPrograms": false
 }

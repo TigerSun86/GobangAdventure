@@ -2,8 +2,30 @@ using UnityEngine;
 
 public class WeaponSlot : MonoBehaviour
 {
-    [SerializeField, Required] public GameObject weaponSlotUiPrefab;
-    [SerializeField, AssignedInCode] public GameObject weaponSlotUiInstance;
+    [SerializeField, Required]
+    private GameObject weaponSlotUiPrefab;
+
+    [SerializeField, AssignedInCode]
+    private GameObject weaponSlotUiInstance;
+
+    [SerializeField, AssignedInCode]
+    private int slotId;
+
+    public void Initialize(int slotId)
+    {
+        if (slotId < 0)
+        {
+            Debug.LogError("Slot ID cannot be negative.");
+            return;
+        }
+
+        this.slotId = slotId;
+    }
+
+    public int GetSlotId()
+    {
+        return this.slotId;
+    }
 
     public WeaponSuit GetWeaponSuit()
     {
@@ -17,24 +39,24 @@ public class WeaponSlot : MonoBehaviour
             return;
         }
 
-        weaponSlotUiInstance = Instantiate(weaponSlotUiPrefab, gameObject.transform.position, Quaternion.identity, gameObject.transform);
-        weaponSlotUiInstance.SetActive(false);
+        this.weaponSlotUiInstance = Instantiate(this.weaponSlotUiPrefab, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform);
+        this.weaponSlotUiInstance.SetActive(false);
     }
 
     void Update()
     {
-        if (WaveManager.Instance.IsWaveRunning || weaponSlotUiInstance == null)
+        if (WaveManager.Instance.IsWaveRunning || this.weaponSlotUiInstance == null)
         {
             return;
         }
 
-        if (GetWeaponSuit() != null || WeaponUiManager.Instance.currentlyDragging != null)
+        if (this.GetWeaponSuit() != null || WeaponUiManager.Instance.IsDragging())
         {
-            weaponSlotUiInstance.SetActive(true);
+            this.weaponSlotUiInstance.SetActive(true);
         }
         else
         {
-            weaponSlotUiInstance.SetActive(false);
+            this.weaponSlotUiInstance.SetActive(false);
         }
     }
 }

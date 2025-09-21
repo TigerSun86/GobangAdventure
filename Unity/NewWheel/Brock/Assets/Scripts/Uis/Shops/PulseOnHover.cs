@@ -17,7 +17,7 @@ public class PulseOnHover : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (WeaponUiManager.Instance.currentlyDragging != null)
+        if (WeaponUiManager.Instance.IsDragging())
         {
             StartPulse();
             WeaponUiManager.Instance.SetHoverTarget(this);

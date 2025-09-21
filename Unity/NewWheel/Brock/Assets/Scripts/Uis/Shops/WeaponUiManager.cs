@@ -5,10 +5,33 @@ public class WeaponUiManager : MonoBehaviour
 {
     public static WeaponUiManager Instance;
 
-    [AssignedInCode] public WeaponSuit currentlyDragging;
-    [AssignedInCode] public PulseOnHover currentHoverTarget;
+    [SerializeField, AssignedInCode]
+    private int draggingSlotId;
+
+    [AssignedInCode]
+    public PulseOnHover currentHoverTarget;
 
     private Selectable[] allSelectable;
+
+    public bool IsDragging()
+    {
+        return GetDraggingSlotId() >= 0;
+    }
+
+    public void ClearDragging()
+    {
+        SetDraggingSlotId(-1);
+    }
+
+    public int GetDraggingSlotId()
+    {
+        return this.draggingSlotId;
+    }
+
+    public void SetDraggingSlotId(int slotId)
+    {
+        this.draggingSlotId = slotId;
+    }
 
     public bool IsHiding { get; private set; }
 
@@ -62,14 +85,6 @@ public class WeaponUiManager : MonoBehaviour
         allSelectable = null;
     }
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-            Destroy(gameObject);
-        else
-            Instance = this;
-    }
-
     public void SetHoverTarget(PulseOnHover npc)
     {
         currentHoverTarget = npc;
@@ -79,5 +94,22 @@ public class WeaponUiManager : MonoBehaviour
     {
         if (currentHoverTarget == npc)
             currentHoverTarget = null;
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    private void Start()
+    {
+        ClearDragging();
     }
 }

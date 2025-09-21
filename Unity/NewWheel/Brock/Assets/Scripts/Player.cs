@@ -18,12 +18,10 @@ public class Player : MonoBehaviour
         this.weaponLayout.RefreshWeapons();
     }
 
-    public void SwapWeapon(WeaponSuit weapon, GameObject targetSlot)
+    public void SwapWeapon(int sourceSlotId, int targetSlotId)
     {
-        int sourceId = this.weaponLayout.GetWeaponSlotIdByWeapon(weapon);
-        int targetId = this.weaponLayout.GetWeaponSlotIdBySlot(targetSlot);
-        this.weaponInventory.Swap(sourceId, targetId);
-        this.weaponLayout.SwapWeapon(sourceId, targetId);
+        this.weaponInventory.Swap(sourceSlotId, targetSlotId);
+        this.weaponLayout.SwapWeapon(sourceSlotId, targetSlotId);
         RefreshWeaponConfigs();
     }
 
@@ -55,8 +53,8 @@ public class Player : MonoBehaviour
     {
         for (int id = 0; id < this.weaponLayout.GetWeaponSlotCount(); id++)
         {
-            ShopItem shopItem = this.weaponInventory.Get(id);
-            this.weaponLayout.SetWeaponConfig(id, shopItem?.weaponConfig);
+            WeaponStatus weapon = this.weaponInventory.GetBySlotId(id);
+            this.weaponLayout.SetWeaponConfig(id, weapon?.GetShopItem().weaponConfig);
         }
     }
 }

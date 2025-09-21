@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Manages the weapon instances.
 public class WeaponLayout : MonoBehaviour
 {
     [SerializeField]
@@ -142,6 +143,7 @@ public class WeaponLayout : MonoBehaviour
         {
             Vector3 position = (Vector2)this.transform.position + offsets[i];
             this.weaponSlots[i] = Instantiate(this.weaponSlotPrefab, position, Quaternion.identity, this.transform);
+            this.weaponSlots[i].GetComponent<WeaponSlot>().Initialize(i);
         }
     }
 

@@ -67,7 +67,7 @@ public class ShopItemDb
             return null;
         }
 
-        int randomIndex = Random.Range(0, weapons.Count);
+        int randomIndex = UnityEngine.Random.Range(0, weapons.Count);
         return weapons[randomIndex];
     }
 
@@ -79,8 +79,27 @@ public class ShopItemDb
             return null;
         }
 
-        int randomIndex = Random.Range(0, this.items.Count);
+        int randomIndex = UnityEngine.Random.Range(0, this.items.Count);
         return this.items[randomIndex];
+    }
+
+    public ShopItem GetNextLevel(ShopItem shopItem)
+    {
+        if (!shopItem.IsWeapon())
+        {
+            Debug.LogError($"Cannot get next level for non-weapon: {shopItem.displayName}");
+            return null;
+        }
+
+        foreach (ShopItem candidate in this.weapons)
+        {
+            if (candidate.weaponConfig.IsNextLevelOf(shopItem.weaponConfig))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
     }
 
     private ShopItem WeaponConfigToShopItem(WeaponConfig weaponConfig)

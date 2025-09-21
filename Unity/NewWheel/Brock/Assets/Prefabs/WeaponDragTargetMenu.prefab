@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7951261185288924416}
   - component: {fileID: 1147754662283135013}
   - component: {fileID: 7832519302853940533}
+  - component: {fileID: 6966483903501890201}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -120,7 +121,57 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1147754662283135013}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6966483903501890201}
+        m_TargetAssemblyTypeName: WeaponStopDragUpgradeButton, Assembly-CSharp
+        m_MethodName: Upgrade
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2346310500215319763}
+        m_TargetAssemblyTypeName: WeaponOperationMenu, Assembly-CSharp
+        m_MethodName: UndoHideOtherMenus
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2346310500215319763}
+        m_TargetAssemblyTypeName: WeaponOperationMenu, Assembly-CSharp
+        m_MethodName: Destroy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6966483903501890201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512517147776597429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0faa9cc2066b72d40a2fb2bfa2038cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotId: 0
+  button: {fileID: 7832519302853940533}
 --- !u!1 &1206984521089701763
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,7 +257,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2903780172945544690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -541,7 +592,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Upgrade
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -568,7 +619,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.3
+  m_fontSize: 0.25
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -782,5 +833,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2bb63ad439018b4ca7dc48a58f4eaf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSlot: {fileID: 0}
+  slotId: 0
   button: {fileID: 6852037124343960440}

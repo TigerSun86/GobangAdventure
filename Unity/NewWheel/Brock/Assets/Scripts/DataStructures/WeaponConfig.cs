@@ -21,6 +21,10 @@ public class WeaponConfig
 
     public SkillConfig skill2;
 
+    public int experienceWorth;
+
+    public int experienceToNextLevel;
+
     public Sprite sprite;
 
     public string GetId()
@@ -46,5 +50,11 @@ public class WeaponConfig
         }
 
         return skills.ToArray();
+    }
+
+    public bool IsNextLevelOf(WeaponConfig weaponConfig)
+    {
+        return this.weaponName == weaponConfig.weaponName
+            && this.level == weaponConfig.level + 1;
     }
 }

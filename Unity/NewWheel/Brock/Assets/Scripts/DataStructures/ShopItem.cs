@@ -16,6 +16,16 @@ public class ShopItem
 
     public ItemConfig itemConfig;
 
+    public static bool AreSameName(ShopItem a, ShopItem b)
+    {
+        if (a == null || b == null)
+        {
+            return false;
+        }
+
+        return a.weaponConfig.weaponName == b.weaponConfig.weaponName;
+    }
+
     public bool IsWeapon()
     {
         return weaponConfig != null;

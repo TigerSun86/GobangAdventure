@@ -1,21 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
+// Manages the player's weapon statuses.
 [Serializable]
 public class WeaponInventory
 {
-    [SerializeField]
+    [SerializeField, AssignedInCode]
+    private List<WeaponStatus> weaponStatuses;
+
+    [SerializeField, AssignedInCode]
+    private int maxStorage;
+
     private ShopItemDb shopItemDb;
-
-    private Dictionary<int, ShopItem> slotIdToShopItem;
-
-    private int maxStorage = 1;
 
     public WeaponInventory(ShopItemDb shopItemDb)
     {
+        this.weaponStatuses = new List<WeaponStatus>();
+        SetMaxStorage(0);
         this.shopItemDb = shopItemDb;
-        this.slotIdToShopItem = new Dictionary<int, ShopItem>();
     }
 
     public void SetMaxStorage(int maxStorage)
@@ -31,7 +35,7 @@ public class WeaponInventory
 
     public bool TryAdd(ShopItem shopItem)
     {
-        if (this.slotIdToShopItem.Count >= maxStorage)
+        if (this.weaponStatuses.Count >= maxStorage)
         {
             return false;
         }
@@ -44,9 +48,9 @@ public class WeaponInventory
 
         for (int slotId = 0; slotId < this.maxStorage; slotId++)
         {
-            if (!this.slotIdToShopItem.ContainsKey(slotId))
+            if (IsSlotEmpty(slotId))
             {
-                this.slotIdToShopItem[slotId] = shopItem;
+                this.weaponStatuses.Add(new WeaponStatus(this.shopItemDb, shopItem, slotId));
                 return true;
             }
         }
@@ -55,33 +59,65 @@ public class WeaponInventory
         return false;
     }
 
-    public ShopItem Get(int slotId)
+    public void Upgrade(int slotId, int expendableSlotId)
     {
-        if (!this.slotIdToShopItem.ContainsKey(slotId))
+        if (IsSlotEmpty(expendableSlotId))
         {
-            return null;
+            Debug.LogError("Should not expend empty slot.");
+            return;
         }
 
-        return this.slotIdToShopItem[slotId];
+        WeaponStatus expendable = GetBySlotId(expendableSlotId);
+        Upgrade(slotId, expendable);
+        RemoveBySlotId(expendableSlotId);
+    }
+
+    public void Upgrade(int slotId, WeaponStatus expendable)
+    {
+        if (IsSlotEmpty(slotId))
+        {
+            Debug.LogError("Should not upgrade empty slot.");
+            return;
+        }
+
+        WeaponStatus currentWeapon = GetBySlotId(slotId);
+        currentWeapon.Upgrade(expendable);
+    }
+
+    public bool IsSlotEmpty(int slotId)
+    {
+        return GetBySlotId(slotId) == null;
+    }
+
+    public WeaponStatus GetBySlotId(int slotId)
+    {
+        return this.weaponStatuses.FirstOrDefault(ws => ws.GetSlotId() == slotId);
     }
 
     public void Swap(int sourceSlotId, int targetSlotId)
     {
-        if (this.slotIdToShopItem.ContainsKey(sourceSlotId) && this.slotIdToShopItem.ContainsKey(targetSlotId))
+        WeaponStatus sourceWeapon = GetBySlotId(sourceSlotId);
+        WeaponStatus targetWeapon = GetBySlotId(targetSlotId);
+        if (sourceWeapon != null)
         {
-            ShopItem temp = this.slotIdToShopItem[sourceSlotId];
-            this.slotIdToShopItem[sourceSlotId] = this.slotIdToShopItem[targetSlotId];
-            this.slotIdToShopItem[targetSlotId] = temp;
+            sourceWeapon.SetSlotId(targetSlotId);
         }
-        else if (this.slotIdToShopItem.ContainsKey(sourceSlotId))
+
+        if (targetWeapon != null)
         {
-            this.slotIdToShopItem[targetSlotId] = this.slotIdToShopItem[sourceSlotId];
-            this.slotIdToShopItem.Remove(sourceSlotId);
+            targetWeapon.SetSlotId(sourceSlotId);
         }
-        else if (this.slotIdToShopItem.ContainsKey(targetSlotId))
+    }
+
+    private void RemoveBySlotId(int expendableSlotId)
+    {
+        WeaponStatus expendable = GetBySlotId(expendableSlotId);
+        if (expendable == null)
         {
-            this.slotIdToShopItem[sourceSlotId] = this.slotIdToShopItem[targetSlotId];
-            this.slotIdToShopItem.Remove(targetSlotId);
+            Debug.LogError("Should not remove empty slot.");
+            return;
         }
+
+        this.weaponStatuses.Remove(expendable);
     }
 }

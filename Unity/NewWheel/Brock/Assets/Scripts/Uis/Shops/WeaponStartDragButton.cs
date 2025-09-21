@@ -1,20 +1,33 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WeaponStartDragButton : MonoBehaviour
 {
-    [AssignedInCode] public WeaponSlot weaponSlot;
+    [SerializeField, AssignedInCode]
+    private int slotId;
 
-    [SerializeField, Required] Button button;
+    [SerializeField, Required]
+    private Button button;
+
+    public void SetSlotId(int slotId)
+    {
+        if (slotId < 0)
+        {
+            Debug.LogError("Slot ID cannot be negative.");
+            return;
+        }
+
+        this.slotId = slotId;
+    }
 
     public void StartDrag()
     {
-        if (WeaponUiManager.Instance.currentlyDragging != null)
+        if (WeaponUiManager.Instance.IsDragging())
         {
-            throw new Exception("Already dragging a weapon.");
+            Debug.LogError("Already dragging a weapon.");
+            return;
         }
 
-        WeaponUiManager.Instance.currentlyDragging = weaponSlot.GetWeaponSuit();
+        WeaponUiManager.Instance.SetDraggingSlotId(this.slotId);
     }
 }

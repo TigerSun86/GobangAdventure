@@ -1,10 +1,19 @@
-﻿weaponName,level,weaponBaseType,price,health,skill1,skill2,attackValue,attackCdTime,attackActionTime,attackRecoveryTime,attackRange,spritePath
-Basic Rock,1,ROCK,1,400,,,20,2,1,0.5,2,Sprites/Circle
-Basic Rock,2,ROCK,1,400,,,20,2,1,0.5,2,Sprites/Circle
-Basic Paper,1,PAPER,1,200,Heal1,,20,2,1,0.5,2,Sprites/Square
-Basic Paper,2,PAPER,1,200,Heal1,,20,2,1,0.5,2,Sprites/Square
-Basic Scissor,1,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,Sprites/Triangle
-Basic Scissor,2,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,Sprites/Triangle
-Shot Paper,1,PAPER,1,200,Shot1,,20,2,1,0.5,2,Sprites/Paper1
-Stun Rock,1,ROCK,1,400,Stun1,,20,2,1,0.5,2,Sprites/Rock1
-Attack Buff Scissor,1,Scissor,1,300,NeighbourAttackIncrease1,,20,2,1,0.5,2,Sprites/Scissor1
+﻿weaponName,level,weaponBaseType,price,health,skill1,skill2,attackValue,attackCdTime,attackActionTime,attackRecoveryTime,attackRange,experienceWorth,experienceToNextLevel,spritePath
+Basic Rock,1,ROCK,1,400,,,20,2,1,0.5,2,100,200,Sprites/Circle
+Basic Rock,2,ROCK,1,400,,,20,2,1,0.5,2,200,400,Sprites/Circle
+Basic Rock,3,ROCK,1,400,,,20,2,1,0.5,2,400,0,Sprites/Circle
+Basic Paper,1,PAPER,1,200,Heal1,,20,2,1,0.5,2,100,200,Sprites/Square
+Basic Paper,2,PAPER,1,200,Heal1,,20,2,1,0.5,2,200,400,Sprites/Square
+Basic Paper,3,PAPER,1,200,Heal1,,20,2,1,0.5,2,400,0,Sprites/Square
+Basic Scissor,1,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,100,200,Sprites/Triangle
+Basic Scissor,2,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,200,400,Sprites/Triangle
+Basic Scissor,3,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,400,0,Sprites/Triangle
+Shot Paper,1,PAPER,1,200,Shot1,,20,2,1,0.5,2,100,200,Sprites/Paper1
+Shot Paper,2,PAPER,1,200,Shot1,,20,2,1,0.5,2,200,400,Sprites/Paper1
+Shot Paper,3,PAPER,1,200,Shot1,,20,2,1,0.5,2,400,0,Sprites/Paper1
+Stun Rock,1,ROCK,1,400,Stun1,,20,2,1,0.5,2,100,200,Sprites/Rock1
+Stun Rock,2,ROCK,1,400,Stun1,,20,2,1,0.5,2,200,400,Sprites/Rock1
+Stun Rock,3,ROCK,1,400,Stun1,,20,2,1,0.5,2,400,0,Sprites/Rock1
+Attack Buff Scissor,1,Scissor,1,300,NeighbourAttackIncrease1,,20,2,1,0.5,2,100,200,Sprites/Scissor1
+Attack Buff Scissor,2,Scissor,1,300,NeighbourAttackIncrease1,,20,2,1,0.5,2,200,400,Sprites/Scissor1
+Attack Buff Scissor,3,Scissor,1,300,NeighbourAttackIncrease1,,20,2,1,0.5,2,400,0,Sprites/Scissor1

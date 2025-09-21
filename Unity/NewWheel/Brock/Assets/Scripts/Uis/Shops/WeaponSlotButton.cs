@@ -4,14 +4,19 @@ using UnityEngine.UI;
 
 public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
-    [SerializeField, Required] public GameObject dragSourceMenuPrefab;
-    [SerializeField, Required] public GameObject dragTargetMenuPrefab;
+    [SerializeField, Required]
+    private GameObject dragSourceMenuPrefab;
+
+    [SerializeField, Required]
+    private GameObject dragTargetMenuPrefab;
+
     private WeaponOperationMenu dragSourceMenuInstance;
+
     private WeaponOperationMenu dragTargetMenuInstance;
 
     public void OnSelect(BaseEventData eventData)
     {
-        if (WeaponUiManager.Instance.currentlyDragging == null)
+        if (!WeaponUiManager.Instance.IsDragging())
         {
             CreateDragSourceMenu();
         }
@@ -43,13 +48,14 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
     private void CreateDragSourceMenu()
     {
         dragSourceMenuInstance = Instantiate(dragSourceMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<WeaponOperationMenu>();
-        dragSourceMenuInstance.GetComponentInChildren<WeaponStartDragButton>().weaponSlot = GetWeaponSlot();
+        dragSourceMenuInstance.GetComponentInChildren<WeaponStartDragButton>().SetSlotId(GetWeaponSlot().GetSlotId());
     }
 
     private void CreateDragTargetMenu()
     {
         dragTargetMenuInstance = Instantiate(dragTargetMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<WeaponOperationMenu>();
-        dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragButton>().weaponSlot = GetWeaponSlot();
+        dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragButton>().SetSlotId(GetWeaponSlot().GetSlotId());
+        dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragUpgradeButton>().SetSlotId(GetWeaponSlot().GetSlotId());
     }
 
     private WeaponSlot GetWeaponSlot()
