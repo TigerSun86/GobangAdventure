@@ -1,14 +1,15 @@
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 
 public class ShopItemDb
 {
-    private List<ShopItem> shopItems;
+    private List<ShopItem> weapons;
+
+    private List<ShopItem> items;
 
     public ShopItemDb(WeaponConfigDb weaponConfigDb, ItemConfigDb itemConfigDb)
     {
-        this.shopItems = new List<ShopItem>();
+        this.weapons = new List<ShopItem>();
         HashSet<string> names = new HashSet<string>();
         foreach (WeaponConfig weaponConfig in weaponConfigDb.GetAll())
         {
@@ -19,9 +20,10 @@ public class ShopItemDb
             }
 
             ShopItem shopItem = WeaponConfigToShopItem(weaponConfig);
-            this.shopItems.Add(shopItem);
+            this.weapons.Add(shopItem);
         }
 
+        this.items = new List<ShopItem>();
         foreach (ItemConfig itemConfig in itemConfigDb.GetAll())
         {
             if (names.Contains(itemConfig.GetId()))
@@ -31,13 +33,21 @@ public class ShopItemDb
             }
 
             ShopItem shopItem = ItemConfigToShopItem(itemConfig);
-            this.shopItems.Add(shopItem);
+            this.items.Add(shopItem);
         }
     }
 
     public ShopItem GetShopItem(string id)
     {
-        foreach (ShopItem shopItem in shopItems)
+        foreach (ShopItem shopItem in this.weapons)
+        {
+            if (shopItem.displayName == id)
+            {
+                return shopItem;
+            }
+        }
+
+        foreach (ShopItem shopItem in this.items)
         {
             if (shopItem.displayName == id)
             {
@@ -49,16 +59,28 @@ public class ShopItemDb
         return null;
     }
 
-    public ShopItem GetRandomShopItem()
+    public ShopItem GetRandomWeapon()
     {
-        if (shopItems.Count == 0)
+        if (weapons.Count == 0)
         {
-            Debug.LogError("No shop items available.");
+            Debug.LogError("No weapon available.");
             return null;
         }
 
-        int randomIndex = Random.Range(0, shopItems.Count);
-        return shopItems[randomIndex];
+        int randomIndex = Random.Range(0, weapons.Count);
+        return weapons[randomIndex];
+    }
+
+    public ShopItem GetRandomItem()
+    {
+        if (this.items.Count == 0)
+        {
+            Debug.LogError("No item available.");
+            return null;
+        }
+
+        int randomIndex = Random.Range(0, this.items.Count);
+        return this.items[randomIndex];
     }
 
     private ShopItem WeaponConfigToShopItem(WeaponConfig weaponConfig)
