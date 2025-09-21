@@ -9,7 +9,7 @@ public class ShopUi : MonoBehaviour
     private Player playerUi;
 
     [SerializeField, AssignedInCode]
-    private MoneyManager moneyManager;
+    private LootManager lootManager;
 
     [SerializeField, AssignedInCode]
     private ShopItemDb shopItemDb;
@@ -22,7 +22,7 @@ public class ShopUi : MonoBehaviour
 
     void Start()
     {
-        this.moneyManager = MoneyManager.Instance;
+        this.lootManager = LootManager.Instance;
         this.shopItemDb = ConfigDb.Instance.shopItemDb;
         this.itemInventory = ConfigDb.Instance.itemInventory;
         this.weaponInventory = ConfigDb.Instance.weaponInventory;
@@ -82,8 +82,8 @@ public class ShopUi : MonoBehaviour
 
         this.playerUi.RefreshWeapons();
 
-        this.moneyManager.DecreaseCountToBuy();
-        if (this.moneyManager.CountToBuy > 0)
+        this.lootManager.DecreaseWeaponCount();
+        if (this.lootManager.GetWeaponCount() > 0)
         {
             foreach (ItemUi itemUi in GetComponentsInChildren<ItemUi>())
             {

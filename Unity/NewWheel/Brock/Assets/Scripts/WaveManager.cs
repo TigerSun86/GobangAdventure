@@ -8,9 +8,6 @@ public class WaveManager : MonoBehaviour
 {
     [SerializeField] int maxWaveTime;
 
-    [SerializeField, AssignedInCode]
-    private MoneyManager moneyManager;
-
     public static WaveManager Instance { get; private set; }
 
     public bool IsWaveRunning { get; private set; }
@@ -30,11 +27,6 @@ public class WaveManager : MonoBehaviour
         }
 
         StopAllCoroutines();
-        if (this.moneyManager == null)
-        {
-            this.moneyManager = MoneyManager.Instance;
-        }
-        this.moneyManager.IncreaseCountToBuy();
         SceneUtility.LoadShopScene();
     }
 

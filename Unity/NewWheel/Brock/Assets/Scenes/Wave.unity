@@ -27209,7 +27209,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxWaveTime: 300
-  moneyManager: {fileID: 0}
   currentWave: 0
   currentWaveTime: 0
 --- !u!4 &1642601758
@@ -27423,11 +27422,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 858159425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 581, y: 287}
-  m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -100}
+  m_SizeDelta: {x: 300, y: 50}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &1668987205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27446,7 +27445,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1668987206}
         m_TargetAssemblyTypeName: CountToBuyUi, Assembly-CSharp
-        m_MethodName: SetCount
+        m_MethodName: UpdateText
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -27469,7 +27468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 1668987207}
-  moneyManager: {fileID: 0}
+  lootManager: {fileID: 0}
 --- !u!114 &1668987207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27517,10 +27516,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 44.75
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -27555,7 +27554,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -117.82477, y: 0, z: 0, w: 0}
+  m_margin: {x: 1.2911987, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -27569,66 +27568,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668987203}
   m_CullTransparentMesh: 1
---- !u!1 &1706879834
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1706879836}
-  - component: {fileID: 1706879835}
-  m_Layer: 0
-  m_Name: MoneyManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1706879835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1706879834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c802997c76cc4a488e0cf2d1eeabd4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  countToBuyChangeEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 49971baf112fc0146917331ab232c370, type: 2}
-        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
-        m_MethodName: Raise
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  countToBuy: 0
---- !u!4 &1706879836
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1706879834}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1731460796
 GameObject:
   m_ObjectHideFlags: 0
@@ -28876,6 +28815,21 @@ MonoBehaviour:
   goldLootPrefab: {fileID: 7743631794309417056, guid: 6e87618ac0ba59148981d9d4326ea67a, type: 3}
   weaponLootPrefab: {fileID: 7743631794309417056, guid: a06495d0024c39147aa63f70262c6000, type: 3}
   itemLootPrefab: {fileID: 7743631794309417056, guid: 15a30c3c478fb46478251612bc572b84, type: 3}
+  onChangeMoney:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 49971baf112fc0146917331ab232c370, type: 2}
+        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &1930311467
 Transform:
   m_ObjectHideFlags: 0
@@ -29846,7 +29800,6 @@ SceneRoots:
   - {fileID: 858159425}
   - {fileID: 1557182528}
   - {fileID: 5930795002493772310}
-  - {fileID: 1706879836}
   - {fileID: 235325066}
   - {fileID: 1930311467}
   - {fileID: 806068125}

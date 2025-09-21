@@ -6,21 +6,18 @@ public class CountToBuyUi : MonoBehaviour
     [SerializeField] TextMeshProUGUI text;
 
     [SerializeField, AssignedInCode]
-    MoneyManager moneyManager;
+    LootManager lootManager;
 
-    public void SetCount()
+    public void UpdateText()
     {
-        SetCount(this.moneyManager.CountToBuy);
-    }
-
-    private void SetCount(int count)
-    {
-        text.text = "Count To Buy: " + count.ToString();
+        text.text = "Weapon Count To Buy: " + (int)this.lootManager.GetWeaponCount()
+            + "\nItem Count To Buy: " + (int)this.lootManager.GetItemCount()
+            + "\nGold Count: " + (int)this.lootManager.GetGoldCount();
     }
 
     private void Start()
     {
-        this.moneyManager = MoneyManager.Instance;
-        SetCount();
+        this.lootManager = LootManager.Instance;
+        UpdateText();
     }
 }
