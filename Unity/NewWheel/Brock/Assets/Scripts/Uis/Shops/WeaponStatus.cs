@@ -58,6 +58,11 @@ public class WeaponStatus
         return this.slotId;
     }
 
+    public int GetCurrentExperience()
+    {
+        return this.currentExperience;
+    }
+
     public bool HasNextLevel()
     {
         return this.shopItem.weaponConfig.experienceToNextLevel > 0;

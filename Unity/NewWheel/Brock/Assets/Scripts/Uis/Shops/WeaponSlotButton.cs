@@ -47,15 +47,23 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
 
     private void CreateDragSourceMenu()
     {
-        dragSourceMenuInstance = Instantiate(dragSourceMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<WeaponOperationMenu>();
-        dragSourceMenuInstance.GetComponentInChildren<WeaponStartDragButton>().SetSlotId(GetWeaponSlot().GetSlotId());
+        GameObject menuObject = Instantiate(dragSourceMenuPrefab, this.transform.position, Quaternion.identity, this.transform.parent);
+        menuObject.transform.position = GetSafeSpawnPosition(menuObject.transform.GetComponent<RectTransform>(), this.transform.position + new Vector3(0.8f, 0, 0));
+
+        this.dragSourceMenuInstance = menuObject.GetComponent<WeaponOperationMenu>();
+        this.dragSourceMenuInstance.GetComponentInChildren<WeaponStartDragButton>().SetSlotId(GetWeaponSlot().GetSlotId());
+        this.dragSourceMenuInstance.GetComponentInChildren<WeaponStatsText>().SetSlotId(GetWeaponSlot().GetSlotId());
     }
 
     private void CreateDragTargetMenu()
     {
-        dragTargetMenuInstance = Instantiate(dragTargetMenuPrefab, transform.position + new Vector3(0.4f, 0, 0), Quaternion.identity, transform.parent).GetComponent<WeaponOperationMenu>();
-        dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragButton>().SetSlotId(GetWeaponSlot().GetSlotId());
-        dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragUpgradeButton>().SetSlotId(GetWeaponSlot().GetSlotId());
+        GameObject menuObject = Instantiate(dragTargetMenuPrefab, this.transform.position, Quaternion.identity, this.transform.parent);
+        menuObject.transform.position = GetSafeSpawnPosition(menuObject.transform.GetComponent<RectTransform>(), this.transform.position + new Vector3(0.8f, 0, 0));
+
+        this.dragTargetMenuInstance = menuObject.GetComponent<WeaponOperationMenu>();
+        this.dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragButton>().SetSlotId(GetWeaponSlot().GetSlotId());
+        this.dragTargetMenuInstance.GetComponentInChildren<WeaponStopDragUpgradeButton>().SetSlotId(GetWeaponSlot().GetSlotId());
+        this.dragTargetMenuInstance.GetComponentInChildren<WeaponStatsText>().SetSlotId(GetWeaponSlot().GetSlotId());
     }
 
     private WeaponSlot GetWeaponSlot()
@@ -74,5 +82,21 @@ public class WeaponSlotButton : MonoBehaviour, ISelectHandler, IDeselectHandler
         {
             dragTargetMenuInstance.Enable();
         }
+    }
+
+    private Vector3 GetSafeSpawnPosition(RectTransform rectTransform, Vector3 desiredPosition)
+    {
+        Vector2 halfSize = new Vector2(rectTransform.rect.width / 2 + 0.5f, rectTransform.rect.height / 2 + 0.5f);
+
+        // Get the world coordinates for the screen edges
+        Vector3 screenMin = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
+        Vector3 screenMax = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0));
+
+        // Clamp the given position to fit within the screen bounds
+        float clampedX = Mathf.Clamp(desiredPosition.x, screenMin.x + halfSize.x, screenMax.x - halfSize.x);
+        float clampedY = Mathf.Clamp(desiredPosition.y, screenMin.y + halfSize.y, screenMax.y - halfSize.y);
+
+        // Preserve the desired Z position
+        return new Vector3(clampedX, clampedY, 0);
     }
 }
