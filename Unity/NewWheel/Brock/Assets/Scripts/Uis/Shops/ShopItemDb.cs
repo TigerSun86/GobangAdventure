@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ShopItemDb
@@ -72,8 +73,10 @@ public class ShopItemDb
             return null;
         }
 
-        int randomIndex = UnityEngine.Random.Range(0, weapons.Count);
-        return weapons[randomIndex];
+        List<ShopItem> weaponCandidates = this.weapons.Where(w => w.level == 1).ToList();
+
+        int randomIndex = UnityEngine.Random.Range(0, weaponCandidates.Count);
+        return weaponCandidates[randomIndex];
     }
 
     public ShopItem GetRandomItem()

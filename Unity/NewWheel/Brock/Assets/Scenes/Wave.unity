@@ -27000,6 +27000,9 @@ MonoBehaviour:
       m_values: []
   waveConfigDb:
     waveConfigs: []
+  weaponInventory:
+    weaponStatuses: []
+    maxStorage: 0
   itemInventory:
     ownedItems: []
 --- !u!4 &1557182528
@@ -29678,11 +29681,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4085020156788331288, guid: 7220ac55ff667134b8251aeec17d985a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.19
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 4085020156788331288, guid: 7220ac55ff667134b8251aeec17d985a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.52
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 4085020156788331288, guid: 7220ac55ff667134b8251aeec17d985a, type: 3}
       propertyPath: m_LocalPosition.z

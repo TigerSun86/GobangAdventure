@@ -365,6 +365,9 @@ MonoBehaviour:
   lootManager: {fileID: 0}
   itemInventory:
     ownedItems: []
+  weaponInventory:
+    weaponStatuses: []
+    maxStorage: 0
 --- !u!1 &470714291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,7 +1091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goldCount: 0
-  weaponCount: 0
+  weaponCount: 3
   itemCount: 0
   goldLootPrefab: {fileID: 7743631794309417056, guid: 6e87618ac0ba59148981d9d4326ea67a, type: 3}
   weaponLootPrefab: {fileID: 7743631794309417056, guid: a06495d0024c39147aa63f70262c6000, type: 3}
@@ -1175,6 +1178,9 @@ MonoBehaviour:
       m_values: []
   waveConfigDb:
     waveConfigs: []
+  weaponInventory:
+    weaponStatuses: []
+    maxStorage: 0
   itemInventory:
     ownedItems: []
 --- !u!4 &1752699909
@@ -1278,7 +1284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d459de95de9994b957688e754fe025, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentlyDragging: {fileID: 0}
+  draggingSlotId: 0
   currentHoverTarget: {fileID: 0}
 --- !u!4 &2066544733
 Transform:

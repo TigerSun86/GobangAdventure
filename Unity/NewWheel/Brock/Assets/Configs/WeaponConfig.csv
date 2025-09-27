@@ -1,19 +1,22 @@
 ﻿weaponName,level,weaponBaseType,price,health,skill1,skill2,attackValue,attackCdTime,attackActionTime,attackRecoveryTime,attackRange,experienceWorth,experienceToNextLevel,isPurchasable,spritePath
-Basic Rock,1,ROCK,1,400,,,20,2,1,0.5,2,100,200,FALSE,Sprites/Circle
-Basic Rock,2,ROCK,1,400,,,20,2,1,0.5,2,200,400,FALSE,Sprites/Circle
-Basic Rock,3,ROCK,1,400,,,20,2,1,0.5,2,400,0,FALSE,Sprites/Circle
-Basic Paper,1,PAPER,1,200,Heal1,,20,2,1,0.5,2,100,200,FALSE,Sprites/Square
-Basic Paper,2,PAPER,1,200,Heal1,,20,2,1,0.5,2,100,400,FALSE,Sprites/Square
-Basic Paper,3,PAPER,1,200,Heal1,,20,2,1,0.5,2,400,0,FALSE,Sprites/Square
-Basic Scissor,1,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,100,200,FALSE,Sprites/Triangle
-Basic Scissor,2,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,200,400,FALSE,Sprites/Triangle
-Basic Scissor,3,Scissor,1,300,CriticalHit1,,20,2,1,0.5,2,400,0,FALSE,Sprites/Triangle
-Shot Paper,1,PAPER,1,200,Shot1,,20,2,1,0.5,2,100,200,TRUE,Sprites/Paper1
-Shot Paper,2,PAPER,1,200,Shot1,,20,2,1,0.5,2,200,400,TRUE,Sprites/Paper1
-Shot Paper,3,PAPER,1,200,Shot1,,20,2,1,0.5,2,400,0,TRUE,Sprites/Paper1
-Stun Rock,1,ROCK,1,400,Stun1,,20,2,1,0.5,2,100,200,TRUE,Sprites/Rock1
-Stun Rock,2,ROCK,1,400,Stun1,,20,2,1,0.5,2,200,400,TRUE,Sprites/Rock1
-Stun Rock,3,ROCK,1,400,Stun1,,20,2,1,0.5,2,400,0,TRUE,Sprites/Rock1
-Attack Buff Scissor,1,Scissor,1,300,NeighbourAttackIncrease1,,20,2,1,0.5,2,100,200,TRUE,Sprites/Scissor1
-Attack Buff Scissor,2,Scissor,1,300,NeighbourAttackIncrease1,,20,2,1,0.5,2,200,400,TRUE,Sprites/Scissor1
-Attack Buff Scissor,3,Scissor,1,300,NeighbourAttackIncrease1,,20,2,1,0.5,2,400,0,TRUE,Sprites/Scissor1
+Basic Rock,1,ROCK,1,420,,,12,1.3,0.2,0.1,2,100,200,FALSE,Sprites/Circle
+Basic Rock,2,ROCK,1,700,,,20,1.6,0.2,0.1,2,200,400,FALSE,Sprites/Circle
+Basic Rock,3,ROCK,1,835,,,34,1.4,0.2,0.1,2,400,0,FALSE,Sprites/Circle
+Basic Paper,1,PAPER,1,290,Heal1,,8,2,0.4,0.2,2,100,200,FALSE,Sprites/Square
+Basic Paper,2,PAPER,1,315,Heal1,,12,1.7,0.2,0.1,2,100,400,FALSE,Sprites/Square
+Basic Paper,3,PAPER,1,430,Heal1,,20,1.5,0.2,0.1,2,400,0,FALSE,Sprites/Square
+Basic Scissor,1,Scissor,1,245,CriticalHit1,,17,1.5,0.2,0.1,2,100,200,FALSE,Sprites/Triangle
+Basic Scissor,2,Scissor,1,535,CriticalHit1,,21,1.5,0.2,0.1,2,200,400,FALSE,Sprites/Triangle
+Basic Scissor,3,Scissor,1,550,CriticalHit1,,28,2,0.2,0.1,2,400,0,FALSE,Sprites/Triangle
+Tower Rock,1,ROCK,1,1200,,,100,2.5,0.4,0.2,4,100,200,FALSE,Sprites/Circle
+Tower Paper,1,PAPER,1,1000,Heal1,,9,1,0.2,0.1,5,100,200,FALSE,Sprites/Square
+Tower Scissor,1,Scissor,1,1000,CriticalHit1,,25,0.9,0.2,0.1,6,100,200,FALSE,Sprites/Triangle
+Shot Paper,1,PAPER,1,450,Shot1,,24,2,0.4,0.2,2,100,200,TRUE,Sprites/Paper1
+Shot Paper,2,PAPER,1,475,Shot1,,27,2,0.4,0.2,2,200,400,TRUE,Sprites/Paper1
+Shot Paper,3,PAPER,1,525,Shot1,,30,2,0.4,0.2,2,400,0,TRUE,Sprites/Paper1
+Stun Rock,1,ROCK,1,700,Stun1,,31,2,0.4,0.2,1.5,100,200,TRUE,Sprites/Rock1
+Stun Rock,2,ROCK,1,775,Stun1,,34,2,0.4,0.2,1.5,200,400,TRUE,Sprites/Rock1
+Stun Rock,3,ROCK,1,850,Stun1,,37,2,0.4,0.2,1.5,400,0,TRUE,Sprites/Rock1
+Attack Buff Scissor,1,Scissor,1,550,NeighbourAttackIncrease1,,28,2,0.4,0.2,4,100,200,TRUE,Sprites/Scissor1
+Attack Buff Scissor,2,Scissor,1,575,NeighbourAttackIncrease1,,29,2,0.4,0.2,4,200,400,TRUE,Sprites/Scissor1
+Attack Buff Scissor,3,Scissor,1,625,NeighbourAttackIncrease1,,31,2,0.4,0.2,4,400,0,TRUE,Sprites/Scissor1
