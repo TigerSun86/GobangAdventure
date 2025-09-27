@@ -5,7 +5,7 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "weaponName","level","weaponBaseType","price","health","skill1","skill2","attackValue","attackCdTime","attackActionTime","attackRecoveryTime","attackRange","experienceWorth","experienceToNextLevel","spritePath"
+        "weaponName","level","weaponBaseType","price","health","skill1","skill2","attackValue","attackCdTime","attackActionTime","attackRecoveryTime","attackRange","experienceWorth","experienceToNextLevel","isPurchasable","spritePath"
     };
 
     private bool validated = false;
@@ -82,6 +82,9 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
                     break;
                 case "experienceToNextLevel":
                     result.experienceToNextLevel = ParserUtility.ParseIntSafe(value, "experienceToNextLevel");
+                    break;
+                case "isPurchasable":
+                    result.isPurchasable = ParserUtility.ParseBoolSafe(value, "isPurchasable");
                     break;
                 case "spritePath":
                     result.sprite = Resources.Load<Sprite>(value);

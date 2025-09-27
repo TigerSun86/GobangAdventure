@@ -19,6 +19,11 @@ public class ShopItemDb
                 continue;
             }
 
+            if (!weaponConfig.isPurchasable)
+            {
+                continue;
+            }
+
             ShopItem shopItem = WeaponConfigToShopItem(weaponConfig);
             this.weapons.Add(shopItem);
         }

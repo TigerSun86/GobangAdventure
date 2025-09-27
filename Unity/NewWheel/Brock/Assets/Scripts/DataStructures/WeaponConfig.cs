@@ -25,6 +25,8 @@ public class WeaponConfig
 
     public int experienceToNextLevel;
 
+    public bool isPurchasable;
+
     public Sprite sprite;
 
     public string GetId()

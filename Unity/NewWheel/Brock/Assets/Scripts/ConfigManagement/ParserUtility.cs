@@ -73,4 +73,20 @@ public static class ParserUtility
         Debug.LogWarning($"Failed to parse '{value}' as {typeof(T).Name}. Using default: {defaultValue}");
         return defaultValue;
     }
+
+    public static bool ParseBoolSafe(string value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        if (bool.TryParse(value, out bool result))
+        {
+            return result;
+        }
+
+        Debug.LogWarning($"Failed to parse '{fieldName}' with value '{value}'");
+        return false;
+    }
 }
