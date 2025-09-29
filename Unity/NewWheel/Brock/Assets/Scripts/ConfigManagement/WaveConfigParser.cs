@@ -5,7 +5,7 @@ public class WaveConfigParser : ICsvRowParser<EnemyInWaveConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "waveId","enemyId","spawnPoint","positionX","positionY","spawnDelay","spawnInterval"
+        "waveId","enemyId","spawnPoint","positionX","positionY","spawnDelay","spawnInterval","isBoss"
     };
 
     private bool validated = false;
@@ -60,6 +60,9 @@ public class WaveConfigParser : ICsvRowParser<EnemyInWaveConfig>
                         Debug.LogWarning($"Invalid spawn interval: {result.spawnInterval}. Setting to default value of 1.");
                         result.spawnInterval = 1f;
                     }
+                    break;
+                case "isBoss":
+                    result.isBoss = ParserUtility.ParseBoolSafe(value, "isBoss");
                     break;
                 default:
                     Debug.LogWarning($"Unrecognized header '{header}' in CSV");

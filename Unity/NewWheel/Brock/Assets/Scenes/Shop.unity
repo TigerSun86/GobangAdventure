@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9e6ffce185aef4885fdaa15b23320d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxWaveTime: 300
+  maxWaveTime: 150
   currentWave: 0
   currentWaveTime: 0
 --- !u!4 &27079194
@@ -1091,7 +1091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goldCount: 0
-  weaponCount: 3
+  weaponCount: 2
   itemCount: 0
   goldLootPrefab: {fileID: 7743631794309417056, guid: 6e87618ac0ba59148981d9d4326ea67a, type: 3}
   weaponLootPrefab: {fileID: 7743631794309417056, guid: a06495d0024c39147aa63f70262c6000, type: 3}

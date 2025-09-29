@@ -15,4 +15,6 @@ public class EnemyInWaveConfig
     public float spawnDelay;
 
     public float spawnInterval;
+
+    public bool isBoss;
 }
