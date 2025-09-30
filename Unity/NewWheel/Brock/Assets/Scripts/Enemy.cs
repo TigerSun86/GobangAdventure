@@ -47,9 +47,9 @@ public class Enemy : MonoBehaviour
         this.defaultTargetPosition = newDefaultTargetPosition;
     }
 
-    public void GenerateLoot()
+    public EnemyConfig GetEnemyConfig()
     {
-        LootManager.Instance.GenerateLoot(this.enemyConfig.lootConfig, this.transform.position);
+        return this.enemyConfig;
     }
 
     private void Start()

@@ -28,51 +28,9 @@ public class LootManager : MonoBehaviour
     [SerializeField]
     private UnityEvent onChangeMoney;
 
-    public void GenerateLoot(LootConfig lootConfig, Vector3 position)
+    public void GenerateLoot(Enemy enemy)
     {
-        // Prepare a list of loot prefabs and their corresponding pickup actions
-        List<(GameObject prefab, Action onPickup)> lootToSpawn = new List<(GameObject prefab, Action onPickup)>();
-
-        if (lootConfig.goldDropRate > 0 && lootConfig.goldDropRate >= UnityEngine.Random.Range(0f, 1f))
-        {
-            lootToSpawn.Add((this.goldLootPrefab, () => { IncreaseGoldCount(); }));
-        }
-
-        if (lootConfig.weaponDropRate > 0 && lootConfig.weaponDropRate >= UnityEngine.Random.Range(0f, 1f))
-        {
-            lootToSpawn.Add((this.weaponLootPrefab, () => { IncreaseWeaponCount(); }));
-        }
-
-        if (lootConfig.itemDropRate > 0 && lootConfig.itemDropRate >= UnityEngine.Random.Range(0f, 1f))
-        {
-            lootToSpawn.Add((this.itemLootPrefab, () => { IncreaseItemCount(); }));
-        }
-
-        float offsetRadius = 0.6f; // Distance from center for extra loot
-        for (int i = 0; i < lootToSpawn.Count; i++)
-        {
-            Vector3 spawnPos = position;
-            if (i == 0)
-            {
-                // First loot at the original position
-                spawnPos = position;
-            }
-            else
-            {
-                // Spawn loot at a random position nearby the original position, avoiding overlap (2D: x/y only)
-                float randomRadius = offsetRadius + UnityEngine.Random.Range(-0.1f, 0.1f);
-                float randomAngle = UnityEngine.Random.Range(0f, 2 * Mathf.PI);
-                spawnPos = position + new Vector3(
-                    Mathf.Cos(randomAngle),
-                    Mathf.Sin(randomAngle),
-                    0
-                ) * randomRadius;
-            }
-
-            GameObject lootObj = Instantiate(lootToSpawn[i].prefab, spawnPos, Quaternion.identity, this.transform);
-            Loot loot = lootObj.GetComponent<Loot>();
-            loot.OnPickup += lootToSpawn[i].onPickup;
-        }
+        GenerateLoot(enemy.GetEnemyConfig().lootConfig, enemy.transform.position);
     }
 
     // Helper methods for goldCount
@@ -139,6 +97,53 @@ public class LootManager : MonoBehaviour
         else
         {
             Destroy(gameObject); // Prevent duplicates
+        }
+    }
+
+    private void GenerateLoot(LootConfig lootConfig, Vector3 position)
+    {
+        // Prepare a list of loot prefabs and their corresponding pickup actions
+        List<(GameObject prefab, Action onPickup)> lootToSpawn = new List<(GameObject prefab, Action onPickup)>();
+
+        if (lootConfig.goldDropRate > 0 && lootConfig.goldDropRate >= UnityEngine.Random.Range(0f, 1f))
+        {
+            lootToSpawn.Add((this.goldLootPrefab, () => { IncreaseGoldCount(); }));
+        }
+
+        if (lootConfig.weaponDropRate > 0 && lootConfig.weaponDropRate >= UnityEngine.Random.Range(0f, 1f))
+        {
+            lootToSpawn.Add((this.weaponLootPrefab, () => { IncreaseWeaponCount(); }));
+        }
+
+        if (lootConfig.itemDropRate > 0 && lootConfig.itemDropRate >= UnityEngine.Random.Range(0f, 1f))
+        {
+            lootToSpawn.Add((this.itemLootPrefab, () => { IncreaseItemCount(); }));
+        }
+
+        float offsetRadius = 0.6f; // Distance from center for extra loot
+        for (int i = 0; i < lootToSpawn.Count; i++)
+        {
+            Vector3 spawnPos = position;
+            if (i == 0)
+            {
+                // First loot at the original position
+                spawnPos = position;
+            }
+            else
+            {
+                // Spawn loot at a random position nearby the original position, avoiding overlap (2D: x/y only)
+                float randomRadius = offsetRadius + UnityEngine.Random.Range(-0.1f, 0.1f);
+                float randomAngle = UnityEngine.Random.Range(0f, 2 * Mathf.PI);
+                spawnPos = position + new Vector3(
+                    Mathf.Cos(randomAngle),
+                    Mathf.Sin(randomAngle),
+                    0
+                ) * randomRadius;
+            }
+
+            GameObject lootObj = Instantiate(lootToSpawn[i].prefab, spawnPos, Quaternion.identity, this.transform);
+            Loot loot = lootObj.GetComponent<Loot>();
+            loot.OnPickup += lootToSpawn[i].onPickup;
         }
     }
 }
