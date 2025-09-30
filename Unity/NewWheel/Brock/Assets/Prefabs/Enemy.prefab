@@ -550,6 +550,9 @@ MonoBehaviour:
           value1: 0
           value2: 0
           startTime: 0
+      experienceWorth: 0
+      experienceToNextLevel: 0
+      isPurchasable: 0
       sprite: {fileID: 0}
     aiStrategy: 0
     lootConfig:
@@ -592,6 +595,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: a0898d316ceb3e045a85b3faa8ce7485, type: 2}
+        m_TargetAssemblyTypeName: EnemyGameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7921575432005991264}
+          m_ObjectArgumentAssemblyTypeName: Enemy, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

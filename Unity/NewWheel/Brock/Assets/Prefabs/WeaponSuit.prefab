@@ -98,7 +98,7 @@ MonoBehaviour:
       skillTargetConfig:
         targetType: 0
         targetOrdering: 0
-        maxTargets: 0
+        maxTargets: 1
         excludedTarget: 0
         includedTarget: 3
       buff1:
@@ -131,6 +131,9 @@ MonoBehaviour:
         value1: 0
         value2: 0
         startTime: 0
+    experienceWorth: 0
+    experienceToNextLevel: 0
+    isPurchasable: 0
     sprite: {fileID: 0}
   weaponItem: {fileID: 0}
   weaponStand: {fileID: 0}

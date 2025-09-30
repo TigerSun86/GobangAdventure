@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,11 +14,17 @@ public class WaveManager : MonoBehaviour
 
     public int currentWaveTime = 0;
 
+    public bool isEarlyComplete;
+
     private WeaponInventory weaponInventory;
+
+    private string[] hackyTestWeapons = { "Stun Rock 1", "Attack Buff Scissor 1" };
+
+    private int hackyTestWeaponsIndex = 0;
 
     public void WaveCompleted()
     {
-        IsWaveRunning = false;
+        this.IsWaveRunning = false;
         if (EnemyManager.Instance.gameObject.activeInHierarchy)
         {
             EnemyManager.Instance.DestroyAllEnemies();
@@ -30,13 +34,22 @@ public class WaveManager : MonoBehaviour
         SceneUtility.LoadShopScene();
     }
 
+    public void CompleteWaveEarly()
+    {
+        if (this.currentWaveTime > 10)
+        {
+            this.currentWaveTime = 10;
+            this.isEarlyComplete = true;
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            IsWaveRunning = SceneUtility.IsWaveSceneActive();
+            this.IsWaveRunning = SceneUtility.IsWaveSceneActive();
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
@@ -56,18 +69,19 @@ public class WaveManager : MonoBehaviour
     private void StartNewWave()
     {
         StopAllCoroutines();
-        currentWave++;
-        currentWaveTime = maxWaveTime;
-        IsWaveRunning = true;
+        this.currentWave++;
+        this.currentWaveTime = this.maxWaveTime;
+        this.IsWaveRunning = true;
+        this.isEarlyComplete = false;
         StartCoroutine(WaveTimer());
     }
 
     private IEnumerator WaveTimer()
     {
-        while (currentWaveTime > 0)
+        while (this.currentWaveTime > 0)
         {
             yield return new WaitForSeconds(1);
-            currentWaveTime--;
+            this.currentWaveTime--;
         }
 
         WaveCompleted();
@@ -87,20 +101,10 @@ public class WaveManager : MonoBehaviour
                 this.weaponInventory = ConfigDb.Instance.weaponInventory;
             }
 
-            if (s)
-            {
-                this.weaponInventory.TryAdd("Basic Scissor 1");
-                s = false;
-            }
-            else
-            {
-                this.weaponInventory.TryAdd("Attack Buff Scissor 1");
-
-                s = true;
-            }
+            this.weaponInventory.TryAdd(this.hackyTestWeapons[this.hackyTestWeaponsIndex]);
+            this.hackyTestWeaponsIndex = (this.hackyTestWeaponsIndex + 1) % this.hackyTestWeapons.Length;
 
             GameObject.Find("Player").GetComponent<Player>().RefreshWeapons();
         }
     }
-    private bool s = false;
 }

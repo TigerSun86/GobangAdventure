@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -22,11 +24,27 @@ public class EnemyManager : MonoBehaviour
 
     private float[] enemySpawnTimers;
 
+    private Dictionary<Enemy, bool> currentWaveBosses;
+
     public void DestroyAllEnemies()
     {
         foreach (Enemy enemy in GetComponentsInChildren<Enemy>())
         {
             Destroy(enemy.gameObject);
+        }
+    }
+
+    public void OnEnemyDie(Enemy enemy)
+    {
+        if (this.currentWaveBosses.ContainsKey(enemy))
+        {
+            this.currentWaveBosses[enemy] = false; // Mark this boss as defeated
+        }
+
+        if (this.currentWaveBosses.Count > 0 && !this.currentWaveBosses.Any(kv => kv.Value))
+        {
+            // All bosses defeated
+            WaveManager.Instance.CompleteWaveEarly();
         }
     }
 
@@ -45,6 +63,9 @@ public class EnemyManager : MonoBehaviour
         {
             Destroy(gameObject); // Prevent duplicates
         }
+
+        // Reset boss count at the start of each wave.
+        Instance.currentWaveBosses = new Dictionary<Enemy, bool>();
     }
 
     private void FixedUpdate()
@@ -78,12 +99,15 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-
     private void SpawnEnemies(EnemyInWaveConfig enemyInWaveConfig)
     {
         Vector3 enemyPosition = GetSpawnPosition(enemyInWaveConfig.spawnPoint) + (Vector3)enemyInWaveConfig.positionInFleet;
         GameObject enemyObject = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity, this.transform);
         enemyObject.GetComponent<Enemy>().Initialize(enemyInWaveConfig.enemyConfig);
+        if (enemyInWaveConfig.isBoss)
+        {
+            this.currentWaveBosses[enemyObject.GetComponent<Enemy>()] = true;
+        }
     }
 
     private Vector3 GetSpawnPosition(SpawnPoint spawnPoint)

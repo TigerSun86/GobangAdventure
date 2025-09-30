@@ -6320,6 +6320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1328440673}
   - component: {fileID: 1328440672}
+  - component: {fileID: 1328440674}
   m_Layer: 0
   m_Name: EnemyManager
   m_TagString: Untagged
@@ -6362,6 +6363,34 @@ Transform:
   - {fileID: 2022135812}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1328440674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328440671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7461ac3564691c14caa79e98d6974734, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: a0898d316ceb3e045a85b3faa8ce7485, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1328440672}
+        m_TargetAssemblyTypeName: EnemyManager, Assembly-CSharp
+        m_MethodName: OnEnemyDie
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1330228081
 GameObject:
   m_ObjectHideFlags: 0
@@ -27211,9 +27240,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9e6ffce185aef4885fdaa15b23320d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxWaveTime: 300
+  maxWaveTime: 150
   currentWave: 0
   currentWaveTime: 0
+  isEarlyComplete: 0
 --- !u!4 &1642601758
 Transform:
   m_ObjectHideFlags: 0
