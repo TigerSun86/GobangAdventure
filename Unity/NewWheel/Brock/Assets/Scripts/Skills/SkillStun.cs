@@ -46,7 +46,7 @@ public class SkillStun : SkillBase
         double damage = this.skillConfig.value;
         DamageType damageType = DamageType.NORMAL_ATTACK;
         Damagable damagable = target.GetComponent<Damagable>();
-        damagable.TakeDamage((int)damage, damageType);
+        damagable.TakeDamage(this.weaponSuit.gameObject, this.skillConfig.skillType, (int)damage, damageType);
 
         WeaponSuit weaponSuit = target.GetWeaponSuit();
         weaponSuit.GetComponent<BuffTracker>().Add(new Buff

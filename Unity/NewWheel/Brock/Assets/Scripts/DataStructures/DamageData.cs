@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class DamageData
 {
-    public GameObject gameObject;
+    public GameObject source;
+
+    public SkillType skillType;
+
+    public GameObject target;
 
     public float rawAmount;
 
@@ -12,9 +16,11 @@ public class DamageData
 
     public DamageType damageType;
 
-    public DamageData(GameObject gameObject, float rawAmount, float actualAmount, DamageType damageType)
+    public DamageData(GameObject source, SkillType skillType, GameObject target, float rawAmount, float actualAmount, DamageType damageType)
     {
-        this.gameObject = gameObject;
+        this.source = source;
+        this.skillType = skillType;
+        this.target = target;
         this.rawAmount = rawAmount;
         this.actualAmount = actualAmount;
         this.damageType = damageType;
@@ -22,6 +28,6 @@ public class DamageData
 
     public override string ToString()
     {
-        return $"{gameObject.transform.position},{rawAmount},{actualAmount},{damageType}";
+        return $"Source: {source?.name}, SkillType: {skillType}, Target: {target?.name}, TargetPosition: {target?.transform.position}, RawAmount: {rawAmount}, ActualAmount: {actualAmount}, DamageType: {damageType}";
     }
 }

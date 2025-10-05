@@ -6,4 +6,5 @@ public enum SkillType
     Stun,
     CriticalHit,
     NeighbourAttackIncrease,
+    NeighbourLifestealPercentage,
 }

@@ -46,7 +46,7 @@ public class SkillHeal : SkillBase
         }
 
         Healable healable = target.weaponStand.GetComponent<Healable>();
-        healable.TakeHealing((int)this.skillConfig.value);
+        healable.TakeHealing(this.weaponSuit.gameObject, this.skillConfig.skillType, (int)this.skillConfig.value);
     }
 
     private void ChangeOwnerSpriteColorGradually(Color color)

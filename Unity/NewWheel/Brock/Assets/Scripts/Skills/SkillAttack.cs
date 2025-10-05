@@ -79,7 +79,7 @@ public class SkillAttack : SkillBase
         }
 
         Damagable damagable = target.weaponStand.GetComponent<Damagable>();
-        damagable.TakeDamage((int)damage, damageType);
+        damagable.TakeDamage(this.weaponSuit.gameObject, this.skillConfig.skillType, (int)damage, damageType);
     }
 
     private double CalculateAttackIncrease(double baseDamage)

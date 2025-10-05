@@ -45,7 +45,7 @@ public class DamageNumberEffect : MonoBehaviour
             0f
         );
 
-        transform.position = damageData.gameObject.transform.position + randomPositionOffset;
+        transform.position = damageData.target.transform.position + randomPositionOffset;
         text.text = damageData.actualAmount.ToString();
         Color textColor = Color.white; // Default color
 

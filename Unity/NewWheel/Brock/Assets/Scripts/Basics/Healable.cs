@@ -14,10 +14,10 @@ public class Healable : MonoBehaviour
         health = GetComponent<Health>();
     }
 
-    public void TakeHealing(int amount)
+    public void TakeHealing(GameObject source, SkillType skillType, int amount)
     {
         int actualAmount = health.IncreaseHealth(amount);
-        onTakeHealing.Invoke(new DamageData(gameObject, amount, actualAmount, DamageType.HEALING));
+        onTakeHealing.Invoke(new DamageData(source, skillType, gameObject, amount, actualAmount, DamageType.HEALING));
     }
 
     public bool IsFullHealth()

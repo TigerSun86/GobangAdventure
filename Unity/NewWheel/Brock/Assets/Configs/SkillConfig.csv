@@ -5,3 +5,5 @@ Stun,1,Stun,Active,75,14,0.35,0.5,4,4,Opponent,Closest,1,None,All,Stun,4,0,0,Stu
 Stun,2,Stun,Active,120,14,0.35,0.5,4,4,Opponent,Closest,1,None,All,Stun,8,0,0,Stun the enemy
 CriticalHit,1,CriticalHit,Passive,0,0,0,0,0,0,Ally,Closest,1,None,All,CriticalHit,Infinity,0.15,2,Make a critical hit by chance
 NeighbourAttackIncrease,1,NeighbourAttackIncrease,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,AttackAmountChange,Infinity,6,0,Increase attack of neighbours by 6
+NeighbourLifestealPercentage,1,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,Infinity,0.2,0,Grants 20% lifesteal for neighbours
+NeighbourLifestealPercentage,2,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,Infinity,0.4,0,Grants 40% lifesteal for neighbours

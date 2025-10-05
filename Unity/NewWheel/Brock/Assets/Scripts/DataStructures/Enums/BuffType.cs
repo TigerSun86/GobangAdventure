@@ -7,4 +7,6 @@ public enum BuffType
     CriticalHit,
 
     AttackAmountChange,
+
+    LifestealPercentage,
 }

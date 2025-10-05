@@ -49,7 +49,7 @@ public class CriticalHitNumberEffect : MonoBehaviour
             0f
         );
 
-        transform.position = damageData.gameObject.transform.position + randomPositionOffset;
+        transform.position = damageData.target.transform.position + randomPositionOffset;
         text.text = "CRIT!";
         text.color = Color.red;
     }
