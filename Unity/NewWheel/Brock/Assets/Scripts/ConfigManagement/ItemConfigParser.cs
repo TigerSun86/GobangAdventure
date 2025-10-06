@@ -41,7 +41,7 @@ public class ItemConfigParser : ICsvRowParser<ItemConfig>
                     result.price = ParserUtility.ParseIntSafe(value, "price");
                     break;
                 case "spritePath":
-                    result.sprite = Resources.Load<Sprite>(value);
+                    result.sprite = ParserUtility.ParseSpriteSafe(value, "spritePath");
                     break;
                 case "maxHealth":
                     result.maxHealth = ParserUtility.ParseFloatSafe(value, "maxHealth");

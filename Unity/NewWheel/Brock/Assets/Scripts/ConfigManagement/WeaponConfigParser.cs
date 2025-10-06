@@ -87,7 +87,7 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
                     result.isPurchasable = ParserUtility.ParseBoolSafe(value, "isPurchasable");
                     break;
                 case "spritePath":
-                    result.sprite = Resources.Load<Sprite>(value);
+                    result.sprite = ParserUtility.ParseSpriteSafe(value, "spritePath");
                     break;
                 default:
                     Debug.LogWarning($"[WeaponConfigParser] Unrecognized header '{header}' in CSV");
