@@ -7,3 +7,4 @@ CriticalHit,1,CriticalHit,Passive,0,0,0,0,0,0,Ally,Closest,1,None,All,CriticalHi
 NeighbourAttackIncrease,1,NeighbourAttackIncrease,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,AttackAmountChange,Infinity,6,0,Increase attack of neighbours by 6
 NeighbourLifestealPercentage,1,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,Infinity,0.2,0,Grants 20% lifesteal for neighbours
 NeighbourLifestealPercentage,2,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,Infinity,0.4,0,Grants 40% lifesteal for neighbours
+Revive,1,Revive,BuffBlockingCd,0,10,0,0,0,Infinity,Ally,Closest,1,None,Self,HealthLock,Infinity,1,0,Revive when fainting

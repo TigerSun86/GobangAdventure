@@ -14,7 +14,7 @@ Tower Scissor,1,Scissor,1,1000,CriticalHit1,,25,1.8,0.2,0.1,6,100,200,FALSE,Spri
 Shot Paper,1,PAPER,1,450,Shot1,,24,4,0.4,0.2,2,100,200,TRUE,Sprites/Weapons#Paper4
 Shot Paper,2,PAPER,1,475,Shot1,,27,4,0.4,0.2,2,200,400,TRUE,Sprites/Weapons#Paper4
 Shot Paper,3,PAPER,1,525,Shot1,,30,4,0.4,0.2,2,400,0,TRUE,Sprites/Weapons#Paper4
-Skeleton King,1,ROCK,1,604,Stun1,,30,4.2,0.5,0.4,1.5,100,200,TRUE,Sprites/Weapons#Rock1
+Skeleton King,1,ROCK,1,604,Stun1,Revive1,30,4.2,0.5,0.4,1.5,100,200,TRUE,Sprites/Weapons#Rock1
 Skeleton King,2,ROCK,1,665,Stun1,NeighbourLifestealPercentage1,33,4.2,0.5,0.4,1.5,200,400,TRUE,Sprites/Weapons#Rock1
 Skeleton King,3,ROCK,1,726,Stun2,NeighbourLifestealPercentage1,36,4.2,0.5,0.4,1.5,400,800,TRUE,Sprites/Weapons#Rock1
 Skeleton King,4,ROCK,1,787,Stun2,NeighbourLifestealPercentage2,39,4.2,0.5,0.4,1.5,800,1600,TRUE,Sprites/Weapons#Rock1

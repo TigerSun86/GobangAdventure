@@ -1,5 +1,6 @@
 public enum SkillActivationType
 {
     Active,
-    Passive
+    Passive,
+    BuffBlockingCd,
 }

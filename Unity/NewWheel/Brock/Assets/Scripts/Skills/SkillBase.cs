@@ -159,11 +159,15 @@ public class SkillBase : MonoBehaviour
         return false;
     }
 
+    protected virtual float GetCalculatedCdTime()
+    {
+        return this.skillConfig.cdTime - this.skillConfig.actionTime - this.skillConfig.recoveryTime;
+    }
+
     protected bool AreTargetsValid()
     {
         if (targets == null || targets.Length == 0)
         {
-            Debug.LogError("No target to attack");
             return false;
         }
 
@@ -185,11 +189,6 @@ public class SkillBase : MonoBehaviour
     {
         this.skillState = skillState;
         this.timeInCurrentState = 0;
-    }
-
-    private float GetCalculatedCdTime()
-    {
-        return this.skillConfig.cdTime - this.skillConfig.actionTime - this.skillConfig.recoveryTime;
     }
 
     private IEnumerable<string> GetTargetTags()

@@ -7,4 +7,5 @@ public enum SkillType
     CriticalHit,
     NeighbourAttackIncrease,
     NeighbourLifestealPercentage,
+    Revive,
 }
