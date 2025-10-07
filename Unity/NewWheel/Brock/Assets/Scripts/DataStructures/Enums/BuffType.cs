@@ -9,4 +9,6 @@ public enum BuffType
     AttackAmountChange,
 
     LifestealPercentage,
+
+    HealthLock,
 }

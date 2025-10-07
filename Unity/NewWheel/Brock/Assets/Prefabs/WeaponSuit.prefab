@@ -945,6 +945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 0
   health: 0
+  buffTracker: {fileID: 2852976292321115431}
   healthChanged:
     m_PersistentCalls:
       m_Calls:
