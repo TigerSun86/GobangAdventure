@@ -9,23 +9,9 @@ public class Death : MonoBehaviour
 
     [SerializeField] public float timeToLive = 0f;
 
-    [SerializeField, Required] Health health;
-
     [SerializeField, AssignedInCode] SelfDestroy selfDestroy;
 
-    private void Start()
-    {
-        health.healthChanged.AddListener(CheckDeathByHealth);
-
-        selfDestroy = GetComponent<SelfDestroy>();
-
-        if (!Mathf.Approximately(timeToLive, 0f))
-        {
-            TimersManager.SetTimer(this, timeToLive, Die);
-        }
-    }
-
-    private void CheckDeathByHealth(int health)
+    public void CheckDeathByHealth(int health)
     {
         if (health <= 0)
         {
@@ -39,6 +25,16 @@ public class Death : MonoBehaviour
         if (selfDestroy != null)
         {
             selfDestroy.Destroy();
+        }
+    }
+
+    private void Start()
+    {
+        selfDestroy = GetComponent<SelfDestroy>();
+
+        if (!Mathf.Approximately(timeToLive, 0f))
+        {
+            TimersManager.SetTimer(this, timeToLive, Die);
         }
     }
 }

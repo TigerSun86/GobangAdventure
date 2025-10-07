@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -83221498786863290}
   - component: {fileID: 303178027058660786}
   - component: {fileID: 6724713495814208420}
+  - component: {fileID: 1750146200935686621}
   - component: {fileID: 2852976292321115431}
   - component: {fileID: -530033714497838428}
   - component: {fileID: 215842279329844913}
@@ -168,8 +169,22 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   timeToLive: 0
-  health: {fileID: 5216957209064090488}
   selfDestroy: {fileID: 0}
+--- !u!114 &1750146200935686621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973336722079467576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2d56b461efbc3849a6aa2ac6be084a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  faintingEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2852976292321115431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -932,7 +947,31 @@ MonoBehaviour:
   health: 0
   healthChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1750146200935686621}
+        m_TargetAssemblyTypeName: Fainting, Assembly-CSharp
+        m_MethodName: CheckFaintingByHealth
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6724713495814208420}
+        m_TargetAssemblyTypeName: Death, Assembly-CSharp
+        m_MethodName: CheckDeathByHealth
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1324166055715129599
 MonoBehaviour:
   m_ObjectHideFlags: 0
