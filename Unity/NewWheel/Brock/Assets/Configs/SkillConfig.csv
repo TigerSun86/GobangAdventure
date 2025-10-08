@@ -1,10 +1,10 @@
-﻿skillName,level,skillType,skillActivationType,value,cdTime,actionTime,recoveryTime,projectileSpeed,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,buff1Type,buff1Duration,buff1Value1,buff1Value2,description
-Heal,1,Heal,Active,25,1,1,1,0,2,Ally,Closest,1,Self,All,None,0,0,0,Heal the ally
-Shot,1,Shot,Active,125,8,1,1,4,5,Opponent,Closest,1,None,All,None,0,0,0,Shot the enemy
-Stun,1,Stun,Active,75,14,0.35,0.5,4,4,Opponent,Closest,1,None,All,Stun,4,0,0,Stun the enemy
-Stun,2,Stun,Active,120,14,0.35,0.5,4,4,Opponent,Closest,1,None,All,Stun,8,0,0,Stun the enemy
-CriticalHit,1,CriticalHit,Passive,0,0,0,0,0,0,Ally,Closest,1,None,All,CriticalHit,Infinity,0.15,2,Make a critical hit by chance
-NeighbourAttackIncrease,1,NeighbourAttackIncrease,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,AttackAmountChange,Infinity,6,0,Increase attack of neighbours by 6
-NeighbourLifestealPercentage,1,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,Infinity,0.2,0,Grants 20% lifesteal for neighbours
-NeighbourLifestealPercentage,2,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,Infinity,0.4,0,Grants 40% lifesteal for neighbours
-Revive,1,Revive,BuffBlockingCd,0,10,0,0,0,Infinity,Ally,Closest,1,None,Self,HealthLock,Infinity,1,0,Revive when fainting
+﻿skillName,level,skillType,skillActivationType,value,cdTime,actionTime,recoveryTime,projectileSpeed,range,targetType,targetOrdering,maxTargets,excludedTarget,includedTarget,buff1Type,buff1Invisible,buff1Duration,buff1Value1,buff1Value2,buff2Type,buff2Invisible,buff2Duration,buff2Value1,buff2Value2,description
+Heal,1,Heal,Active,25,1,1,1,0,2,Ally,Closest,1,Self,All,None,FALSE,0,0,0,None,FALSE,0,0,0,Heal the ally
+Shot,1,Shot,Active,125,8,1,1,4,5,Opponent,Closest,1,None,All,None,FALSE,0,0,0,None,FALSE,0,0,0,Shot the enemy
+Stun,1,Stun,Active,75,14,0.35,0.5,4,4,Opponent,Closest,1,None,All,Stun,FALSE,4,0,0,None,FALSE,0,0,0,Stun the enemy
+Stun,2,Stun,Active,120,14,0.35,0.5,4,4,Opponent,Closest,1,None,All,Stun,FALSE,8,0,0,None,FALSE,0,0,0,Stun the enemy
+CriticalHit,1,CriticalHit,Passive,0,0,0,0,0,0,Ally,Closest,1,None,All,CriticalHit,FALSE,Infinity,0.15,2,None,FALSE,0,0,0,Make a critical hit by chance
+NeighbourAttackIncrease,1,NeighbourAttackIncrease,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,AttackAmountChange,FALSE,Infinity,6,0,None,FALSE,0,0,0,Increase attack of neighbours by 6
+NeighbourLifestealPercentage,1,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,FALSE,Infinity,0.2,0,None,FALSE,0,0,0,Grants 20% lifesteal for neighbours
+NeighbourLifestealPercentage,2,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,FALSE,Infinity,0.4,0,None,FALSE,0,0,0,Grants 40% lifesteal for neighbours
+Revive,1,Revive,BuffBlockingCd,0,30,0,0,0,Infinity,Ally,Closest,1,None,Self,HealthLock,TRUE,Infinity,1,0,ReviveWhenFainting,FALSE,Infinity,0,0,Revive when fainting

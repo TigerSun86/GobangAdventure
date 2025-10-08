@@ -15,6 +15,12 @@ public class SkillPassive : SkillBase
 
                 Buff buffClone = this.skillConfig.buff1.Clone();
                 buffTracker.Add(buffClone);
+
+                if (this.skillConfig.buff2 != null && this.skillConfig.buff2.buffType != BuffType.None)
+                {
+                    Buff buffClone2 = this.skillConfig.buff2.Clone();
+                    buffTracker.Add(buffClone2);
+                }
             }
         }
     }

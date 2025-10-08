@@ -20,6 +20,12 @@ public class SkillBuffBlockingCd : SkillBase
 
             Buff buffClone = this.skillConfig.buff1.Clone();
             buffTracker.Add(buffClone);
+
+            if (this.skillConfig.buff2 != null && this.skillConfig.buff2.buffType != BuffType.None)
+            {
+                Buff buffClone2 = this.skillConfig.buff2.Clone();
+                buffTracker.Add(buffClone2);
+            }
         }
 
         return true;
@@ -41,6 +47,12 @@ public class SkillBuffBlockingCd : SkillBase
         return base.GetCalculatedCdTime();
     }
 
+    protected override bool EnableUpdateTimeInCurrentState()
+    {
+        // Stop proceeding CD time if buffs haven't been consumed.
+        return !IsBuffOnTargets();
+    }
+
     private bool IsBuffOnTargets()
     {
         if (AreTargetsValid())
@@ -59,6 +71,16 @@ public class SkillBuffBlockingCd : SkillBase
                 if (buff != null)
                 {
                     return true;
+                }
+
+                if (this.skillConfig.buff2 != null && this.skillConfig.buff2.buffType != BuffType.None)
+                {
+                    Buff buff2 = buffTracker.Get(this.skillConfig.buff2.buffType)
+                        .FirstOrDefault();
+                    if (buff2 != null)
+                    {
+                        return true;
+                    }
                 }
             }
         }

@@ -11,4 +11,6 @@ public enum BuffType
     LifestealPercentage,
 
     HealthLock,
+
+    ReviveWhenFainting,
 }

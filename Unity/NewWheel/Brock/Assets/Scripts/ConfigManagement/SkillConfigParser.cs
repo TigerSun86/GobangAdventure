@@ -5,7 +5,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
 {
     private static readonly HashSet<string> expectedHeaders = new HashSet<string>()
     {
-        "skillName","level","skillType","skillActivationType","value","cdTime","actionTime","recoveryTime","projectileSpeed","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","buff1Type","buff1Duration","buff1Value1","buff1Value2","description"
+        "skillName","level","skillType","skillActivationType","value","cdTime","actionTime","recoveryTime","projectileSpeed","range","targetType","targetOrdering","maxTargets","excludedTarget","includedTarget","buff1Type","buff1Invisible","buff1Duration","buff1Value1","buff1Value2","buff2Type","buff2Invisible","buff2Duration","buff2Value1","buff2Value2","description"
     };
 
     private bool validated = false;
@@ -21,6 +21,7 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
         SkillConfig result = new SkillConfig();
         result.skillTargetConfig = new SkillTargetConfig();
         result.buff1 = new Buff();
+        result.buff2 = new Buff();
 
         for (int i = 0; i < headers.Length; i++)
         {
@@ -77,6 +78,9 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
                 case "buff1Type":
                     result.buff1.buffType = ParserUtility.ParseEnum<BuffType>(value, true);
                     break;
+                case "buff1Invisible":
+                    result.buff1.invisible = ParserUtility.ParseBoolSafe(value, "buff1Invisible");
+                    break;
                 case "buff1Duration":
                     result.buff1.duration = ParserUtility.ParseFloatSafe(value, "buff1Duration");
                     break;
@@ -85,6 +89,21 @@ public class SkillConfigParser : ICsvRowParser<SkillConfig>
                     break;
                 case "buff1Value2":
                     result.buff1.value2 = ParserUtility.ParseFloatSafe(value, "buff1Value2");
+                    break;
+                case "buff2Type":
+                    result.buff2.buffType = ParserUtility.ParseEnum<BuffType>(value, true);
+                    break;
+                case "buff2Invisible":
+                    result.buff2.invisible = ParserUtility.ParseBoolSafe(value, "buff2Invisible");
+                    break;
+                case "buff2Duration":
+                    result.buff2.duration = ParserUtility.ParseFloatSafe(value, "buff2Duration");
+                    break;
+                case "buff2Value1":
+                    result.buff2.value1 = ParserUtility.ParseFloatSafe(value, "buff2Value1");
+                    break;
+                case "buff2Value2":
+                    result.buff2.value2 = ParserUtility.ParseFloatSafe(value, "buff2Value2");
                     break;
                 case "description":
                     result.description = value;

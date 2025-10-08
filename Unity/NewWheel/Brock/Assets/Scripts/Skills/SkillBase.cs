@@ -29,7 +29,11 @@ public class SkillBase : MonoBehaviour
 
     public void UpdateState()
     {
-        this.timeInCurrentState += Time.fixedDeltaTime;
+        if (EnableUpdateTimeInCurrentState())
+        {
+            this.timeInCurrentState += Time.fixedDeltaTime;
+        }
+
         switch (this.skillState)
         {
             case SkillState.WaitingCd:
@@ -162,6 +166,11 @@ public class SkillBase : MonoBehaviour
     protected virtual float GetCalculatedCdTime()
     {
         return this.skillConfig.cdTime - this.skillConfig.actionTime - this.skillConfig.recoveryTime;
+    }
+
+    protected virtual bool EnableUpdateTimeInCurrentState()
+    {
+        return true;
     }
 
     protected bool AreTargetsValid()

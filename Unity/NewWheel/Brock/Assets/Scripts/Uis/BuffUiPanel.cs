@@ -40,6 +40,11 @@ public class BuffUiPanel : MonoBehaviour
         // Add instances for new buffs
         foreach (Buff buff in buffs)
         {
+            if (buff.invisible)
+            {
+                continue;
+            }
+
             if (!this.buffInstances.Any(bi => bi.buff == buff))
             {
                 if (!this.images.TryGetValue(buff.buffType, out Sprite sprite))

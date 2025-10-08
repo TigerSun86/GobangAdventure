@@ -35,9 +35,17 @@ public class BuffTracker : MonoBehaviour
         return activeBuffs;
     }
 
+    public void Remove(Buff buff)
+    {
+        activeBuffs.Remove(buff);
+    }
+
     private IEnumerator RemoveBuffAfterDuration(Buff buff)
     {
-        yield return new WaitForSeconds(buff.duration);
-        activeBuffs.Remove(buff);
+        if (buff.duration != float.PositiveInfinity)
+        {
+            yield return new WaitForSeconds(buff.duration);
+            Remove(buff);
+        }
     }
 }

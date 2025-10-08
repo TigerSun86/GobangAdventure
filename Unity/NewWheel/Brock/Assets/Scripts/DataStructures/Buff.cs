@@ -5,6 +5,8 @@ public class Buff
 {
     public BuffType buffType;
 
+    public bool invisible;
+
     public float duration;
 
     public float value1;

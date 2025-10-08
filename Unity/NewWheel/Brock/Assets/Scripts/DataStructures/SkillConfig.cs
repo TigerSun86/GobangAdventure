@@ -28,4 +28,6 @@ public class SkillConfig
     public SkillTargetConfig skillTargetConfig;
 
     public Buff buff1;
+
+    public Buff buff2;
 }
