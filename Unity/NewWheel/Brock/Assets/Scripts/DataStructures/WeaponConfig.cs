@@ -21,6 +21,8 @@ public class WeaponConfig
 
     public SkillConfig skill2;
 
+    public SkillConfig skill3;
+
     public int experienceWorth;
 
     public int experienceToNextLevel;
@@ -49,6 +51,11 @@ public class WeaponConfig
         if (!string.IsNullOrWhiteSpace(skill2.skillName))
         {
             skills.Add(skill2);
+        }
+
+        if (!string.IsNullOrWhiteSpace(skill3.skillName))
+        {
+            skills.Add(skill3);
         }
 
         return skills.ToArray();
