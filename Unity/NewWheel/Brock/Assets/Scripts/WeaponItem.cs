@@ -23,6 +23,12 @@ public class WeaponItem : MonoBehaviour
         Move(this.weaponSuit.transform, remainingTime);
     }
 
+    public void SetVisibility(bool visible)
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.enabled = visible;
+    }
+
     private void Start()
     {
         ChangeSprite();

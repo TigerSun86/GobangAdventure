@@ -29862,6 +29862,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1703854657981697789, guid: f3db4e4b31da558468af73097f639f99, type: 3}
+      propertyPath: skillPrefabs.m_keys.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1703854657981697789, guid: f3db4e4b31da558468af73097f639f99, type: 3}
+      propertyPath: skillPrefabs.m_values.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1703854657981697789, guid: f3db4e4b31da558468af73097f639f99, type: 3}
+      propertyPath: 'skillPrefabs.m_keys.Array.data[8]'
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1703854657981697789, guid: f3db4e4b31da558468af73097f639f99, type: 3}
+      propertyPath: 'skillPrefabs.m_values.Array.data[8]'
+      value: 
+      objectReference: {fileID: 7031605176509100956, guid: bd75c3d46c9324a4f9f8975594b1fa4b, type: 3}
     - target: {fileID: 3623977824411087152, guid: f3db4e4b31da558468af73097f639f99, type: 3}
       propertyPath: m_Name
       value: SkillPrefabDb

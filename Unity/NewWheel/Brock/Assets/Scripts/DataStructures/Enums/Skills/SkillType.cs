@@ -8,4 +8,5 @@ public enum SkillType
     NeighbourAttackIncrease,
     NeighbourLifestealPercentage,
     Revive,
+    BlinkAttack,
 }

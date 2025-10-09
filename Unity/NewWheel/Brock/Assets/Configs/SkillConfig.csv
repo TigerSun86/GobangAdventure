@@ -8,3 +8,5 @@ NeighbourAttackIncrease,1,NeighbourAttackIncrease,Passive,0,0,0,0,0,Infinity,All
 NeighbourLifestealPercentage,1,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,FALSE,Infinity,0.2,0,None,FALSE,0,0,0,Grants 20% lifesteal for neighbours
 NeighbourLifestealPercentage,2,NeighbourLifestealPercentage,Passive,0,0,0,0,0,Infinity,Ally,Closest,3,None,SelfAndNeighbours,LifestealPercentage,FALSE,Infinity,0.4,0,None,FALSE,0,0,0,Grants 40% lifesteal for neighbours
 Revive,1,Revive,BuffBlockingCd,0,120,0,0,0,Infinity,Ally,Closest,1,None,Self,HealthLock,TRUE,Infinity,1,0,ReviveWhenFainting,FALSE,Infinity,0,0,Revive when fainting
+BlinkAttack,1,BlinkAttack,Active,90,9,2,2,0,5,Opponent,Closest,1,None,All,None,FALSE,0,0,0,None,FALSE,0,0,0,Blink attack the enemy
+BlinkAttack,2,BlinkAttack,Active,300,9,0.5,0.5,0,5,Opponent,Closest,1,None,All,None,FALSE,0,0,0,None,FALSE,0,0,0,Blink attack the enemy
