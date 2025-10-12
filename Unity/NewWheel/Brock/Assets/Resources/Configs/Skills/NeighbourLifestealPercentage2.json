@@ -1,0 +1,36 @@
+{
+  "skillName": "NeighbourLifestealPercentage",
+  "level": 2,
+  "description": "Grants 40% lifesteal for neighbours",
+  "skillType": 6,
+  "skillActivationType": 1,
+  "value": 0.0,
+  "cdTime": 0.0,
+  "actionTime": 0.0,
+  "recoveryTime": 0.0,
+  "projectileSpeed": 0.0,
+  "range": "Infinity",
+  "skillTargetConfig": {
+    "targetType": 1,
+    "targetOrdering": 0,
+    "maxTargets": 3,
+    "excludedTarget": 0,
+    "includedTarget": 5
+  },
+  "buff1": {
+    "buffType": 4,
+    "invisible": false,
+    "duration": "Infinity",
+    "value1": 0.4,
+    "value2": 0.0,
+    "startTime": 0.0
+  },
+  "buff2": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  }
+}

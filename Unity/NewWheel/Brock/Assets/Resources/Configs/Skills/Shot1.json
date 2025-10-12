@@ -1,0 +1,36 @@
+{
+  "skillName": "Shot",
+  "level": 1,
+  "description": "Shot the enemy",
+  "skillType": 2,
+  "skillActivationType": 0,
+  "value": 125.0,
+  "cdTime": 8.0,
+  "actionTime": 1.0,
+  "recoveryTime": 1.0,
+  "projectileSpeed": 4.0,
+  "range": 5.0,
+  "skillTargetConfig": {
+    "targetType": 0,
+    "targetOrdering": 0,
+    "maxTargets": 1,
+    "excludedTarget": 0,
+    "includedTarget": 7
+  },
+  "buff1": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  },
+  "buff2": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  }
+}

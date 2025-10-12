@@ -1,0 +1,36 @@
+{
+  "skillName": "Stun",
+  "level": 2,
+  "description": "Stun the enemy",
+  "skillType": 3,
+  "skillActivationType": 0,
+  "value": 120.0,
+  "cdTime": 14.0,
+  "actionTime": 0.35,
+  "recoveryTime": 0.5,
+  "projectileSpeed": 4.0,
+  "range": 4.0,
+  "skillTargetConfig": {
+    "targetType": 0,
+    "targetOrdering": 0,
+    "maxTargets": 1,
+    "excludedTarget": 0,
+    "includedTarget": 7
+  },
+  "buff1": {
+    "buffType": 1,
+    "invisible": false,
+    "duration": 8.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  },
+  "buff2": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  }
+}

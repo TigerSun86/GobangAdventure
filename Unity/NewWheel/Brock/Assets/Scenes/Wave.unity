@@ -27073,7 +27073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99c82b2eb9f372549b39e650153bbc49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillConfigCsv: {fileID: 4900000, guid: e755ca29f290b9546bb9063b223ecb1f, type: 3}
+  skillConfigPath: Configs/Skills
   itemConfigCsv: {fileID: 4900000, guid: badf722def905d9479ab2eac2395e97f, type: 3}
   weaponConfigCsv: {fileID: 4900000, guid: 9c1ed5aba3edad64797ac31a74c54628, type: 3}
   enemyConfigCsv: {fileID: 4900000, guid: aff259aeb8c57f740a5f41e5350676d7, type: 3}

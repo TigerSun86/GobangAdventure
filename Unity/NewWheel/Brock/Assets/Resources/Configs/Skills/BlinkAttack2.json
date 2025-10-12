@@ -1,0 +1,36 @@
+{
+  "skillName": "BlinkAttack",
+  "level": 2,
+  "description": "Blink attack the enemy",
+  "skillType": 8,
+  "skillActivationType": 0,
+  "value": 300.0,
+  "cdTime": 9.0,
+  "actionTime": 0.5,
+  "recoveryTime": 0.5,
+  "projectileSpeed": 0.0,
+  "range": 5.0,
+  "skillTargetConfig": {
+    "targetType": 0,
+    "targetOrdering": 0,
+    "maxTargets": 1,
+    "excludedTarget": 0,
+    "includedTarget": 7
+  },
+  "buff1": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  },
+  "buff2": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  }
+}

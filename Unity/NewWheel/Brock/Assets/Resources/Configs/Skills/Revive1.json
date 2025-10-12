@@ -1,0 +1,36 @@
+{
+  "skillName": "Revive",
+  "level": 1,
+  "description": "Revive when fainting",
+  "skillType": 7,
+  "skillActivationType": 2,
+  "value": 0.0,
+  "cdTime": 120.0,
+  "actionTime": 0.0,
+  "recoveryTime": 0.0,
+  "projectileSpeed": 0.0,
+  "range": "Infinity",
+  "skillTargetConfig": {
+    "targetType": 1,
+    "targetOrdering": 0,
+    "maxTargets": 1,
+    "excludedTarget": 0,
+    "includedTarget": 1
+  },
+  "buff1": {
+    "buffType": 5,
+    "invisible": true,
+    "duration": "Infinity",
+    "value1": 1.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  },
+  "buff2": {
+    "buffType": 6,
+    "invisible": false,
+    "duration": "Infinity",
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  }
+}

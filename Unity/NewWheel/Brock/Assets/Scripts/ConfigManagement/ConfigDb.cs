@@ -4,7 +4,7 @@ using UnityEngine;
 public class ConfigDb : MonoBehaviour
 {
     [SerializeField, Required]
-    TextAsset skillConfigCsv;
+    string skillConfigPath;
 
     [SerializeField, Required]
     TextAsset itemConfigCsv;
@@ -51,7 +51,7 @@ public class ConfigDb : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            List<SkillConfig> skillConfigs = CsvLoader.LoadFromCSV(skillConfigCsv, new SkillConfigParser());
+            List<SkillConfig> skillConfigs = JsonLoader.LoadAll<SkillConfig>(skillConfigPath);
             this.skillConfigDb = new SkillConfigDb(skillConfigs);
             List<WeaponConfig> weaponConfigs = CsvLoader.LoadFromCSV(weaponConfigCsv, new WeaponConfigParser(this.skillConfigDb));
             this.weaponConfigDb = new WeaponConfigDb(weaponConfigs);

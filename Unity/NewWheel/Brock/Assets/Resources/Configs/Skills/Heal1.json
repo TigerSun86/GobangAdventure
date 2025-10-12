@@ -1,0 +1,36 @@
+{
+  "skillName": "Heal",
+  "level": 1,
+  "description": "Heal the ally",
+  "skillType": 1,
+  "skillActivationType": 0,
+  "value": 25.0,
+  "cdTime": 1.0,
+  "actionTime": 1.0,
+  "recoveryTime": 1.0,
+  "projectileSpeed": 0.0,
+  "range": 2.0,
+  "skillTargetConfig": {
+    "targetType": 1,
+    "targetOrdering": 0,
+    "maxTargets": 1,
+    "excludedTarget": 1,
+    "includedTarget": 7
+  },
+  "buff1": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  },
+  "buff2": {
+    "buffType": 0,
+    "invisible": false,
+    "duration": 0.0,
+    "value1": 0.0,
+    "value2": 0.0,
+    "startTime": 0.0
+  }
+}
