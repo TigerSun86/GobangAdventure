@@ -1189,7 +1189,7 @@ MonoBehaviour:
   itemConfigCsv: {fileID: 4900000, guid: badf722def905d9479ab2eac2395e97f, type: 3}
   weaponConfigCsv: {fileID: 4900000, guid: 9c1ed5aba3edad64797ac31a74c54628, type: 3}
   enemyConfigCsv: {fileID: 4900000, guid: aff259aeb8c57f740a5f41e5350676d7, type: 3}
-  waveConfigCsv: {fileID: 4900000, guid: 5de75d1c02f621a4290501d3c7499c62, type: 3}
+  waveConfigCsv: {fileID: 4900000, guid: 9111db105a4c9b34c801e942f6fff310, type: 3}
   skillConfigDb:
     skillConfigMap:
       m_keys: []
