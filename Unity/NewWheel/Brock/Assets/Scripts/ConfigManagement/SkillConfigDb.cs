@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 [Serializable]
 public class SkillConfigDb
@@ -22,6 +24,14 @@ public class SkillConfigDb
             }
 
             this.skillConfigMap.Add(key, skill);
+
+            // JsonSerializerSettings settings = new JsonSerializerSettings
+            // {
+            //     Converters = { new StringEnumConverter() }
+            // };
+            // string json = JsonConvert.SerializeObject(skill, Formatting.Indented, settings);
+            // System.IO.Directory.CreateDirectory("SerializedSkills");
+            // System.IO.File.WriteAllText($"SerializedSkills\\{key}.json", json);
         }
     }
 

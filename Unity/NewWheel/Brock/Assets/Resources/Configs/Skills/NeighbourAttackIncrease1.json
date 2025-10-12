@@ -2,8 +2,8 @@
   "skillName": "NeighbourAttackIncrease",
   "level": 1,
   "description": "Increase attack of neighbours by 6",
-  "skillType": 5,
-  "skillActivationType": 1,
+  "skillType": "NeighbourAttackIncrease",
+  "skillActivationType": "Passive",
   "value": 0.0,
   "cdTime": 0.0,
   "actionTime": 0.0,
@@ -11,14 +11,14 @@
   "projectileSpeed": 0.0,
   "range": "Infinity",
   "skillTargetConfig": {
-    "targetType": 1,
-    "targetOrdering": 0,
+    "targetType": "Ally",
+    "targetOrdering": "Closest",
     "maxTargets": 3,
-    "excludedTarget": 0,
-    "includedTarget": 5
+    "excludedTarget": "None",
+    "includedTarget": "SelfAndNeighbours"
   },
   "buff1": {
-    "buffType": 3,
+    "buffType": "AttackAmountChange",
     "invisible": false,
     "duration": "Infinity",
     "value1": 6.0,
@@ -26,7 +26,7 @@
     "startTime": 0.0
   },
   "buff2": {
-    "buffType": 0,
+    "buffType": "None",
     "invisible": false,
     "duration": 0.0,
     "value1": 0.0,

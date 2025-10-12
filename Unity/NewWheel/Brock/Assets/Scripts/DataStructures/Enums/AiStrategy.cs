@@ -1,5 +1,8 @@
 using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
+[JsonConverter(typeof(StringEnumConverter))]
 [Flags]
 public enum AiStrategy
 {
