@@ -25,8 +25,16 @@ public static class JsonLoader
 
         foreach (TextAsset ta in assets)
         {
-            T cfg = JsonConvert.DeserializeObject<T>(ta.text, Settings);
-            result.Add(cfg);
+            try
+            {
+                T cfg = JsonConvert.DeserializeObject<T>(ta.text, Settings);
+                result.Add(cfg);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Failed to parse JSON in file '{ta.name}': {ex.Message}");
+                continue;
+            }
         }
 
         return result;
