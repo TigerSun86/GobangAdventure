@@ -7,4 +7,6 @@ public enum ActionTargetType
     SKILL_SELECTED,
 
     CASTER,
+
+    ATTACKER,
 }

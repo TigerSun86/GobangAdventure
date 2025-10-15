@@ -26,7 +26,7 @@ public class Aura : MonoBehaviour
         {
             if (this.config.skillTargetConfig.FilterTarget(this.ownerWeaponSuit, target, range: float.PositiveInfinity))
             {
-                target.modifierContainer.AddModifier(new Modifier(this.config.childModifierConfig.Clone()));
+                target.modifierContainer.AddModifier(new Modifier(this.config.childModifierConfig.Clone(), this.ownerSkill));
             }
         }
     }

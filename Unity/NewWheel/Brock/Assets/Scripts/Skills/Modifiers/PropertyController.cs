@@ -56,6 +56,11 @@ public class PropertyController : MonoBehaviour
         Dictionary<ModifierPropertyType, float> modifierSums = new Dictionary<ModifierPropertyType, float>();
         foreach (Modifier modifier in this.modifierContainer.GetAllModifiers())
         {
+            if (modifier.config.properties == null)
+            {
+                continue;
+            }
+
             foreach (KeyValuePair<ModifierPropertyType, float> kv in modifier.config.properties)
             {
                 if (!modifierSums.ContainsKey(kv.Key))

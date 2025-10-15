@@ -6,18 +6,22 @@ public class ModifierContainer : MonoBehaviour
     [SerializeField, AssignedInCode]
     private List<Modifier> modifiers = new List<Modifier>();
 
+    private WeaponSuit weaponSuit;
+
     private PropertyController propertyController;
 
     private BuffUiPanel buffUiPanel;
 
     public void AddModifier(Modifier modifier)
     {
+        modifier.Link(this.weaponSuit);
         this.modifiers.Add(modifier);
         NotifyDirty();
     }
 
     public void RemoveModifier(Modifier modifier)
     {
+        modifier.Unlink();
         this.modifiers.Remove(modifier);
         NotifyDirty();
     }
@@ -29,6 +33,7 @@ public class ModifierContainer : MonoBehaviour
 
     private void Awake()
     {
+        this.weaponSuit = GetComponent<WeaponSuit>();
         this.propertyController = GetComponent<PropertyController>();
         this.buffUiPanel = GetComponent<BuffUiPanel>();
     }

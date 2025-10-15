@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ public class SkillBase : MonoBehaviour
 
     public WeaponSuit[] targets;
 
-    public Dictionary<SkillEvent, ActionBase[]> eventToActions;
+    public Dictionary<SkillEvent, List<ActionBase>> eventToActions;
 
     public virtual void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig)
     {
@@ -24,7 +23,7 @@ public class SkillBase : MonoBehaviour
         this.skillConfig = skillConfig;
         this.skillState = SkillState.WaitingCd;
         this.timeInCurrentState = 0;
-        this.eventToActions = new Dictionary<SkillEvent, ActionBase[]>();
+        this.eventToActions = new Dictionary<SkillEvent, List<ActionBase>>();
         if (this.skillConfig.events != null)
         {
             foreach (KeyValuePair<SkillEvent, ActionConfig[]> kv in this.skillConfig.events)
@@ -35,11 +34,16 @@ public class SkillBase : MonoBehaviour
                     actions.Add(ActionFactory.Create(ac, this.weaponSuit, this));
                 }
 
-                this.eventToActions[kv.Key] = actions.ToArray();
+                this.eventToActions[kv.Key] = actions;
+
+                if (kv.Key == SkillEvent.SKILL_ON_ATTACK_LANDED)
+                {
+                    this.weaponSuit.skillActor.RegisterAttackEvents(SkillEvent.SKILL_ON_ATTACK_LANDED, actions);
+                }
             }
         }
 
-        Invoke(SkillEvent.SKILL_ON_CREATED);
+        Invoke(SkillEvent.SKILL_ON_CREATED, new SkillEventContext());
     }
 
     public void UpdateState()
@@ -73,7 +77,7 @@ public class SkillBase : MonoBehaviour
             case SkillState.Acting:
                 if (Act())
                 {
-                    Invoke(SkillEvent.SKILL_ON_ACTING_FINISH);
+                    Invoke(SkillEvent.SKILL_ON_ACTING_FINISH, new SkillEventContext());
                     SwitchState(SkillState.Recovering);
                 }
                 break;
@@ -92,13 +96,13 @@ public class SkillBase : MonoBehaviour
         }
     }
 
-    public void Invoke(SkillEvent skillEvent)
+    public void Invoke(SkillEvent skillEvent, SkillEventContext skillEventContext)
     {
-        if (this.eventToActions.TryGetValue(skillEvent, out ActionBase[] actions))
+        if (this.eventToActions.TryGetValue(skillEvent, out List<ActionBase> actions))
         {
             foreach (ActionBase action in actions)
             {
-                action.Apply();
+                action.Apply(skillEventContext);
             }
         }
     }
@@ -123,7 +127,7 @@ public class SkillBase : MonoBehaviour
         if (SkillState.WaitingAct == this.skillState)
         {
             SwitchState(SkillState.Acting);
-            Invoke(SkillEvent.SKILL_ON_ACTING_START);
+            Invoke(SkillEvent.SKILL_ON_ACTING_START, new SkillEventContext());
         }
         else
         {

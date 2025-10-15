@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SkillActor : MonoBehaviour
@@ -82,6 +83,31 @@ public class SkillActor : MonoBehaviour
 
         this.skills = skillList.ToArray();
         this.isInitialized = true;
+    }
+
+    public void RegisterAttackEvents(SkillEvent skillEvent, IEnumerable<ActionBase> actions)
+    {
+        SkillBase skillAttack = GetSkillAttack();
+        if (!skillAttack.eventToActions.ContainsKey(skillEvent))
+        {
+            skillAttack.eventToActions[skillEvent] = new List<ActionBase>();
+        }
+
+        skillAttack.eventToActions[skillEvent].AddRange(actions);
+    }
+
+    public void UnregisterAttackEvents(SkillEvent skillEvent, IEnumerable<ActionBase> actions)
+    {
+        SkillBase skillAttack = GetSkillAttack();
+        if (!skillAttack.eventToActions.ContainsKey(skillEvent))
+        {
+            return;
+        }
+
+        foreach (ActionBase action in actions)
+        {
+            skillAttack.eventToActions[skillEvent].Remove(action);
+        }
     }
 
     private void FixedUpdate()

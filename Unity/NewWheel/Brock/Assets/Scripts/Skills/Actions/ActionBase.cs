@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ActionBase
 {
@@ -13,15 +14,15 @@ public class ActionBase
         this.ownerSkill = ownerSkill;
     }
 
-    public void Apply()
+    public void Apply(SkillEventContext skillEventContext)
     {
-        foreach (WeaponSuit target in GetTargets())
+        foreach (WeaponSuit target in GetTargets(skillEventContext))
         {
-            Apply(target);
+            Apply(skillEventContext, target);
         }
     }
 
-    protected virtual void Apply(WeaponSuit target)
+    protected virtual void Apply(SkillEventContext skillEventContext, WeaponSuit target)
     {
         throw new NotImplementedException();
     }
@@ -31,13 +32,22 @@ public class ActionBase
         throw new NotImplementedException();
     }
 
-    private IEnumerable<WeaponSuit> GetTargets()
+    private IEnumerable<WeaponSuit> GetTargets(SkillEventContext skillEventContext)
     {
         return GetConfig().actionTargetConfig.actionTargetType switch
         {
             ActionTargetType.CASTER => new WeaponSuit[] { this.ownerWeaponSuit },
             ActionTargetType.SKILL_SELECTED => this.ownerSkill.targets,
+            ActionTargetType.ATTACKER => skillEventContext.damageData == null
+            ? LogDamageDataNullAndReturnEmpty()
+            : new WeaponSuit[] { skillEventContext.damageData.source.GetComponent<WeaponSuit>() },
             _ => throw new System.NotSupportedException($"Action target type not supported: {GetConfig().actionTargetConfig.actionTargetType}")
         };
+
+        IEnumerable<WeaponSuit> LogDamageDataNullAndReturnEmpty()
+        {
+            Debug.LogError("skillEventContext.damageData is null in ActionBase.GetTargets for ATTACKER target type.");
+            return Array.Empty<WeaponSuit>();
+        }
     }
 }

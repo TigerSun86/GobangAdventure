@@ -12,7 +12,7 @@ public class ApplyAuraModifierAction : ActionBase
         this.config = config;
     }
 
-    protected override void Apply(WeaponSuit target)
+    protected override void Apply(SkillEventContext skillEventContext, WeaponSuit target)
     {
         GameObject prefab = Resources.Load<GameObject>(AURA_PREFAB_PATH);
         if (prefab == null)

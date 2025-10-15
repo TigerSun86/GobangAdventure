@@ -34,7 +34,7 @@ public class ModifierConfig
 
     [DefaultValue(null)]
     [JsonProperty(Order = -2, DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public Dictionary<ModifierEvent, ActionConfig[]> events;
+    public Dictionary<SkillEvent, ActionConfig[]> events;
 
     [DefaultValue(null)]
     [JsonProperty(Order = -2, DefaultValueHandling = DefaultValueHandling.Ignore)]

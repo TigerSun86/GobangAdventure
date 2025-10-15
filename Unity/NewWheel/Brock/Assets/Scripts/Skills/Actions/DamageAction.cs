@@ -12,7 +12,7 @@ public class DamageAction : ActionBase
         this.config = config;
     }
 
-    protected override void Apply(WeaponSuit target)
+    protected override void Apply(SkillEventContext skillEventContext, WeaponSuit target)
     {
         DealDamage(target);
     }
@@ -29,15 +29,7 @@ public class DamageAction : ActionBase
             return;
         }
 
-        double damage;
-        if (this.config.isFromAttack)
-        {
-            damage = this.ownerWeaponSuit.propertyController.GetCurrentProperty().attack;
-        }
-        else
-        {
-            damage = this.config.amount;
-        }
+        double damage = this.config.amount;
 
         damage = CalculateAttackIncrease(damage);
         DamageType damageType = DamageType.NORMAL_ATTACK;

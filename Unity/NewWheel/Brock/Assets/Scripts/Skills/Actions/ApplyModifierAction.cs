@@ -8,9 +8,9 @@ public class ApplyModifierAction : ActionBase
         this.config = config;
     }
 
-    protected override void Apply(WeaponSuit target)
+    protected override void Apply(SkillEventContext skillEventContext, WeaponSuit target)
     {
-        target.modifierContainer.AddModifier(new Modifier(this.config.modifierConfig.Clone()));
+        target.modifierContainer.AddModifier(new Modifier(this.config.modifierConfig.Clone(), this.ownerSkill));
     }
 
     protected override ActionConfig GetConfig()

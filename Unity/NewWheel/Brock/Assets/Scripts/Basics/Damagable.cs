@@ -13,9 +13,11 @@ public class Damagable : MonoBehaviour
         health = GetComponent<Health>();
     }
 
-    public void TakeDamage(GameObject source, SkillType skillType, int attack, DamageType damageType)
+    public DamageData TakeDamage(GameObject source, SkillType skillType, int attack, DamageType damageType)
     {
         int actualDamage = health.DecreaseHealth(attack);
-        onTakeDamage.Invoke(new DamageData(source, skillType, gameObject, attack, actualDamage, damageType));
+        DamageData damageData = new DamageData(source, skillType, gameObject, attack, actualDamage, damageType);
+        onTakeDamage.Invoke(damageData);
+        return damageData;
     }
 }

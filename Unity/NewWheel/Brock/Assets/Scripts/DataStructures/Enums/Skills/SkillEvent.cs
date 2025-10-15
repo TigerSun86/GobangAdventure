@@ -9,4 +9,6 @@ public enum SkillEvent
     SKILL_ON_ACTING_START,
 
     SKILL_ON_ACTING_FINISH,
+
+    SKILL_ON_ATTACK_LANDED,
 }
