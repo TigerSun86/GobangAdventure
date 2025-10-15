@@ -6,64 +6,59 @@ using UnityEngine;
 public class BuffUiPanel : MonoBehaviour
 {
     [SerializeField, Required]
-    private BuffTypeToSpriteDictionary images;
-
-    [SerializeField, Required]
     private GameObject uiPrefab;
 
-    private BuffTracker buffTracker;
+    private ModifierContainer modifierContainer;
 
-    private List<(Buff buff, GameObject instance)> buffInstances;
+    private List<(Modifier buff, GameObject instance)> buffUiInstances;
+
+    private bool isDirty;
+
+    public void NotifyDirty()
+    {
+        this.isDirty = true;
+    }
 
     private void Start()
     {
-        this.buffTracker = GetComponent<BuffTracker>();
-        this.buffInstances = new List<(Buff, GameObject)>();
+        this.modifierContainer = GetComponent<ModifierContainer>();
+        this.buffUiInstances = new List<(Modifier, GameObject)>();
+        this.isDirty = true;
     }
 
     private void FixedUpdate()
     {
-        List<Buff> buffs = this.buffTracker.GetAll().ToList();
-        bool changed = false;
+        if (!this.isDirty)
+        {
+            return;
+        }
+
+        this.isDirty = false;
+
+        List<Modifier> buffs = this.modifierContainer.GetAllModifiers()
+            .Where(m => m.config.buffType != BuffType.None)
+            .ToList();
 
         // Remove instances for buffs that no longer exist
-        for (int i = this.buffInstances.Count - 1; i >= 0; i--)
+        for (int i = this.buffUiInstances.Count - 1; i >= 0; i--)
         {
-            if (!buffs.Contains(this.buffInstances[i].buff))
+            if (!buffs.Contains(this.buffUiInstances[i].buff))
             {
-                Destroy(this.buffInstances[i].instance);
-                this.buffInstances.RemoveAt(i);
-                changed = true;
+                Destroy(this.buffUiInstances[i].instance);
+                this.buffUiInstances.RemoveAt(i);
             }
         }
 
         // Add instances for new buffs
-        foreach (Buff buff in buffs)
+        foreach (Modifier buff in buffs)
         {
-            if (buff.invisible)
+            if (!this.buffUiInstances.Any(bi => bi.buff == buff))
             {
-                continue;
-            }
-
-            if (!this.buffInstances.Any(bi => bi.buff == buff))
-            {
-                if (!this.images.TryGetValue(buff.buffType, out Sprite sprite))
-                {
-                    Debug.LogWarning($"No sprite found for buff type: {buff.buffType}");
-                    continue;
-                }
-
                 GameObject uiInstance = Instantiate(uiPrefab, this.transform);
-                uiInstance.name = $"Buff_{buff.buffType}";
-                uiInstance.GetComponent<SpriteRenderer>().sprite = sprite;
-                this.buffInstances.Add((buff, uiInstance));
-                changed = true;
+                uiInstance.name = $"Buff_{buff.config.buffType}";
+                uiInstance.GetComponent<SpriteRenderer>().sprite = buff.config.buffIconSprite;
+                this.buffUiInstances.Add((buff, uiInstance));
             }
-        }
-
-        if (!changed)
-        {
-            return;
         }
 
         ArrangePositionOfUiInstances();
@@ -71,7 +66,7 @@ public class BuffUiPanel : MonoBehaviour
 
     private void ArrangePositionOfUiInstances()
     {
-        if (this.buffInstances.Count == 0)
+        if (this.buffUiInstances.Count == 0)
         {
             return;
         }
@@ -88,11 +83,11 @@ public class BuffUiPanel : MonoBehaviour
         float startY = parentBounds.min.y;
 
         float gap = 0f;
-        float rowY = startY - (this.buffInstances[0].instance.GetComponent<Renderer>()?.bounds.size.y ?? 1f) / 2;
+        float rowY = startY - (this.buffUiInstances[0].instance.GetComponent<Renderer>()?.bounds.size.y ?? 1f) / 2;
         float currentX = leftBound;
         float maxHeightInRow = 0f;
 
-        foreach ((Buff buff, GameObject uiInstance) in this.buffInstances)
+        foreach ((Modifier buff, GameObject uiInstance) in this.buffUiInstances)
         {
             Renderer uiRenderer = uiInstance.GetComponent<Renderer>();
             if (uiRenderer == null)

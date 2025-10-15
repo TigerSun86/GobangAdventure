@@ -11,26 +11,46 @@
   "projectileSpeed": 0.0,
   "range": "Infinity",
   "skillTargetConfig": {
-    "targetType": "Ally",
+    "targetType": "Opponent",
     "targetOrdering": "Closest",
     "maxTargets": 3,
     "excludedTarget": "None",
     "includedTarget": "SelfAndNeighbours"
   },
-  "buff1": {
-    "buffType": "AttackAmountChange",
-    "invisible": false,
-    "duration": "Infinity",
-    "value1": 6.0,
-    "value2": 0.0,
-    "startTime": 0.0
+  "buff1": null,
+  "buff2": null,
+  "events": {
+    "SKILL_ON_CREATED": [
+      {
+        "type": "ApplyAuraModifierActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "CASTER"
+        },
+        "modifierId": "TestAttackIncreaseAura"
+      }
+    ]
   },
-  "buff2": {
-    "buffType": "None",
-    "invisible": false,
-    "duration": 0.0,
-    "value1": 0.0,
-    "value2": 0.0,
-    "startTime": 0.0
+  "modifierConfigs": {
+    "TestAttackIncrease": {
+      "id": "TestAttackIncrease",
+      "type": "ModifierConfig",
+      "isPermanent": true,
+      "properties": {
+        "ATTACK_CONSTANT": 10.0
+      },
+      "buffType": "AttackAmountChange",
+      "buffIcon": "Sprites/Weapons#Scissor2"
+    },
+    "TestAttackIncreaseAura": {
+      "id": "TestAttackIncreaseAura",
+      "type": "AuraModifierConfig",
+      "isPermanent": true,
+      "childModifierId": "TestAttackIncrease",
+      "skillTargetConfig": {
+        "targetType": "Ally",
+        "maxTargets": 3,
+        "includedTarget": "SelfAndNeighbours"
+      }
+    }
   }
 }

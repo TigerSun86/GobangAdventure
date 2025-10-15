@@ -98,6 +98,24 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
             }
         }
 
+        // Add damage action to attack skill.
+        result.attackSkill.events = new Dictionary<SkillEvent, ActionConfig[]>
+        {
+            [SkillEvent.SKILL_ON_ACTING_FINISH] = new[]
+            {
+                new DamageActionConfig
+                {
+                    type = nameof(DamageActionConfig),
+                    actionTargetConfig = new ActionTargetConfig
+                    {
+                        actionTargetType = ActionTargetType.SKILL_SELECTED
+                    },
+                    amount = result.attackSkill.value,
+                    isFromAttack = true
+                }
+            }
+        };
+
         return result;
     }
 }

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SkillAttack : SkillBase
@@ -29,10 +26,7 @@ public class SkillAttack : SkillBase
         weaponSuit.weaponItem.MoveToTarget(targets[0].transform, remainingTime);
         if (remainingTime <= 0)
         {
-            foreach (WeaponSuit target in targets)
-            {
-                DealDamage(target);
-            }
+            // Damage is handled by DamageAction.
             return true;
         }
         return false;
@@ -45,55 +39,5 @@ public class SkillAttack : SkillBase
         weaponSuit.weaponItem.ReturnToStand(remainingTime);
 
         return remainingTime <= 0;
-    }
-
-    private void DealDamage(WeaponSuit target)
-    {
-        if (target.IsDestroyed())
-        {
-            return;
-        }
-
-        double damage = this.skillConfig.value + StatsManager.Instance.attack;
-        damage = CalculateAttackIncrease(damage);
-        DamageType damageType = DamageType.NORMAL_ATTACK;
-        WeaponBaseTypeMatchResult matchResult = WeaponBaseTypeUtility.GetMatchResult(
-            weaponSuit.weaponBaseType,
-            target.weaponBaseType);
-        if (matchResult == WeaponBaseTypeMatchResult.STRONG)
-        {
-            damageType = DamageType.STRONG_ATTACK;
-            damage *= 2;
-        }
-        else if (matchResult == WeaponBaseTypeMatchResult.WEAK)
-        {
-            damageType = DamageType.WEAK_ATTACK;
-            damage /= 2;
-        }
-
-        Buff criticalHit = CalculateCriticalHit();
-        if (criticalHit != null)
-        {
-            damage *= criticalHit.value2;
-            damageType |= DamageType.CRITICAL_HIT;
-        }
-
-        Damagable damagable = target.weaponStand.GetComponent<Damagable>();
-        damagable.TakeDamage(this.weaponSuit.gameObject, this.skillConfig.skillType, (int)damage, damageType);
-    }
-
-    private double CalculateAttackIncrease(double baseDamage)
-    {
-        double damageDelta = this.buffTracker.Get(BuffType.AttackAmountChange)
-            .Sum(b => b.value1);
-        return baseDamage + damageDelta;
-    }
-
-    private Buff CalculateCriticalHit()
-    {
-        IEnumerable<Buff> criticalBuffs = this.buffTracker.Get(BuffType.CriticalHit)
-            .OrderByDescending(b => b.value2) // Sort by value2 (critical hit multiplier).
-            .Where(b => b.value1 > UnityEngine.Random.value); // If true, then this is a critical hit.
-        return criticalBuffs.FirstOrDefault();
     }
 }

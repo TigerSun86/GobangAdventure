@@ -18,7 +18,7 @@ public class WaveManager : MonoBehaviour
 
     private WeaponInventory weaponInventory;
 
-    private string[] hackyTestWeapons = { "Stun Rock 1", "Attack Buff Scissor 1" };
+    private string[] hackyTestWeapons = { "Shadow Fiend 1", "Skeleton King 1" };
 
     private int hackyTestWeaponsIndex = 0;
 

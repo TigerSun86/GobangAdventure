@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 1750146200935686621}
   - component: {fileID: 2852976292321115431}
   - component: {fileID: -530033714497838428}
+  - component: {fileID: -5370740221755694455}
+  - component: {fileID: 1954225058755202242}
   - component: {fileID: 215842279329844913}
   - component: {fileID: -4646313148022650395}
   m_Layer: 0
@@ -156,6 +158,38 @@ MonoBehaviour:
         value1: 0
         value2: 0
         startTime: 0
+    skill3:
+      skillName: 
+      level: 0
+      description: 
+      skillType: 0
+      skillActivationType: 0
+      value: 0
+      cdTime: 0
+      actionTime: 0
+      recoveryTime: 0
+      projectileSpeed: 0
+      range: 0
+      skillTargetConfig:
+        targetType: 0
+        targetOrdering: 0
+        maxTargets: 0
+        excludedTarget: 0
+        includedTarget: 7
+      buff1:
+        buffType: 0
+        invisible: 0
+        duration: 0
+        value1: 0
+        value2: 0
+        startTime: 0
+      buff2:
+        buffType: 0
+        invisible: 0
+        duration: 0
+        value1: 0
+        value2: 0
+        startTime: 0
     experienceWorth: 0
     experienceToNextLevel: 0
     isPurchasable: 0
@@ -164,6 +198,8 @@ MonoBehaviour:
   weaponStand: {fileID: 0}
   skillActor: {fileID: 0}
   capabilityController: {fileID: 0}
+  propertyController: {fileID: 0}
+  modifierContainer: {fileID: 0}
 --- !u!114 &303178027058660786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,6 +297,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 848b8ca0f72ab3c498d3f12b3882562b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5370740221755694455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973336722079467576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90637b09a5e083c478516e36ad851dd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1954225058755202242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973336722079467576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87c0f795942b8e543ac1c20d18949729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modifiers: []
 --- !u!114 &215842279329844913
 MonoBehaviour:
   m_ObjectHideFlags: 0

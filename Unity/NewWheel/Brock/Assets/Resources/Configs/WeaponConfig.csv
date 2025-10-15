@@ -19,7 +19,7 @@ Skeleton King,2,ROCK,1,665,Stun1,NeighbourLifestealPercentage1,,33,4.2,0.5,0.4,1
 Skeleton King,3,ROCK,1,726,Stun2,NeighbourLifestealPercentage1,,36,4.2,0.5,0.4,1.5,400,800,TRUE,Sprites/Weapons#Rock1
 Skeleton King,4,ROCK,1,787,Stun2,NeighbourLifestealPercentage2,,39,4.2,0.5,0.4,1.5,800,1600,TRUE,Sprites/Weapons#Rock1
 Skeleton King,5,ROCK,1,848,Stun2,NeighbourLifestealPercentage2,Revive1,42,4.2,0.5,0.4,1.5,1600,0,TRUE,Sprites/Weapons#Rock1
-Shadow Fiend,1,Scissor,1,538,BlinkAttack1,,,41,3.8,0.5,0.5,4,100,200,TRUE,Sprites/Weapons#Scissor2
+Shadow Fiend,1,Scissor,1,538,NeighbourAttackIncrease1,,,41,3.8,0.5,0.5,4,100,200,TRUE,Sprites/Weapons#Scissor2
 Shadow Fiend,2,Scissor,1,597,BlinkAttack1,,,45,3.8,0.5,0.5,4,200,400,TRUE,Sprites/Weapons#Scissor2
 Shadow Fiend,3,Scissor,1,656,BlinkAttack2,,,49,3.8,0.5,0.5,4,400,800,TRUE,Sprites/Weapons#Scissor2
 Shadow Fiend,4,Scissor,1,715,BlinkAttack2,,,53,3.8,0.5,0.5,4,800,1600,TRUE,Sprites/Weapons#Scissor2
