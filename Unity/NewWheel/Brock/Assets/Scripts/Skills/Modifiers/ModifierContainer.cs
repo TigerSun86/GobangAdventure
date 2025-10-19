@@ -10,6 +10,8 @@ public class ModifierContainer : MonoBehaviour
 
     private PropertyController propertyController;
 
+    private StateController stateController;
+
     private BuffUiPanel buffUiPanel;
 
     public void AddModifier(Modifier modifier)
@@ -35,6 +37,7 @@ public class ModifierContainer : MonoBehaviour
     {
         this.weaponSuit = GetComponent<WeaponSuit>();
         this.propertyController = GetComponent<PropertyController>();
+        this.stateController = GetComponent<StateController>();
         this.buffUiPanel = GetComponent<BuffUiPanel>();
     }
 
@@ -58,6 +61,7 @@ public class ModifierContainer : MonoBehaviour
     private void NotifyDirty()
     {
         this.propertyController.NotifyDirty();
+        this.stateController.NotifyDirty();
         this.buffUiPanel.NotifyDirty();
     }
 }

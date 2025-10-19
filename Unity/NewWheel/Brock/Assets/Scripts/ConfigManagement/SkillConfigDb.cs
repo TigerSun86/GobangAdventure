@@ -68,7 +68,6 @@ public class SkillConfigDb
                     amc.modifierConfig = GetModifierConfig(skillConfig, amc.modifierId);
                     break;
                 default:
-                    Debug.LogWarning($"Unhandled ActionConfig type: {actionConfig.GetType().Name} in skill: {skillConfig.GetId()}");
                     break;
             }
         }

@@ -24,6 +24,10 @@ public class AuraModifierConfig : ModifierConfig
     [JsonIgnore]
     public new Dictionary<ModifierPropertyType, float> properties;
 
+    [Obsolete("The field is not used.")]
+    [JsonIgnore]
+    public new Dictionary<ModifierStateType, ModifierStateValue> states;
+
     public override ModifierConfig Clone()
     {
         AuraModifierConfig clone = (AuraModifierConfig)this.MemberwiseClone();

@@ -36,24 +36,6 @@ public class SkillStun : SkillBase
 
     private void OnProjectileHit(GameObject targetObject)
     {
-        if (targetObject.IsDestroyed())
-        {
-            return;
-        }
-
-        WeaponStand target = targetObject.GetComponent<WeaponStand>();
-
-        double damage = this.skillConfig.value;
-        DamageType damageType = DamageType.NORMAL_ATTACK;
-        Damagable damagable = target.GetComponent<Damagable>();
-        damagable.TakeDamage(this.weaponSuit.gameObject, this.skillConfig.skillType, (int)damage, damageType);
-
-        WeaponSuit weaponSuit = target.GetWeaponSuit();
-        weaponSuit.GetComponent<BuffTracker>().Add(new Buff
-        {
-            buffType = BuffType.Stun,
-            duration = this.skillConfig.buff1.duration,
-            value1 = this.skillConfig.buff1.value1
-        });
+        Invoke(SkillEvent.SKILL_ON_PROJECTILE_HIT_UNIT, new SkillEventContext());
     }
 }

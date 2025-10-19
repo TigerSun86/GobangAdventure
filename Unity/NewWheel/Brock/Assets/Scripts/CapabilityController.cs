@@ -1,20 +1,20 @@
 using UnityEngine;
 
-[RequireComponent(typeof(BuffTracker))]
+[RequireComponent(typeof(StateController))]
 public class CapabilityController : MonoBehaviour
 {
-    private BuffTracker buffTracker;
+    private StateController stateController;
 
     public bool Can(CapabilityType capability)
     {
         switch (capability)
         {
             case CapabilityType.Move:
-                return !this.buffTracker.Contains(BuffType.Stun);
+                return !this.stateController.IsEnabled(ModifierStateType.MODIFIER_STATE_STUNNED);
             case CapabilityType.Attack:
-                return !this.buffTracker.Contains(BuffType.Stun);
+                return !this.stateController.IsEnabled(ModifierStateType.MODIFIER_STATE_STUNNED);
             case CapabilityType.CastSkill:
-                return !this.buffTracker.Contains(BuffType.Stun);
+                return !this.stateController.IsEnabled(ModifierStateType.MODIFIER_STATE_STUNNED);
             default:
                 Debug.LogWarning($"Capability {capability} is not explicitly handled. Defaulting to true.");
                 return true;
@@ -23,6 +23,6 @@ public class CapabilityController : MonoBehaviour
 
     private void Awake()
     {
-        this.buffTracker = GetComponent<BuffTracker>();
+        this.stateController = GetComponent<StateController>();
     }
 }

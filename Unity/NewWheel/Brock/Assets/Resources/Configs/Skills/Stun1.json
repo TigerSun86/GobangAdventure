@@ -4,7 +4,7 @@
   "description": "Stun the enemy",
   "skillType": "Stun",
   "skillActivationType": "Active",
-  "value": 75.0,
+  "value": 0.0,
   "cdTime": 14.0,
   "actionTime": 0.35,
   "recoveryTime": 0.5,
@@ -17,20 +17,25 @@
     "excludedTarget": "None",
     "includedTarget": "All"
   },
-  "buff1": {
-    "buffType": "Stun",
-    "invisible": false,
-    "duration": 4.0,
-    "value1": 0.0,
-    "value2": 0.0,
-    "startTime": 0.0
+  "buff1": null,
+  "buff2": null,
+  "events": {
+    "SKILL_ON_PROJECTILE_HIT_UNIT": [
+      {
+        "type": "StunActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "SKILL_SELECTED"
+        },
+        "duration": 4.0
+      },
+      {
+        "type": "DamageActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "SKILL_SELECTED"
+        },
+        "amount": 75.0
+      }
+    ]
   },
-  "buff2": {
-    "buffType": "None",
-    "invisible": false,
-    "duration": 0.0,
-    "value1": 0.0,
-    "value2": 0.0,
-    "startTime": 0.0
-  }
+  "modifierConfigs": {}
 }

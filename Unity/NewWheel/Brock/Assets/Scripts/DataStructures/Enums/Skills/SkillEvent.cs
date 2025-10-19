@@ -11,4 +11,6 @@ public enum SkillEvent
     SKILL_ON_ACTING_FINISH,
 
     SKILL_ON_ATTACK_LANDED,
+
+    SKILL_ON_PROJECTILE_HIT_UNIT,
 }

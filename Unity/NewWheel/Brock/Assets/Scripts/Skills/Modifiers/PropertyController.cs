@@ -11,17 +11,17 @@ public class PropertyController : MonoBehaviour
 
     private bool isDirty;
 
-    private Property propertyCache;
+    private Property cache;
 
     public Property GetCurrentProperty()
     {
         if (this.isDirty)
         {
-            RecalculatePropertyCache();
+            RecalculateCache();
             this.isDirty = false;
         }
 
-        return this.propertyCache;
+        return this.cache;
     }
 
     public void NotifyDirty()
@@ -34,7 +34,7 @@ public class PropertyController : MonoBehaviour
         this.modifierContainer = GetComponent<ModifierContainer>();
         this.isDirty = true;
         this.baseProperty = null;
-        this.propertyCache = null;
+        this.cache = null;
     }
 
     private Property GetBaseProperty()
@@ -45,14 +45,14 @@ public class PropertyController : MonoBehaviour
         return result;
     }
 
-    private void RecalculatePropertyCache()
+    private void RecalculateCache()
     {
         if (this.baseProperty == null)
         {
             this.baseProperty = GetBaseProperty();
         }
 
-        this.propertyCache = this.baseProperty.Clone();
+        this.cache = this.baseProperty.Clone();
         Dictionary<ModifierPropertyType, float> modifierSums = new Dictionary<ModifierPropertyType, float>();
         foreach (Modifier modifier in this.modifierContainer.GetAllModifiers())
         {
@@ -74,7 +74,7 @@ public class PropertyController : MonoBehaviour
 
         if (modifierSums.TryGetValue(ModifierPropertyType.ATTACK_CONSTANT, out float attackConstantSum))
         {
-            this.propertyCache.attack += attackConstantSum;
+            this.cache.attack += attackConstantSum;
         }
     }
 }

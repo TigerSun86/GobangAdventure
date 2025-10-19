@@ -15,6 +15,7 @@ public class ActionConfigConverter : JsonConverter<ActionConfig>
             nameof(ApplyAuraModifierActionConfig) => new ApplyAuraModifierActionConfig(),
             nameof(ApplyModifierActionConfig) => new ApplyModifierActionConfig(),
             nameof(LifestealActionConfig) => new LifestealActionConfig(),
+            nameof(StunActionConfig) => new StunActionConfig(),
             _ => throw new JsonSerializationException($"Unknown effect type: {type}")
         };
 

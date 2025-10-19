@@ -40,6 +40,10 @@ public class ModifierConfig
     [JsonProperty(Order = -2, DefaultValueHandling = DefaultValueHandling.Ignore)]
     public Dictionary<ModifierPropertyType, float> properties;
 
+    [DefaultValue(null)]
+    [JsonProperty(Order = -2, DefaultValueHandling = DefaultValueHandling.Ignore)]
+    public Dictionary<ModifierStateType, ModifierStateValue> states;
+
     [JsonIgnore]
     public Sprite buffIconSprite;
 
@@ -49,6 +53,11 @@ public class ModifierConfig
         if (this.properties != null)
         {
             clone.properties = new Dictionary<ModifierPropertyType, float>(this.properties);
+        }
+
+        if (this.states != null)
+        {
+            clone.states = new Dictionary<ModifierStateType, ModifierStateValue>(this.states);
         }
 
         return clone;
