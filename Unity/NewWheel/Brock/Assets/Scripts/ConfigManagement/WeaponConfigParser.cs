@@ -27,6 +27,7 @@ public class WeaponConfigParser : ICsvRowParser<WeaponConfig>
         WeaponConfig result = new WeaponConfig();
         result.attackSkill = new SkillConfig();
         result.attackSkill.skillName = "Attack";
+        result.attackSkill.skillType = SkillType.Attack;
         result.attackSkill.skillTargetConfig = new SkillTargetConfig();
         result.attackSkill.skillTargetConfig.targetType = TargetType.Opponent;
         result.attackSkill.skillTargetConfig.targetOrdering = TargetOrdering.Closest;

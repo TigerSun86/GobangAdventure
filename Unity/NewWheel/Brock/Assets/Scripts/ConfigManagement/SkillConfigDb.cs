@@ -21,7 +21,7 @@ public class SkillConfigDb
                 continue;
             }
 
-            LinkModifiers(skill);
+            LinkResources(skill);
 
             this.skillConfigMap.Add(skill.GetId(), skill);
 
@@ -46,12 +46,10 @@ public class SkillConfigDb
         return null;
     }
 
-    private void LinkModifiers(SkillConfig skillConfig)
+    private void LinkResources(SkillConfig skillConfig)
     {
         // Link skill event's modifiers.
-        foreach (ActionConfig actionConfig in skillConfig.events?.Values
-            .SelectMany(a => a)
-            ?? Enumerable.Empty<ActionConfig>())
+        foreach (ActionConfig actionConfig in GetAllActionConfigs(skillConfig))
         {
             switch (actionConfig)
             {
@@ -66,6 +64,9 @@ public class SkillConfigDb
                     break;
                 case ApplyModifierActionConfig amc:
                     amc.modifierConfig = GetModifierConfig(skillConfig, amc.modifierId);
+                    break;
+                case LinearProjectileActionConfig lpc:
+                    lpc.sprite = ParserUtility.ParseSpriteSafe(lpc.spritePath, "spritePath");
                     break;
                 default:
                     break;
@@ -104,5 +105,12 @@ public class SkillConfigDb
 
         Debug.LogWarning($"Modifier config not found for id: {modifierId} in skill: {skillConfig.GetId()}");
         return null;
+    }
+
+    private IEnumerable<ActionConfig> GetAllActionConfigs(SkillConfig skillConfig)
+    {
+        return skillConfig.events?.Values
+            .SelectMany(a => a)
+            ?? Enumerable.Empty<ActionConfig>();
     }
 }

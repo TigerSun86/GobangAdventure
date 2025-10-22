@@ -162,13 +162,20 @@ public class SkillBase : MonoBehaviour
     // Returns true if finished.
     protected virtual bool Act()
     {
-        throw new NotImplementedException();
+        if (!AreTargetsValid())
+        {
+            return true;
+        }
+
+        float remainingTime = skillConfig.actionTime - timeInCurrentState;
+        return remainingTime <= 0;
     }
 
     // Returns true if finished.
     protected virtual bool Recover()
     {
-        throw new NotImplementedException();
+        float remainingTime = skillConfig.recoveryTime - timeInCurrentState;
+        return remainingTime <= 0;
     }
 
     protected virtual bool ForceExcludeTarget(WeaponSuit target)

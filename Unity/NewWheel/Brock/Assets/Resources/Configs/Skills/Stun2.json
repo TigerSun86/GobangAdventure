@@ -2,13 +2,13 @@
   "skillName": "Stun",
   "level": 2,
   "description": "Stun the enemy",
-  "skillType": "Stun",
+  "skillType": "Base",
   "skillActivationType": "Active",
   "value": 0.0,
   "cdTime": 14.0,
   "actionTime": 0.35,
   "recoveryTime": 0.5,
-  "projectileSpeed": 4.0,
+  "projectileSpeed": 0.0,
   "range": 4.0,
   "skillTargetConfig": {
     "targetType": "Opponent",
@@ -20,6 +20,16 @@
   "buff1": null,
   "buff2": null,
   "events": {
+    "SKILL_ON_ACTING_START": [
+      {
+        "type": "LinearProjectileActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "SKILL_SELECTED"
+        },
+        "moveSpeed": 4.0,
+        "spritePath": "Sprites/Weapons#Rock2"
+      }
+    ],
     "SKILL_ON_PROJECTILE_HIT_UNIT": [
       {
         "type": "StunActionConfig",
