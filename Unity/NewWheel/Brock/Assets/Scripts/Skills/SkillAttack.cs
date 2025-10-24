@@ -74,10 +74,10 @@ public class SkillAttack : SkillBase
             damage /= 2;
         }
 
-        Buff criticalHit = CalculateCriticalHit();
+        Property criticalHit = CalculateCriticalHit();
         if (criticalHit != null)
         {
-            damage *= criticalHit.value2;
+            damage *= criticalHit.critical_hit_multiplier;
             damageType |= DamageType.CRITICAL_HIT;
         }
 
@@ -93,11 +93,8 @@ public class SkillAttack : SkillBase
         return baseDamage + damageDelta;
     }
 
-    private Buff CalculateCriticalHit()
+    private Property CalculateCriticalHit()
     {
-        IEnumerable<Buff> criticalBuffs = this.weaponSuit.GetComponent<BuffTracker>().Get(BuffType.CriticalHit)
-            .OrderByDescending(b => b.value2) // Sort by value2 (critical hit multiplier).
-            .Where(b => b.value1 > UnityEngine.Random.value); // If true, then this is a critical hit.
-        return criticalBuffs.FirstOrDefault();
+        return this.weaponSuit.criticalHitController.GetCurrentProperty();
     }
 }

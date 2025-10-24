@@ -17,20 +17,30 @@
     "excludedTarget": "None",
     "includedTarget": "All"
   },
-  "buff1": {
-    "buffType": "CriticalHit",
-    "invisible": false,
-    "duration": "Infinity",
-    "value1": 0.15,
-    "value2": 2.0,
-    "startTime": 0.0
+  "buff1": null,
+  "buff2": null,
+  "events": {
+    "SKILL_ON_CREATED": [
+      {
+        "type": "ApplyModifierActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "CASTER"
+        },
+        "modifierId": "CriticalHit"
+      }
+    ]
   },
-  "buff2": {
-    "buffType": "None",
-    "invisible": false,
-    "duration": 0.0,
-    "value1": 0.0,
-    "value2": 0.0,
-    "startTime": 0.0
+  "modifierConfigs": {
+    "CriticalHit": {
+      "id": "CriticalHit",
+      "type": "ModifierConfig",
+      "isPermanent": true,
+      "properties": {
+        "CRITICAL_HIT_RATE": 0.15,
+        "CRITICAL_HIT_MULTIPLIER": 2.0
+      },
+      "buffType": "CriticalHit",
+      "buffIcon": "Sprites/Weapons#Scissor3"
+    }
   }
 }

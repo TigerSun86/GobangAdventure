@@ -7,4 +7,8 @@ public enum ModifierPropertyType
     NONE,
 
     ATTACK_CONSTANT,
+
+    CRITICAL_HIT_RATE,
+
+    CRITICAL_HIT_MULTIPLIER,
 }

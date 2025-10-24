@@ -16,6 +16,8 @@ public class WeaponSuit : MonoBehaviour
 
     public PropertyController propertyController;
 
+    public CriticalHitController criticalHitController;
+
     public ModifierContainer modifierContainer;
 
     public void Initialize(WeaponConfig weaponConfig)
@@ -27,6 +29,7 @@ public class WeaponSuit : MonoBehaviour
         this.weaponStand.Initialize(this);
         this.capabilityController = GetComponent<CapabilityController>();
         this.propertyController = GetComponent<PropertyController>();
+        this.criticalHitController = GetComponent<CriticalHitController>();
         this.skillActor = GetComponentInChildren<SkillActor>();
         this.modifierContainer = GetComponent<ModifierContainer>();
     }

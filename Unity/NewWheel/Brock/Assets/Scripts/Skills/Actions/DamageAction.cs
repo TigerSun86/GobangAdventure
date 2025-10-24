@@ -47,13 +47,6 @@ public class DamageAction : ActionBase
             damage /= 2;
         }
 
-        Buff criticalHit = CalculateCriticalHit();
-        if (criticalHit != null)
-        {
-            damage *= criticalHit.value2;
-            damageType |= DamageType.CRITICAL_HIT;
-        }
-
         Damagable damagable = target.weaponStand.GetComponent<Damagable>();
         damagable.TakeDamage(this.ownerWeaponSuit.gameObject, this.ownerSkill.skillConfig.skillType, (int)damage, damageType);
     }
@@ -63,13 +56,5 @@ public class DamageAction : ActionBase
         double damageDelta = this.ownerWeaponSuit.GetComponent<BuffTracker>().Get(BuffType.AttackAmountChange)
             .Sum(b => b.value1);
         return baseDamage + damageDelta;
-    }
-
-    private Buff CalculateCriticalHit()
-    {
-        IEnumerable<Buff> criticalBuffs = this.ownerWeaponSuit.GetComponent<BuffTracker>().Get(BuffType.CriticalHit)
-            .OrderByDescending(b => b.value2) // Sort by value2 (critical hit multiplier).
-            .Where(b => b.value1 > UnityEngine.Random.value); // If true, then this is a critical hit.
-        return criticalBuffs.FirstOrDefault();
     }
 }
