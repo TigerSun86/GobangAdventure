@@ -14,23 +14,21 @@
     "targetType": "Ally",
     "targetOrdering": "Closest",
     "maxTargets": 1,
-    "excludedTarget": "Self",
+    "excludedTarget": "Self, FullHealth",
     "includedTarget": "All"
   },
-  "buff1": {
-    "buffType": "None",
-    "invisible": false,
-    "duration": 0.0,
-    "value1": 0.0,
-    "value2": 0.0,
-    "startTime": 0.0
+  "buff1": null,
+  "buff2": null,
+  "events": {
+    "SKILL_ON_ACTING_START": [
+      {
+        "type": "HealActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "SKILL_SELECTED"
+        },
+        "amount": 25.0,
+      }
+    ]
   },
-  "buff2": {
-    "buffType": "None",
-    "invisible": false,
-    "duration": 0.0,
-    "value1": 0.0,
-    "value2": 0.0,
-    "startTime": 0.0
-  }
+  "modifierConfigs": {}
 }

@@ -101,6 +101,14 @@ public class SkillTargetConfig
             return false;
         }
 
+        Healable healable = target.weaponStand.GetComponent<Healable>();
+        if (CheckExcludedFilter(TargetFilter.FullHealth)
+            && healable != null
+            && healable.IsFullHealth())
+        {
+            return false;
+        }
+
         // Include section.
         if (CheckIncludedFilter(TargetFilter.All))
         {
@@ -113,6 +121,13 @@ public class SkillTargetConfig
         }
 
         if (AreNeighbours && CheckIncludedFilter(TargetFilter.Neighbours))
+        {
+            return true;
+        }
+
+        if (CheckIncludedFilter(TargetFilter.FullHealth)
+            && healable != null
+            && healable.IsFullHealth())
         {
             return true;
         }

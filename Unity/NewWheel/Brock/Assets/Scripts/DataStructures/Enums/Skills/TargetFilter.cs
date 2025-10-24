@@ -12,5 +12,6 @@ public enum TargetFilter
     RunningAway = 1 << 1,
     Neighbours = 1 << 2,
     SelfAndNeighbours = Self | Neighbours,
-    All = Self | RunningAway | Neighbours,
+    FullHealth = 1 << 3,
+    All = Self | RunningAway | Neighbours | FullHealth,
 }
