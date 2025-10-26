@@ -47,15 +47,27 @@ public class WeaponConfig
         {
             skills.Add(skill1);
         }
+        else
+        {
+            skills.Add(null);
+        }
 
         if (!string.IsNullOrWhiteSpace(skill2.skillName))
         {
             skills.Add(skill2);
         }
+        else
+        {
+            skills.Add(null);
+        }
 
         if (!string.IsNullOrWhiteSpace(skill3.skillName))
         {
             skills.Add(skill3);
+        }
+        else
+        {
+            skills.Add(null);
         }
 
         return skills.ToArray();

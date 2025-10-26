@@ -17,20 +17,67 @@
     "excludedTarget": "None",
     "includedTarget": "Self"
   },
-  "buff1": {
-    "buffType": "HealthLock",
-    "invisible": true,
-    "duration": "Infinity",
-    "value1": 1.0,
-    "value2": 0.0,
-    "startTime": 0.0
+  "buff1": null,
+  "buff2": null,
+  "events": {
+    "SKILL_ON_ACTING_START": [
+      {
+        "type": "ApplyModifierActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "CASTER"
+        },
+        "modifierId": "BlockCd"
+      },
+      {
+        "type": "ApplyModifierActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "CASTER"
+        },
+        "modifierId": "HealthLock"
+      }
+    ],
+    "SKILL_ON_FAINTING": [
+      {
+        "type": "ReviveActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "CASTER"
+        }
+      },
+      {
+        "type": "RemoveModifierActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "CASTER"
+        },
+        "modifierId": "BlockCd"
+      },
+      {
+        "type": "RemoveModifierActionConfig",
+        "actionTargetConfig": {
+          "actionTargetType": "CASTER"
+        },
+        "modifierId": "HealthLock"
+      }
+    ]
   },
-  "buff2": {
-    "buffType": "ReviveWhenFainting",
-    "invisible": false,
-    "duration": "Infinity",
-    "value1": 0.0,
-    "value2": 0.0,
-    "startTime": 0.0
+  "modifierConfigs": {
+    "BlockCd": {
+      "id": "BlockCd",
+      "type": "ModifierConfig",
+      "isPermanent": true,
+      "properties": {
+        "TARGETING_SKILL_INDEX": 3.0
+      },
+      "states": {
+        "MODIFIER_STATE_BLOCK_CD": "MODIFIER_STATE_VALUE_ENABLED"
+      }
+    },
+    "HealthLock": {
+      "id": "HealthLock",
+      "type": "ModifierConfig",
+      "isPermanent": true,
+      "properties": {
+        "MIN_HEALTH": 1.0
+      }
+    }
   }
 }

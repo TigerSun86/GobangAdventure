@@ -10,23 +10,23 @@ public class SkillBuffBlockingCd : SkillBase
             return true;
         }
 
-        foreach (WeaponSuit target in this.targets)
-        {
-            BuffTracker buffTracker = target.GetComponent<BuffTracker>();
-            if (buffTracker == null)
-            {
-                continue;
-            }
+        // foreach (WeaponSuit target in this.targets)
+        // {
+        //     BuffTracker buffTracker = target.GetComponent<BuffTracker>();
+        //     if (buffTracker == null)
+        //     {
+        //         continue;
+        //     }
 
-            Buff buffClone = this.skillConfig.buff1.Clone();
-            buffTracker.Add(buffClone);
+        //     Buff buffClone = this.skillConfig.buff1.Clone();
+        //     buffTracker.Add(buffClone);
 
-            if (this.skillConfig.buff2 != null && this.skillConfig.buff2.buffType != BuffType.None)
-            {
-                Buff buffClone2 = this.skillConfig.buff2.Clone();
-                buffTracker.Add(buffClone2);
-            }
-        }
+        //     if (this.skillConfig.buff2 != null && this.skillConfig.buff2.buffType != BuffType.None)
+        //     {
+        //         Buff buffClone2 = this.skillConfig.buff2.Clone();
+        //         buffTracker.Add(buffClone2);
+        //     }
+        // }
 
         return true;
     }
@@ -39,10 +39,10 @@ public class SkillBuffBlockingCd : SkillBase
 
     protected override float GetCalculatedCdTime()
     {
-        if (IsBuffOnTargets())
-        {
-            return float.PositiveInfinity;
-        }
+        // if (IsBuffOnTargets())
+        // {
+        //     return float.PositiveInfinity;
+        // }
 
         return base.GetCalculatedCdTime();
     }
@@ -50,7 +50,7 @@ public class SkillBuffBlockingCd : SkillBase
     protected override bool EnableUpdateTimeInCurrentState()
     {
         // Stop proceeding CD time if buffs haven't been consumed.
-        return !IsBuffOnTargets();
+        return base.EnableUpdateTimeInCurrentState();
     }
 
     private bool IsBuffOnTargets()

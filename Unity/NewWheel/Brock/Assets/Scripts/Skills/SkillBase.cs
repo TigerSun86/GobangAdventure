@@ -9,6 +9,8 @@ public class SkillBase : MonoBehaviour
 
     public SkillConfig skillConfig;
 
+    public int skillIndex;
+
     public SkillState skillState;
 
     public float timeInCurrentState;
@@ -17,10 +19,11 @@ public class SkillBase : MonoBehaviour
 
     public Dictionary<SkillEvent, List<ActionBase>> eventToActions;
 
-    public virtual void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig)
+    public virtual void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig, int skillIndex)
     {
         this.weaponSuit = weaponSuit;
         this.skillConfig = skillConfig;
+        this.skillIndex = skillIndex;
         this.skillState = SkillState.WaitingCd;
         this.timeInCurrentState = 0;
         this.eventToActions = new Dictionary<SkillEvent, List<ActionBase>>();
@@ -193,7 +196,7 @@ public class SkillBase : MonoBehaviour
 
     protected virtual bool EnableUpdateTimeInCurrentState()
     {
-        return true;
+        return !this.weaponSuit.targetingSkillModifierController.IsEnabled(this.skillIndex, ModifierStateType.MODIFIER_STATE_BLOCK_CD);
     }
 
     protected bool AreTargetsValid()

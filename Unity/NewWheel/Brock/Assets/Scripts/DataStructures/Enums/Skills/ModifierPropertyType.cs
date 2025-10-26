@@ -13,4 +13,6 @@ public enum ModifierPropertyType
     CRITICAL_HIT_MULTIPLIER,
 
     MIN_HEALTH,
+
+    TARGETING_SKILL_INDEX,
 }

@@ -15,6 +15,8 @@ public class ModifierContainer : MonoBehaviour
 
     private StateController stateController;
 
+    private TargetingSkillModifierController targetingSkillModifierController;
+
     private BuffUiPanel buffUiPanel;
 
     public void AddModifier(Modifier modifier)
@@ -54,6 +56,7 @@ public class ModifierContainer : MonoBehaviour
         this.propertyController = GetComponent<PropertyController>();
         this.criticalHitController = GetComponent<CriticalHitController>();
         this.stateController = GetComponent<StateController>();
+        this.targetingSkillModifierController = GetComponent<TargetingSkillModifierController>();
         this.buffUiPanel = GetComponent<BuffUiPanel>();
     }
 
@@ -79,6 +82,7 @@ public class ModifierContainer : MonoBehaviour
         this.propertyController.NotifyDirty();
         this.criticalHitController.NotifyDirty();
         this.stateController.NotifyDirty();
+        this.targetingSkillModifierController.NotifyDirty();
         this.buffUiPanel.NotifyDirty();
     }
 }

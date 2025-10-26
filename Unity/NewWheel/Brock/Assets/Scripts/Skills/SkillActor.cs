@@ -62,7 +62,12 @@ public class SkillActor : MonoBehaviour
         for (int i = 0; i < this.skillConfigs.Length; i++)
         {
             SkillConfig skillConfig = this.skillConfigs[i];
-            if (skillConfig == null || skillConfig.skillTargetConfig == null)
+            if (skillConfig == null)
+            {
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(skillConfig.skillName) || skillConfig.skillTargetConfig == null)
             {
                 Debug.LogError($"Skill config {i} is not valid");
                 continue;
@@ -77,7 +82,7 @@ public class SkillActor : MonoBehaviour
             GameObject skillObject = Instantiate(skillPrefab, this.transform.position, Quaternion.identity, this.transform);
 
             SkillBase skill = skillObject.GetComponent<SkillBase>();
-            skill.Initialize(this.weaponSuit, skillConfig);
+            skill.Initialize(this.weaponSuit, skillConfig, i);
             this.skills.Add(skill);
         }
 

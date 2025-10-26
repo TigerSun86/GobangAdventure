@@ -5,4 +5,6 @@ using Newtonsoft.Json.Converters;
 public enum ModifierStateType
 {
     MODIFIER_STATE_STUNNED,
+
+    MODIFIER_STATE_BLOCK_CD,
 }

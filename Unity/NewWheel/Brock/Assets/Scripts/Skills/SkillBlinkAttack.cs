@@ -7,9 +7,9 @@ public class SkillBlinkAttack : SkillBase
 {
     private BuffTracker buffTracker;
 
-    public override void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig)
+    public override void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig, int skillIndex)
     {
-        base.Initialize(weaponSuit, skillConfig);
+        base.Initialize(weaponSuit, skillConfig, skillIndex);
         this.buffTracker = this.weaponSuit.GetComponent<BuffTracker>();
         if (this.buffTracker == null)
         {

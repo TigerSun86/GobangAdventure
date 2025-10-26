@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: -4646313148022650395}
   - component: {fileID: -3424127471375892288}
   - component: {fileID: -6573153923903333655}
+  - component: {fileID: 1193151776434533403}
   m_Layer: 0
   m_Name: WeaponSuit
   m_TagString: Untagged
@@ -203,6 +204,7 @@ MonoBehaviour:
   capabilityController: {fileID: 0}
   propertyController: {fileID: 0}
   criticalHitController: {fileID: 0}
+  targetingSkillModifierController: {fileID: 0}
   modifierContainer: {fileID: 0}
 --- !u!114 &303178027058660786
 MonoBehaviour:
@@ -409,6 +411,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1886e577877bc6c4f8c84e763475becc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1193151776434533403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973336722079467576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd9f18e39346edd4b8aac456d99ab647, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1479917027771085383

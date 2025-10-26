@@ -1,8 +1,8 @@
 public class SkillPassive : SkillBase
 {
-    public override void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig)
+    public override void Initialize(WeaponSuit weaponSuit, SkillConfig skillConfig, int skillIndex)
     {
-        base.Initialize(weaponSuit, skillConfig);
+        base.Initialize(weaponSuit, skillConfig, skillIndex);
         if (SelectTarget())
         {
             foreach (WeaponSuit target in this.targets)
