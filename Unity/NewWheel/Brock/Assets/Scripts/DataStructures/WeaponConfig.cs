@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -37,6 +38,11 @@ public class WeaponConfig
     }
 
     public SkillConfig[] GetSkills()
+    {
+        return GetRawSkills().Where(s => s != null).ToArray();
+    }
+
+    public SkillConfig[] GetRawSkills()
     {
         List<SkillConfig> skills = new List<SkillConfig>
         {

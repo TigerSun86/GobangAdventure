@@ -9,7 +9,8 @@ public class SkillActor : MonoBehaviour
     public const int PriorityNormal = 2;
     public const int PriorityLow = 3;
 
-    [SerializeField] SkillConfig[] skillConfigs;
+    [SerializeField, AssignedInCode]
+    SkillConfig[] skillConfigs;
 
     [SerializeField, AssignedInCode]
     private SkillPrefabDb skillPrefabDb;
@@ -53,7 +54,7 @@ public class SkillActor : MonoBehaviour
     {
         this.skillPrefabDb = SkillPrefabDb.Instance;
         this.weaponSuit = weaponSuit;
-        this.skillConfigs = this.weaponSuit.weaponConfig.GetSkills();
+        this.skillConfigs = this.weaponSuit.weaponConfig.GetRawSkills();
         this.activeSkill = null;
         this.skillActionQueue = new PriorityQueue<SkillBase>();
         InitSkillToPriorities();
