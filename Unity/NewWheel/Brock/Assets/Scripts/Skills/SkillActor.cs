@@ -14,7 +14,7 @@ public class SkillActor : MonoBehaviour
     [SerializeField, AssignedInCode]
     private SkillPrefabDb skillPrefabDb;
 
-    public SkillBase[] skills;
+    public List<SkillBase> skills;
 
     public SkillBase activeSkill;
 
@@ -58,7 +58,7 @@ public class SkillActor : MonoBehaviour
         this.skillActionQueue = new PriorityQueue<SkillBase>();
         InitSkillToPriorities();
 
-        List<SkillBase> skillList = new List<SkillBase>();
+        this.skills = new List<SkillBase>();
         for (int i = 0; i < this.skillConfigs.Length; i++)
         {
             SkillConfig skillConfig = this.skillConfigs[i];
@@ -78,10 +78,9 @@ public class SkillActor : MonoBehaviour
 
             SkillBase skill = skillObject.GetComponent<SkillBase>();
             skill.Initialize(this.weaponSuit, skillConfig);
-            skillList.Add(skill);
+            this.skills.Add(skill);
         }
 
-        this.skills = skillList.ToArray();
         this.isInitialized = true;
     }
 
