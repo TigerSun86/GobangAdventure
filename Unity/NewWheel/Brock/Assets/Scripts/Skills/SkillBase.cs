@@ -43,6 +43,9 @@ public class SkillBase : MonoBehaviour
             }
         }
 
+        Fainting fainting = this.weaponSuit.GetComponent<Fainting>();
+        fainting.faintingEvent.AddListener((w) => Invoke(SkillEvent.SKILL_ON_FAINTING, new SkillEventContext()));
+
         Invoke(SkillEvent.SKILL_ON_CREATED, new SkillEventContext());
     }
 

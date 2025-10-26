@@ -19,6 +19,7 @@ public class ActionConfigConverter : JsonConverter<ActionConfig>
             nameof(StunActionConfig) => new StunActionConfig(),
             nameof(LinearProjectileActionConfig) => new LinearProjectileActionConfig(),
             nameof(HealActionConfig) => new HealActionConfig(),
+            nameof(ReviveActionConfig) => new ReviveActionConfig(),
             _ => throw new JsonSerializationException($"Unknown effect type: {type}")
         };
 

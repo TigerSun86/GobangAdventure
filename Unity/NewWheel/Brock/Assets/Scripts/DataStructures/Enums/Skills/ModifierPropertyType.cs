@@ -11,4 +11,6 @@ public enum ModifierPropertyType
     CRITICAL_HIT_RATE,
 
     CRITICAL_HIT_MULTIPLIER,
+
+    MIN_HEALTH,
 }

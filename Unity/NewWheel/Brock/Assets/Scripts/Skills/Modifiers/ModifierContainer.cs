@@ -29,7 +29,7 @@ public class ModifierContainer : MonoBehaviour
         Modifier modifier = this.modifiers.FirstOrDefault(m => m.config.id == id);
         if (modifier == null)
         {
-            Debug.LogError($"Could not find the modifier with id ${id}");
+            Debug.LogError($"Could not find the modifier with id {id}");
             return;
         }
 

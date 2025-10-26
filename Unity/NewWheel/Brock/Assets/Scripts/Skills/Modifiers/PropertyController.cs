@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -63,6 +64,13 @@ public class PropertyController : MonoBehaviour
 
             foreach (KeyValuePair<ModifierPropertyType, float> kv in modifier.config.properties)
             {
+                if (kv.Key == ModifierPropertyType.MIN_HEALTH)
+                {
+                    float minHealth = this.cache.properties.GetValueOrDefault(ModifierPropertyType.MIN_HEALTH, 0f);
+                    this.cache.properties[ModifierPropertyType.MIN_HEALTH] = Math.Max(minHealth, kv.Value);
+                    continue;
+                }
+
                 if (!modifierSums.ContainsKey(kv.Key))
                 {
                     modifierSums[kv.Key] = 0f;

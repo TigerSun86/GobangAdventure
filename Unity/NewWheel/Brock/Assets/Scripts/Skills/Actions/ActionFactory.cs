@@ -14,6 +14,7 @@ public static class ActionFactory
             StunActionConfig c => new StunAction(c, ownerWeaponSuit, ownerSkill),
             LinearProjectileActionConfig c => new LinearProjectileAction(c, ownerWeaponSuit, ownerSkill),
             HealActionConfig c => new HealAction(c, ownerWeaponSuit, ownerSkill),
+            ReviveActionConfig c => new ReviveAction(c, ownerWeaponSuit, ownerSkill),
             _ => throw new NotSupportedException($"Action not supported: {config.type}")
         };
     }

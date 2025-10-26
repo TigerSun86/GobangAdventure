@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +11,7 @@ public class Health : MonoBehaviour
     public int health;
 
     [SerializeField]
-    private BuffTracker buffTracker;
+    private PropertyController propertyController;
 
     public UnityEvent<int> healthChanged;
 
@@ -30,14 +29,13 @@ public class Health : MonoBehaviour
             healthTemp = maxHealthValue;
         }
 
-        if (this.buffTracker != null)
+        if (this.propertyController != null)
         {
-            Buff buff = this.buffTracker.Get(BuffType.HealthLock)
-                .OrderByDescending(b => b.value1) // Lock based on the highest value1.
-                .FirstOrDefault();
-            if (buff != null && healthTemp < buff.value1)
+            Property property = this.propertyController.GetCurrentProperty();
+            if (property.properties.TryGetValue(ModifierPropertyType.MIN_HEALTH, out float minHealth)
+                && healthTemp < minHealth)
             {
-                healthTemp = (int)buff.value1;
+                healthTemp = (int)minHealth;
             }
         }
 
