@@ -9,6 +9,7 @@ public static class ActionFactory
             DamageActionConfig c => new DamageAction(c, ownerWeaponSuit, ownerSkill),
             ApplyAuraModifierActionConfig c => new ApplyAuraModifierAction(c, ownerWeaponSuit, ownerSkill),
             ApplyModifierActionConfig c => new ApplyModifierAction(c, ownerWeaponSuit, ownerSkill),
+            RemoveModifierActionConfig c => new RemoveModifierAction(c, ownerWeaponSuit, ownerSkill),
             LifestealActionConfig c => new LifestealAction(c, ownerWeaponSuit, ownerSkill),
             StunActionConfig c => new StunAction(c, ownerWeaponSuit, ownerSkill),
             LinearProjectileActionConfig c => new LinearProjectileAction(c, ownerWeaponSuit, ownerSkill),

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ModifierContainer : MonoBehaviour
@@ -21,6 +22,18 @@ public class ModifierContainer : MonoBehaviour
         modifier.Link(this.weaponSuit);
         this.modifiers.Add(modifier);
         NotifyDirty();
+    }
+
+    public void RemoveModifier(string id)
+    {
+        Modifier modifier = this.modifiers.FirstOrDefault(m => m.config.id == id);
+        if (modifier == null)
+        {
+            Debug.LogError($"Could not find the modifier with id ${id}");
+            return;
+        }
+
+        RemoveModifier(modifier);
     }
 
     public void RemoveModifier(Modifier modifier)

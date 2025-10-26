@@ -14,6 +14,7 @@ public class ActionConfigConverter : JsonConverter<ActionConfig>
             nameof(DamageActionConfig) => new DamageActionConfig(),
             nameof(ApplyAuraModifierActionConfig) => new ApplyAuraModifierActionConfig(),
             nameof(ApplyModifierActionConfig) => new ApplyModifierActionConfig(),
+            nameof(RemoveModifierActionConfig) => new RemoveModifierActionConfig(),
             nameof(LifestealActionConfig) => new LifestealActionConfig(),
             nameof(StunActionConfig) => new StunActionConfig(),
             nameof(LinearProjectileActionConfig) => new LinearProjectileActionConfig(),

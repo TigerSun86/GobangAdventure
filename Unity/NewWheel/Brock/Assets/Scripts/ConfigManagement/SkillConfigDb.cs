@@ -65,6 +65,9 @@ public class SkillConfigDb
                 case ApplyModifierActionConfig amc:
                     amc.modifierConfig = GetModifierConfig(skillConfig, amc.modifierId);
                     break;
+                case RemoveModifierActionConfig config:
+                    config.modifierConfig = GetModifierConfig(skillConfig, config.modifierId);
+                    break;
                 case LinearProjectileActionConfig lpc:
                     lpc.sprite = ParserUtility.ParseSpriteSafe(lpc.spritePath, "spritePath");
                     break;
