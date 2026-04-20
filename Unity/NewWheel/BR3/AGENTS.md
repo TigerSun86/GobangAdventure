@@ -6,10 +6,11 @@ This repository contains a Unity 6.4 2D turn-based card roguelike demo.
 
 The current implementation priority is:
 
-1. Domain core
-2. Application flow
-3. Debug-oriented presentation
-4. Polish and refactoring
+1. Config and runtime construction
+2. Domain core
+3. Application flow
+4. Debug-oriented presentation
+5. Polish and refactoring
 
 The goal of the current phase is correctness, clarity, and fast iteration, not final production polish.
 
@@ -17,7 +18,7 @@ The goal of the current phase is correctness, clarity, and fast iteration, not f
 
 ## Hard Constraints
 
-- Use English only in code, comments, identifiers, logs, strings, and documentation written for implementation.
+- Use English only in code, comments, identifiers, logs, strings, and implementation-facing documentation.
 - Do not change locked gameplay rules unless the user explicitly asks for a design change.
 - Prefer small, reviewable changes.
 - Keep behavior deterministic where possible.
@@ -33,11 +34,15 @@ Always read these files before making changes in related areas:
 - `Docs/README.md`
 - `Docs/game-design/game-rules-locked.md`
 - `Docs/engineering/architecture-overview.md`
+- `Docs/engineering/config-and-content.md`
 - `Docs/engineering/domain-model.md`
 - `Docs/engineering/round-resolution.md`
 - `Docs/engineering/run-battle-reward-flow.md`
 - `Docs/engineering/reward-generation.md`
 - `Docs/engineering/testing-strategy.md`
+- `Docs/adr/ADR-0001-layering-and-service-boundaries.md`
+- `Docs/adr/ADR-0002-json-config-over-scriptableobject.md`
+- `Docs/adr/ADR-0003-reward-dedup-by-canonical-deck.md`
 
 If two documents appear to conflict, prefer the more specific engineering document for implementation details, but never override locked gameplay rules silently. Report the conflict clearly.
 
@@ -47,9 +52,10 @@ If two documents appear to conflict, prefer the more specific engineering docume
 
 ### Domain
 Domain code should contain:
-- core state objects
+- core runtime state objects
 - value objects
 - enums
+- result objects
 - pure or mostly pure rules logic
 - reward legality and deduplication logic
 - canonical signature logic
@@ -65,6 +71,7 @@ Application code should contain:
 - command handling
 - state transitions
 - coordination between domain logic and UI
+- construction delegation through helpers such as factories
 
 Application code should not reimplement domain rules.
 
@@ -75,6 +82,7 @@ Presentation code should contain:
 - input forwarding
 - view models
 - presentation-only formatting
+- thin Unity-facing bootstrapping and config loading entry points
 
 Presentation code must not contain gameplay rule logic.
 
@@ -87,7 +95,9 @@ The project is intentionally split into the following major responsibilities:
 - `RoundResolver`: resolves one round of gameplay rules
 - `BattleService`: orchestrates one battle
 - `RunService`: orchestrates the full run
-- `RewardService`: generates and applies reward options
+- `RewardService`: generates and applies rewards
+- `GameConfigLoader`: loads and validates authored config
+- `RuntimeStateFactory`: constructs runtime state from authored config
 
 Keep these boundaries clean.
 
@@ -96,6 +106,92 @@ Keep these boundaries clean.
 - `BattleService` may apply battle results to battle-related runtime state, but does not decide run-level progression.
 - `RunService` decides run progression, enemy progression, reward entry, next battle, next enemy, victory, and defeat.
 - `RewardService` generates and applies rewards, but does not decide when rewards should happen.
+- `GameConfigLoader` loads config but does not orchestrate gameplay.
+- `RuntimeStateFactory` constructs runtime object graphs but does not orchestrate gameplay flow.
+
+---
+
+## Authored Config Rules
+
+The current demo uses:
+- JSON as the primary authored config format
+- pure C# config objects
+- a thin Unity-facing loading boundary
+
+Do not introduce ScriptableObject as the primary gameplay content source for the current demo unless explicitly asked.
+
+The main config objects are:
+- `GameConfig`
+- `PlayerStartConfig`
+- `EnemyConfig`
+- `RewardGenerationConfig`
+- `TraitTuning`
+- `CardSpec`
+
+Important rules:
+- authored config is not runtime state
+- runtime state should not repeatedly query authored config for live gameplay values such as max HP
+- max HP should be copied into runtime state during initialization
+- JSON loading should remain isolated behind the loader boundary
+
+---
+
+## Runtime State Rules
+
+State must live in state objects, not in services.
+
+Use runtime state objects for mutable game state.
+
+Separate:
+- authored card spec
+- runtime card instance
+- on-board projected card state
+
+Examples:
+- static authored card data belongs in `CardSpec`
+- persistent runtime deck card data belongs in `CardInstance`
+- on-board temporary combat values belong in `BoardCard`
+- current enemy progression belongs in `EnemyProgressState`
+- active battle progression belongs in `BattleState`
+
+Do not collapse these concepts together.
+
+---
+
+## Flow Stage Rules
+
+Use the accepted flow stage model.
+
+### RunFlowStage
+- `ReadyForNextBattle`
+- `InBattle`
+- `ChoosingReward`
+- `Victory`
+- `Defeat`
+
+### BattleFlowStage
+- `WaitingForPlayerCard`
+- `ResolvingRound`
+- `PresentingRoundResult`
+- `BattleComplete`
+
+Do not invent extra flow stages unless there is a clear design reason and the docs are updated.
+
+---
+
+## Result Object Rules
+
+The architecture distinguishes between gameplay result objects and application command result objects.
+
+### Gameplay result objects
+- `RoundResult`
+- `BattleOutcome`
+
+### Application command result objects
+- `BattleCommandResult`
+- `RunCommandResult`
+
+Do not merge these concepts casually.
 
 ---
 
@@ -103,32 +199,34 @@ Keep these boundaries clean.
 
 Implement in this order unless explicitly instructed otherwise:
 
-1. Domain models
-2. Round resolution core
-3. Reward generation and deduplication
-4. Edit Mode tests for core rules
-5. Battle application flow
-6. Run application flow
-7. Debug UI
-8. Additional smoke tests
+1. Config objects and loading boundary
+2. Runtime construction helpers
+3. Domain models
+4. Round resolution core
+5. Reward generation and deduplication
+6. Edit Mode tests for core rules
+7. Battle application flow
+8. Run application flow
+9. Debug UI
+10. Additional smoke tests
 
 Do not start with final UI polish.
 
 ---
 
-## Domain Modeling Rules
+## Config and Construction Rules
 
-- State must live in state objects, not in services.
-- Services should be long-lived and mostly stateless.
-- Use runtime state objects for mutable game state.
-- Separate persistent card state from board-projected round state.
-- Do not mix run-level state, battle-level state, and round-temporary data.
+- `GameConfigLoader` should deserialize and validate config.
+- `RuntimeStateFactory` should create runtime state from config.
+- `RunService.CreateNewRun(...)` should delegate initial runtime construction to `RuntimeStateFactory`.
+- Do not manually spread runtime construction logic across unrelated services or MonoBehaviours.
+- Keep config schemas simple and compatible with the current serializer assumptions.
 
-Examples:
-- Persistent card data belongs in `CardInstance`.
-- On-board temporary combat values belong in `BoardCard`.
-- Current enemy progression belongs in `EnemyProgressState`.
-- Active battle progression belongs in `BattleState`.
+Do not introduce:
+- config dictionaries
+- polymorphic trait config systems
+- heavy serializer-dependent config graphs
+unless explicitly required.
 
 ---
 
@@ -138,7 +236,7 @@ Reward generation must follow the locked design:
 
 - Each reward offer has exactly 4 options.
 - Exactly 1 option is `Skip`.
-- The other 3 options are non-skip options.
+- Exactly 3 options are non-skip.
 - Use up to 2 different legal `Upgrade` options.
 - If fewer than 2 distinct legal `Upgrade` options exist, fill remaining non-skip slots with `Replace` options.
 - Reward options must be deduplicated by resulting canonical deck state, not by raw action parameters.
@@ -149,6 +247,24 @@ Canonical reward deduplication must ignore:
 - trait order
 
 Do not simplify this rule.
+
+Replacement generation must use authored reward-generation config rather than hardcoded values.
+
+---
+
+## HP and Healing Rules
+
+Runtime state must carry max HP explicitly.
+
+- `RunState` should contain `PlayerHp` and `PlayerMaxHp`
+- `EnemyProgressState` should contain `CurrentHp` and `MaxHp`
+
+Healing rules:
+- healing cannot raise current HP above max HP
+- `RoundResolver` computes raw healing totals
+- `BattleService` applies healing and clamps to max HP
+
+Do not repeatedly query authored config during live runtime flow to determine max HP.
 
 ---
 
@@ -179,9 +295,9 @@ Prefer lightweight, high-value tests.
 
 ### Must prioritize
 - Edit Mode tests for domain logic
-- Round resolution tests
-- Reward legality tests
-- Reward deduplication tests
+- round resolution tests
+- reward legality tests
+- reward deduplication tests
 
 ### Keep minimal at first
 - Play Mode smoke tests
@@ -209,8 +325,8 @@ When implementing a rule-heavy module, add targeted tests in the same task whene
 ## Unity-Specific Guidance
 
 - This project targets Unity 6.4.
-- Keep core domain code as Unity-agnostic as practical.
-- Use Unity-specific code mainly in presentation, scene wiring, and configuration assets.
+- Keep core domain and runtime logic as Unity-agnostic as practical.
+- Use Unity-specific code mainly in presentation, bootstrapping, and config loading edges.
 - Prefer Edit Mode tests for pure logic validation.
 - Use Play Mode only where runtime scene behavior matters.
 
