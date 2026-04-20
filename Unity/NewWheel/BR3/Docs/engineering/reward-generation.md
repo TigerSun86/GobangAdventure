@@ -12,7 +12,8 @@ It explains:
 * how reward options are deduplicated
 * how canonical deck signatures are used
 * how selected rewards are applied to the player deck
-* how current demo constraints differ from possible future extensions
+* how authored reward-generation config participates in replacement generation
+* how the current demo constraints differ from possible future extensions
 
 This document focuses on reward logic. Reward timing and run progression are described in `run-battle-reward-flow.md`.
 
@@ -84,7 +85,7 @@ Examples:
 
 ### Valid replace option
 
-* replace card `Y` with a generated new card `Z`
+* replace card `Y` with generated card spec `Z`
 
 ### Invalid replace option
 
@@ -102,7 +103,7 @@ The reward system uses these main objects:
 * `RewardOption`
 * `UpgradePayload`
 * `ReplacePayload`
-* `NewCardSpec`
+* `CardSpec`
 
 ### RewardOffer
 
@@ -140,9 +141,9 @@ Represents one card replacement.
 Recommended data:
 
 * `TargetCardInstanceId`
-* `NewCardSpec`
+* `ReplacementCardSpec`
 
-### NewCardSpec
+### CardSpec
 
 Represents the generated specification of a replacement card before it becomes a runtime `CardInstance`.
 
@@ -263,7 +264,7 @@ Replace generation creates legal one-step replacement actions for existing playe
 
 Each replace candidate is an action of the form:
 
-* replace card instance `C` with generated card spec `N`
+* replace card instance `C` with generated card spec `S`
 
 ---
 
@@ -282,17 +283,20 @@ This approach preserves randomness while keeping legality deterministic and insp
 
 ---
 
-## Replace Generation Profile
+## RewardGenerationConfig
 
-The replacement system should use a generation profile that describes what kinds of replacement cards are allowed.
+Replacement generation is driven by authored config.
 
-A generation profile may conceptually define:
+The main relevant config object is:
 
-* allowed RPS types
-* allowed base powers
-* allowed trait pool
-* required trait count
-* future balancing rules if needed
+* `RewardGenerationConfig`
+
+The current design expects it to provide:
+
+* `allowedReplacementRpsTypes`
+* `allowedReplacementBasePowers`
+* `allowedReplacementTraits`
+* `replacementTraitCount`
 
 ### Current demo rule
 
@@ -312,6 +316,12 @@ This matches the current gameplay direction where player cards are intended to s
 A generated replacement card must have exactly 2 traits in the current design.
 
 This is part of the locked reward behavior for replacement cards.
+
+This count is expected to come from:
+
+* `RewardGenerationConfig.replacementTraitCount`
+
+For the current demo, that value is fixed to 2.
 
 ---
 
@@ -333,9 +343,9 @@ These checks apply before the spec is combined with a target card to form a repl
 
 Replace generation should work in two stages.
 
-### Stage 1: Enumerate legal new card specs
+### Stage 1: Enumerate legal replacement card specs
 
-Generate all legal `NewCardSpec` values based on:
+Generate all legal `CardSpec` values based on:
 
 * allowed RPS types
 * allowed base powers
@@ -345,7 +355,7 @@ Generate all legal `NewCardSpec` values based on:
 
 For each card in the current deck:
 
-* pair the target card with each legal new card spec
+* pair the target card with each legal generated card spec
 * keep only meaningful replacements
 
 A replacement is meaningful only if it actually changes the deck in a gameplay-relevant way.
@@ -354,7 +364,7 @@ A replacement is meaningful only if it actually changes the deck in a gameplay-r
 
 ## Meaningless Replace Candidates
 
-A replace candidate should be discarded if the generated new card spec is functionally identical to the target card being replaced.
+A replace candidate should be discarded if the generated replacement `CardSpec` is functionally identical to the target card being replaced.
 
 For this comparison, use gameplay-relevant card properties:
 
@@ -422,6 +432,10 @@ This rule applies to:
 * replace options
 * comparisons across options in the same reward offer
 
+For the detailed architectural reasoning behind this rule, see:
+
+* `Docs/adr/ADR-0003-reward-dedup-by-canonical-deck.md`
+
 ---
 
 ## Why Raw Action Deduplication Is Not Enough
@@ -431,7 +445,7 @@ Raw action comparison is not sufficient because different-looking actions can st
 Examples:
 
 * two upgrades target different but functionally identical cards and produce equivalent final deck states
-* two replacement cards list traits in different orders but produce the same functional card
+* two replacement specs contain the same traits in different orders
 * two replace actions target different identical cards and produce equivalent final deck states
 
 Therefore deduplication must use resulting deck equivalence, not just action payload equality.
@@ -579,7 +593,7 @@ It does not create a new card instance.
 Applying a replace means:
 
 * find the target card's current deck position
-* create a new runtime `CardInstance` from the selected `NewCardSpec`
+* create a new runtime `CardInstance` from the selected replacement `CardSpec`
 * replace the old card at the same deck position
 * assign a new `InstanceId`
 * start with no inherited permanent growth from the replaced card
@@ -632,7 +646,7 @@ The reward system should always maintain the following invariants:
 3. non-skip options are pairwise distinct by resulting canonical deck state
 4. every generated option is legal and executable in one step
 5. applying the selected option results in a legal deck
-6. replace cards in the current demo use the configured fixed player replacement base power
+6. replacement cards in the current demo use the configured fixed player replacement base power from `RewardGenerationConfig`
 
 ---
 
@@ -670,6 +684,7 @@ Important implementation risks include:
 5. allowing illegal trait combinations in replacement card generation
 6. accidentally inheriting replaced card growth or identity
 7. generating meaningless replacements that do not actually change the deck
+8. ignoring authored replacement config and hardcoding replacement generation values in code
 
 These should be tested early.
 
