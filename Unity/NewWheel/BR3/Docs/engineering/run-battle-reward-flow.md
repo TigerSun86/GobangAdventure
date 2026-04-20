@@ -17,6 +17,8 @@ It explains:
 * when rewards are generated
 * how rewards are consumed
 * how the system moves to the next battle, next enemy, victory, or defeat
+* how run-level and battle-level flow stages are used
+* how application command result objects are used
 
 This document focuses on flow orchestration, not low-level round rules. Low-level round behavior is defined in `round-resolution.md`.
 
@@ -45,7 +47,7 @@ The key rule is:
 * `RoundResolver` resolves one round
 * `BattleService` orchestrates one battle
 * `RunService` orchestrates the full run
-* `RewardService` generates and applies reward choices
+* `RewardService` generates and applies rewards
 
 ---
 
@@ -79,6 +81,8 @@ The flow uses these runtime objects:
 * `RewardOffer`
 * `BattleOutcome`
 * `RoundResult`
+* `RunCommandResult`
+* `BattleCommandResult`
 
 ### Ownership Summary
 
@@ -88,16 +92,16 @@ The flow uses these runtime objects:
 * `RewardOffer` owns one pending reward selection
 * `BattleOutcome` summarizes one completed battle
 * `RoundResult` summarizes one resolved round
+* `RunCommandResult` summarizes one run-level command execution
+* `BattleCommandResult` summarizes one battle-level command execution
 
 ---
 
 ## Run-Level Flow Stages
 
-The exact enum names may still be finalized later, but the run-level flow concept is already stable.
+The run-level flow is intentionally small and explicit.
 
-The run must always be in one major stage at a time.
-
-Recommended conceptual stages:
+The accepted run flow stages are:
 
 * `ReadyForNextBattle`
 * `InBattle`
@@ -105,7 +109,52 @@ Recommended conceptual stages:
 * `Victory`
 * `Defeat`
 
-Additional transitional stages may be introduced later if useful, but the core idea should remain simple.
+### Stage meanings
+
+#### `ReadyForNextBattle`
+
+The run is active and can begin the next battle.
+
+Expected conditions:
+
+* there is a current enemy
+* there is no active battle
+* there is no pending reward offer
+
+#### `InBattle`
+
+A battle is currently active.
+
+Expected conditions:
+
+* `RunState.ActiveBattle != null`
+
+#### `ChoosingReward`
+
+A reward offer is currently pending and must be resolved before the run can continue.
+
+Expected conditions:
+
+* `RunState.ActiveBattle == null`
+* `RunState.PendingRewardOffer != null`
+
+#### `Victory`
+
+The run has ended in success.
+
+Expected conditions:
+
+* no active battle
+* no pending reward offer
+
+#### `Defeat`
+
+The run has ended in failure.
+
+Expected conditions:
+
+* no active battle
+* no pending reward offer
 
 ### Important Rule
 
@@ -119,23 +168,23 @@ At run level:
 
 ## Battle-Level Flow Stages
 
-A battle also has its own internal flow.
+A battle has its own internal flow.
 
-Recommended conceptual stages:
+The accepted battle flow stages are:
 
 * `WaitingForPlayerCard`
 * `ResolvingRound`
 * `PresentingRoundResult`
 * `BattleComplete`
 
-These battle-level stages are distinct from gameplay resolution phases.
-
 ### Important Distinction
 
 Do not confuse:
 
 * battle flow stage
-  with
+
+with
+
 * round resolution phase
 
 Examples:
@@ -144,6 +193,24 @@ Examples:
 * `Movement` is a round resolution phase
 
 They exist at different levels.
+
+### Stage meanings
+
+#### `WaitingForPlayerCard`
+
+The battle is waiting for player input.
+
+#### `ResolvingRound`
+
+A valid player action has been received and the round is currently being resolved and applied.
+
+#### `PresentingRoundResult`
+
+The round has been resolved and applied, and presentation is showing the result.
+
+#### `BattleComplete`
+
+The battle has ended and is ready to hand control back to run-level flow.
 
 ---
 
@@ -157,18 +224,19 @@ It is responsible for:
 
 * creating a new run
 * preparing the current enemy
-* deciding when a battle may begin
-* accepting a completed battle outcome
-* deciding whether to enter reward selection
-* deciding when to continue to the next battle
+* determining when a battle may begin
+* accepting and interpreting completed battle outcomes
+* deciding when rewards should begin
+* deciding when the next battle should begin
 * deciding when to move to the next enemy
 * deciding victory or defeat
+* maintaining run-level flow invariants
 
 It is not responsible for:
 
-* low-level round resolution
+* low-level round rule calculation
 * battle-internal round progression
-* reward candidate generation internals
+* reward legality and candidate generation internals
 
 ---
 
@@ -185,6 +253,7 @@ It is responsible for:
 * validating player card selection
 * invoking `RoundResolver`
 * applying round results to battle-related runtime state
+* clamping healing results to max HP when applying them
 * advancing battle-level flow
 * producing `BattleOutcome`
 
@@ -214,31 +283,65 @@ It is not responsible for:
 
 ---
 
+## Runtime Construction and New Run Creation
+
+Run creation is intentionally split between:
+
+* `RuntimeStateFactory`
+* `RunService`
+
+### RuntimeStateFactory responsibility
+
+`RuntimeStateFactory` constructs the initial runtime object graph from authored config.
+
+Examples:
+
+* create `RunState` from `GameConfig`
+* create `EnemyProgressState` from `EnemyConfig`
+* create `CardInstance` from `CardSpec`
+
+### RunService responsibility
+
+`RunService.CreateNewRun(...)` is the run-level entry point for starting a new run.
+
+It delegates initial runtime construction to `RuntimeStateFactory`.
+
+This is a deliberate separation:
+
+* factory constructs
+* service orchestrates
+
+---
+
 ## Start of Run
 
-A run begins when `RunService` creates a new `RunState`.
+A run begins when `RunService.CreateNewRun(...)` is called.
 
-### RunService responsibilities at run start
+### Inputs
 
-It should:
+* `GameConfig`
+* `RuntimeStateFactory`
 
-* create the player deck
-* set the starting player HP
-* set the current enemy index to the first enemy
-* create the first `EnemyProgressState`
-* clear any active battle
-* clear any pending reward
-* set the run flow to a stage that allows the first battle to begin
+### Behavior
 
-### Result
+`RunService.CreateNewRun(...)` should:
 
-After initialization:
+1. delegate construction to `RuntimeStateFactory`
+2. receive a fully initialized `RunState`
+3. return that `RunState` to the caller
 
-* the player has a valid deck
-* the first enemy is active
-* there is no active battle
-* there is no pending reward
-* the system is ready to begin the first battle
+### Expected initial state
+
+The returned `RunState` should have:
+
+* `PlayerHp` initialized from `playerMaxHp`
+* `PlayerMaxHp` initialized from `playerMaxHp`
+* a fully created player deck
+* `CurrentEnemyIndex = 0`
+* the first `EnemyProgressState` already created
+* `ActiveBattle = null`
+* `PendingRewardOffer = null`
+* `FlowStage = ReadyForNextBattle`
 
 ---
 
@@ -248,8 +351,9 @@ Each enemy is represented at runtime by `EnemyProgressState`.
 
 It tracks:
 
-* enemy definition
+* the current enemy config reference
 * current HP
+* max HP
 * number of battles played against this enemy
 * number of rewards already claimed from this enemy
 
@@ -259,72 +363,335 @@ It is created when entering an enemy and discarded when the system moves to the 
 
 ---
 
-## Starting a Battle
+## RunService Public Commands
 
-A new battle begins only when `RunService` decides it is allowed.
+The current recommended run-level command surface is:
 
-### Conditions required to start a battle
+* `CreateNewRun(...)`
+* `CanStartNextBattle(...)`
+* `StartNextBattle(...)`
+* `AcceptCompletedBattle(...)`
+* `ChooseReward(...)`
 
-A battle may start only if:
-
-* the run is not already over
-* there is a current enemy
-* there is no active battle
-* there is no pending reward
-* the current enemy still requires more battles or can still be fought
-
-### RunService action
-
-When the conditions are satisfied:
-
-* `RunService` calls `BattleService.StartBattle(...)`
-
-### BattleService action
-
-`BattleService` creates a new `BattleState` and initializes:
-
-* battle index for the current enemy
-* round index
-* empty lanes
-* used player card tracking
-* enemy sequence for this battle
-* battle flow stage as `WaitingForPlayerCard`
-
-### RunState update
-
-After battle creation:
-
-* `RunState.ActiveBattle` is set
-* run flow becomes `InBattle`
+Internal helper methods may exist, but they do not need to be part of the public command surface.
 
 ---
 
-## Enemy Sequence Preparation
+## CreateNewRun(...)
 
-At battle start, the enemy uses its fixed six-card set.
+### Purpose
 
-For the current battle:
+Create a new `RunState`.
 
-* the six enemy cards are shuffled
-* the first three are stored as the battle's enemy sequence
-* round `n` uses enemy sequence element `n`
+### Responsibility
 
-This sequence belongs to `BattleState`, not `RunState`.
+This is the run-level entry point for starting a run.
+
+### Important design rule
+
+It should delegate initial runtime graph construction to `RuntimeStateFactory`.
+
+### Typical result
+
+* returns a new `RunState`
+
+This method does not need `RunCommandResult` because it is a root creation entry point rather than a command against an existing run.
+
+---
+
+## CanStartNextBattle(...)
+
+### Purpose
+
+Determine whether the current run is allowed to begin a new battle.
+
+### Why it exists
+
+Although the caller could inspect raw state, the run service should remain the source of truth for run-level gating conditions.
+
+### Typical logic
+
+A next battle may start only if:
+
+* the run is not in `Victory`
+* the run is not in `Defeat`
+* `FlowStage == ReadyForNextBattle`
+* `ActiveBattle == null`
+* `PendingRewardOffer == null`
+
+A simple boolean result is acceptable for the current demo.
+
+---
+
+## StartNextBattle(...)
+
+### Purpose
+
+Start the next battle for the current enemy.
+
+### Inputs
+
+* `RunState`
+* `BattleService`
+
+### Behavior
+
+This method should:
+
+1. validate that the run may start a battle
+2. call `BattleService.StartBattle(...)`
+3. assign the returned `BattleState` to `RunState.ActiveBattle`
+4. set `RunState.FlowStage = InBattle`
+
+### Output
+
+Returns `RunCommandResult`.
+
+### Expected result fields
+
+On success:
+
+* `Success = true`
+* `FlowStage = InBattle`
+* `ActiveBattle != null`
+
+On failure:
+
+* `Success = false`
+* `FailureReason` should explain why battle start was rejected
+
+---
+
+## AcceptCompletedBattle(...)
+
+### Purpose
+
+Accept a completed `BattleOutcome` and advance run-level progression.
+
+### Why it is important
+
+This is the main handoff point from battle-level orchestration back to run-level orchestration.
+
+### Inputs
+
+* `RunState`
+* `BattleOutcome`
+* `RewardService`
+
+### Behavior
+
+This method should:
+
+1. increment `CurrentEnemy.BattlesPlayed`
+2. clear `RunState.ActiveBattle`
+3. inspect battle outcome and current enemy state
+4. decide whether the run should:
+
+   * enter reward flow
+   * become ready for the next battle
+   * move to the next enemy
+   * enter victory
+   * enter defeat
+
+### Output
+
+Returns `RunCommandResult`.
+
+### Notes
+
+This method should not recompute battle rules.
+It only interprets battle consequences at run level.
+
+---
+
+## ChooseReward(...)
+
+### Purpose
+
+Accept the player's chosen reward option and advance run-level progression afterward.
+
+### Inputs
+
+* `RunState`
+* `optionId`
+* `RewardService`
+
+### Behavior
+
+This method should:
+
+1. validate that reward selection is currently allowed
+2. apply the selected reward through `RewardService`
+3. increment `CurrentEnemy.RewardsClaimed`
+4. clear the current `PendingRewardOffer`
+5. decide what comes next:
+
+   * another reward immediately
+   * `ReadyForNextBattle`
+   * next enemy
+   * `Victory`
+
+### Output
+
+Returns `RunCommandResult`.
+
+---
+
+## BattleService Public Commands
+
+The current recommended battle-level command surface is:
+
+* `StartBattle(...)`
+* `SubmitPlayerCard(...)`
+* `FinishRoundPresentation(...)`
+
+Internal helper methods may exist, but they do not need to be part of the public command surface.
+
+---
+
+## StartBattle(...)
+
+### Purpose
+
+Create a new battle for the current enemy.
+
+### Inputs
+
+* `RunState`
+* `EnemyProgressState`
+* enemy config or enemy config reference
+* battle RNG or enemy sequence source if needed
+
+### Behavior
+
+This method should:
+
+1. create a new `BattleState`
+2. initialize lanes
+3. initialize round index
+4. initialize used player card tracking
+5. generate enemy sequence for this battle
+6. set battle flow stage to `WaitingForPlayerCard`
+
+### Output
+
+Returns `BattleState`
+
+### Important Rule
+
+`BattleService.StartBattle(...)` constructs battle state but does not own run-level flow transitions.
+`RunService.StartNextBattle(...)` is responsible for attaching the new battle to `RunState`.
+
+---
+
+## SubmitPlayerCard(...)
+
+### Purpose
+
+Submit the player's selected card for the current round and resolve that round.
+
+### Inputs
+
+* `RunState`
+* `EnemyProgressState`
+* `BattleState`
+* `cardInstanceId`
+* `RoundResolver`
+
+### Behavior
+
+This method should:
+
+1. validate that the battle is in `WaitingForPlayerCard`
+2. validate the selected player card
+3. select the enemy card for the current round
+4. set battle flow to `ResolvingRound`
+5. call `RoundResolver.ResolveRound(...)`
+6. apply the resulting round consequences to runtime state
+7. clamp healing to max HP for player and enemy
+8. append round result to battle history
+9. set battle flow to `PresentingRoundResult`
+
+### Output
+
+Returns `BattleCommandResult`.
+
+### Important Rule
+
+BattleService is allowed to apply immediate battle consequences such as HP changes.
+It is not allowed to decide what those consequences mean for the full run.
+
+---
+
+## HP Application Rule
+
+When battle service applies a round result:
+
+* damage is applied to current HP
+* healing is then applied
+* healing is clamped to max HP
+
+This applies to:
+
+* `RunState.PlayerHp` against `RunState.PlayerMaxHp`
+* `EnemyProgressState.CurrentHp` against `EnemyProgressState.MaxHp`
+
+This rule exists so runtime HP state remains self-contained and does not depend on repeatedly querying authored config.
+
+---
+
+## FinishRoundPresentation(...)
+
+### Purpose
+
+Advance battle flow after the current round result has finished being presented.
+
+### Inputs
+
+* `BattleState`
+* `EnemyProgressState`
+
+### Behavior
+
+This method should decide whether the battle continues or completes.
+
+### If battle continues
+
+It should:
+
+* increment `RoundIndex`
+* set `BattleFlowStage = WaitingForPlayerCard`
+
+### If battle completes
+
+It should:
+
+* set `BattleFlowStage = BattleComplete`
+* produce a `BattleOutcome`
+
+### Output
+
+Returns `BattleCommandResult`.
+
+On battle completion:
+
+* `IsBattleComplete = true`
+* `BattleOutcome != null`
 
 ---
 
 ## Battle Runtime Flow
 
-Once a battle has started, `BattleService` becomes the main active flow orchestrator until the battle completes.
+Once a battle has started, `BattleService` becomes the active battle-level orchestrator until the battle completes.
 
 The typical battle loop is:
 
 1. wait for player card input
-2. validate the input
+2. validate input
 3. resolve one round
 4. apply round result
 5. present round result
-6. either advance to the next round or finish the battle
+6. either advance to the next round or complete the battle
 
 ---
 
@@ -345,11 +712,11 @@ Instead, it remains in the battle flow stage `WaitingForPlayerCard` until input 
 
 ## Submitting a Player Card
 
-When the player selects a card, the application passes the selection to `BattleService`.
+When the player selects a card, the application passes the selection to `BattleService.SubmitPlayerCard(...)`.
 
-### BattleService validation responsibilities
+### Validation responsibilities
 
-It should validate:
+BattleService should validate:
 
 * an active battle exists
 * battle flow is `WaitingForPlayerCard`
@@ -361,11 +728,11 @@ It should validate:
 If validation fails:
 
 * no state should be advanced
-* a failure result should be returned to the caller
+* a failure result should be returned
 
 If validation succeeds:
 
-* the battle proceeds into round resolution
+* round resolution begins
 
 ---
 
@@ -391,6 +758,7 @@ This includes:
 
 * updating player HP
 * updating current enemy HP
+* clamping healing to max HP
 * appending the round result to battle history
 * appending round logs to battle logs
 * appending round snapshots to battle snapshots
@@ -425,24 +793,6 @@ Rule calculation should not be paused mid-phase for UI.
 
 ---
 
-## Advancing After Presentation
-
-Once round presentation is complete, the application signals the battle flow to continue.
-
-At this point `BattleService` decides:
-
-### If the battle is not yet complete
-
-* increment round index
-* set battle flow back to `WaitingForPlayerCard`
-
-### If the battle is complete
-
-* set battle flow to `BattleComplete`
-* produce a `BattleOutcome`
-
----
-
 ## When a Battle Is Complete
 
 A battle is complete if either of these is true:
@@ -470,6 +820,23 @@ It should summarize:
 * enemy HP after the battle
 
 This object exists to keep `RunService` from depending on the full internal details of `BattleState`.
+
+---
+
+## BattleCommandResult
+
+`BattleCommandResult` is the battle-level command return object.
+
+It should report:
+
+* whether the command succeeded
+* why it failed if it failed
+* the current `BattleFlowStage`
+* any produced `RoundResult`
+* whether the battle is complete
+* any produced `BattleOutcome`
+
+This object is intentionally separate from `RoundResult` and `BattleOutcome`.
 
 ---
 
@@ -559,7 +926,7 @@ RewardService generates one `RewardOffer` according to the reward rules.
 ### RunState update
 
 * `RunState.PendingRewardOffer` is set
-* run flow becomes `ChoosingReward`
+* `RunState.FlowStage = ChoosingReward`
 
 ### Important Rule
 
@@ -578,7 +945,7 @@ When the player selects a reward option:
 
 Recommended conceptual entry:
 
-* `RunService.AcceptRewardChoice(...)`
+* `RunService.ChooseReward(...)`
 
 ### Why RunService owns this step
 
@@ -669,12 +1036,14 @@ Then `RunService` should:
 * create a new `EnemyProgressState`
 * clear active battle and pending reward
 * preserve player HP
+* preserve player max HP
 * preserve the current deck
 * set run flow to `ReadyForNextBattle`
 
 ### Important Rule
 
 Player HP persists to the next enemy.
+Player max HP also persists.
 The player deck also persists.
 
 ---
@@ -712,6 +1081,32 @@ At this point:
 
 * no active battle should remain
 * no pending reward should remain
+
+---
+
+## RunCommandResult
+
+`RunCommandResult` is the run-level command return object.
+
+It should report:
+
+* whether the command succeeded
+* why it failed if it failed
+* the current `RunFlowStage`
+* whether an active battle now exists
+* whether a pending reward offer now exists
+* whether the run is complete
+
+Typical fields:
+
+* `Success`
+* `FailureReason`
+* `FlowStage`
+* `ActiveBattle`
+* `PendingRewardOffer`
+* `IsRunComplete`
+
+This object is intentionally separate from `BattleOutcome`.
 
 ---
 
@@ -822,6 +1217,26 @@ Key rules:
 * `BattleService` owns battle progression
 * `RewardService` owns reward generation and reward application
 * `RoundResolver` owns round rule resolution
+
+The system also uses explicit flow stages:
+
+* `ReadyForNextBattle`
+* `InBattle`
+* `ChoosingReward`
+* `Victory`
+* `Defeat`
+
+and:
+
+* `WaitingForPlayerCard`
+* `ResolvingRound`
+* `PresentingRoundResult`
+* `BattleComplete`
+
+It also uses explicit application result objects:
+
+* `RunCommandResult`
+* `BattleCommandResult`
 
 The whole system is designed so that:
 
