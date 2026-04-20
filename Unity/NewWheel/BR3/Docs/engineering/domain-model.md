@@ -17,6 +17,7 @@ This document focuses on structure and ownership of data. Behavior details are c
 * `round-resolution.md`
 * `run-battle-reward-flow.md`
 * `reward-generation.md`
+* `config-and-content.md`
 
 ---
 
@@ -40,6 +41,7 @@ At runtime, the main state hierarchy is:
 ```
 RunState
 ├── PlayerHp
+├── PlayerMaxHp
 ├── PlayerDeck : List<CardInstance>
 ├── CurrentEnemyIndex
 ├── CurrentEnemy : EnemyProgressState
@@ -88,6 +90,9 @@ Objects that describe what happened:
 * `RoundResult`
 * `SlotCombatResult`
 * `PhaseSnapshot`
+* `BattleOutcome`
+* `BattleCommandResult`
+* `RunCommandResult`
 
 ---
 
@@ -113,6 +118,7 @@ If the current run must be understood, displayed, debugged, or later saved, `Run
 ### Recommended Fields
 
 * `PlayerHp`
+* `PlayerMaxHp`
 * `PlayerDeck`
 * `CurrentEnemyIndex`
 * `CurrentEnemy`
@@ -124,6 +130,8 @@ If the current run must be understood, displayed, debugged, or later saved, `Run
 
 * `RunState` should not contain round-local combat values.
 * `RunState` should not contain UI-only state.
+* `RunState` should carry `PlayerMaxHp` as runtime state.
+* runtime systems should not repeatedly query authored config to determine max HP.
 * run termination can be derived from `FlowStage`, so separate `IsVictory` or `IsRunOver` fields are not required.
 
 ---
@@ -140,20 +148,24 @@ It tracks:
 
 * which enemy is currently being fought
 * current enemy HP
+* current enemy max HP
 * how many battles have been played against this enemy
 * how many rewards from this enemy have already been claimed
 
 ### Recommended Fields
 
-* `Definition`
+* `Config`
 * `CurrentHp`
+* `MaxHp`
 * `BattlesPlayed`
 * `RewardsClaimed`
 
 ### Notes
 
 * `EnemyProgressState` exists because enemy HP persists across battles.
+* `MaxHp` is part of runtime state, not something that should be looked up repeatedly from config during battle flow.
 * reward count is stored here because rewards are per enemy, not per battle.
+* `Config` refers to the static authored enemy config and should not be mutated at runtime.
 
 ---
 
@@ -248,6 +260,45 @@ It tracks:
 
 ---
 
+## CardSpec
+
+### Purpose
+
+`CardSpec` is the static card specification format used by authored config and generated replacement specs.
+
+It describes what a card is before it becomes a runtime `CardInstance`.
+
+### Recommended Fields
+
+* `RpsType`
+* `BasePower`
+* `Traits`
+
+### Notes
+
+* `CardSpec` is configuration data, not runtime state.
+* the same `CardSpec` shape is used for:
+
+  * player starting deck entries
+  * enemy fixed deck entries
+  * generated replacement card specs
+* `CardSpec` does not carry runtime identity or mutable run progression data.
+
+### What Does Not Belong Here
+
+Do not store:
+
+* instance identity
+* current HP
+* permanent growth accumulated during a run
+* board position
+* battle usage state
+* current round combat values
+
+Those belong to runtime objects.
+
+---
+
 ## CardInstance
 
 ### Purpose
@@ -274,7 +325,7 @@ It stores persistent card data that can change during the run:
 
 ### Notes
 
-* `CardInstance` is a runtime instance, not a static definition.
+* `CardInstance` is created from `CardSpec`.
 * two cards may share the same RPS type and base power but still be different instances.
 * `Traits` should represent the current actual trait set of the card.
 * `PermanentPowerBonus` exists so growth effects do not overwrite base power.
@@ -320,8 +371,9 @@ It stores battle-local and round-local values for a card that has entered the bo
 
 ### Important Distinction
 
-`CardInstance` is the persistent deck object.
-`BoardCard` is the battle-time projection of that card on the board.
+`CardSpec` is static config.
+`CardInstance` is the persistent runtime deck object.
+`BoardCard` is the battle-time projection of that runtime card on the board.
 
 This distinction is essential.
 
@@ -407,31 +459,13 @@ Upgrade means modifying an existing card instance in place.
 ### Recommended Fields
 
 * `TargetCardInstanceId`
-* `NewCardSpec`
+* `ReplacementCardSpec`
 
 ### Notes
 
 Replace means removing one card from the deck and inserting a new card instance into the same deck position.
 
----
-
-## NewCardSpec
-
-### Purpose
-
-`NewCardSpec` describes the generated specification for a new replacement card before it becomes a runtime `CardInstance`.
-
-### Recommended Fields
-
-* `RpsType`
-* `BasePower`
-* `Traits`
-
-### Notes
-
-* this is a generated specification, not yet a runtime deck instance
-* in the current demo, replacement player cards use a fixed configured base power
-* the architecture should still allow future expansion to multiple legal base powers
+The replacement card specification uses `CardSpec`.
 
 ---
 
@@ -471,8 +505,10 @@ It records:
 
 ### Notes
 
-* `RoundResult` is a first-class output object, not an optional debug add-on
-* it supports debugging, validation, presentation, and future replay-friendly tooling
+* `RoundResult` is a first-class output object, not an optional debug add-on.
+* `RoundResolver` computes raw damage and healing totals.
+* battle-layer application may clamp HP to max HP when applying the result to runtime state.
+* `RoundResult` supports debugging, validation, presentation, and future replay-friendly tooling.
 
 ---
 
@@ -552,6 +588,70 @@ It summarizes the battle result in a run-friendly form.
 
 ---
 
+## BattleCommandResult
+
+### Purpose
+
+`BattleCommandResult` is the application-level result object returned by battle service commands.
+
+### Responsibilities
+
+It reports:
+
+* whether the command succeeded
+* the current battle flow stage
+* any produced round result
+* whether the battle is complete
+* any produced battle outcome
+
+### Recommended Fields
+
+* `Success`
+* `FailureReason`
+* `BattleFlowStage`
+* `RoundResult`
+* `IsBattleComplete`
+* `BattleOutcome`
+
+### Notes
+
+* this is an application command result, not a pure gameplay outcome
+* it is distinct from `RoundResult` and `BattleOutcome`
+
+---
+
+## RunCommandResult
+
+### Purpose
+
+`RunCommandResult` is the application-level result object returned by run service commands.
+
+### Responsibilities
+
+It reports:
+
+* whether the command succeeded
+* the current run flow stage
+* whether an active battle now exists
+* whether a pending reward now exists
+* whether the run is complete
+
+### Recommended Fields
+
+* `Success`
+* `FailureReason`
+* `FlowStage`
+* `ActiveBattle`
+* `PendingRewardOffer`
+* `IsRunComplete`
+
+### Notes
+
+* this is an application command result, not a pure gameplay outcome
+* it exists to make run-level orchestration explicit and inspectable
+
+---
+
 ## Persistent vs Temporary Data Ownership
 
 This section is critical.
@@ -566,8 +666,10 @@ Belongs in:
 
 Examples:
 
-* player HP
-* enemy HP across battles
+* player current HP
+* player max HP
+* enemy current HP
+* enemy max HP
 * current deck composition
 * permanent growth
 * current enemy reward count
@@ -605,6 +707,28 @@ Examples:
 
 ---
 
+## HP and Healing Rule
+
+The domain model assumes:
+
+* current HP is runtime state
+* max HP is runtime state
+* healing cannot raise current HP above max HP
+
+This applies symmetrically to:
+
+* player HP
+* enemy HP
+
+### Responsibility Boundary
+
+* `RoundResolver` computes raw healing totals
+* battle-layer application clamps resulting HP to max HP
+
+This boundary keeps domain result calculation and runtime state application separate.
+
+---
+
 ## Equality and Identity Considerations
 
 The domain model distinguishes between:
@@ -634,13 +758,14 @@ This canonical logic belongs to the domain model.
 
 The following rules are considered part of the domain model design:
 
-1. `CardInstance` and `BoardCard` must remain separate concepts
+1. `CardSpec`, `CardInstance`, and `BoardCard` must remain separate concepts
 2. `RunState` is the root authoritative runtime state
 3. `BattleState` is battle-scoped, not run-scoped
 4. `RewardOffer` is preferred over a raw pending option list
 5. `RoundResult` is a required result object, not optional debug metadata
 6. slot-level combat should be represented explicitly through `SlotCombatResult`
 7. phase-level board inspection should be supported through `PhaseSnapshot`
+8. max HP belongs in runtime state, not only in authored config
 
 ---
 
@@ -666,6 +791,7 @@ The current model is designed to remain compatible with future additions such as
 * save/load support
 * more advanced presentation
 * replay or battle inspection tools
+* future mechanics that alter max HP
 
 These extensions should build on the current object boundaries.
 
@@ -680,9 +806,12 @@ Key ideas:
 * `RunState` owns the run
 * `EnemyProgressState` owns current enemy progression
 * `BattleState` owns battle progression
-* `CardInstance` owns persistent deck card state
+* `CardSpec` owns static authored card shape
+* `CardInstance` owns persistent runtime deck card state
 * `BoardCard` owns temporary on-board battle values
 * `RewardOffer` owns one reward selection event
 * `RoundResult` owns one round's explicit output
+* `BattleOutcome` owns one completed battle summary
+* `BattleCommandResult` and `RunCommandResult` own application command outcomes
 
 This structure is intended to keep gameplay logic understandable, testable, and easy to inspect during early development.
