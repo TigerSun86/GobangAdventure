@@ -18,7 +18,8 @@ The goal of the current phase is correctness, clarity, and fast iteration, not f
 
 ## Hard Constraints
 
-- Use English only in code, comments, identifiers, logs, strings, and implementation-facing documentation.
+- Use English only in code, comments, identifiers, logs, strings, Codex prompts, and implementation-facing documentation.
+- Gameplay-facing documents under `Docs/game-design/`, `Docs/game-design/tasks/`, and `Docs/game-design/gdr/` may be written in Chinese.
 - Do not change locked gameplay rules unless the user explicitly asks for a design change.
 - Prefer small, reviewable changes.
 - Keep behavior deterministic where possible.
@@ -33,6 +34,9 @@ Always read these files before making changes in related areas:
 
 - `Docs/README.md`
 - `Docs/game-design/game-rules-locked.md`
+- `Docs/game-design/trait-list.md`
+- `Docs/game-design/enemy-and-reward-rules.md`
+- relevant files under `Docs/game-design/gdr/`
 - `Docs/engineering/architecture-overview.md`
 - `Docs/engineering/config-and-content.md`
 - `Docs/engineering/domain-model.md`
@@ -341,6 +345,15 @@ If implementation details are unclear:
 3. Choose the simpler solution.
 4. Leave a short note describing the ambiguity.
 5. Do not silently change locked rules.
+
+---
+
+## Gameplay Document Scope Rules
+
+- Treat `Docs/game-design/game-rules-locked.md`, `Docs/game-design/trait-list.md`, and `Docs/game-design/enemy-and-reward-rules.md` as the current accepted gameplay rules.
+- Treat `Docs/game-design/gdr/` as gameplay decision rationale, not as a replacement for canonical rules.
+- Treat `Docs/game-design/tasks/` as deferred ideas, proposals, or incubator notes.
+- Do not implement ideas from `Docs/game-design/tasks/` unless they are explicitly promoted into canonical gameplay documents or the user explicitly asks for them.
 
 ---
 
