@@ -35,6 +35,30 @@ These documents define what the game should do.
 
 ---
 
+### Game Design Tasks
+
+Documents in `Docs/game-design/tasks/` store deferred gameplay ideas, design incubator notes, and temporary gameplay proposals that are not part of the current canonical rules.
+
+Recommended files:
+
+* `deferred-gameplay-ideas.md`
+
+These documents are not current source-of-truth gameplay rules unless explicitly promoted.
+
+---
+
+### GDR
+
+Documents in `Docs/game-design/gdr/` record important gameplay design decisions and their rationale.
+
+Examples:
+
+* `GDR-0001-movement-processed-right-to-left.md`
+* `GDR-0002-start-with-six-card-deck.md`
+* `GDR-0003-enemy-rewards-settle-early-on-defeat.md`
+
+Use GDRs to preserve the reasoning behind non-obvious gameplay rule decisions.
+
 ### Engineering
 
 Documents in `Docs/engineering/` describe the software architecture and implementation design.
@@ -106,6 +130,17 @@ Read:
 1. `Docs/game-design/game-rules-locked.md`
 2. `Docs/game-design/trait-list.md`
 3. `Docs/game-design/enemy-and-reward-rules.md`
+
+---
+
+### For gameplay decision history
+
+Read:
+
+1. `Docs/game-design/game-rules-locked.md`
+2. `Docs/game-design/trait-list.md`
+3. `Docs/game-design/enemy-and-reward-rules.md`
+4. relevant files in `Docs/game-design/gdr/`
 
 ---
 
@@ -262,13 +297,16 @@ Contains:
 
 ## Documentation Maintenance Rules
 
-* Keep design documents in English.
+* Keep implementation-facing documents in English.
+* Gameplay-facing documents under `Docs/game-design/` and `Docs/game-design/tasks/` may be written in Chinese.
+* Keep file names and implementation-facing terminology stable in English where useful.
 * Update canonical documents when design decisions change.
 * Do not leave important rules only in chat history.
 * Prefer updating an existing canonical document instead of creating many overlapping documents.
-* Use ADRs for important design decisions that need long-term traceability.
+* Use ADRs for engineering decisions that need long-term traceability.
+* Use GDRs for gameplay decisions that need long-term traceability.
 * Keep task documents small and disposable.
-* Keep gameplay rules, engineering structure, and architectural rationale in separate documents when possible.
+* Keep gameplay rules, gameplay decision records, engineering structure, and architectural rationale in separate documents when possible.
 
 ---
 
@@ -307,6 +345,9 @@ Application flow and debug UI should follow after the domain core is stable enou
 These should change only when the accepted design changes:
 
 * locked gameplay rules
+* gameplay trait list
+* enemy and reward rules
+* gameplay decision records (GDRs)
 * architecture overview
 * config and content
 * domain model
@@ -319,7 +360,9 @@ These should change only when the accepted design changes:
 
 These may evolve more frequently:
 
-* task plans
+* gameplay task notes
+* gameplay incubator notes
+* implementation task plans
 * implementation sequence notes
 * migration notes
 * temporary rollout notes
