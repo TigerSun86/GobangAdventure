@@ -1,2 +1,4 @@
 ﻿<Solution>
+  <Project Path="BR3.csproj" />
+  <Project Path="BR3.Tests.EditMode.csproj" />
 </Solution>

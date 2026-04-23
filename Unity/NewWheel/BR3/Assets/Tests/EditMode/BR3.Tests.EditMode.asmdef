@@ -1,0 +1,21 @@
+{
+  "name": "BR3.Tests.EditMode",
+  "rootNamespace": "BR3.Tests.EditMode",
+  "references": [
+    "BR3"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
