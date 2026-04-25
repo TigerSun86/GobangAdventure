@@ -417,7 +417,7 @@ Should test:
 * Unity-side bootstrap can load config
 * a run can be created successfully
 
-### `DebugFlowSmokeTests.cs`
+### `BattleFlowSmokeTests.cs`
 
 Should test:
 
