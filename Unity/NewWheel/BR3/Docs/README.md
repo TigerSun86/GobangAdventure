@@ -182,8 +182,9 @@ Read:
 Read:
 
 1. `Docs/engineering/debug-ui-plan.md`
-2. `Docs/engineering/run-battle-reward-flow.md`
-3. `Docs/engineering/domain-model.md`
+2. `Docs/engineering/testing-strategy.md`
+3. `Docs/engineering/run-battle-reward-flow.md`
+4. `Docs/engineering/domain-model.md`
 
 ---
 
@@ -205,6 +206,8 @@ The following documents should be treated as canonical sources.
 * `Docs/engineering/round-resolution.md`
 * `Docs/engineering/run-battle-reward-flow.md`
 * `Docs/engineering/reward-generation.md`
+* `Docs/engineering/debug-ui-plan.md`
+* `Docs/engineering/testing-strategy.md`
 
 If a temporary task document conflicts with a canonical document, the canonical document wins.
 
@@ -354,6 +357,8 @@ These should change only when the accepted design changes:
 * round resolution
 * run / battle / reward flow
 * reward generation
+* debug UI plan
+* testing strategy
 * ADRs
 
 ### More changeable documents

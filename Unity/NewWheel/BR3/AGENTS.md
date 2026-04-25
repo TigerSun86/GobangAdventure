@@ -44,6 +44,7 @@ Always read these files before making changes in related areas:
 - `Docs/engineering/run-battle-reward-flow.md`
 - `Docs/engineering/reward-generation.md`
 - `Docs/engineering/testing-strategy.md`
+- `Docs/engineering/debug-ui-plan.md`
 - `Docs/adr/ADR-0001-layering-and-service-boundaries.md`
 - `Docs/adr/ADR-0002-json-config-over-scriptableobject.md`
 - `Docs/adr/ADR-0003-reward-dedup-by-canonical-deck.md`
@@ -211,8 +212,9 @@ Implement in this order unless explicitly instructed otherwise:
 6. Edit Mode tests for core rules
 7. Battle application flow
 8. Run application flow
-9. Debug UI
-10. Additional smoke tests
+9. Debug-oriented presentation
+10. Minimal Play Mode smoke tests
+11. Additional smoke validation and iteration
 
 Do not start with final UI polish.
 
@@ -293,6 +295,29 @@ Additional important rules:
 
 ---
 
+## Presentation and Debug Scene Rules
+
+The current presentation target is a debug-oriented workbench, not a production UI.
+
+Follow `Docs/engineering/debug-ui-plan.md` for:
+- debug scene structure
+- panel responsibilities
+- controller responsibilities
+- full-refresh model
+- fixed skeleton vs runtime-generated repeated entries
+- Unity UI component mapping
+- button enable / disable rules
+- manual validation scenarios
+
+Important rules:
+- keep gameplay rule logic out of UI code
+- use the debug scene as a manual validation workbench
+- prefer fixed scene-authored major layout containers
+- prefer runtime-generated repeated entries for deck items, reward options, logs, and similar repeated UI content
+- do not overengineer UI binding or introduce heavy reactive frameworks in the current phase
+
+---
+
 ## Testing Expectations
 
 Prefer lightweight, high-value tests.
@@ -310,6 +335,10 @@ Prefer lightweight, high-value tests.
 Do not create a large testing framework before the core logic is stable.
 
 When implementing a rule-heavy module, add targeted tests in the same task whenever practical.
+
+When implementing debug-oriented presentation:
+- use manual validation through the debug scene as the main verification method
+- add only minimal Play Mode smoke coverage after the debug scene is stable enough
 
 ---
 

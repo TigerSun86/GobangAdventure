@@ -12,6 +12,7 @@ It explains:
 * how test code should be organized
 * which test helpers should exist in the first implementation phase
 * how tests should be paired with Codex implementation batches
+* how the debug scene fits into the validation workflow
 
 This document is intended to support:
 
@@ -19,6 +20,8 @@ This document is intended to support:
 * early bug discovery
 * clear Codex task scoping
 * confidence in core gameplay correctness
+
+The detailed design of the debug scene and debug-oriented presentation is defined in `debug-ui-plan.md`.
 
 ---
 
@@ -124,6 +127,27 @@ Examples:
 These problems are better discovered through manual debug usage than through automated tests.
 
 For this reason, manual debug validation remains a required part of the workflow.
+
+---
+
+## Relationship to the Debug Scene
+
+The debug scene is a manual validation workbench.
+
+It is not:
+
+* a replacement for Edit Mode tests
+* a replacement for domain-level rule verification
+* a production-ready final UI
+
+It is:
+
+* the primary manual inspection surface
+* the main place to validate debug readability
+* the main place to validate presentation sequencing
+* the basis for later minimal Play Mode smoke tests
+
+The detailed scene layout, controller responsibilities, prefab guidance, and refresh model are defined in `debug-ui-plan.md`.
 
 ---
 
@@ -792,6 +816,76 @@ Its main purpose is to enable later resolver, reward, and flow tests.
 
 ---
 
+## Batch 7: Debug-Oriented Presentation
+
+### Production scope
+
+* debug scene skeleton
+* `DebugSceneController`
+* panel view components
+* view data objects
+* formatter helpers
+* command-driven full refresh
+* runtime-generated repeated UI entries
+* button state rules
+* status message line
+* `TextAsset` loading entry wiring
+* manual-validation-ready debug scene behavior
+
+### Required tests and verification
+
+* manual validation against the scenarios defined in `debug-ui-plan.md`
+* optional light Edit Mode tests for pure formatter or pure view-data builders
+* no heavy Play Mode coverage is required yet
+
+### Required helpers and dependencies
+
+* fixed scene skeleton authored in Unity
+* prefabs or templates for repeated entries
+* previously implemented services and runtime state objects
+* stable scene references for controller wiring
+
+### Important rule
+
+This batch implements debug-oriented presentation, not production UI polish.
+
+---
+
+## Batch 8: Minimal Play Mode Smoke Tests and Iteration
+
+### Production scope
+
+* `BootstrapSmokeTests.cs`
+* `BattleFlowSmokeTests.cs`
+* optional later `RewardFlowSmokeTests.cs`
+* small debug UI fixes driven by smoke results and manual validation
+
+### Required tests
+
+* minimal Play Mode smoke coverage for:
+
+  * config bootstrap
+  * new run creation
+  * battle start
+  * card selection
+  * round result visibility
+  * continue flow
+  * optional reward path later
+
+### Required helpers and dependencies
+
+* stable button references
+* stable key text references
+* stable panel visibility rules
+* a working debug scene from Batch 7
+
+### Important rule
+
+This batch validates runtime wiring only.
+Gameplay rule correctness remains primarily the responsibility of Edit Mode tests.
+
+---
+
 ## Assertion Style Guidance
 
 Tests should prefer asserting gameplay-relevant facts and explicit flow outcomes.
@@ -831,8 +925,10 @@ The debug scene should be used for:
 The intended validation loop is:
 
 1. run relevant Edit Mode tests
-2. run minimal Play Mode smoke tests when appropriate
-3. manually inspect the debug scene when behavior clarity matters
+2. implement or update the debug scene when presentation work begins
+3. manually inspect the debug scene against the scenarios in `debug-ui-plan.md`
+4. add minimal Play Mode smoke tests after the debug scene is stable enough
+5. iterate on usability and wiring issues without moving gameplay rules into the UI layer
 
 ---
 
@@ -846,6 +942,8 @@ The testing strategy is successful if:
 * battle and run flow bugs are visible early
 * Codex tasks can be scoped together with meaningful validation
 * the project avoids large up-front testing overhead
+* the debug scene becomes a useful manual validation workbench
+* minimal Play Mode smoke tests can validate runtime wiring without taking over rule verification
 
 This is the intended balance for the current demo phase.
 
@@ -865,5 +963,11 @@ The first-wave emphasis is on:
 * reward canonicalization and generation
 * round resolution
 * battle and run flow correctness
+
+Later batches expand the strategy to include:
+
+* debug-oriented presentation
+* manual validation through the debug scene
+* minimal Play Mode smoke tests for runtime wiring
 
 The strategy is intentionally lightweight, explicit, and aligned with incremental Codex-assisted implementation.
