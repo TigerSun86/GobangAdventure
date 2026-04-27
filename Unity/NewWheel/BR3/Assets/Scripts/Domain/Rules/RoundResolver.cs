@@ -12,6 +12,7 @@ namespace BR3.Domain.Rules
             BattleState battleState,
             CardInstance playerCard,
             CardSpec enemyCardSpec,
+            TraitTuning traitTuning,
             int playerHp,
             int enemyHp)
         {
@@ -30,6 +31,11 @@ namespace BR3.Domain.Rules
                 throw new ArgumentNullException(nameof(enemyCardSpec));
             }
 
+            if (traitTuning == null)
+            {
+                throw new ArgumentNullException(nameof(traitTuning));
+            }
+
             int slotIndex = battleState.RoundIndex - 1;
             ValidateRoundSlot(battleState, slotIndex);
 
@@ -44,7 +50,7 @@ namespace BR3.Domain.Rules
             };
 
             ExecuteEnterPhase(battleState, playerCard, enemyCardSpec, slotIndex, context);
-            ExecuteFixedSelfBaselinePhase(battleState);
+            ExecuteFixedSelfBaselinePhase(battleState, traitTuning);
             ExecuteMovementPhaseSkeleton();
             ExecuteBoardDerivedPhaseSkeleton();
             ExecuteResolveOpenSlotsPhase(battleState, context);
@@ -115,10 +121,10 @@ namespace BR3.Domain.Rules
             context.Logs.Add($"Enter: player card {playerCard.InstanceId} and enemy card entered slot {slotIndex}.");
         }
 
-        private static void ExecuteFixedSelfBaselinePhase(BattleState battleState)
+        private static void ExecuteFixedSelfBaselinePhase(BattleState battleState, TraitTuning traitTuning)
         {
-            RecalculateLaneBaselinePower(battleState.PlayerLane);
-            RecalculateLaneBaselinePower(battleState.EnemyLane);
+            RecalculateLaneBaselinePower(battleState.PlayerLane, traitTuning);
+            RecalculateLaneBaselinePower(battleState.EnemyLane, traitTuning);
         }
 
         private static void ExecuteMovementPhaseSkeleton()
@@ -217,7 +223,7 @@ namespace BR3.Domain.Rules
             return playerWins ? SlotWinnerSide.Player : SlotWinnerSide.Enemy;
         }
 
-        private static void RecalculateLaneBaselinePower(LaneState laneState)
+        private static void RecalculateLaneBaselinePower(LaneState laneState, TraitTuning traitTuning)
         {
             foreach (BoardSlotState slot in laneState.Slots)
             {
@@ -227,6 +233,11 @@ namespace BR3.Domain.Rules
                 }
 
                 int baselinePower = slot.Occupant.SourceCard.BasePower + slot.Occupant.SourceCard.PermanentPowerBonus;
+                if (slot.Occupant.SourceCard.Traits != null && slot.Occupant.SourceCard.Traits.Contains(TraitType.Empower))
+                {
+                    baselinePower += traitTuning.empowerBonus;
+                }
+
                 slot.Occupant.FixedSelfPower = baselinePower;
                 slot.Occupant.CurrentPower = baselinePower;
                 slot.Occupant.DamageDealtThisRound = 0;

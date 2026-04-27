@@ -11,6 +11,8 @@ namespace BR3.Tests.EditMode.Domain
 {
     public sealed class RoundResolverCoreTests
     {
+        private static readonly TraitTuning TraitTuning = TestConfigFactory.CreateValidTraitTuning();
+
         [Test]
         public void ResolveRound_AppliesStandardRpsOutcomeRules()
         {
@@ -19,7 +21,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance playerCard = CreatePlayerCard("card-0001", RpsType.Rock, 4);
             CardSpec enemyCard = TestConfigFactory.CreateCard(RpsType.Scissors, 4);
 
-            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, playerHp: 10, enemyHp: 10);
+            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
 
             Assert.That(roundResult.DamageToPlayer, Is.EqualTo(0));
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(1));
@@ -35,7 +37,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance playerCard = CreatePlayerCard("card-0001", RpsType.Paper, 4);
             CardSpec enemyCard = TestConfigFactory.CreateCard(RpsType.Paper, 7);
 
-            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, playerHp: 10, enemyHp: 10);
+            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
 
             Assert.That(roundResult.DamageToPlayer, Is.EqualTo(0));
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(0));
@@ -52,7 +54,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance playerCard = CreatePlayerCard("card-0001", RpsType.Rock, 4);
             CardSpec enemyCard = TestConfigFactory.CreateCard(RpsType.Scissors, 4);
 
-            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, playerHp: 10, enemyHp: 10);
+            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
 
             Assert.That(roundResult.SlotResults[0].PlayerPower, Is.EqualTo(4));
             Assert.That(roundResult.SlotResults[0].EnemyPower, Is.EqualTo(4));
@@ -73,7 +75,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance playerCard = CreatePlayerCard("card-0002", RpsType.Scissors, 4);
             CardSpec enemyCard = TestConfigFactory.CreateCard(RpsType.Rock, 4);
 
-            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, playerHp: 5, enemyHp: 1);
+            RoundResult roundResult = resolver.ResolveRound(battleState, playerCard, enemyCard, TraitTuning, playerHp: 5, enemyHp: 1);
 
             Assert.That(roundResult.RoundIndex, Is.EqualTo(2));
             Assert.That(roundResult.PlayerHpBefore, Is.EqualTo(5));
