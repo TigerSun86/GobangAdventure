@@ -52,7 +52,7 @@ namespace BR3.Domain.Rules
             ExecuteEnterPhase(battleState, playerCard, enemyCardSpec, slotIndex, context);
             ExecuteFixedSelfBaselinePhase(battleState, traitTuning);
             ExecuteMovementPhase(battleState, context);
-            ExecuteBoardDerivedPhaseSkeleton();
+            ExecuteBoardDerivedPhase(battleState, traitTuning, context);
             ExecuteResolveOpenSlotsPhase(battleState, context);
             ExecuteApplyMergedDamagePhase(context);
             ExecutePostResolvePhaseSkeleton(context);
@@ -133,8 +133,19 @@ namespace BR3.Domain.Rules
             ResolveLaneMovement(battleState.EnemyLane, context, "enemy");
         }
 
-        private static void ExecuteBoardDerivedPhaseSkeleton()
+        private static void ExecuteBoardDerivedPhase(BattleState battleState, TraitTuning traitTuning, RoundContext context)
         {
+            int slotCount = battleState.PlayerLane.Slots.Count;
+            int[] playerDeltas = new int[slotCount];
+            int[] enemyDeltas = new int[slotCount];
+
+            CollectAdjacentAidDeltas(battleState.PlayerLane, playerDeltas, traitTuning.adjacentAidBonus);
+            CollectAdjacentAidDeltas(battleState.EnemyLane, enemyDeltas, traitTuning.adjacentAidBonus);
+            CollectSuppressDeltas(battleState.PlayerLane, battleState.EnemyLane, enemyDeltas, traitTuning.suppressPenalty);
+            CollectSuppressDeltas(battleState.EnemyLane, battleState.PlayerLane, playerDeltas, traitTuning.suppressPenalty);
+
+            ApplyBoardDerivedDeltas(battleState.PlayerLane, playerDeltas, context, "player");
+            ApplyBoardDerivedDeltas(battleState.EnemyLane, enemyDeltas, context, "enemy");
         }
 
         private static void ExecuteResolveOpenSlotsPhase(BattleState battleState, RoundContext context)
@@ -286,6 +297,71 @@ namespace BR3.Domain.Rules
             BoardCard temporaryOccupant = firstSlot.Occupant;
             firstSlot.Occupant = secondSlot.Occupant;
             secondSlot.Occupant = temporaryOccupant;
+        }
+
+        private static void CollectAdjacentAidDeltas(LaneState laneState, int[] deltas, int adjacentAidBonus)
+        {
+            for (int slotIndex = 0; slotIndex < laneState.Slots.Count; slotIndex++)
+            {
+                BoardCard currentCard = laneState.Slots[slotIndex].Occupant;
+                if (currentCard?.SourceCard?.Traits == null || !currentCard.SourceCard.Traits.Contains(TraitType.AdjacentAid))
+                {
+                    continue;
+                }
+
+                int leftIndex = slotIndex - 1;
+                if (leftIndex >= 0 && laneState.Slots[leftIndex].Occupant != null)
+                {
+                    deltas[leftIndex] += adjacentAidBonus;
+                }
+
+                int rightIndex = slotIndex + 1;
+                if (rightIndex < laneState.Slots.Count && laneState.Slots[rightIndex].Occupant != null)
+                {
+                    deltas[rightIndex] += adjacentAidBonus;
+                }
+            }
+        }
+
+        private static void CollectSuppressDeltas(
+            LaneState sourceLane,
+            LaneState opposingLane,
+            int[] opposingDeltas,
+            int suppressPenalty)
+        {
+            for (int slotIndex = 0; slotIndex < sourceLane.Slots.Count; slotIndex++)
+            {
+                BoardCard sourceCard = sourceLane.Slots[slotIndex].Occupant;
+                BoardCard opposingCard = opposingLane.Slots[slotIndex].Occupant;
+                if (sourceCard?.SourceCard?.Traits == null || !sourceCard.SourceCard.Traits.Contains(TraitType.Suppress))
+                {
+                    continue;
+                }
+
+                if (opposingCard != null)
+                {
+                    opposingDeltas[slotIndex] -= suppressPenalty;
+                }
+            }
+        }
+
+        private static void ApplyBoardDerivedDeltas(
+            LaneState laneState,
+            int[] deltas,
+            RoundContext context,
+            string laneName)
+        {
+            for (int slotIndex = 0; slotIndex < laneState.Slots.Count; slotIndex++)
+            {
+                BoardCard occupant = laneState.Slots[slotIndex].Occupant;
+                if (occupant == null || deltas[slotIndex] == 0)
+                {
+                    continue;
+                }
+
+                occupant.CurrentPower += deltas[slotIndex];
+                context.Logs.Add($"BoardDerived: {laneName} slot {slotIndex} power delta {deltas[slotIndex]}.");
+            }
         }
 
         private static EnemyCardReference CreateEnemyCardReference(BoardCard enemyBoardCard)
