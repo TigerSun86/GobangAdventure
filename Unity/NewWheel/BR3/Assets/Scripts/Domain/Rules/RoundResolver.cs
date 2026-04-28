@@ -51,7 +51,7 @@ namespace BR3.Domain.Rules
 
             ExecuteEnterPhase(battleState, playerCard, enemyCardSpec, slotIndex, context);
             ExecuteFixedSelfBaselinePhase(battleState, traitTuning);
-            ExecuteMovementPhaseSkeleton();
+            ExecuteMovementPhase(battleState, context);
             ExecuteBoardDerivedPhaseSkeleton();
             ExecuteResolveOpenSlotsPhase(battleState, context);
             ExecuteApplyMergedDamagePhase(context);
@@ -127,8 +127,10 @@ namespace BR3.Domain.Rules
             RecalculateLaneBaselinePower(battleState.EnemyLane, traitTuning);
         }
 
-        private static void ExecuteMovementPhaseSkeleton()
+        private static void ExecuteMovementPhase(BattleState battleState, RoundContext context)
         {
+            ResolveLaneMovement(battleState.PlayerLane, context, "player");
+            ResolveLaneMovement(battleState.EnemyLane, context, "enemy");
         }
 
         private static void ExecuteBoardDerivedPhaseSkeleton()
@@ -242,6 +244,48 @@ namespace BR3.Domain.Rules
                 slot.Occupant.CurrentPower = baselinePower;
                 slot.Occupant.DamageDealtThisRound = 0;
             }
+        }
+
+        private static void ResolveLaneMovement(LaneState laneState, RoundContext context, string laneName)
+        {
+            for (int slotIndex = laneState.Slots.Count - 1; slotIndex >= 0; slotIndex--)
+            {
+                BoardSlotState currentSlot = laneState.Slots[slotIndex];
+                BoardCard currentCard = currentSlot.Occupant;
+                if (currentCard == null || currentCard.SourceCard?.Traits == null)
+                {
+                    continue;
+                }
+
+                if (currentCard.SourceCard.Traits.Contains(TraitType.ShiftLeft))
+                {
+                    int leftIndex = slotIndex - 1;
+                    if (leftIndex >= 0 && laneState.Slots[leftIndex].Occupant != null)
+                    {
+                        SwapOccupants(currentSlot, laneState.Slots[leftIndex]);
+                        context.Logs.Add($"Movement: {laneName} slot {slotIndex} swapped left with slot {leftIndex}.");
+                    }
+
+                    continue;
+                }
+
+                if (currentCard.SourceCard.Traits.Contains(TraitType.ShiftRight))
+                {
+                    int rightIndex = slotIndex + 1;
+                    if (rightIndex < laneState.Slots.Count && laneState.Slots[rightIndex].Occupant != null)
+                    {
+                        SwapOccupants(currentSlot, laneState.Slots[rightIndex]);
+                        context.Logs.Add($"Movement: {laneName} slot {slotIndex} swapped right with slot {rightIndex}.");
+                    }
+                }
+            }
+        }
+
+        private static void SwapOccupants(BoardSlotState firstSlot, BoardSlotState secondSlot)
+        {
+            BoardCard temporaryOccupant = firstSlot.Occupant;
+            firstSlot.Occupant = secondSlot.Occupant;
+            secondSlot.Occupant = temporaryOccupant;
         }
 
         private static EnemyCardReference CreateEnemyCardReference(BoardCard enemyBoardCard)
