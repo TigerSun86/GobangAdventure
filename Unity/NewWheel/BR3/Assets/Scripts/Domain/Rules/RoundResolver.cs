@@ -14,7 +14,9 @@ namespace BR3.Domain.Rules
             CardSpec enemyCardSpec,
             TraitTuning traitTuning,
             int playerHp,
-            int enemyHp)
+            int enemyHp,
+            int playerMaxHp,
+            int enemyMaxHp)
         {
             if (battleState == null)
             {
@@ -44,6 +46,8 @@ namespace BR3.Domain.Rules
                 RoundIndex = battleState.RoundIndex,
                 PlayerHpBefore = playerHp,
                 EnemyHpBefore = enemyHp,
+                PlayerMaxHp = playerMaxHp,
+                EnemyMaxHp = enemyMaxHp,
                 SlotResults = new List<SlotCombatResult>(),
                 Logs = new List<string>(),
                 Snapshots = new List<PhaseSnapshot>(),
@@ -55,7 +59,7 @@ namespace BR3.Domain.Rules
             ExecuteBoardDerivedPhase(battleState, traitTuning, context);
             ExecuteResolveOpenSlotsPhase(battleState, context);
             ExecuteApplyMergedDamagePhase(context);
-            ExecutePostResolvePhaseSkeleton(context);
+            ExecutePostResolvePhase(context, traitTuning);
 
             return new RoundResult
             {
@@ -117,6 +121,8 @@ namespace BR3.Domain.Rules
 
             battleState.UsedPlayerCardIds.Add(playerCard.InstanceId);
 
+            context.NewPlayerBoardCard = playerBoardCard;
+            context.NewEnemyBoardCard = enemyBoardCard;
             context.CurrentEnemyCardReference = CreateEnemyCardReference(enemyBoardCard);
             context.Logs.Add($"Enter: player card {playerCard.InstanceId} and enemy card entered slot {slotIndex}.");
         }
@@ -178,10 +184,25 @@ namespace BR3.Domain.Rules
             context.EnemyHpAfter = context.EnemyHpBefore - context.DamageToEnemy;
         }
 
-        private static void ExecutePostResolvePhaseSkeleton(RoundContext context)
+        private static void ExecutePostResolvePhase(RoundContext context, TraitTuning traitTuning)
         {
-            context.HealToPlayer = 0;
-            context.HealToEnemy = 0;
+            ProcessPostResolveForCard(
+                context.NewPlayerBoardCard,
+                traitTuning,
+                ref context.HealToPlayer,
+                ref context.PlayerHpAfter,
+                context.PlayerMaxHp,
+                context,
+                "player");
+
+            ProcessPostResolveForCard(
+                context.NewEnemyBoardCard,
+                traitTuning,
+                ref context.HealToEnemy,
+                ref context.EnemyHpAfter,
+                context.EnemyMaxHp,
+                context,
+                "enemy");
         }
 
         private static SlotCombatResult ResolveSlotCombat(int slotIndex, BoardCard playerBoardCard, BoardCard enemyBoardCard)
@@ -364,6 +385,61 @@ namespace BR3.Domain.Rules
             }
         }
 
+        private static void ProcessPostResolveForCard(
+            BoardCard boardCard,
+            TraitTuning traitTuning,
+            ref int healTotal,
+            ref int currentHp,
+            int maxHp,
+            RoundContext context,
+            string sideName)
+        {
+            if (boardCard?.SourceCard?.Traits == null)
+            {
+                return;
+            }
+
+            List<TraitType> traits = boardCard.SourceCard.Traits;
+
+            if (traits.Contains(TraitType.Regrow))
+            {
+                int appliedHeal = ApplyHealing(traitTuning.regrowHeal, ref currentHp, maxHp);
+                healTotal += appliedHeal;
+                context.Logs.Add($"PostResolve: {sideName} regrow healed {appliedHeal}.");
+            }
+
+            if (traits.Contains(TraitType.Lifesteal))
+            {
+                int appliedHeal = ApplyHealing(boardCard.DamageDealtThisRound, ref currentHp, maxHp);
+                healTotal += appliedHeal;
+                context.Logs.Add($"PostResolve: {sideName} lifesteal healed {appliedHeal}.");
+            }
+
+            if (traits.Contains(TraitType.Growth))
+            {
+                boardCard.SourceCard.PermanentPowerBonus += traitTuning.growthBonus;
+                context.Logs.Add($"PostResolve: {sideName} growth increased permanent power by {traitTuning.growthBonus}.");
+            }
+        }
+
+        private static int ApplyHealing(int rawHealAmount, ref int currentHp, int maxHp)
+        {
+            if (rawHealAmount <= 0)
+            {
+                return 0;
+            }
+
+            int missingHp = maxHp - currentHp;
+            if (missingHp <= 0)
+            {
+                return 0;
+            }
+
+            int appliedHeal = Math.Min(rawHealAmount, missingHp);
+            currentHp += appliedHeal;
+            return appliedHeal;
+        }
+
         private static EnemyCardReference CreateEnemyCardReference(BoardCard enemyBoardCard)
         {
             return new EnemyCardReference
@@ -401,12 +477,16 @@ namespace BR3.Domain.Rules
             public int RoundIndex;
             public int PlayerHpBefore;
             public int EnemyHpBefore;
+            public int PlayerMaxHp;
+            public int EnemyMaxHp;
             public int PlayerHpAfter;
             public int EnemyHpAfter;
             public int DamageToPlayer;
             public int DamageToEnemy;
             public int HealToPlayer;
             public int HealToEnemy;
+            public BoardCard NewPlayerBoardCard;
+            public BoardCard NewEnemyBoardCard;
             public EnemyCardReference CurrentEnemyCardReference;
             public List<SlotCombatResult> SlotResults;
             public List<string> Logs;

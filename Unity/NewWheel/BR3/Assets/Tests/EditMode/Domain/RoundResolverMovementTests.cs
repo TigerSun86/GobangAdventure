@@ -26,7 +26,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance newPlayerCard = CreateCardInstance("player-shift-left", RpsType.Paper, 4, TraitType.ShiftLeft);
             CardSpec newEnemyCard = TestConfigFactory.CreateCard(RpsType.Paper, 4);
 
-            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
+            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10, playerMaxHp: 10, enemyMaxHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.SourceCard.InstanceId, Is.EqualTo("player-shift-left"));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.SourceCard.InstanceId, Is.EqualTo("player-left"));
@@ -46,7 +46,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance newPlayerCard = CreateCardInstance("player-shift-right", RpsType.Paper, 4, TraitType.ShiftRight);
             CardSpec newEnemyCard = TestConfigFactory.CreateCard(RpsType.Paper, 4);
 
-            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
+            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10, playerMaxHp: 10, enemyMaxHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.SourceCard.InstanceId, Is.EqualTo("player-right"));
             Assert.That(battleState.PlayerLane.Slots[2].Occupant.SourceCard.InstanceId, Is.EqualTo("player-shift-right"));
@@ -71,7 +71,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance newPlayerCard = CreateCardInstance("player-new", RpsType.Scissors, 4, TraitType.ShiftLeft);
             CardSpec newEnemyCard = TestConfigFactory.CreateCard(RpsType.Scissors, 4);
 
-            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
+            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10, playerMaxHp: 10, enemyMaxHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.SourceCard.InstanceId, Is.EqualTo("player-new"));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.SourceCard.InstanceId, Is.EqualTo("player-anchor"));
@@ -95,7 +95,9 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Paper, 4),
                 TraitTuning,
                 playerHp: 10,
-                enemyHp: 10);
+                enemyHp: 10,
+                playerMaxHp: 10,
+                enemyMaxHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.SourceCard.InstanceId, Is.EqualTo("player-round-2"));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.SourceCard.InstanceId, Is.EqualTo("player-existing"));
@@ -107,7 +109,9 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 TraitTuning,
                 playerHp: 10,
-                enemyHp: 10);
+                enemyHp: 10,
+                playerMaxHp: 10,
+                enemyMaxHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.SourceCard.InstanceId, Is.EqualTo("player-round-2"));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.SourceCard.InstanceId, Is.EqualTo("player-existing"));
@@ -133,7 +137,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance newPlayerCard = CreateCardInstance("player-right-edge", RpsType.Scissors, 4, TraitType.ShiftRight);
             CardSpec newEnemyCard = TestConfigFactory.CreateCard(RpsType.Scissors, 4);
 
-            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
+            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10, playerMaxHp: 10, enemyMaxHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.SourceCard.InstanceId, Is.EqualTo("player-left-edge"));
             Assert.That(battleState.PlayerLane.Slots[2].Occupant.SourceCard.InstanceId, Is.EqualTo("player-right-edge"));
@@ -154,7 +158,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance newPlayerCard = CreateCardInstance("player-shift-left", RpsType.Paper, 4, TraitType.ShiftLeft);
             CardSpec newEnemyCard = TestConfigFactory.CreateCard(RpsType.Paper, 4);
 
-            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10);
+            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, TraitTuning, playerHp: 10, enemyHp: 10, playerMaxHp: 10, enemyMaxHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.SourceCard.InstanceId, Is.EqualTo("player-shift-left"));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.SourceCard.InstanceId, Is.EqualTo("player-left"));
