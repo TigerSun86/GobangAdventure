@@ -54,12 +54,19 @@ namespace BR3.Domain.Rules
             };
 
             ExecuteEnterPhase(battleState, playerCard, enemyCardSpec, slotIndex, context);
-            ExecuteFixedSelfBaselinePhase(battleState, traitTuning);
+            CapturePhaseSnapshot(battleState, context, RoundPhase.Enter);
+            ExecuteFixedSelfBaselinePhase(battleState, traitTuning, context);
+            CapturePhaseSnapshot(battleState, context, RoundPhase.FixedSelf);
             ExecuteMovementPhase(battleState, context);
+            CapturePhaseSnapshot(battleState, context, RoundPhase.Movement);
             ExecuteBoardDerivedPhase(battleState, traitTuning, context);
+            CapturePhaseSnapshot(battleState, context, RoundPhase.BoardDerived);
             ExecuteResolveOpenSlotsPhase(battleState, context);
+            CapturePhaseSnapshot(battleState, context, RoundPhase.ResolveOpenSlots);
             ExecuteApplyMergedDamagePhase(context);
+            CapturePhaseSnapshot(battleState, context, RoundPhase.ApplyMergedDamage);
             ExecutePostResolvePhase(context, traitTuning);
+            CapturePhaseSnapshot(battleState, context, RoundPhase.PostResolve);
 
             return new RoundResult
             {
@@ -124,13 +131,14 @@ namespace BR3.Domain.Rules
             context.NewPlayerBoardCard = playerBoardCard;
             context.NewEnemyBoardCard = enemyBoardCard;
             context.CurrentEnemyCardReference = CreateEnemyCardReference(enemyBoardCard);
-            context.Logs.Add($"Enter: player card {playerCard.InstanceId} and enemy card entered slot {slotIndex}.");
+            context.Logs.Add($"Enter: player card {playerCard.InstanceId} entered slot {slotIndex}.");
+            context.Logs.Add($"Enter: enemy card enemy-round-{battleState.RoundIndex} entered slot {slotIndex}.");
         }
 
-        private static void ExecuteFixedSelfBaselinePhase(BattleState battleState, TraitTuning traitTuning)
+        private static void ExecuteFixedSelfBaselinePhase(BattleState battleState, TraitTuning traitTuning, RoundContext context)
         {
-            RecalculateLaneBaselinePower(battleState.PlayerLane, traitTuning);
-            RecalculateLaneBaselinePower(battleState.EnemyLane, traitTuning);
+            RecalculateLaneBaselinePower(battleState.PlayerLane, traitTuning, context, "player");
+            RecalculateLaneBaselinePower(battleState.EnemyLane, traitTuning, context, "enemy");
         }
 
         private static void ExecuteMovementPhase(BattleState battleState, RoundContext context)
@@ -175,6 +183,8 @@ namespace BR3.Domain.Rules
                 context.SlotResults.Add(slotResult);
                 context.DamageToPlayer += slotResult.DamageToPlayer;
                 context.DamageToEnemy += slotResult.DamageToEnemy;
+                context.Logs.Add(
+                    $"ResolveOpenSlots: slot {slotIndex} winner {slotResult.WinnerSide}, damage to player {slotResult.DamageToPlayer}, damage to enemy {slotResult.DamageToEnemy}.");
             }
         }
 
@@ -182,6 +192,8 @@ namespace BR3.Domain.Rules
         {
             context.PlayerHpAfter = context.PlayerHpBefore - context.DamageToPlayer;
             context.EnemyHpAfter = context.EnemyHpBefore - context.DamageToEnemy;
+            context.Logs.Add(
+                $"ApplyMergedDamage: player HP {context.PlayerHpBefore}->{context.PlayerHpAfter}, enemy HP {context.EnemyHpBefore}->{context.EnemyHpAfter}.");
         }
 
         private static void ExecutePostResolvePhase(RoundContext context, TraitTuning traitTuning)
@@ -203,6 +215,9 @@ namespace BR3.Domain.Rules
                 context.EnemyMaxHp,
                 context,
                 "enemy");
+
+            context.Logs.Add(
+                $"PostResolve: player heal {context.HealToPlayer}, enemy heal {context.HealToEnemy}, player HP {context.PlayerHpAfter}, enemy HP {context.EnemyHpAfter}.");
         }
 
         private static SlotCombatResult ResolveSlotCombat(int slotIndex, BoardCard playerBoardCard, BoardCard enemyBoardCard)
@@ -257,7 +272,11 @@ namespace BR3.Domain.Rules
             return playerWins ? SlotWinnerSide.Player : SlotWinnerSide.Enemy;
         }
 
-        private static void RecalculateLaneBaselinePower(LaneState laneState, TraitTuning traitTuning)
+        private static void RecalculateLaneBaselinePower(
+            LaneState laneState,
+            TraitTuning traitTuning,
+            RoundContext context,
+            string laneName)
         {
             foreach (BoardSlotState slot in laneState.Slots)
             {
@@ -275,6 +294,8 @@ namespace BR3.Domain.Rules
                 slot.Occupant.FixedSelfPower = baselinePower;
                 slot.Occupant.CurrentPower = baselinePower;
                 slot.Occupant.DamageDealtThisRound = 0;
+                context.Logs.Add(
+                    $"FixedSelf: {laneName} slot {slot.Index} baseline set to {baselinePower} for {slot.Occupant.SourceCard.InstanceId}.");
             }
         }
 
@@ -438,6 +459,50 @@ namespace BR3.Domain.Rules
             int appliedHeal = Math.Min(rawHealAmount, missingHp);
             currentHp += appliedHeal;
             return appliedHeal;
+        }
+
+        private static void CapturePhaseSnapshot(BattleState battleState, RoundContext context, RoundPhase phase)
+        {
+            context.Snapshots.Add(new PhaseSnapshot
+            {
+                Phase = phase,
+                PlayerLaneStateText = FormatLaneState(battleState.PlayerLane),
+                EnemyLaneStateText = FormatLaneState(battleState.EnemyLane),
+            });
+
+            context.Logs.Add($"Snapshot: captured {phase}.");
+        }
+
+        private static string FormatLaneState(LaneState laneState)
+        {
+            List<string> slotTexts = new List<string>(laneState.Slots.Count);
+            foreach (BoardSlotState slot in laneState.Slots)
+            {
+                slotTexts.Add(FormatSlotState(slot));
+            }
+
+            return string.Join(" | ", slotTexts);
+        }
+
+        private static string FormatSlotState(BoardSlotState slot)
+        {
+            if (!slot.IsOpen)
+            {
+                return $"[{slot.Index}:closed]";
+            }
+
+            if (slot.Occupant == null)
+            {
+                return $"[{slot.Index}:open-empty]";
+            }
+
+            BoardCard occupant = slot.Occupant;
+            string traitText = occupant.SourceCard.Traits == null || occupant.SourceCard.Traits.Count == 0
+                ? "-"
+                : string.Join(",", occupant.SourceCard.Traits);
+
+            return
+                $"[{slot.Index}:{occupant.SourceCard.InstanceId}/{occupant.SourceCard.RpsType}/base={occupant.SourceCard.BasePower}/perm={occupant.SourceCard.PermanentPowerBonus}/fixed={occupant.FixedSelfPower}/current={occupant.CurrentPower}/damage={occupant.DamageDealtThisRound}/traits={traitText}]";
         }
 
         private static EnemyCardReference CreateEnemyCardReference(BoardCard enemyBoardCard)
