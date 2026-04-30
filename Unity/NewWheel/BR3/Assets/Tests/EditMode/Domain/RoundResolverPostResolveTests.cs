@@ -12,7 +12,7 @@ namespace BR3.Tests.EditMode.Domain
     public sealed class RoundResolverPostResolveTests
     {
         [Test]
-        public void ResolveRound_RegrowHealsByConfiguredAmountAndClampsToMaxHp()
+        public void ResolveRound_RegrowContributesConfiguredRawHealingWithoutChangingResolverHpAfter()
         {
             RoundResolver resolver = new RoundResolver();
             TraitTuning traitTuning = TestConfigFactory.CreateValidTraitTuning(regrowHeal: 3);
@@ -24,12 +24,10 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 traitTuning,
                 playerHp: 8,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
-            Assert.That(roundResult.HealToPlayer, Is.EqualTo(2));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(10));
+            Assert.That(roundResult.HealToPlayer, Is.EqualTo(3));
+            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(8));
         }
 
         [Test]
@@ -45,13 +43,11 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 traitTuning,
                 playerHp: 5,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(2));
             Assert.That(roundResult.HealToPlayer, Is.EqualTo(2));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(7));
+            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(5));
         }
 
         [Test]
@@ -72,9 +68,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Paper, 4),
                 traitTuning,
                 playerHp: 5,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(1));
             Assert.That(roundResult.HealToPlayer, Is.EqualTo(0));
@@ -95,9 +89,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(roundResult.SlotResults[0].PlayerPower, Is.EqualTo(4));
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(4));
@@ -132,9 +124,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Paper, 4),
                 traitTuning,
                 playerHp: 5,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(roundResult.HealToPlayer, Is.EqualTo(0));
             Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(5));

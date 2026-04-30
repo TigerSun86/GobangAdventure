@@ -47,7 +47,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance newPlayerCard = CreateCardInstance("card-new-player", RpsType.Paper, 4, 1, TraitType.Empower);
             CardSpec newEnemyCard = TestConfigFactory.CreateCard(RpsType.Paper, 4, TraitType.Empower);
 
-            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, traitTuning, playerHp: 10, enemyHp: 10, playerMaxHp: 10, enemyMaxHp: 10);
+            resolver.ResolveRound(battleState, newPlayerCard, newEnemyCard, traitTuning, playerHp: 10, enemyHp: 10);
 
             Assert.That(existingPlayerBoardCard.FixedSelfPower, Is.EqualTo(9));
             Assert.That(existingPlayerBoardCard.CurrentPower, Is.EqualTo(9));
@@ -72,7 +72,7 @@ namespace BR3.Tests.EditMode.Domain
             CardInstance playerCard = CreateCardInstance("card-player", RpsType.Rock, 4, 2);
             CardSpec enemyCard = TestConfigFactory.CreateCard(RpsType.Scissors, 4);
 
-            resolver.ResolveRound(battleState, playerCard, enemyCard, traitTuning, playerHp: 10, enemyHp: 10, playerMaxHp: 10, enemyMaxHp: 10);
+            resolver.ResolveRound(battleState, playerCard, enemyCard, traitTuning, playerHp: 10, enemyHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.FixedSelfPower, Is.EqualTo(6));
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(6));

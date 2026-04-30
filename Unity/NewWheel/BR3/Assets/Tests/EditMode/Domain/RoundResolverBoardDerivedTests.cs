@@ -33,9 +33,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(9));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.CurrentPower, Is.EqualTo(4));
@@ -55,9 +53,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 6),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(6));
             Assert.That(battleState.EnemyLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(2));
@@ -86,9 +82,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.SourceCard.InstanceId, Is.EqualTo("player-moving-aid"));
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(4));
@@ -119,9 +113,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(4));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.CurrentPower, Is.EqualTo(8));
@@ -146,9 +138,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Paper, 6),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(4));
             Assert.That(battleState.PlayerLane.Slots[1].Occupant.CurrentPower, Is.EqualTo(4));
@@ -172,9 +162,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Paper, 4),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
 
             Assert.That(battleState.PlayerLane.Slots[0].Occupant.CurrentPower, Is.EqualTo(4));
             Assert.That(battleState.EnemyLane.Slots[0].Occupant, Is.Null);

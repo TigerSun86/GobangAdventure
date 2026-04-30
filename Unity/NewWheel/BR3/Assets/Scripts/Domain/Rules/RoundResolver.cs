@@ -14,9 +14,7 @@ namespace BR3.Domain.Rules
             CardSpec enemyCardSpec,
             TraitTuning traitTuning,
             int playerHp,
-            int enemyHp,
-            int playerMaxHp,
-            int enemyMaxHp)
+            int enemyHp)
         {
             if (battleState == null)
             {
@@ -46,8 +44,6 @@ namespace BR3.Domain.Rules
                 RoundIndex = battleState.RoundIndex,
                 PlayerHpBefore = playerHp,
                 EnemyHpBefore = enemyHp,
-                PlayerMaxHp = playerMaxHp,
-                EnemyMaxHp = enemyMaxHp,
                 SlotResults = new List<SlotCombatResult>(),
                 Logs = new List<string>(),
                 Snapshots = new List<PhaseSnapshot>(),
@@ -202,8 +198,6 @@ namespace BR3.Domain.Rules
                 context.NewPlayerBoardCard,
                 traitTuning,
                 ref context.HealToPlayer,
-                ref context.PlayerHpAfter,
-                context.PlayerMaxHp,
                 context,
                 "player");
 
@@ -211,13 +205,11 @@ namespace BR3.Domain.Rules
                 context.NewEnemyBoardCard,
                 traitTuning,
                 ref context.HealToEnemy,
-                ref context.EnemyHpAfter,
-                context.EnemyMaxHp,
                 context,
                 "enemy");
 
             context.Logs.Add(
-                $"PostResolve: player heal {context.HealToPlayer}, enemy heal {context.HealToEnemy}, player HP {context.PlayerHpAfter}, enemy HP {context.EnemyHpAfter}.");
+                $"PostResolve: player raw heal {context.HealToPlayer}, enemy raw heal {context.HealToEnemy}, player HP remains {context.PlayerHpAfter}, enemy HP remains {context.EnemyHpAfter}.");
         }
 
         private static SlotCombatResult ResolveSlotCombat(int slotIndex, BoardCard playerBoardCard, BoardCard enemyBoardCard)
@@ -410,8 +402,6 @@ namespace BR3.Domain.Rules
             BoardCard boardCard,
             TraitTuning traitTuning,
             ref int healTotal,
-            ref int currentHp,
-            int maxHp,
             RoundContext context,
             string sideName)
         {
@@ -424,16 +414,14 @@ namespace BR3.Domain.Rules
 
             if (traits.Contains(TraitType.Regrow))
             {
-                int appliedHeal = ApplyHealing(traitTuning.regrowHeal, ref currentHp, maxHp);
-                healTotal += appliedHeal;
-                context.Logs.Add($"PostResolve: {sideName} regrow healed {appliedHeal}.");
+                healTotal += traitTuning.regrowHeal;
+                context.Logs.Add($"PostResolve: {sideName} regrow contributed raw heal {traitTuning.regrowHeal}.");
             }
 
             if (traits.Contains(TraitType.Lifesteal))
             {
-                int appliedHeal = ApplyHealing(boardCard.DamageDealtThisRound, ref currentHp, maxHp);
-                healTotal += appliedHeal;
-                context.Logs.Add($"PostResolve: {sideName} lifesteal healed {appliedHeal}.");
+                healTotal += boardCard.DamageDealtThisRound;
+                context.Logs.Add($"PostResolve: {sideName} lifesteal contributed raw heal {boardCard.DamageDealtThisRound}.");
             }
 
             if (traits.Contains(TraitType.Growth))
@@ -441,24 +429,6 @@ namespace BR3.Domain.Rules
                 boardCard.SourceCard.PermanentPowerBonus += traitTuning.growthBonus;
                 context.Logs.Add($"PostResolve: {sideName} growth increased permanent power by {traitTuning.growthBonus}.");
             }
-        }
-
-        private static int ApplyHealing(int rawHealAmount, ref int currentHp, int maxHp)
-        {
-            if (rawHealAmount <= 0)
-            {
-                return 0;
-            }
-
-            int missingHp = maxHp - currentHp;
-            if (missingHp <= 0)
-            {
-                return 0;
-            }
-
-            int appliedHeal = Math.Min(rawHealAmount, missingHp);
-            currentHp += appliedHeal;
-            return appliedHeal;
         }
 
         private static void CapturePhaseSnapshot(BattleState battleState, RoundContext context, RoundPhase phase)
@@ -542,8 +512,6 @@ namespace BR3.Domain.Rules
             public int RoundIndex;
             public int PlayerHpBefore;
             public int EnemyHpBefore;
-            public int PlayerMaxHp;
-            public int EnemyMaxHp;
             public int PlayerHpAfter;
             public int EnemyHpAfter;
             public int DamageToPlayer;

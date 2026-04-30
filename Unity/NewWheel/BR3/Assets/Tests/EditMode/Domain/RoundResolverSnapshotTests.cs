@@ -98,9 +98,7 @@ namespace BR3.Tests.EditMode.Domain
                 TestConfigFactory.CreateCard(RpsType.Scissors, 4),
                 traitTuning,
                 playerHp: 10,
-                enemyHp: 10,
-                playerMaxHp: 10,
-                enemyMaxHp: 10);
+                enemyHp: 10);
         }
 
         private static BattleState CreateBattleState(int roundIndex)
