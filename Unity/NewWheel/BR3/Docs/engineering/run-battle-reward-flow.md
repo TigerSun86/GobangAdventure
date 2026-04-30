@@ -609,8 +609,9 @@ This method should:
 5. call `RoundResolver.ResolveRound(...)`
 6. apply the resulting round consequences to runtime state
 7. clamp healing to max HP for player and enemy
-8. append round result to battle history
-9. set battle flow to `PresentingRoundResult`
+8. finalize any authoritative post-application HP-after values stored in `RoundResult`
+9. append round result to battle history
+10. set battle flow to `PresentingRoundResult`
 
 ### Output
 
@@ -762,6 +763,8 @@ This includes:
 * appending the round result to battle history
 * appending round logs to battle logs
 * appending round snapshots to battle snapshots
+
+If `RoundResult` stores final HP-after values for presentation and inspection, those values should be finalized here so that they match the authoritative runtime state after damage, healing, and clamp are applied.
 
 ### Important Rule
 

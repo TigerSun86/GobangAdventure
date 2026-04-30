@@ -507,7 +507,9 @@ It records:
 
 * `RoundResult` is a first-class output object, not an optional debug add-on.
 * `RoundResolver` computes raw damage and healing totals.
-* battle-layer application may clamp HP to max HP when applying the result to runtime state.
+* battle-layer application applies those consequences to runtime state and enforces healing clamp against max HP.
+* `PlayerHpAfter` and `EnemyHpAfter` are the authoritative post-application values associated with the resolved round.
+* those final after values are established during battle-layer application, not by duplicating clamp logic inside `RoundResolver`.
 * `RoundResult` supports debugging, validation, presentation, and future replay-friendly tooling.
 
 ---
@@ -724,6 +726,8 @@ This applies symmetrically to:
 
 * `RoundResolver` computes raw healing totals
 * battle-layer application clamps resulting HP to max HP
+
+If `RoundResult` stores post-round HP-after values, those values should match the final battle-layer-applied and clamped runtime state, not a separate speculative calculation inside `RoundResolver`.
 
 This boundary keeps domain result calculation and runtime state application separate.
 

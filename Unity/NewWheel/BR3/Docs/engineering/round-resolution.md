@@ -12,6 +12,7 @@ It explains:
 * what each phase reads and writes
 * which values persist and which are recalculated each round
 * the role of logs and phase snapshots
+* how round-level consequences relate to later battle-layer HP application
 
 This document is one of the most important engineering references for the current demo because `RoundResolver` is the core rule engine.
 
@@ -33,6 +34,7 @@ It is the component that applies the fixed gameplay sequence for a round and pro
 * calculating round damage and healing totals
 * applying post-resolve effects that belong to this round
 * producing logs and phase snapshots
+* producing explicit round-level consequence data for later battle-layer application
 
 ### RoundResolver is not responsible for:
 
@@ -43,6 +45,7 @@ It is the component that applies the fixed gameplay sequence for a round and pro
 * advancing run-level flow state
 * generating rewards
 * deciding victory or defeat
+* authoritatively mutating runtime HP
 
 Those responsibilities belong elsewhere.
 
@@ -100,6 +103,16 @@ The exact method signature may evolve slightly during implementation, but the co
 
 Battle and run progression remain the responsibility of higher-level services.
 
+### Important HP Responsibility Note
+
+`RoundResolver` computes raw damage totals, raw healing totals, and round-level consequence data.
+
+Authoritative runtime HP mutation does not happen inside `RoundResolver`.
+
+`BattleService` applies the returned round consequences to runtime state, enforces healing clamp against max HP, and finalizes the authoritative post-application HP values associated with the round result.
+
+This means `RoundResult` may carry HP-before and HP-after values, but the final authoritative post-application HP-after values are established during battle-layer application rather than by duplicating clamp logic inside `RoundResolver`.
+
 ---
 
 ## Fixed Round Pipeline
@@ -134,7 +147,7 @@ Combat power is recalculated every round from persistent data plus current board
 
 ### 3. Damage is accumulated before being applied
 
-Slot combat does not immediately reduce HP. Damage is first accumulated and then applied simultaneously.
+Slot combat does not immediately reduce HP. Damage is first accumulated and then treated as a simultaneous round consequence.
 
 ### 4. Post-resolve effects only apply to cards newly played this round
 
@@ -143,6 +156,10 @@ Cards already on the board do not retrigger these effects in later rounds.
 ### 5. Debug visibility is part of the design
 
 The resolver should produce enough information to inspect each phase clearly.
+
+### 6. Runtime HP state remains authoritative at battle layer
+
+`RoundResolver` produces explicit consequence data, but the authoritative live HP state is updated later by `BattleService`.
 
 ---
 
@@ -235,10 +252,9 @@ All occupied board cards are recalculated from persistent source data.
 
 The current formula is:
 
-base power
-
-* permanent power bonus
-* fixed-self trait effects
+base power  
++ permanent power bonus  
++ fixed-self trait effects
 
 At the current design stage, the main fixed-self effect is:
 
@@ -394,7 +410,7 @@ For each open slot:
 * if tie, deal no damage
 * if one side wins, deal:
 
-max(1, winner power - loser power)
+`max(1, winner power - loser power)`
 
 Damage is accumulated, not immediately applied to HP.
 
@@ -414,7 +430,7 @@ Damage is accumulated, not immediately applied to HP.
 
 ### Purpose
 
-This phase applies accumulated damage totals simultaneously.
+This phase finalizes the merged damage consequences of the round.
 
 ### Reads
 
@@ -425,26 +441,29 @@ This phase applies accumulated damage totals simultaneously.
 
 ### Writes
 
-* player HP after damage
-* enemy HP after damage
-* HP before/after values in `RoundResult`
+* merged damage totals in round-local context
+* raw damage consequences for `RoundResult`
 * logs
 * snapshot
 
 ### Behavior
 
-This phase applies:
+This phase finalizes the merged damage consequences of the round.
 
-* total damage to player HP
-* total damage to enemy HP
+Conceptually, player-side and enemy-side damage are determined simultaneously.
 
-Both are treated as simultaneous consequences of the round.
+`RoundResolver` does not authoritatively mutate runtime HP here.  
+Instead, it records the damage consequences needed for later battle-layer application.
 
 ### Important Rule
 
 Damage must be accumulated first and applied together.
 
 The resolver must not reduce HP slot-by-slot during combat resolution.
+
+### Responsibility Boundary Note
+
+Authoritative runtime HP application happens later in `BattleService`, not inside `RoundResolver`.
 
 ---
 
@@ -465,8 +484,6 @@ This phase applies post-resolve effects to cards newly played this round.
 
 * player healing total
 * enemy healing total
-* player HP after healing
-* enemy HP after healing
 * source card permanent growth when applicable
 * logs
 * snapshot
@@ -514,6 +531,12 @@ A stable internal order is recommended:
 3. `Growth`
 
 This keeps behavior deterministic and easy to inspect.
+
+### HP Application Boundary
+
+Post-resolve healing totals belong to the round result, but authoritative runtime HP update and max-HP clamp are performed later by `BattleService`.
+
+`RoundResolver` should not duplicate battle-layer clamp logic.
 
 ---
 
@@ -580,14 +603,14 @@ That means a round can produce snapshots for:
 
 ### Important Note
 
-Snapshots are not authoritative gameplay state.
+Snapshots are not authoritative gameplay state.  
 They are derived inspection data and normally should not be treated as mandatory save data.
 
 ---
 
 ## What Persists After a Round
 
-The following should persist after the round finishes:
+After battle-layer application of the resolved round, the following values persist:
 
 * player HP
 * enemy HP
@@ -615,41 +638,45 @@ The following should be recalculated or reset next round:
 
 A good mental model is:
 
-position persists
-combat values recalculate
-growth persists
+position persists  
+combat values recalculate  
+growth persists  
 damage totals are temporary
 
 This is one of the most important conceptual rules in the whole combat system.
 
 ---
 
-## Responsibilities That Must Stay Outside RoundResolver
+## Relationship to BattleService
 
-The following tasks must remain outside `RoundResolver`:
+`RoundResolver` and `BattleService` have deliberately different responsibilities.
 
-* waiting for the player to choose a card
-* deciding whether the battle is complete
-* advancing `BattleState.RoundIndex`
-* generating enemy card sequences
-* creating reward offers
-* deciding next battle, next enemy, victory, or defeat
-* UI transitions and animations
+### `RoundResolver` owns
 
----
+* the fixed seven-phase round pipeline
+* round-local combat calculation
+* raw damage and healing totals
+* post-resolve trait effects
+* logs
+* phase snapshots
+* `RoundResult` production
 
-## Common Failure Risks
+### `BattleService` owns
 
-The most important implementation risks are:
+* applying round consequences to runtime state
+* updating authoritative player and enemy HP
+* enforcing healing clamp to max HP
+* finalizing authoritative post-application HP-after values associated with the round result
+* advancing battle flow
 
-1. carrying `CurrentPower` across rounds instead of recalculating it
-2. applying `Growth` to current-round power instead of persistent source card state
-3. using team total damage instead of per-card damage for `Lifesteal`
-4. evaluating board-derived effects before movement
-5. applying HP damage slot-by-slot instead of simultaneously
-6. retriggering post-resolve effects for cards that were not newly played this round
+### Why this separation matters
 
-Tests should be designed to catch these failures early.
+If both layers independently try to calculate and own final applied HP state, duplicated logic and inconsistency become likely.
+
+The intended design is:
+
+* `RoundResolver` computes consequences
+* `BattleService` applies consequences
 
 ---
 
@@ -665,11 +692,13 @@ High-value tests include:
 * movement order
 * adjacent aid behavior
 * suppress behavior
-* simultaneous damage application
+* simultaneous damage consequence calculation
 * regrow
 * lifesteal
 * growth
 * snapshot count and phase order
+
+These tests are especially important because the resolver owns the fixed round pipeline and produces the raw round-level consequences consumed later by battle-layer application.
 
 ---
 
@@ -677,13 +706,14 @@ High-value tests include:
 
 `RoundResolver` is the rule engine for exactly one round.
 
-It:
+It must:
 
-* follows a locked seven-phase pipeline
-* recalculates round-local combat values every round
-* updates battle-relevant state
-* returns a complete `RoundResult`
-* supports debugging through logs and snapshots
+* follow the locked seven-phase pipeline
+* recalculate combat state explicitly each round
+* keep movement and board-derived behavior deterministic
+* accumulate damage before application
+* apply post-resolve effects only to newly played cards
+* produce logs and snapshots as first-class debug outputs
+* return explicit round consequence data without taking over battle-layer runtime HP application
 
-It does not manage battle progression or run progression.
-Those remain the responsibility of higher-level services.
+This keeps the combat rules explicit, testable, and aligned with the layered architecture.
