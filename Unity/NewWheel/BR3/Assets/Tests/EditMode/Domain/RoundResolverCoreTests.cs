@@ -41,8 +41,8 @@ namespace BR3.Tests.EditMode.Domain
 
             Assert.That(roundResult.DamageToPlayer, Is.EqualTo(0));
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(0));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(10));
-            Assert.That(roundResult.EnemyHpAfter, Is.EqualTo(10));
+            Assert.That(roundResult.PlayerHpAfter, Is.Null);
+            Assert.That(roundResult.EnemyHpAfter, Is.Null);
             Assert.That(roundResult.SlotResults[0].WinnerSide, Is.EqualTo(SlotWinnerSide.Tie));
         }
 
@@ -83,8 +83,8 @@ namespace BR3.Tests.EditMode.Domain
             Assert.That(roundResult.SlotResults, Has.Count.EqualTo(2));
             Assert.That(roundResult.DamageToPlayer, Is.EqualTo(1));
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(1));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(4));
-            Assert.That(roundResult.EnemyHpAfter, Is.EqualTo(0));
+            Assert.That(roundResult.PlayerHpAfter, Is.Null);
+            Assert.That(roundResult.EnemyHpAfter, Is.Null);
         }
 
         private static BattleState CreateBattleState(int roundIndex)

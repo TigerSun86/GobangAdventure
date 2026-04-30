@@ -27,7 +27,7 @@ namespace BR3.Tests.EditMode.Domain
                 enemyHp: 10);
 
             Assert.That(roundResult.HealToPlayer, Is.EqualTo(3));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(8));
+            Assert.That(roundResult.PlayerHpAfter, Is.Null);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace BR3.Tests.EditMode.Domain
 
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(2));
             Assert.That(roundResult.HealToPlayer, Is.EqualTo(2));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(5));
+            Assert.That(roundResult.PlayerHpAfter, Is.Null);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace BR3.Tests.EditMode.Domain
 
             Assert.That(roundResult.DamageToEnemy, Is.EqualTo(1));
             Assert.That(roundResult.HealToPlayer, Is.EqualTo(0));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(5));
+            Assert.That(roundResult.PlayerHpAfter, Is.Null);
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace BR3.Tests.EditMode.Domain
                 enemyHp: 10);
 
             Assert.That(roundResult.HealToPlayer, Is.EqualTo(0));
-            Assert.That(roundResult.PlayerHpAfter, Is.EqualTo(5));
+            Assert.That(roundResult.PlayerHpAfter, Is.Null);
             Assert.That(olderPlayerCard.PermanentPowerBonus, Is.EqualTo(0));
         }
 

@@ -74,9 +74,9 @@ namespace BR3.Domain.Rules
                 HealToPlayer = context.HealToPlayer,
                 HealToEnemy = context.HealToEnemy,
                 PlayerHpBefore = context.PlayerHpBefore,
-                PlayerHpAfter = context.PlayerHpAfter,
+                PlayerHpAfter = null,
                 EnemyHpBefore = context.EnemyHpBefore,
-                EnemyHpAfter = context.EnemyHpAfter,
+                EnemyHpAfter = null,
                 SlotResults = context.SlotResults,
                 Logs = context.Logs,
                 Snapshots = context.Snapshots,
@@ -186,10 +186,10 @@ namespace BR3.Domain.Rules
 
         private static void ExecuteApplyMergedDamagePhase(RoundContext context)
         {
-            context.PlayerHpAfter = context.PlayerHpBefore - context.DamageToPlayer;
-            context.EnemyHpAfter = context.EnemyHpBefore - context.DamageToEnemy;
+            int provisionalPlayerHpAfterDamage = context.PlayerHpBefore - context.DamageToPlayer;
+            int provisionalEnemyHpAfterDamage = context.EnemyHpBefore - context.DamageToEnemy;
             context.Logs.Add(
-                $"ApplyMergedDamage: player HP {context.PlayerHpBefore}->{context.PlayerHpAfter}, enemy HP {context.EnemyHpBefore}->{context.EnemyHpAfter}.");
+                $"ApplyMergedDamage: raw damage totals imply provisional player HP {context.PlayerHpBefore}->{provisionalPlayerHpAfterDamage} and provisional enemy HP {context.EnemyHpBefore}->{provisionalEnemyHpAfterDamage} before battle-layer application.");
         }
 
         private static void ExecutePostResolvePhase(RoundContext context, TraitTuning traitTuning)
@@ -209,7 +209,7 @@ namespace BR3.Domain.Rules
                 "enemy");
 
             context.Logs.Add(
-                $"PostResolve: player raw heal {context.HealToPlayer}, enemy raw heal {context.HealToEnemy}, player HP remains {context.PlayerHpAfter}, enemy HP remains {context.EnemyHpAfter}.");
+                $"PostResolve: player raw heal {context.HealToPlayer}, enemy raw heal {context.HealToEnemy}, authoritative HP-after values remain pending for battle application.");
         }
 
         private static SlotCombatResult ResolveSlotCombat(int slotIndex, BoardCard playerBoardCard, BoardCard enemyBoardCard)
@@ -512,8 +512,6 @@ namespace BR3.Domain.Rules
             public int RoundIndex;
             public int PlayerHpBefore;
             public int EnemyHpBefore;
-            public int PlayerHpAfter;
-            public int EnemyHpAfter;
             public int DamageToPlayer;
             public int DamageToEnemy;
             public int HealToPlayer;
