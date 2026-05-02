@@ -311,6 +311,136 @@ namespace BR3.Tests.EditMode.Application
             Assert.That(battleState.RoundResults, Is.Empty);
         }
 
+        [Test]
+        public void FinishRoundPresentation_RejectsWhenBattleFlowIsNotPresentingRoundResult()
+        {
+            BattleService battleService = new BattleService();
+            RunState runState = CreateRunState(
+                playerHp: 10,
+                playerMaxHp: 10,
+                playerDeck: new List<CardInstance>());
+            EnemyProgressState enemyProgressState = CreateEnemyProgressState(
+                battlesPlayed: 0,
+                fixedDeck: CreateEnemyDeck());
+            BattleState battleState = CreateBattleState(
+                roundIndex: 1,
+                enemySequence: new List<CardSpec>());
+            battleState.BattleFlowStage = BattleFlowStage.WaitingForPlayerCard;
+
+            BattleCommandResult commandResult = battleService.FinishRoundPresentation(
+                runState,
+                enemyProgressState,
+                battleState);
+
+            Assert.That(commandResult.Success, Is.False);
+            Assert.That(commandResult.FailureReason, Does.Contain("not currently presenting"));
+            Assert.That(battleState.RoundIndex, Is.EqualTo(1));
+            Assert.That(battleState.BattleFlowStage, Is.EqualTo(BattleFlowStage.WaitingForPlayerCard));
+        }
+
+        [Test]
+        public void FinishRoundPresentation_WhenBattleContinues_AdvancesToNextRoundAndReturnsWaitingForPlayerCard()
+        {
+            BattleService battleService = new BattleService();
+            RunState runState = CreateRunState(
+                playerHp: 10,
+                playerMaxHp: 10,
+                playerDeck: new List<CardInstance>());
+            EnemyProgressState enemyProgressState = CreateEnemyProgressState(
+                battlesPlayed: 0,
+                fixedDeck: CreateEnemyDeck(),
+                currentHp: 12,
+                maxHp: 20);
+            BattleState battleState = CreateBattleState(
+                roundIndex: 1,
+                enemySequence: new List<CardSpec>());
+            battleState.BattleFlowStage = BattleFlowStage.PresentingRoundResult;
+
+            BattleCommandResult commandResult = battleService.FinishRoundPresentation(
+                runState,
+                enemyProgressState,
+                battleState);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(commandResult.IsBattleComplete, Is.False);
+            Assert.That(commandResult.BattleOutcome, Is.Null);
+            Assert.That(commandResult.BattleFlowStage, Is.EqualTo(BattleFlowStage.WaitingForPlayerCard));
+            Assert.That(battleState.RoundIndex, Is.EqualTo(2));
+            Assert.That(battleState.BattleFlowStage, Is.EqualTo(BattleFlowStage.WaitingForPlayerCard));
+        }
+
+        [Test]
+        public void FinishRoundPresentation_WhenEnemyHpIsZeroOrBelow_CompletesBattleWithDefeatOutcomeForEnemy()
+        {
+            BattleService battleService = new BattleService();
+            RunState runState = CreateRunState(
+                playerHp: 7,
+                playerMaxHp: 10,
+                playerDeck: new List<CardInstance>());
+            EnemyProgressState enemyProgressState = CreateEnemyProgressState(
+                battlesPlayed: 1,
+                fixedDeck: CreateEnemyDeck(),
+                currentHp: 0,
+                maxHp: 20);
+            BattleState battleState = CreateBattleState(
+                roundIndex: 2,
+                enemySequence: new List<CardSpec>());
+            battleState.BattleIndexForEnemy = 2;
+            battleState.BattleFlowStage = BattleFlowStage.PresentingRoundResult;
+
+            BattleCommandResult commandResult = battleService.FinishRoundPresentation(
+                runState,
+                enemyProgressState,
+                battleState);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(commandResult.IsBattleComplete, Is.True);
+            Assert.That(commandResult.BattleFlowStage, Is.EqualTo(BattleFlowStage.BattleComplete));
+            Assert.That(commandResult.BattleOutcome, Is.Not.Null);
+            Assert.That(commandResult.BattleOutcome.BattleIndexForEnemy, Is.EqualTo(2));
+            Assert.That(commandResult.BattleOutcome.RoundsPlayed, Is.EqualTo(2));
+            Assert.That(commandResult.BattleOutcome.EnemyDefeated, Is.True);
+            Assert.That(commandResult.BattleOutcome.PlayerHpAfterBattle, Is.EqualTo(7));
+            Assert.That(commandResult.BattleOutcome.EnemyHpAfterBattle, Is.EqualTo(0));
+            Assert.That(battleState.RoundIndex, Is.EqualTo(2));
+            Assert.That(battleState.BattleFlowStage, Is.EqualTo(BattleFlowStage.BattleComplete));
+        }
+
+        [Test]
+        public void FinishRoundPresentation_WhenThirdRoundWasResolvedAndEnemySurvives_CompletesBattleWithoutEnemyDefeat()
+        {
+            BattleService battleService = new BattleService();
+            RunState runState = CreateRunState(
+                playerHp: 6,
+                playerMaxHp: 10,
+                playerDeck: new List<CardInstance>());
+            EnemyProgressState enemyProgressState = CreateEnemyProgressState(
+                battlesPlayed: 0,
+                fixedDeck: CreateEnemyDeck(),
+                currentHp: 5,
+                maxHp: 20);
+            BattleState battleState = CreateBattleState(
+                roundIndex: 3,
+                enemySequence: new List<CardSpec>());
+            battleState.BattleIndexForEnemy = 1;
+            battleState.BattleFlowStage = BattleFlowStage.PresentingRoundResult;
+
+            BattleCommandResult commandResult = battleService.FinishRoundPresentation(
+                runState,
+                enemyProgressState,
+                battleState);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(commandResult.IsBattleComplete, Is.True);
+            Assert.That(commandResult.BattleOutcome, Is.Not.Null);
+            Assert.That(commandResult.BattleOutcome.BattleIndexForEnemy, Is.EqualTo(1));
+            Assert.That(commandResult.BattleOutcome.RoundsPlayed, Is.EqualTo(3));
+            Assert.That(commandResult.BattleOutcome.EnemyDefeated, Is.False);
+            Assert.That(commandResult.BattleOutcome.PlayerHpAfterBattle, Is.EqualTo(6));
+            Assert.That(commandResult.BattleOutcome.EnemyHpAfterBattle, Is.EqualTo(5));
+            Assert.That(battleState.BattleFlowStage, Is.EqualTo(BattleFlowStage.BattleComplete));
+        }
+
         private static void AssertLaneInitialized(LaneState laneState)
         {
             Assert.That(laneState, Is.Not.Null);

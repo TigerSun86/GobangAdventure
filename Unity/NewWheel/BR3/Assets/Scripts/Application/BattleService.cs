@@ -146,6 +146,71 @@ namespace BR3.Application
             };
         }
 
+        public BattleCommandResult FinishRoundPresentation(
+            RunState runState,
+            EnemyProgressState enemyProgressState,
+            BattleState battleState)
+        {
+            if (runState == null)
+            {
+                throw new ArgumentNullException(nameof(runState));
+            }
+
+            if (enemyProgressState == null)
+            {
+                throw new ArgumentNullException(nameof(enemyProgressState));
+            }
+
+            if (battleState == null)
+            {
+                throw new ArgumentNullException(nameof(battleState));
+            }
+
+            if (battleState.BattleFlowStage != BattleFlowStage.PresentingRoundResult)
+            {
+                return CreateFailureResult(battleState, "Battle is not currently presenting a round result.");
+            }
+
+            bool enemyDefeated = enemyProgressState.CurrentHp <= 0;
+            bool thirdRoundResolved = battleState.RoundIndex >= 3;
+            if (enemyDefeated || thirdRoundResolved)
+            {
+                battleState.BattleFlowStage = BattleFlowStage.BattleComplete;
+
+                BattleOutcome battleOutcome = new BattleOutcome
+                {
+                    BattleIndexForEnemy = battleState.BattleIndexForEnemy,
+                    RoundsPlayed = battleState.RoundIndex,
+                    EnemyDefeated = enemyDefeated,
+                    PlayerHpAfterBattle = runState.PlayerHp,
+                    EnemyHpAfterBattle = enemyProgressState.CurrentHp,
+                };
+
+                return new BattleCommandResult
+                {
+                    Success = true,
+                    FailureReason = null,
+                    BattleFlowStage = battleState.BattleFlowStage,
+                    RoundResult = null,
+                    IsBattleComplete = true,
+                    BattleOutcome = battleOutcome,
+                };
+            }
+
+            battleState.RoundIndex++;
+            battleState.BattleFlowStage = BattleFlowStage.WaitingForPlayerCard;
+
+            return new BattleCommandResult
+            {
+                Success = true,
+                FailureReason = null,
+                BattleFlowStage = battleState.BattleFlowStage,
+                RoundResult = null,
+                IsBattleComplete = false,
+                BattleOutcome = null,
+            };
+        }
+
         private List<CardSpec> CreateEnemySequence(List<CardSpec> fixedDeck)
         {
             List<CardSpec> shuffledDeck = new List<CardSpec>(fixedDeck.Count);
