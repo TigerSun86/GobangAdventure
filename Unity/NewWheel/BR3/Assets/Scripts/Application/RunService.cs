@@ -7,6 +7,8 @@ namespace BR3.Application
 {
     public sealed class RunService
     {
+        private const int RewardsPerEnemy = 3;
+
         public RunState CreateNewRun(GameConfig config, RuntimeStateFactory runtimeStateFactory)
         {
             if (config == null)
@@ -124,6 +126,64 @@ namespace BR3.Application
             return EnterRewardFlow(runState, rewardService, config);
         }
 
+        public RunCommandResult ChooseReward(
+            RunState runState,
+            string optionId,
+            RewardService rewardService,
+            GameConfig config,
+            RuntimeStateFactory runtimeStateFactory)
+        {
+            if (runState == null)
+            {
+                throw new ArgumentNullException(nameof(runState));
+            }
+
+            if (rewardService == null)
+            {
+                throw new ArgumentNullException(nameof(rewardService));
+            }
+
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            if (runtimeStateFactory == null)
+            {
+                throw new ArgumentNullException(nameof(runtimeStateFactory));
+            }
+
+            if (!CanChooseReward(runState, optionId, out RewardOption selectedOption))
+            {
+                return CreateFailureResult(runState, "Run is not currently allowed to choose the requested reward option.");
+            }
+
+            rewardService.ApplyRewardOption(runState.PlayerDeck, selectedOption);
+            runState.CurrentEnemy.RewardsClaimed++;
+            runState.PendingRewardOffer = null;
+
+            bool enemyDefeated = runState.CurrentEnemy.CurrentHp <= 0;
+            if (!enemyDefeated)
+            {
+                runState.FlowStage = RunFlowStage.ReadyForNextBattle;
+                return CreateSuccessResult(runState);
+            }
+
+            if (IsFinalEnemy(runState, config))
+            {
+                runState.FlowStage = RunFlowStage.Victory;
+                return CreateSuccessResult(runState);
+            }
+
+            if (runState.CurrentEnemy.RewardsClaimed < RewardsPerEnemy)
+            {
+                return EnterRewardFlow(runState, rewardService, config);
+            }
+
+            AdvanceToNextEnemy(runState, config, runtimeStateFactory);
+            return CreateSuccessResult(runState);
+        }
+
         private static bool CanAcceptCompletedBattle(RunState runState, BattleOutcome battleOutcome, GameConfig config)
         {
             if (runState.CurrentEnemy == null
@@ -146,9 +206,45 @@ namespace BR3.Application
             return true;
         }
 
+        private static bool CanChooseReward(RunState runState, string optionId, out RewardOption selectedOption)
+        {
+            selectedOption = null;
+
+            if (runState.FlowStage != RunFlowStage.ChoosingReward
+                || runState.CurrentEnemy == null
+                || runState.PendingRewardOffer == null
+                || runState.PendingRewardOffer.Options == null
+                || string.IsNullOrWhiteSpace(optionId))
+            {
+                return false;
+            }
+
+            for (int optionIndex = 0; optionIndex < runState.PendingRewardOffer.Options.Count; optionIndex++)
+            {
+                RewardOption candidate = runState.PendingRewardOffer.Options[optionIndex];
+                if (candidate != null && candidate.OptionId == optionId)
+                {
+                    selectedOption = candidate;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static bool IsFinalEnemy(RunState runState, GameConfig config)
         {
             return runState.CurrentEnemyIndex == config.enemies.Count - 1;
+        }
+
+        private static void AdvanceToNextEnemy(RunState runState, GameConfig config, RuntimeStateFactory runtimeStateFactory)
+        {
+            int nextEnemyIndex = runState.CurrentEnemyIndex + 1;
+            runState.CurrentEnemyIndex = nextEnemyIndex;
+            runState.CurrentEnemy = runtimeStateFactory.CreateEnemyProgressState(config.enemies[nextEnemyIndex]);
+            runState.ActiveBattle = null;
+            runState.PendingRewardOffer = null;
+            runState.FlowStage = RunFlowStage.ReadyForNextBattle;
         }
 
         private static RunCommandResult EnterRewardFlow(RunState runState, RewardService rewardService, GameConfig config)

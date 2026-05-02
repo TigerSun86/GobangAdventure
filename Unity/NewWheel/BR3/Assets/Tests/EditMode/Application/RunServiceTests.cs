@@ -288,10 +288,223 @@ namespace BR3.Tests.EditMode.Application
             Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.InBattle));
         }
 
+        [Test]
+        public void ChooseReward_WhenRunIsReadyForNextBattleWithoutPendingRewardOffer_ReturnsFailure()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            // CreateReadyRunState starts the run in ReadyForNextBattle with no pending reward offer.
+            RunState runState = CreateReadyRunState();
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                "missing-option",
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.False);
+            Assert.That(commandResult.FailureReason, Does.Contain("not currently allowed"));
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ReadyForNextBattle));
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ChooseReward_WhenOptionIdIsMissing_ReturnsFailureWithoutMutatingRunState()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: 0, rewardsClaimed: 0, enemyCurrentHp: 10);
+            string originalFirstCardId = runState.PlayerDeck[0].InstanceId;
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                "not-a-real-option",
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.False);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(0));
+            Assert.That(runState.PendingRewardOffer, Is.Not.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
+            Assert.That(runState.PlayerDeck[0].InstanceId, Is.EqualTo(originalFirstCardId));
+        }
+
+        [Test]
+        public void ChooseReward_WhenEnemyIsNotDefeated_ReturnsToReadyForNextBattle()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: 0, rewardsClaimed: 0, enemyCurrentHp: 10);
+            string skipOptionId = FindOptionId(runState.PendingRewardOffer, RewardOptionType.Skip);
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                skipOptionId,
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(1));
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ReadyForNextBattle));
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.ReadyForNextBattle));
+            Assert.That(commandResult.PendingRewardOffer, Is.Null);
+            Assert.That(commandResult.IsRunComplete, Is.False);
+        }
+
+        [Test]
+        public void ChooseReward_SkipStillCountsAsSettledRewardEntitlement()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: 0, rewardsClaimed: 1, enemyCurrentHp: 10);
+            string skipOptionId = FindOptionId(runState.PendingRewardOffer, RewardOptionType.Skip);
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                skipOptionId,
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(2));
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ReadyForNextBattle));
+        }
+
+        [Test]
+        public void ChooseReward_WhenDefeatedNonFinalEnemyStillOwesRewards_GeneratesAnotherRewardAndStaysInChoosingReward()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: 0, rewardsClaimed: 1, enemyCurrentHp: 0);
+            RewardOffer originalOffer = runState.PendingRewardOffer;
+            string skipOptionId = FindOptionId(originalOffer, RewardOptionType.Skip);
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                skipOptionId,
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(2));
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
+            Assert.That(runState.PendingRewardOffer, Is.Not.Null);
+            Assert.That(runState.PendingRewardOffer, Is.Not.SameAs(originalOffer));
+            Assert.That(runState.PendingRewardOffer.RewardIndexForCurrentEnemy, Is.EqualTo(3));
+            Assert.That(commandResult.PendingRewardOffer, Is.SameAs(runState.PendingRewardOffer));
+            Assert.That(commandResult.IsRunComplete, Is.False);
+        }
+
+        [Test]
+        public void ChooseReward_WhenDefeatedNonFinalEnemySettlesFinalReward_AdvancesToNextEnemyAndPreservesRunState()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: 0, rewardsClaimed: 2, enemyCurrentHp: 0);
+            int originalPlayerHp = 17;
+            int originalPlayerMaxHp = 31;
+            List<CardInstance> originalDeck = runState.PlayerDeck;
+            string skipOptionId = FindOptionId(runState.PendingRewardOffer, RewardOptionType.Skip);
+
+            runState.PlayerHp = originalPlayerHp;
+            runState.PlayerMaxHp = originalPlayerMaxHp;
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                skipOptionId,
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemyIndex, Is.EqualTo(1));
+            Assert.That(runState.CurrentEnemy.Config, Is.SameAs(config.enemies[1]));
+            Assert.That(runState.CurrentEnemy.CurrentHp, Is.EqualTo(config.enemies[1].maxHp));
+            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(0));
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(0));
+            Assert.That(runState.PlayerHp, Is.EqualTo(originalPlayerHp));
+            Assert.That(runState.PlayerMaxHp, Is.EqualTo(originalPlayerMaxHp));
+            Assert.That(runState.PlayerDeck, Is.SameAs(originalDeck));
+            Assert.That(runState.ActiveBattle, Is.Null);
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ReadyForNextBattle));
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.ReadyForNextBattle));
+            Assert.That(commandResult.IsRunComplete, Is.False);
+        }
+
+        [Test]
+        public void ChooseReward_WhenFinalEnemyIsDefeated_EntersVictoryWithoutStaleReferences()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            int finalEnemyIndex = config.enemies.Count - 1;
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: finalEnemyIndex, rewardsClaimed: 0, enemyCurrentHp: 0);
+            string skipOptionId = FindOptionId(runState.PendingRewardOffer, RewardOptionType.Skip);
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                skipOptionId,
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(1));
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.ActiveBattle, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.Victory));
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.Victory));
+            Assert.That(commandResult.PendingRewardOffer, Is.Null);
+            Assert.That(commandResult.IsRunComplete, Is.True);
+        }
+
         private static RunState CreateReadyRunState()
         {
             RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
             return runtimeStateFactory.CreateRunState(TestConfigFactory.CreateValidGameConfig());
+        }
+
+        private static RunState CreateRunStateChoosingReward(
+            GameConfig config,
+            int currentEnemyIndex,
+            int rewardsClaimed,
+            int enemyCurrentHp)
+        {
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            RunState runState = runtimeStateFactory.CreateRunState(config);
+            runState.CurrentEnemyIndex = currentEnemyIndex;
+            runState.CurrentEnemy = runtimeStateFactory.CreateEnemyProgressState(config.enemies[currentEnemyIndex]);
+            runState.CurrentEnemy.RewardsClaimed = rewardsClaimed;
+            runState.CurrentEnemy.CurrentHp = enemyCurrentHp;
+            runState.ActiveBattle = null;
+            runState.PendingRewardOffer = rewardService.CreateRewardOffer(
+                runState.PlayerDeck,
+                config.rewardGeneration,
+                rewardsClaimed + 1);
+            runState.FlowStage = RunFlowStage.ChoosingReward;
+            return runState;
         }
 
         private static RunState CreateRunStateForCompletedBattle(
@@ -330,6 +543,21 @@ namespace BR3.Tests.EditMode.Application
                 PlayerHpAfterBattle = 20,
                 EnemyHpAfterBattle = enemyDefeated ? 0 : 5,
             };
+        }
+
+        private static string FindOptionId(RewardOffer rewardOffer, RewardOptionType rewardOptionType)
+        {
+            for (int optionIndex = 0; optionIndex < rewardOffer.Options.Count; optionIndex++)
+            {
+                RewardOption option = rewardOffer.Options[optionIndex];
+                if (option.Type == rewardOptionType)
+                {
+                    return option.OptionId;
+                }
+            }
+
+            Assert.Fail($"Could not find reward option of type {rewardOptionType}.");
+            return null;
         }
 
         private static RunState CreateRunStateWithFlowStage(RunFlowStage flowStage)
