@@ -8,5 +8,7 @@ namespace BR3.Application
         public string FailureReason;
         public RunFlowStage FlowStage;
         public BattleState ActiveBattle;
+        public RewardOffer PendingRewardOffer;
+        public bool IsRunComplete;
     }
 }

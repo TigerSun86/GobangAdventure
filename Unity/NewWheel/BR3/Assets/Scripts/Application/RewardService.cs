@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using BR3.Config;
 using BR3.Domain;
+using BR3.Domain.Reward;
 using BR3.Domain.Runtime;
 
 namespace BR3.Application
@@ -8,10 +10,38 @@ namespace BR3.Application
     public sealed class RewardService
     {
         private readonly RuntimeStateFactory _runtimeStateFactory;
+        private readonly RewardOfferGenerator _rewardOfferGenerator;
 
         public RewardService(RuntimeStateFactory runtimeStateFactory)
+            : this(runtimeStateFactory, new RewardOfferGenerator())
+        {
+        }
+
+        public RewardService(RuntimeStateFactory runtimeStateFactory, RewardOfferGenerator rewardOfferGenerator)
         {
             _runtimeStateFactory = runtimeStateFactory ?? throw new ArgumentNullException(nameof(runtimeStateFactory));
+            _rewardOfferGenerator = rewardOfferGenerator ?? throw new ArgumentNullException(nameof(rewardOfferGenerator));
+        }
+
+        public RewardOffer CreateRewardOffer(
+            List<CardInstance> playerDeck,
+            RewardGenerationConfig rewardGenerationConfig,
+            int rewardIndexForCurrentEnemy)
+        {
+            if (playerDeck == null)
+            {
+                throw new ArgumentNullException(nameof(playerDeck));
+            }
+
+            if (rewardGenerationConfig == null)
+            {
+                throw new ArgumentNullException(nameof(rewardGenerationConfig));
+            }
+
+            return _rewardOfferGenerator.GenerateRewardOffer(
+                playerDeck,
+                rewardGenerationConfig,
+                rewardIndexForCurrentEnemy);
         }
 
         public void ApplyRewardOption(List<CardInstance> playerDeck, RewardOption rewardOption)

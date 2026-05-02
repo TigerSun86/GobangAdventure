@@ -4,6 +4,8 @@ using BR3.Application;
 using BR3.Config;
 using BR3.Domain;
 using BR3.Domain.Random;
+using BR3.Domain.Reward;
+using BR3.Domain.Results;
 using BR3.Domain.Runtime;
 using BR3.Tests.EditMode.TestHelpers;
 using NUnit.Framework;
@@ -112,6 +114,8 @@ namespace BR3.Tests.EditMode.Application
             Assert.That(commandResult.FailureReason, Is.Null);
             Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.InBattle));
             Assert.That(commandResult.ActiveBattle, Is.Not.Null);
+            Assert.That(commandResult.PendingRewardOffer, Is.Null);
+            Assert.That(commandResult.IsRunComplete, Is.False);
             Assert.That(commandResult.ActiveBattle, Is.SameAs(runState.ActiveBattle));
             Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.InBattle));
             Assert.That(runState.ActiveBattle.BattleIndexForEnemy, Is.EqualTo(1));
@@ -148,15 +152,184 @@ namespace BR3.Tests.EditMode.Application
             Assert.That(commandResult.FailureReason, Does.Contain("not currently allowed"));
             Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
             Assert.That(commandResult.ActiveBattle, Is.Null);
+            Assert.That(commandResult.PendingRewardOffer, Is.SameAs(pendingRewardOffer));
+            Assert.That(commandResult.IsRunComplete, Is.False);
             Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
             Assert.That(runState.ActiveBattle, Is.Null);
             Assert.That(runState.PendingRewardOffer, Is.SameAs(pendingRewardOffer));
+        }
+
+        [Test]
+        public void AcceptCompletedBattle_WhenNonFinalEnemyIsDefeated_EntersRewardFlowAndClearsActiveBattle()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RunState runState = CreateRunStateForCompletedBattle(config, currentEnemyIndex: 0, battleIndexForEnemy: 2, battlesPlayed: 1);
+            RewardService rewardService = CreateRewardService();
+
+            RunCommandResult commandResult = runService.AcceptCompletedBattle(
+                runState,
+                CreateBattleOutcome(battleIndexForEnemy: 2, roundsPlayed: 2, enemyDefeated: true),
+                rewardService,
+                config);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(2));
+            Assert.That(runState.ActiveBattle, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
+            Assert.That(runState.PendingRewardOffer, Is.Not.Null);
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
+            Assert.That(commandResult.ActiveBattle, Is.Null);
+            Assert.That(commandResult.PendingRewardOffer, Is.SameAs(runState.PendingRewardOffer));
+            Assert.That(commandResult.PendingRewardOffer.RewardIndexForCurrentEnemy, Is.EqualTo(1));
+            Assert.That(commandResult.IsRunComplete, Is.False);
+        }
+
+        [Test]
+        public void AcceptCompletedBattle_WhenFinalEnemyIsDefeated_EntersVictoryWithoutPendingRewardOffer()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            int finalEnemyIndex = config.enemies.Count - 1;
+            RunState runState = CreateRunStateForCompletedBattle(config, currentEnemyIndex: finalEnemyIndex, battleIndexForEnemy: 1, battlesPlayed: 0);
+            RewardService rewardService = CreateRewardService();
+
+            RunCommandResult commandResult = runService.AcceptCompletedBattle(
+                runState,
+                CreateBattleOutcome(battleIndexForEnemy: 1, roundsPlayed: 1, enemyDefeated: true),
+                rewardService,
+                config);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(1));
+            Assert.That(runState.ActiveBattle, Is.Null);
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.Victory));
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.Victory));
+            Assert.That(commandResult.PendingRewardOffer, Is.Null);
+            Assert.That(commandResult.IsRunComplete, Is.True);
+        }
+
+        [Test]
+        public void AcceptCompletedBattle_WhenEnemySurvivesAndBattlesRemain_EntersRewardFlow()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RunState runState = CreateRunStateForCompletedBattle(config, currentEnemyIndex: 0, battleIndexForEnemy: 1, battlesPlayed: 0);
+            runState.CurrentEnemy.RewardsClaimed = 1;
+            RewardService rewardService = CreateRewardService();
+
+            RunCommandResult commandResult = runService.AcceptCompletedBattle(
+                runState,
+                CreateBattleOutcome(battleIndexForEnemy: 1, roundsPlayed: 3, enemyDefeated: false),
+                rewardService,
+                config);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(1));
+            Assert.That(runState.ActiveBattle, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
+            Assert.That(runState.PendingRewardOffer, Is.Not.Null);
+            Assert.That(runState.PendingRewardOffer.RewardIndexForCurrentEnemy, Is.EqualTo(2));
+            Assert.That(commandResult.PendingRewardOffer, Is.SameAs(runState.PendingRewardOffer));
+            Assert.That(commandResult.IsRunComplete, Is.False);
+        }
+
+        [Test]
+        public void AcceptCompletedBattle_WhenEnemySurvivesAfterThirdBattle_EntersDefeatWithoutPendingRewardOffer()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RunState runState = CreateRunStateForCompletedBattle(config, currentEnemyIndex: 1, battleIndexForEnemy: 3, battlesPlayed: 2);
+            RewardService rewardService = CreateRewardService();
+
+            RunCommandResult commandResult = runService.AcceptCompletedBattle(
+                runState,
+                CreateBattleOutcome(battleIndexForEnemy: 3, roundsPlayed: 3, enemyDefeated: false),
+                rewardService,
+                config);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(3));
+            Assert.That(runState.ActiveBattle, Is.Null);
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.Defeat));
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.Defeat));
+            Assert.That(commandResult.PendingRewardOffer, Is.Null);
+            Assert.That(commandResult.IsRunComplete, Is.True);
+        }
+
+        [Test]
+        public void AcceptCompletedBattle_WhenRunCannotAccept_ReturnsFailureAndDoesNotMutateRunState()
+        {
+            RunService runService = new RunService();
+            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            RunState runState = CreateRunStateForCompletedBattle(config, currentEnemyIndex: 0, battleIndexForEnemy: 2, battlesPlayed: 1);
+            RewardService rewardService = CreateRewardService();
+            BattleState originalBattle = runState.ActiveBattle;
+
+            runState.ActiveBattle.BattleFlowStage = BattleFlowStage.PresentingRoundResult;
+
+            RunCommandResult commandResult = runService.AcceptCompletedBattle(
+                runState,
+                CreateBattleOutcome(battleIndexForEnemy: 2, roundsPlayed: 2, enemyDefeated: true),
+                rewardService,
+                config);
+
+            Assert.That(commandResult.Success, Is.False);
+            Assert.That(commandResult.FailureReason, Does.Contain("not currently allowed"));
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.InBattle));
+            Assert.That(commandResult.ActiveBattle, Is.SameAs(originalBattle));
+            Assert.That(commandResult.PendingRewardOffer, Is.Null);
+            Assert.That(commandResult.IsRunComplete, Is.False);
+            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(1));
+            Assert.That(runState.ActiveBattle, Is.SameAs(originalBattle));
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.InBattle));
         }
 
         private static RunState CreateReadyRunState()
         {
             RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
             return runtimeStateFactory.CreateRunState(TestConfigFactory.CreateValidGameConfig());
+        }
+
+        private static RunState CreateRunStateForCompletedBattle(
+            GameConfig config,
+            int currentEnemyIndex,
+            int battleIndexForEnemy,
+            int battlesPlayed)
+        {
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RunState runState = runtimeStateFactory.CreateRunState(config);
+            runState.CurrentEnemyIndex = currentEnemyIndex;
+            runState.CurrentEnemy = runtimeStateFactory.CreateEnemyProgressState(config.enemies[currentEnemyIndex]);
+            runState.CurrentEnemy.BattlesPlayed = battlesPlayed;
+            runState.ActiveBattle = CreateBattleState();
+            runState.ActiveBattle.BattleIndexForEnemy = battleIndexForEnemy;
+            runState.ActiveBattle.BattleFlowStage = BattleFlowStage.BattleComplete;
+            runState.PendingRewardOffer = null;
+            runState.FlowStage = RunFlowStage.InBattle;
+            return runState;
+        }
+
+        private static RewardService CreateRewardService()
+        {
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardOfferGenerator rewardOfferGenerator = new RewardOfferGenerator(new SystemGameRandom(12345));
+            return new RewardService(runtimeStateFactory, rewardOfferGenerator);
+        }
+
+        private static BattleOutcome CreateBattleOutcome(int battleIndexForEnemy, int roundsPlayed, bool enemyDefeated)
+        {
+            return new BattleOutcome
+            {
+                BattleIndexForEnemy = battleIndexForEnemy,
+                RoundsPlayed = roundsPlayed,
+                EnemyDefeated = enemyDefeated,
+                PlayerHpAfterBattle = 20,
+                EnemyHpAfterBattle = enemyDefeated ? 0 : 5,
+            };
         }
 
         private static RunState CreateRunStateWithFlowStage(RunFlowStage flowStage)
