@@ -1,0 +1,163 @@
+{
+  "playerStart": {
+    "playerMaxHp": 30,
+    "startingDeck": [
+      {
+        "rpsType": 0,
+        "basePower": 4,
+        "traits": [0]
+      },
+      {
+        "rpsType": 0,
+        "basePower": 4,
+        "traits": [1]
+      },
+      {
+        "rpsType": 1,
+        "basePower": 4,
+        "traits": [0]
+      },
+      {
+        "rpsType": 1,
+        "basePower": 4,
+        "traits": [1]
+      },
+      {
+        "rpsType": 2,
+        "basePower": 4,
+        "traits": [0]
+      },
+      {
+        "rpsType": 2,
+        "basePower": 4,
+        "traits": [1]
+      }
+    ]
+  },
+  "enemies": [
+    {
+      "enemyId": "enemy-1",
+      "displayName": "Enemy 1",
+      "maxHp": 18,
+      "fixedDeck": [
+        {
+          "rpsType": 0,
+          "basePower": 4,
+          "traits": []
+        },
+        {
+          "rpsType": 0,
+          "basePower": 5,
+          "traits": []
+        },
+        {
+          "rpsType": 1,
+          "basePower": 4,
+          "traits": []
+        },
+        {
+          "rpsType": 1,
+          "basePower": 5,
+          "traits": []
+        },
+        {
+          "rpsType": 2,
+          "basePower": 4,
+          "traits": []
+        },
+        {
+          "rpsType": 2,
+          "basePower": 5,
+          "traits": []
+        }
+      ]
+    },
+    {
+      "enemyId": "enemy-2",
+      "displayName": "Enemy 2",
+      "maxHp": 24,
+      "fixedDeck": [
+        {
+          "rpsType": 0,
+          "basePower": 5,
+          "traits": []
+        },
+        {
+          "rpsType": 0,
+          "basePower": 6,
+          "traits": []
+        },
+        {
+          "rpsType": 1,
+          "basePower": 5,
+          "traits": []
+        },
+        {
+          "rpsType": 1,
+          "basePower": 6,
+          "traits": []
+        },
+        {
+          "rpsType": 2,
+          "basePower": 5,
+          "traits": []
+        },
+        {
+          "rpsType": 2,
+          "basePower": 6,
+          "traits": []
+        }
+      ]
+    },
+    {
+      "enemyId": "enemy-3",
+      "displayName": "Enemy 3",
+      "maxHp": 30,
+      "fixedDeck": [
+        {
+          "rpsType": 0,
+          "basePower": 6,
+          "traits": []
+        },
+        {
+          "rpsType": 0,
+          "basePower": 7,
+          "traits": []
+        },
+        {
+          "rpsType": 1,
+          "basePower": 6,
+          "traits": []
+        },
+        {
+          "rpsType": 1,
+          "basePower": 7,
+          "traits": []
+        },
+        {
+          "rpsType": 2,
+          "basePower": 6,
+          "traits": []
+        },
+        {
+          "rpsType": 2,
+          "basePower": 7,
+          "traits": []
+        }
+      ]
+    }
+  ],
+  "rewardGeneration": {
+    "allowedReplacementRpsTypes": [0, 1, 2],
+    "allowedReplacementBasePowers": [4],
+    "allowedReplacementTraits": [0, 1, 2, 3, 4, 5, 6, 7],
+    "replacementTraitCount": 2
+  },
+  "traitTuning": {
+    "empowerBonus": 3,
+    "adjacentAidBonus": 2,
+    "suppressPenalty": 2,
+    "regrowHeal": 2,
+    "growthBonus": 1
+  }
+}

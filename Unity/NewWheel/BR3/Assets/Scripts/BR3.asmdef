@@ -1,7 +1,9 @@
 {
   "name": "BR3",
   "rootNamespace": "BR3",
-  "references": [],
+  "references": [
+    "Unity.TextMeshPro"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
