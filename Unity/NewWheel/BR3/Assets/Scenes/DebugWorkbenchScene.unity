@@ -277,6 +277,63 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &12936264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 12936265}
+  - component: {fileID: 12936266}
+  m_Layer: 5
+  m_Name: Debug Scene Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &12936265
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12936264}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1383878572}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &12936266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12936264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f4e0f4dac4ba604caec9a4578ba0d5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.DebugSceneController
+  configTextAsset: {fileID: 4900000, guid: 18877437c4b009140a68aec21b489c0a, type: 3}
+  runSummaryPanelView: {fileID: 524151997}
+  boardPanelView: {fileID: 2020121336}
+  enemySequencePanelView: {fileID: 1715888534}
+  playerDeckPanelView: {fileID: 445739492}
+  rewardPanelView: {fileID: 1968460775}
+  inspectorPanelView: {fileID: 386895358}
+  actionBarView: {fileID: 1630965392}
+  statusMessageText: {fileID: 1602560209}
 --- !u!1 &14191164
 GameObject:
   m_ObjectHideFlags: 0
@@ -585,6 +642,7 @@ GameObject:
   - component: {fileID: 93849248}
   - component: {fileID: 93849247}
   - component: {fileID: 93849246}
+  - component: {fileID: 93849250}
   m_Layer: 5
   m_Name: Player Slot 1
   m_TagString: Untagged
@@ -700,6 +758,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 93849244}
   m_CullTransparentMesh: 1
+--- !u!114 &93849250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93849244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5141c4e74da7d114bbf895b93f724c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.BoardSlotPanelView
+  slotTitleText: {fileID: 1040575595}
+  occupantNameText: {fileID: 1122314562}
+  traitsText: {fileID: 680585087}
+  powerText: {fileID: 1928936448}
+  extraText: {fileID: 1461023014}
 --- !u!1 &113680848
 GameObject:
   m_ObjectHideFlags: 0
@@ -1154,6 +1229,7 @@ GameObject:
   - component: {fileID: 175905903}
   - component: {fileID: 175905902}
   - component: {fileID: 175905901}
+  - component: {fileID: 175905905}
   m_Layer: 5
   m_Name: Player Slot 2
   m_TagString: Untagged
@@ -1269,6 +1345,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175905899}
   m_CullTransparentMesh: 1
+--- !u!114 &175905905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175905899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5141c4e74da7d114bbf895b93f724c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.BoardSlotPanelView
+  slotTitleText: {fileID: 788433343}
+  occupantNameText: {fileID: 633344291}
+  traitsText: {fileID: 1299323098}
+  powerText: {fileID: 450350657}
+  extraText: {fileID: 1698550047}
 --- !u!1 &176653142
 GameObject:
   m_ObjectHideFlags: 0
@@ -2456,6 +2549,7 @@ GameObject:
   - component: {fileID: 386895356}
   - component: {fileID: 386895355}
   - component: {fileID: 386895354}
+  - component: {fileID: 386895358}
   m_Layer: 5
   m_Name: Right Inspector Panel
   m_TagString: Untagged
@@ -2571,6 +2665,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 386895352}
   m_CullTransparentMesh: 1
+--- !u!114 &386895358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386895352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2260f1540ec7345a09cfe7014b7a8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.InspectorPanelView
+  latestRoundResultText: {fileID: 1385485167}
+  slotResultsListRoot: {fileID: 1437268496}
+  logsContentRoot: {fileID: 271634243}
+  snapshotPhaseDropdown: {fileID: 524024655}
+  snapshotText: {fileID: 1361967439}
+  rewardDetailsText: {fileID: 1076072857}
 --- !u!1 &423288716
 GameObject:
   m_ObjectHideFlags: 0
@@ -2817,6 +2929,7 @@ GameObject:
   - component: {fileID: 445739490}
   - component: {fileID: 445739489}
   - component: {fileID: 445739488}
+  - component: {fileID: 445739492}
   m_Layer: 5
   m_Name: Player Deck Panel
   m_TagString: Untagged
@@ -2929,6 +3042,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 445739486}
   m_CullTransparentMesh: 1
+--- !u!114 &445739492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445739486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43ae0d401f9c9974392a540762401caf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.PlayerDeckPanelView
+  deckListRoot: {fileID: 306726842}
+  emptyStateText: {fileID: 0}
 --- !u!1 &450350655
 GameObject:
   m_ObjectHideFlags: 0
@@ -3557,6 +3684,7 @@ GameObject:
   - component: {fileID: 524151994}
   - component: {fileID: 524151996}
   - component: {fileID: 524151995}
+  - component: {fileID: 524151997}
   m_Layer: 5
   m_Name: Top Summary Bar
   m_TagString: Untagged
@@ -3623,6 +3751,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 524151993}
   m_CullTransparentMesh: 1
+--- !u!114 &524151997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524151993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a1a0e49299fa2741b71ad8321ad4e39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.RunSummaryPanelView
+  playerHpText: {fileID: 823099863}
+  enemyIndexText: {fileID: 464373431}
+  enemyHpText: {fileID: 1566632945}
+  battlesPlayedText: {fileID: 137085268}
+  rewardsClaimedText: {fileID: 2057966667}
+  runStageText: {fileID: 1235346765}
+  battleStageText: {fileID: 1131597215}
+  roundText: {fileID: 922255737}
 --- !u!1 &549939585
 GameObject:
   m_ObjectHideFlags: 0
@@ -3794,6 +3942,7 @@ GameObject:
   - component: {fileID: 558284553}
   - component: {fileID: 558284552}
   - component: {fileID: 558284551}
+  - component: {fileID: 558284555}
   m_Layer: 5
   m_Name: Enemy Slot 2
   m_TagString: Untagged
@@ -3909,6 +4058,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 558284549}
   m_CullTransparentMesh: 1
+--- !u!114 &558284555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558284549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5141c4e74da7d114bbf895b93f724c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.BoardSlotPanelView
+  slotTitleText: {fileID: 2138286301}
+  occupantNameText: {fileID: 1341491327}
+  traitsText: {fileID: 876476867}
+  powerText: {fileID: 1429302085}
+  extraText: {fileID: 1971890121}
 --- !u!1 &571754450
 GameObject:
   m_ObjectHideFlags: 0
@@ -3922,6 +4088,7 @@ GameObject:
   - component: {fileID: 571754454}
   - component: {fileID: 571754453}
   - component: {fileID: 571754452}
+  - component: {fileID: 571754456}
   m_Layer: 5
   m_Name: Enemy Slot 1
   m_TagString: Untagged
@@ -4037,6 +4204,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 571754450}
   m_CullTransparentMesh: 1
+--- !u!114 &571754456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571754450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5141c4e74da7d114bbf895b93f724c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.BoardSlotPanelView
+  slotTitleText: {fileID: 1617947276}
+  occupantNameText: {fileID: 1866858544}
+  traitsText: {fileID: 2079078083}
+  powerText: {fileID: 423325775}
+  extraText: {fileID: 2054076703}
 --- !u!1 &607254740
 GameObject:
   m_ObjectHideFlags: 0
@@ -5092,7 +5276,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 423288718}
   m_HandleRect: {fileID: 423288717}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6127,6 +6311,7 @@ GameObject:
   - component: {fileID: 969552401}
   - component: {fileID: 969552400}
   - component: {fileID: 969552399}
+  - component: {fileID: 969552403}
   m_Layer: 5
   m_Name: Player Slot 3
   m_TagString: Untagged
@@ -6242,6 +6427,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 969552397}
   m_CullTransparentMesh: 1
+--- !u!114 &969552403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 969552397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5141c4e74da7d114bbf895b93f724c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.BoardSlotPanelView
+  slotTitleText: {fileID: 4908812}
+  occupantNameText: {fileID: 2011242117}
+  traitsText: {fileID: 2136240120}
+  powerText: {fileID: 1859841140}
+  extraText: {fileID: 1166429008}
 --- !u!1 &1030511064
 GameObject:
   m_ObjectHideFlags: 0
@@ -9530,6 +9732,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1480652571}
+  - {fileID: 12936265}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10685,6 +10888,7 @@ GameObject:
   - component: {fileID: 1515470083}
   - component: {fileID: 1515470082}
   - component: {fileID: 1515470081}
+  - component: {fileID: 1515470085}
   m_Layer: 5
   m_Name: Enemy Slot 3
   m_TagString: Untagged
@@ -10800,6 +11004,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515470079}
   m_CullTransparentMesh: 1
+--- !u!114 &1515470085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515470079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5141c4e74da7d114bbf895b93f724c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.BoardSlotPanelView
+  slotTitleText: {fileID: 1518824771}
+  occupantNameText: {fileID: 356953072}
+  traitsText: {fileID: 1353710467}
+  powerText: {fileID: 1104683385}
+  extraText: {fileID: 706523743}
 --- !u!1 &1518824769
 GameObject:
   m_ObjectHideFlags: 0
@@ -11664,6 +11885,7 @@ GameObject:
   - component: {fileID: 1630965390}
   - component: {fileID: 1630965389}
   - component: {fileID: 1630965388}
+  - component: {fileID: 1630965392}
   m_Layer: 5
   m_Name: Action Bar
   m_TagString: Untagged
@@ -11778,6 +12000,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1630965386}
   m_CullTransparentMesh: 1
+--- !u!114 &1630965392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630965386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7314e17eae8bac341b1573bf55efad47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.ActionBarView
+  loadConfigButton: {fileID: 637237606}
+  newRunButton: {fileID: 2050583065}
+  startBattleButton: {fileID: 1732471436}
+  continueButton: {fileID: 1405434845}
+  statusMessageText: {fileID: 1602560209}
 --- !u!1 &1639204818
 GameObject:
   m_ObjectHideFlags: 0
@@ -12211,6 +12450,7 @@ GameObject:
   - component: {fileID: 1715888532}
   - component: {fileID: 1715888531}
   - component: {fileID: 1715888530}
+  - component: {fileID: 1715888534}
   m_Layer: 5
   m_Name: Enemy Sequence Panel
   m_TagString: Untagged
@@ -12323,6 +12563,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1715888528}
   m_CullTransparentMesh: 1
+--- !u!114 &1715888534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715888528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e80d5386247cdfb4794dbfa4df739730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.EnemySequencePanelView
+  sequenceListRoot: {fileID: 2017622267}
+  emptyStateText: {fileID: 0}
 --- !u!1 &1732471433
 GameObject:
   m_ObjectHideFlags: 0
@@ -13344,6 +13598,7 @@ GameObject:
   - component: {fileID: 1968460773}
   - component: {fileID: 1968460772}
   - component: {fileID: 1968460771}
+  - component: {fileID: 1968460775}
   m_Layer: 5
   m_Name: Reward Panel
   m_TagString: Untagged
@@ -13457,6 +13712,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968460769}
   m_CullTransparentMesh: 1
+--- !u!114 &1968460775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968460769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221bee7f4183c0349b155f2b06fd19b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.RewardPanelView
+  rewardListRoot: {fileID: 1357783393}
+  rewardPlaceholderText: {fileID: 348623570}
 --- !u!1 &1971890119
 GameObject:
   m_ObjectHideFlags: 0
@@ -13869,6 +14138,7 @@ GameObject:
   - component: {fileID: 2020121334}
   - component: {fileID: 2020121333}
   - component: {fileID: 2020121332}
+  - component: {fileID: 2020121336}
   m_Layer: 5
   m_Name: Board Panel
   m_TagString: Untagged
@@ -13982,6 +14252,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2020121330}
   m_CullTransparentMesh: 1
+--- !u!114 &2020121336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020121330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5453ddee62c97654f828bba47173e796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.BoardPanelView
+  enemySlot1: {fileID: 571754456}
+  enemySlot2: {fileID: 558284555}
+  enemySlot3: {fileID: 1515470085}
+  playerSlot1: {fileID: 93849250}
+  playerSlot2: {fileID: 175905905}
+  playerSlot3: {fileID: 969552403}
 --- !u!1 &2050583062
 GameObject:
   m_ObjectHideFlags: 0
