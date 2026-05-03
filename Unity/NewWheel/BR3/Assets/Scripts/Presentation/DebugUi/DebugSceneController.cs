@@ -129,6 +129,7 @@ namespace BR3.Presentation.DebugUi
         public void OnSnapshotPhaseChanged(int selectedIndex)
         {
             debugUiState.SelectedSnapshotPhaseIndex = Mathf.Max(0, selectedIndex);
+            RefreshShell();
         }
 
         private void InitializeInspectorShell()
@@ -139,23 +140,21 @@ namespace BR3.Presentation.DebugUi
 
         private void RefreshShell()
         {
-            const string placeholder = "-";
-
             runSummaryPanelView?.SetVisible(true);
-            runSummaryPanelView?.SetPlaceholder(placeholder);
+            runSummaryPanelView?.Render(BuildRunSummaryViewData());
 
             boardPanelView?.SetVisible(true);
-            boardPanelView?.SetPlaceholders(placeholder);
+            boardPanelView?.Render(BuildBoardViewData());
 
             enemySequencePanelView?.SetVisible(true);
 
             playerDeckPanelView?.SetVisible(true);
 
             rewardPanelView?.SetVisible(true);
-            rewardPanelView?.SetPlaceholderText("No reward pending.");
+            rewardPanelView?.Render(BuildRewardPanelViewData());
 
             inspectorPanelView?.SetVisible(true);
-            inspectorPanelView?.SetPlaceholderText(placeholder);
+            inspectorPanelView?.Render(BuildInspectorPanelViewData());
 
             bool hasLoadedConfig = currentConfig != null;
             bool hasRun = currentRun != null;
@@ -177,6 +176,169 @@ namespace BR3.Presentation.DebugUi
         private void SetStatusMessage(string message)
         {
             debugUiState.StatusMessage = message;
+        }
+
+        private RunSummaryViewData BuildRunSummaryViewData()
+        {
+            if (currentRun == null)
+            {
+                return new RunSummaryViewData
+                {
+                    PlayerHpText = "-",
+                    EnemyIndexText = "-",
+                    EnemyHpText = "-",
+                    BattlesPlayedText = "-",
+                    RewardsClaimedText = "-",
+                    RunStageText = "-",
+                    BattleStageText = "-",
+                    RoundText = "-",
+                };
+            }
+
+            string enemyIndexText = currentConfig == null || currentConfig.enemies == null || currentConfig.enemies.Count == 0
+                ? $"{currentRun.CurrentEnemyIndex + 1}"
+                : $"{currentRun.CurrentEnemyIndex + 1}/{currentConfig.enemies.Count}";
+
+            BattleState activeBattle = currentRun.ActiveBattle;
+
+            return new RunSummaryViewData
+            {
+                PlayerHpText = $"{currentRun.PlayerHp}/{currentRun.PlayerMaxHp}",
+                EnemyIndexText = enemyIndexText,
+                EnemyHpText = currentRun.CurrentEnemy == null ? "-" : $"{currentRun.CurrentEnemy.CurrentHp}/{currentRun.CurrentEnemy.MaxHp}",
+                BattlesPlayedText = currentRun.CurrentEnemy == null ? "-" : $"{currentRun.CurrentEnemy.BattlesPlayed}/3",
+                RewardsClaimedText = currentRun.CurrentEnemy == null ? "-" : $"{currentRun.CurrentEnemy.RewardsClaimed}/3",
+                RunStageText = FlowStageTextFormatter.Format(currentRun.FlowStage),
+                BattleStageText = FlowStageTextFormatter.Format(activeBattle?.BattleFlowStage),
+                RoundText = activeBattle == null ? "-" : activeBattle.RoundIndex.ToString(),
+            };
+        }
+
+        private BoardViewData BuildBoardViewData()
+        {
+            LaneState enemyLane = currentRun?.ActiveBattle?.EnemyLane;
+            LaneState playerLane = currentRun?.ActiveBattle?.PlayerLane;
+
+            return new BoardViewData
+            {
+                EnemySlot1 = BuildBoardSlotViewData(enemyLane, 0),
+                EnemySlot2 = BuildBoardSlotViewData(enemyLane, 1),
+                EnemySlot3 = BuildBoardSlotViewData(enemyLane, 2),
+                PlayerSlot1 = BuildBoardSlotViewData(playerLane, 0),
+                PlayerSlot2 = BuildBoardSlotViewData(playerLane, 1),
+                PlayerSlot3 = BuildBoardSlotViewData(playerLane, 2),
+            };
+        }
+
+        private RewardPanelViewData BuildRewardPanelViewData()
+        {
+            if (currentRun?.PendingRewardOffer == null)
+            {
+                return new RewardPanelViewData
+                {
+                    PlaceholderText = "No reward pending.",
+                };
+            }
+
+            RewardOffer rewardOffer = currentRun.PendingRewardOffer;
+            int optionCount = rewardOffer.Options?.Count ?? 0;
+            return new RewardPanelViewData
+            {
+                PlaceholderText = $"Reward {rewardOffer.RewardIndexForCurrentEnemy} ready with {optionCount} options.",
+            };
+        }
+
+        private InspectorPanelViewData BuildInspectorPanelViewData()
+        {
+            RoundResult latestRoundResult = GetLatestRoundResult();
+            PhaseSnapshot selectedSnapshot = GetSelectedSnapshot(latestRoundResult);
+            CardInstance latestPlayerCard = FindPlayerCard(latestRoundResult?.PlayerCardInstanceId);
+
+            return new InspectorPanelViewData
+            {
+                LatestRoundResult = new LatestRoundResultViewData
+                {
+                    SummaryText = RoundResultTextFormatter.FormatSummary(latestRoundResult, latestPlayerCard),
+                },
+                SnapshotText = SnapshotTextFormatter.Format(selectedSnapshot),
+                RewardDetailsText = RewardOptionTextFormatter.Format(currentRun?.PendingRewardOffer, currentRun?.PlayerDeck),
+            };
+        }
+
+        private RoundResult GetLatestRoundResult()
+        {
+            if (currentRun?.ActiveBattle?.RoundResults == null || currentRun.ActiveBattle.RoundResults.Count == 0)
+            {
+                return null;
+            }
+
+            return currentRun.ActiveBattle.RoundResults[currentRun.ActiveBattle.RoundResults.Count - 1];
+        }
+
+        private PhaseSnapshot GetSelectedSnapshot(RoundResult latestRoundResult)
+        {
+            if (latestRoundResult?.Snapshots == null || latestRoundResult.Snapshots.Count == 0)
+            {
+                return null;
+            }
+
+            for (int snapshotIndex = 0; snapshotIndex < latestRoundResult.Snapshots.Count; snapshotIndex++)
+            {
+                PhaseSnapshot snapshot = latestRoundResult.Snapshots[snapshotIndex];
+                if ((int)snapshot.Phase == debugUiState.SelectedSnapshotPhaseIndex)
+                {
+                    return snapshot;
+                }
+            }
+
+            return latestRoundResult.Snapshots[0];
+        }
+
+        private static BoardSlotState GetSlot(LaneState laneState, int index)
+        {
+            if (laneState?.Slots == null || index < 0 || index >= laneState.Slots.Count)
+            {
+                return null;
+            }
+
+            return laneState.Slots[index];
+        }
+
+        private static BoardSlotViewData BuildBoardSlotViewData(LaneState laneState, int index)
+        {
+            BoardSlotState slotState = GetSlot(laneState, index);
+            if (slotState != null)
+            {
+                return BoardSlotTextFormatter.Format(slotState);
+            }
+
+            return new BoardSlotViewData
+            {
+                SlotTitleText = $"Slot {index + 1}",
+                OccupantNameText = "-",
+                TraitsText = "Traits: -",
+                PowerText = "Power: -",
+                ExtraText = "No active battle",
+            };
+        }
+
+        private CardInstance FindPlayerCard(string instanceId)
+        {
+            if (currentRun?.PlayerDeck == null || string.IsNullOrWhiteSpace(instanceId))
+            {
+                return null;
+            }
+
+            for (int index = 0; index < currentRun.PlayerDeck.Count; index++)
+            {
+                CardInstance card = currentRun.PlayerDeck[index];
+                if (card != null && card.InstanceId == instanceId)
+                {
+                    return card;
+                }
+            }
+
+            return null;
         }
     }
 }

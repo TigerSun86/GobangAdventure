@@ -16,13 +16,13 @@ namespace BR3.Presentation.DebugUi
             gameObject.SetActive(isVisible);
         }
 
-        public void SetPlaceholder(string placeholder)
+        public void Render(BoardSlotViewData viewData)
         {
-            SetText(slotTitleText, placeholder);
-            SetText(occupantNameText, placeholder);
-            SetText(traitsText, placeholder);
-            SetText(powerText, placeholder);
-            SetText(extraText, placeholder);
+            SetText(slotTitleText, viewData?.SlotTitleText ?? "-");
+            SetText(occupantNameText, viewData?.OccupantNameText ?? "-");
+            SetText(traitsText, viewData?.TraitsText ?? "-");
+            SetText(powerText, viewData?.PowerText ?? "-");
+            SetText(extraText, viewData?.ExtraText ?? "-");
         }
 
         private static void SetText(TMP_Text text, string value)

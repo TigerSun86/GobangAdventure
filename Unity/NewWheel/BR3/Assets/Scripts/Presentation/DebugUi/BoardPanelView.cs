@@ -16,14 +16,14 @@ namespace BR3.Presentation.DebugUi
             gameObject.SetActive(isVisible);
         }
 
-        public void SetPlaceholders(string placeholder)
+        public void Render(BoardViewData viewData)
         {
-            enemySlot1?.SetPlaceholder(placeholder);
-            enemySlot2?.SetPlaceholder(placeholder);
-            enemySlot3?.SetPlaceholder(placeholder);
-            playerSlot1?.SetPlaceholder(placeholder);
-            playerSlot2?.SetPlaceholder(placeholder);
-            playerSlot3?.SetPlaceholder(placeholder);
+            enemySlot1?.Render(viewData?.EnemySlot1);
+            enemySlot2?.Render(viewData?.EnemySlot2);
+            enemySlot3?.Render(viewData?.EnemySlot3);
+            playerSlot1?.Render(viewData?.PlayerSlot1);
+            playerSlot2?.Render(viewData?.PlayerSlot2);
+            playerSlot3?.Render(viewData?.PlayerSlot3);
         }
     }
 }

@@ -55,11 +55,11 @@ namespace BR3.Presentation.DebugUi
             }
         }
 
-        public void SetPlaceholderText(string placeholder)
+        public void Render(InspectorPanelViewData viewData)
         {
-            SetText(latestRoundResultText, placeholder);
-            SetText(snapshotText, placeholder);
-            SetText(rewardDetailsText, placeholder);
+            SetText(latestRoundResultText, viewData?.LatestRoundResult?.SummaryText ?? "-");
+            SetText(snapshotText, viewData?.SnapshotText ?? "-");
+            SetText(rewardDetailsText, viewData?.RewardDetailsText ?? "-");
         }
 
         private static void SetText(TMP_Text text, string value)

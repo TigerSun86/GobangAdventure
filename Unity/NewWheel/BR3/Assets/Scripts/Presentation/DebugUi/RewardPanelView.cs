@@ -15,12 +15,13 @@ namespace BR3.Presentation.DebugUi
             gameObject.SetActive(isVisible);
         }
 
-        public void SetPlaceholderText(string message)
+        public void Render(RewardPanelViewData viewData)
         {
             if (rewardPlaceholderText != null)
             {
-                rewardPlaceholderText.text = message;
-                rewardPlaceholderText.gameObject.SetActive(!string.IsNullOrWhiteSpace(message));
+                string placeholderText = viewData?.PlaceholderText ?? string.Empty;
+                rewardPlaceholderText.text = placeholderText;
+                rewardPlaceholderText.gameObject.SetActive(!string.IsNullOrWhiteSpace(placeholderText));
             }
         }
     }

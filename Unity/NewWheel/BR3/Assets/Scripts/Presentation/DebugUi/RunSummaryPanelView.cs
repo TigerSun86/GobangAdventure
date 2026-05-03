@@ -19,16 +19,16 @@ namespace BR3.Presentation.DebugUi
             gameObject.SetActive(isVisible);
         }
 
-        public void SetPlaceholder(string placeholder)
+        public void Render(RunSummaryViewData viewData)
         {
-            SetText(playerHpText, placeholder);
-            SetText(enemyIndexText, placeholder);
-            SetText(enemyHpText, placeholder);
-            SetText(battlesPlayedText, placeholder);
-            SetText(rewardsClaimedText, placeholder);
-            SetText(runStageText, placeholder);
-            SetText(battleStageText, placeholder);
-            SetText(roundText, placeholder);
+            SetText(playerHpText, viewData?.PlayerHpText ?? "-");
+            SetText(enemyIndexText, viewData?.EnemyIndexText ?? "-");
+            SetText(enemyHpText, viewData?.EnemyHpText ?? "-");
+            SetText(battlesPlayedText, viewData?.BattlesPlayedText ?? "-");
+            SetText(rewardsClaimedText, viewData?.RewardsClaimedText ?? "-");
+            SetText(runStageText, viewData?.RunStageText ?? "-");
+            SetText(battleStageText, viewData?.BattleStageText ?? "-");
+            SetText(roundText, viewData?.RoundText ?? "-");
         }
 
         private static void SetText(TMP_Text text, string value)
