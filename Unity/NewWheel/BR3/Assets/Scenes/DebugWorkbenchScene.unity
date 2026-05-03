@@ -3055,7 +3055,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.PlayerDeckPanelView
   deckListRoot: {fileID: 306726842}
-  emptyStateText: {fileID: 0}
 --- !u!1 &450350655
 GameObject:
   m_ObjectHideFlags: 0
@@ -12576,7 +12575,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.EnemySequencePanelView
   sequenceListRoot: {fileID: 2017622267}
-  emptyStateText: {fileID: 0}
 --- !u!1 &1732471433
 GameObject:
   m_ObjectHideFlags: 0

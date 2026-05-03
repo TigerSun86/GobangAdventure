@@ -148,10 +148,8 @@ namespace BR3.Presentation.DebugUi
             boardPanelView?.SetPlaceholders(placeholder);
 
             enemySequencePanelView?.SetVisible(true);
-            enemySequencePanelView?.SetEmptyStateText("Enemy sequence entries will be generated in Task 7C3.");
 
             playerDeckPanelView?.SetVisible(true);
-            playerDeckPanelView?.SetEmptyStateText("Deck entries will be generated in Task 7C3.");
 
             rewardPanelView?.SetVisible(true);
             rewardPanelView?.SetPlaceholderText("No reward pending.");
