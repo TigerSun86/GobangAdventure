@@ -283,14 +283,14 @@ namespace BR3.Presentation.DebugUi
 
             return new RunSummaryViewData
             {
-                PlayerHpText = $"{currentRun.PlayerHp}/{currentRun.PlayerMaxHp}",
-                EnemyIndexText = enemyIndexText,
-                EnemyHpText = currentRun.CurrentEnemy == null ? "-" : $"{currentRun.CurrentEnemy.CurrentHp}/{currentRun.CurrentEnemy.MaxHp}",
-                BattlesPlayedText = currentRun.CurrentEnemy == null ? "-" : $"{currentRun.CurrentEnemy.BattlesPlayed}/3",
-                RewardsClaimedText = currentRun.CurrentEnemy == null ? "-" : $"{currentRun.CurrentEnemy.RewardsClaimed}/3",
-                RunStageText = FlowStageTextFormatter.Format(currentRun.FlowStage),
-                BattleStageText = FlowStageTextFormatter.Format(activeBattle?.BattleFlowStage),
-                RoundText = activeBattle == null ? "-" : activeBattle.RoundIndex.ToString(),
+                PlayerHpText = $"HP {currentRun.PlayerHp}/{currentRun.PlayerMaxHp}",
+                EnemyIndexText = $"Enemy {enemyIndexText}",
+                EnemyHpText = currentRun.CurrentEnemy == null ? "Enemy HP -" : $"Enemy HP {currentRun.CurrentEnemy.CurrentHp}/{currentRun.CurrentEnemy.MaxHp}",
+                BattlesPlayedText = currentRun.CurrentEnemy == null ? "Battles -" : $"Battles {currentRun.CurrentEnemy.BattlesPlayed}/3",
+                RewardsClaimedText = currentRun.CurrentEnemy == null ? "Rewards -" : $"Rewards {currentRun.CurrentEnemy.RewardsClaimed}/3",
+                RunStageText = $"Run {FlowStageTextFormatter.Format(currentRun.FlowStage)}",
+                BattleStageText = $"Battle {FlowStageTextFormatter.Format(activeBattle?.BattleFlowStage)}",
+                RoundText = activeBattle == null ? "Round -" : $"Round {activeBattle.RoundIndex}",
             };
         }
 
