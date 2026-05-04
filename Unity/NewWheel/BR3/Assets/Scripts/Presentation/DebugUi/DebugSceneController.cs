@@ -117,6 +117,54 @@ namespace BR3.Presentation.DebugUi
             RefreshAll();
         }
 
+        public void OnPlayerCardSelected(string cardInstanceId)
+        {
+            if (currentRun?.ActiveBattle == null || currentRun.CurrentEnemy == null)
+            {
+                SetStatusMessage("No active battle is ready for card selection.");
+                RefreshAll();
+                return;
+            }
+
+            if (currentConfig?.traitTuning == null)
+            {
+                SetStatusMessage("No loaded config is available for round resolution.");
+                RefreshAll();
+                return;
+            }
+
+            BattleCommandResult result = battleService.SubmitPlayerCard(
+                currentRun,
+                currentRun.CurrentEnemy,
+                currentRun.ActiveBattle,
+                cardInstanceId,
+                currentConfig.traitTuning,
+                roundResolver);
+
+            SetStatusMessage(result.Success ? "Player card submitted." : result.FailureReason);
+            RefreshAll();
+        }
+
+        public void OnRewardOptionSelected(string optionId)
+        {
+            if (currentRun == null || currentConfig == null)
+            {
+                SetStatusMessage("No loaded run/config is available for reward selection.");
+                RefreshAll();
+                return;
+            }
+
+            RunCommandResult result = runService.ChooseReward(
+                currentRun,
+                optionId,
+                rewardService,
+                currentConfig,
+                runtimeStateFactory);
+
+            SetStatusMessage(result.Success ? "Reward chosen." : result.FailureReason);
+            RefreshAll();
+        }
+
         public void OnContinueButtonPressed()
         {
             if (currentRun?.ActiveBattle == null || currentRun.CurrentEnemy == null)
@@ -172,9 +220,11 @@ namespace BR3.Presentation.DebugUi
             enemySequencePanelView?.RenderSequenceRows(BuildEnemySequenceRowViewData());
 
             playerDeckPanelView?.SetVisible(true);
+            playerDeckPanelView?.RenderDeckEntries(BuildDeckEntryViewData(), OnPlayerCardSelected);
 
             rewardPanelView?.SetVisible(true);
             rewardPanelView?.Render(BuildRewardPanelViewData());
+            rewardPanelView?.RenderRewardOptions(BuildRewardOptionEntryViewData(), OnRewardOptionSelected);
 
             RefreshSnapshotSelector();
 
@@ -262,7 +312,10 @@ namespace BR3.Presentation.DebugUi
 
         private RewardPanelViewData BuildRewardPanelViewData()
         {
-            if (currentRun?.PendingRewardOffer == null)
+            bool hasPendingReward = currentRun?.PendingRewardOffer != null
+                && currentRun.FlowStage == RunFlowStage.ChoosingReward;
+
+            if (!hasPendingReward)
             {
                 return new RewardPanelViewData
                 {
@@ -271,10 +324,9 @@ namespace BR3.Presentation.DebugUi
             }
 
             RewardOffer rewardOffer = currentRun.PendingRewardOffer;
-            int optionCount = rewardOffer.Options?.Count ?? 0;
             return new RewardPanelViewData
             {
-                PlaceholderText = $"Reward {rewardOffer.RewardIndexForCurrentEnemy} ready with {optionCount} options.",
+                PlaceholderText = string.Empty,
             };
         }
 
@@ -346,6 +398,70 @@ namespace BR3.Presentation.DebugUi
             }
 
             return rows;
+        }
+
+        private DeckEntryViewData[] BuildDeckEntryViewData()
+        {
+            if (currentRun?.PlayerDeck == null)
+            {
+                return Array.Empty<DeckEntryViewData>();
+            }
+
+            bool isWaitingForPlayerCard = currentRun.ActiveBattle != null
+                && currentRun.ActiveBattle.BattleFlowStage == BattleFlowStage.WaitingForPlayerCard;
+            bool hasActiveBattle = currentRun.ActiveBattle != null;
+
+            DeckEntryViewData[] entries = new DeckEntryViewData[currentRun.PlayerDeck.Count];
+            for (int index = 0; index < currentRun.PlayerDeck.Count; index++)
+            {
+                CardInstance card = currentRun.PlayerDeck[index];
+                bool isUsed = currentRun.ActiveBattle?.UsedPlayerCardIds != null
+                    && card != null
+                    && currentRun.ActiveBattle.UsedPlayerCardIds.Contains(card.InstanceId);
+
+                string stateText;
+                if (!hasActiveBattle)
+                {
+                    stateText = currentRun.FlowStage == RunFlowStage.ChoosingReward ? "Reward stage" : "No active battle";
+                }
+                else if (isUsed)
+                {
+                    stateText = "Already used";
+                }
+                else if (isWaitingForPlayerCard)
+                {
+                    stateText = "Available";
+                }
+                else
+                {
+                    stateText = "Not selectable now";
+                }
+
+                entries[index] = DeckEntryTextFormatter.Format(card, isUsed, isWaitingForPlayerCard, stateText);
+            }
+
+            return entries;
+        }
+
+        private RewardOptionEntryViewData[] BuildRewardOptionEntryViewData()
+        {
+            bool canChooseReward = currentRun?.FlowStage == RunFlowStage.ChoosingReward
+                && currentRun.PendingRewardOffer?.Options != null;
+
+            if (!canChooseReward)
+            {
+                return Array.Empty<RewardOptionEntryViewData>();
+            }
+
+            RewardOptionEntryViewData[] entries = new RewardOptionEntryViewData[currentRun.PendingRewardOffer.Options.Count];
+            for (int index = 0; index < currentRun.PendingRewardOffer.Options.Count; index++)
+            {
+                RewardOption option = currentRun.PendingRewardOffer.Options[index];
+                CardInstance targetCard = FindTargetCardForRewardOption(option);
+                entries[index] = RewardOptionEntryTextFormatter.Format(option, targetCard, true);
+            }
+
+            return entries;
         }
 
         private LogEntryViewData[] BuildLogEntryViewData()
@@ -445,6 +561,26 @@ namespace BR3.Presentation.DebugUi
                 {
                     return card;
                 }
+            }
+
+            return null;
+        }
+
+        private CardInstance FindTargetCardForRewardOption(RewardOption rewardOption)
+        {
+            if (rewardOption == null)
+            {
+                return null;
+            }
+
+            if (rewardOption.UpgradePayload != null)
+            {
+                return FindPlayerCard(rewardOption.UpgradePayload.TargetCardInstanceId);
+            }
+
+            if (rewardOption.ReplacePayload != null)
+            {
+                return FindPlayerCard(rewardOption.ReplacePayload.TargetCardInstanceId);
             }
 
             return null;
