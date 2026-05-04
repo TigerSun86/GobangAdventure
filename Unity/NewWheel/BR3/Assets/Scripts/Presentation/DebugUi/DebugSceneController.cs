@@ -53,8 +53,7 @@ namespace BR3.Presentation.DebugUi
 
             actionBarView?.Bind(OnLoadConfigButtonPressed, OnNewRunButtonPressed, OnStartBattleButtonPressed, OnContinueButtonPressed);
             inspectorPanelView?.BindSnapshotPhaseChanged(OnSnapshotPhaseChanged);
-            InitializeInspectorShell();
-            RefreshShell();
+            RefreshAll();
         }
 
         public void OnLoadConfigButtonPressed()
@@ -62,7 +61,7 @@ namespace BR3.Presentation.DebugUi
             if (configTextAsset == null)
             {
                 SetStatusMessage("Assign a GameConfig TextAsset before loading config.");
-                RefreshShell();
+                RefreshAll();
                 return;
             }
 
@@ -85,7 +84,7 @@ namespace BR3.Presentation.DebugUi
                 SetStatusMessage($"Config load failed: {exception.Message}");
             }
 
-            RefreshShell();
+            RefreshAll();
         }
 
         public void OnNewRunButtonPressed()
@@ -93,14 +92,14 @@ namespace BR3.Presentation.DebugUi
             if (currentConfig == null)
             {
                 SetStatusMessage("Load a valid config before creating a new run.");
-                RefreshShell();
+                RefreshAll();
                 return;
             }
 
             currentRun = runService.CreateNewRun(currentConfig, runtimeStateFactory);
             debugUiState = DebugUiState.CreateDefault();
             SetStatusMessage("New run created. Start Battle is now available.");
-            RefreshShell();
+            RefreshAll();
         }
 
         public void OnStartBattleButtonPressed()
@@ -108,37 +107,60 @@ namespace BR3.Presentation.DebugUi
             if (currentRun == null)
             {
                 SetStatusMessage("Create a run before starting a battle.");
-                RefreshShell();
+                RefreshAll();
                 return;
             }
 
             RunCommandResult result = runService.StartNextBattle(currentRun, battleService);
-            SetStatusMessage(result.Success
-                ? "Battle started. Full board and deck rendering will be added in Task 7C3."
-                : result.FailureReason);
+            SetStatusMessage(result.Success ? "Battle started." : result.FailureReason);
 
-            RefreshShell();
+            RefreshAll();
         }
 
         public void OnContinueButtonPressed()
         {
-            SetStatusMessage("Continue flow is reserved for Task 7C3 after round-result presentation is implemented.");
-            RefreshShell();
+            if (currentRun?.ActiveBattle == null || currentRun.CurrentEnemy == null)
+            {
+                SetStatusMessage("No active battle is ready to continue.");
+                RefreshAll();
+                return;
+            }
+
+            BattleCommandResult result = battleService.FinishRoundPresentation(currentRun, currentRun.CurrentEnemy, currentRun.ActiveBattle);
+            if (!result.Success)
+            {
+                SetStatusMessage(result.FailureReason);
+                RefreshAll();
+                return;
+            }
+
+            if (result.IsBattleComplete && result.BattleOutcome != null)
+            {
+                if (currentConfig == null)
+                {
+                    SetStatusMessage("Battle completed, but no config is available to advance run flow.");
+                    RefreshAll();
+                    return;
+                }
+
+                RunCommandResult runResult = runService.AcceptCompletedBattle(currentRun, result.BattleOutcome, rewardService, currentConfig);
+                SetStatusMessage(runResult.Success ? "Battle completed." : runResult.FailureReason);
+            }
+            else
+            {
+                SetStatusMessage("Round presentation finished.");
+            }
+
+            RefreshAll();
         }
 
         public void OnSnapshotPhaseChanged(int selectedIndex)
         {
             debugUiState.SelectedSnapshotPhaseIndex = Mathf.Max(0, selectedIndex);
-            RefreshShell();
+            RefreshAll();
         }
 
-        private void InitializeInspectorShell()
-        {
-            string[] phaseNames = Enum.GetNames(typeof(RoundPhase));
-            inspectorPanelView?.SetSnapshotPhaseOptions(phaseNames, debugUiState.SelectedSnapshotPhaseIndex);
-        }
-
-        private void RefreshShell()
+        public void RefreshAll()
         {
             runSummaryPanelView?.SetVisible(true);
             runSummaryPanelView?.Render(BuildRunSummaryViewData());
@@ -147,24 +169,32 @@ namespace BR3.Presentation.DebugUi
             boardPanelView?.Render(BuildBoardViewData());
 
             enemySequencePanelView?.SetVisible(true);
+            enemySequencePanelView?.RenderSequenceRows(BuildEnemySequenceRowViewData());
 
             playerDeckPanelView?.SetVisible(true);
 
             rewardPanelView?.SetVisible(true);
             rewardPanelView?.Render(BuildRewardPanelViewData());
 
+            RefreshSnapshotSelector();
+
             inspectorPanelView?.SetVisible(true);
             inspectorPanelView?.Render(BuildInspectorPanelViewData());
+            inspectorPanelView?.RenderLogRows(BuildLogEntryViewData());
+            inspectorPanelView?.RenderSlotResultRows(BuildSlotResultRowViewData());
 
             bool hasLoadedConfig = currentConfig != null;
-            bool hasRun = currentRun != null;
+            bool canCreateRun = hasLoadedConfig;
+            bool canStartBattle = currentRun != null && runService.CanStartNextBattle(currentRun);
+            bool canContinue = currentRun?.ActiveBattle != null
+                && currentRun.ActiveBattle.BattleFlowStage == BattleFlowStage.PresentingRoundResult;
 
             actionBarView?.SetVisible(true);
             actionBarView?.SetButtonsInteractable(
                 canLoadConfig: true,
-                canCreateRun: hasLoadedConfig,
-                canStartBattle: hasRun,
-                canContinue: false);
+                canCreateRun: canCreateRun,
+                canStartBattle: canStartBattle,
+                canContinue: canContinue);
             actionBarView?.SetStatusMessage(debugUiState.StatusMessage);
 
             if (statusMessageText != null)
@@ -265,6 +295,93 @@ namespace BR3.Presentation.DebugUi
             };
         }
 
+        private void RefreshSnapshotSelector()
+        {
+            string[] phaseLabels = BuildSnapshotPhaseLabels();
+            int selectedIndex = ClampSnapshotSelectionIndex(phaseLabels.Length);
+            debugUiState.SelectedSnapshotPhaseIndex = selectedIndex;
+
+            inspectorPanelView?.SetSnapshotPhaseOptions(phaseLabels, selectedIndex);
+            inspectorPanelView?.SetSnapshotPhaseInteractable(phaseLabels.Length > 1 || (GetLatestRoundResult()?.Snapshots?.Count ?? 0) > 0);
+        }
+
+        private string[] BuildSnapshotPhaseLabels()
+        {
+            RoundResult latestRoundResult = GetLatestRoundResult();
+            if (latestRoundResult?.Snapshots == null || latestRoundResult.Snapshots.Count == 0)
+            {
+                return new[] { "No Snapshots" };
+            }
+
+            string[] phaseLabels = new string[latestRoundResult.Snapshots.Count];
+            for (int index = 0; index < latestRoundResult.Snapshots.Count; index++)
+            {
+                phaseLabels[index] = latestRoundResult.Snapshots[index].Phase.ToString();
+            }
+
+            return phaseLabels;
+        }
+
+        private int ClampSnapshotSelectionIndex(int optionCount)
+        {
+            if (optionCount <= 0)
+            {
+                return 0;
+            }
+
+            return Mathf.Clamp(debugUiState.SelectedSnapshotPhaseIndex, 0, optionCount - 1);
+        }
+
+        private EnemySequenceRowViewData[] BuildEnemySequenceRowViewData()
+        {
+            if (currentRun?.ActiveBattle?.EnemySequence == null)
+            {
+                return Array.Empty<EnemySequenceRowViewData>();
+            }
+
+            EnemySequenceRowViewData[] rows = new EnemySequenceRowViewData[currentRun.ActiveBattle.EnemySequence.Count];
+            for (int index = 0; index < currentRun.ActiveBattle.EnemySequence.Count; index++)
+            {
+                rows[index] = EnemySequenceTextFormatter.Format(index + 1, currentRun.ActiveBattle.EnemySequence[index]);
+            }
+
+            return rows;
+        }
+
+        private LogEntryViewData[] BuildLogEntryViewData()
+        {
+            if (currentRun?.ActiveBattle?.Logs == null)
+            {
+                return Array.Empty<LogEntryViewData>();
+            }
+
+            LogEntryViewData[] rows = new LogEntryViewData[currentRun.ActiveBattle.Logs.Count];
+            for (int index = 0; index < currentRun.ActiveBattle.Logs.Count; index++)
+            {
+                rows[index] = LogTextFormatter.Format(currentRun.ActiveBattle.Logs[index]);
+            }
+
+            return rows;
+        }
+
+        private SlotResultRowViewData[] BuildSlotResultRowViewData()
+        {
+            RoundResult latestRoundResult = GetLatestRoundResult();
+            if (latestRoundResult?.SlotResults == null)
+            {
+                return Array.Empty<SlotResultRowViewData>();
+            }
+
+            SlotResultRowViewData[] rows = new SlotResultRowViewData[latestRoundResult.SlotResults.Count];
+            for (int index = 0; index < latestRoundResult.SlotResults.Count; index++)
+            {
+                SlotCombatResult slotResult = latestRoundResult.SlotResults[index];
+                rows[index] = SlotCombatResultTextFormatter.Format(slotResult, FindPlayerCard(slotResult?.PlayerCardInstanceId));
+            }
+
+            return rows;
+        }
+
         private RoundResult GetLatestRoundResult()
         {
             if (currentRun?.ActiveBattle?.RoundResults == null || currentRun.ActiveBattle.RoundResults.Count == 0)
@@ -282,16 +399,8 @@ namespace BR3.Presentation.DebugUi
                 return null;
             }
 
-            for (int snapshotIndex = 0; snapshotIndex < latestRoundResult.Snapshots.Count; snapshotIndex++)
-            {
-                PhaseSnapshot snapshot = latestRoundResult.Snapshots[snapshotIndex];
-                if ((int)snapshot.Phase == debugUiState.SelectedSnapshotPhaseIndex)
-                {
-                    return snapshot;
-                }
-            }
-
-            return latestRoundResult.Snapshots[0];
+            int selectedIndex = ClampSnapshotSelectionIndex(latestRoundResult.Snapshots.Count);
+            return latestRoundResult.Snapshots[selectedIndex];
         }
 
         private static BoardSlotState GetSlot(LaneState laneState, int index)
