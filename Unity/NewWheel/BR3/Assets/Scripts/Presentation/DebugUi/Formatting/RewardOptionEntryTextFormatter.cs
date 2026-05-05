@@ -50,8 +50,8 @@ namespace BR3.Presentation.DebugUi
                     return $"Add: {addedTrait}";
                 case RewardOptionType.Replace:
                     string replacementTitle = CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec);
-                    string replacementStats = CardTextFormatter.FormatStats(rewardOption.ReplacePayload?.ReplacementCardSpec);
-                    return $"With: {replacementTitle} | {replacementStats}";
+                    string replacementTraits = CardTextFormatter.FormatTraits(rewardOption.ReplacePayload?.ReplacementCardSpec);
+                    return $"With: {replacementTitle} | {replacementTraits}";
                 case RewardOptionType.Skip:
                     return "Leave the deck unchanged.";
                 default:

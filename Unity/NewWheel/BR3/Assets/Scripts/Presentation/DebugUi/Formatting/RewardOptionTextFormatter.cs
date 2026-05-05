@@ -39,7 +39,7 @@ namespace BR3.Presentation.DebugUi
                     return $"Upgrade {targetCardName} with {addedTrait}";
                 case RewardOptionType.Replace:
                     CardInstance replaceTargetCard = FindCard(playerDeck, rewardOption.ReplacePayload?.TargetCardInstanceId);
-                    return $"Replace {CardTextFormatter.FormatDeckLabel(replaceTargetCard, playerDeck)} with {CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec)} ({CardTextFormatter.FormatStats(rewardOption.ReplacePayload?.ReplacementCardSpec)})";
+                    return $"Replace {CardTextFormatter.FormatDeckLabel(replaceTargetCard, playerDeck)} with {CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec)} ({CardTextFormatter.FormatTraits(rewardOption.ReplacePayload?.ReplacementCardSpec)})";
                 case RewardOptionType.Skip:
                     return "Skip";
                 default:
