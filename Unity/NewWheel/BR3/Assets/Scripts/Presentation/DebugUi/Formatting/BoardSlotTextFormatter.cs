@@ -4,7 +4,7 @@ namespace BR3.Presentation.DebugUi
 {
     public static class BoardSlotTextFormatter
     {
-        public static BoardSlotViewData Format(BoardSlotState slotState)
+        public static BoardSlotViewData Format(BoardSlotState slotState, int? currentRoundIndex = null)
         {
             int slotIndex = slotState?.Index + 1 ?? 0;
 
@@ -45,13 +45,21 @@ namespace BR3.Presentation.DebugUi
             }
 
             BoardCard occupant = slotState.Occupant;
+            string extraText = "-";
+            if (occupant.EnterRoundIndex > 0)
+            {
+                extraText = currentRoundIndex.HasValue && occupant.EnterRoundIndex == currentRoundIndex.Value
+                    ? $"New this round: {occupant.EnterRoundIndex}"
+                    : $"Entered: {occupant.EnterRoundIndex}";
+            }
+
             return new BoardSlotViewData
             {
                 SlotTitleText = $"Slot {slotIndex}",
                 OccupantNameText = CardTextFormatter.FormatTitle(occupant.SourceCard),
                 TraitsText = CardTextFormatter.FormatTraits(occupant.SourceCard),
                 PowerText = $"Power: {occupant.CurrentPower}",
-                ExtraText = occupant.EnterRoundIndex > 0 ? $"New this round: {occupant.EnterRoundIndex}" : "-",
+                ExtraText = extraText,
             };
         }
     }

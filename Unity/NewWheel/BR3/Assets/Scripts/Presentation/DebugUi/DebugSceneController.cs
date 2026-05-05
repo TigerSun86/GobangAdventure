@@ -298,15 +298,16 @@ namespace BR3.Presentation.DebugUi
         {
             LaneState enemyLane = currentRun?.ActiveBattle?.EnemyLane;
             LaneState playerLane = currentRun?.ActiveBattle?.PlayerLane;
+            int? currentRoundIndex = currentRun?.ActiveBattle?.RoundIndex;
 
             return new BoardViewData
             {
-                EnemySlot1 = BuildBoardSlotViewData(enemyLane, 0),
-                EnemySlot2 = BuildBoardSlotViewData(enemyLane, 1),
-                EnemySlot3 = BuildBoardSlotViewData(enemyLane, 2),
-                PlayerSlot1 = BuildBoardSlotViewData(playerLane, 0),
-                PlayerSlot2 = BuildBoardSlotViewData(playerLane, 1),
-                PlayerSlot3 = BuildBoardSlotViewData(playerLane, 2),
+                EnemySlot1 = BuildBoardSlotViewData(enemyLane, 0, currentRoundIndex),
+                EnemySlot2 = BuildBoardSlotViewData(enemyLane, 1, currentRoundIndex),
+                EnemySlot3 = BuildBoardSlotViewData(enemyLane, 2, currentRoundIndex),
+                PlayerSlot1 = BuildBoardSlotViewData(playerLane, 0, currentRoundIndex),
+                PlayerSlot2 = BuildBoardSlotViewData(playerLane, 1, currentRoundIndex),
+                PlayerSlot3 = BuildBoardSlotViewData(playerLane, 2, currentRoundIndex),
             };
         }
 
@@ -529,12 +530,12 @@ namespace BR3.Presentation.DebugUi
             return laneState.Slots[index];
         }
 
-        private static BoardSlotViewData BuildBoardSlotViewData(LaneState laneState, int index)
+        private static BoardSlotViewData BuildBoardSlotViewData(LaneState laneState, int index, int? currentRoundIndex)
         {
             BoardSlotState slotState = GetSlot(laneState, index);
             if (slotState != null)
             {
-                return BoardSlotTextFormatter.Format(slotState);
+                return BoardSlotTextFormatter.Format(slotState, currentRoundIndex);
             }
 
             return new BoardSlotViewData
