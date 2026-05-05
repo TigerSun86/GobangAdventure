@@ -438,7 +438,8 @@ namespace BR3.Presentation.DebugUi
                     stateText = "Not selectable now";
                 }
 
-                entries[index] = DeckEntryTextFormatter.Format(card, isUsed, isWaitingForPlayerCard, stateText);
+                string deckLabel = CardTextFormatter.FormatDeckLabel(card, index + 1);
+                entries[index] = DeckEntryTextFormatter.Format(card, deckLabel, isUsed, isWaitingForPlayerCard, stateText);
             }
 
             return entries;
@@ -459,7 +460,8 @@ namespace BR3.Presentation.DebugUi
             {
                 RewardOption option = currentRun.PendingRewardOffer.Options[index];
                 CardInstance targetCard = FindTargetCardForRewardOption(option);
-                entries[index] = RewardOptionEntryTextFormatter.Format(option, targetCard, true);
+                string targetCardLabel = CardTextFormatter.FormatDeckLabel(targetCard, currentRun.PlayerDeck);
+                entries[index] = RewardOptionEntryTextFormatter.Format(option, targetCard, targetCardLabel, true);
             }
 
             return entries;

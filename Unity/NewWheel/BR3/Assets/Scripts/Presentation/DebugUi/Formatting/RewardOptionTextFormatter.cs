@@ -34,12 +34,12 @@ namespace BR3.Presentation.DebugUi
             {
                 case RewardOptionType.Upgrade:
                     CardInstance upgradeTargetCard = FindCard(playerDeck, rewardOption.UpgradePayload?.TargetCardInstanceId);
-                    string targetCardName = CardTextFormatter.FormatTitle(upgradeTargetCard);
+                    string targetCardName = CardTextFormatter.FormatDeckLabel(upgradeTargetCard, playerDeck);
                     string addedTrait = rewardOption.UpgradePayload == null ? "-" : rewardOption.UpgradePayload.AddedTrait.ToString();
                     return $"Upgrade {targetCardName} with {addedTrait}";
                 case RewardOptionType.Replace:
                     CardInstance replaceTargetCard = FindCard(playerDeck, rewardOption.ReplacePayload?.TargetCardInstanceId);
-                    return $"Replace {CardTextFormatter.FormatTitle(replaceTargetCard)} with {CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec)} ({CardTextFormatter.FormatStats(rewardOption.ReplacePayload?.ReplacementCardSpec)})";
+                    return $"Replace {CardTextFormatter.FormatDeckLabel(replaceTargetCard, playerDeck)} with {CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec)} ({CardTextFormatter.FormatStats(rewardOption.ReplacePayload?.ReplacementCardSpec)})";
                 case RewardOptionType.Skip:
                     return "Skip";
                 default:

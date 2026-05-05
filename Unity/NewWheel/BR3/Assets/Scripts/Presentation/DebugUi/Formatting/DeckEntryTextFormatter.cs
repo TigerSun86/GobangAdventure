@@ -6,6 +6,7 @@ namespace BR3.Presentation.DebugUi
     {
         public static DeckEntryViewData Format(
             CardInstance cardInstance,
+            string deckLabel,
             bool isUsed,
             bool canSelectCard,
             string stateText)
@@ -15,7 +16,7 @@ namespace BR3.Presentation.DebugUi
             return new DeckEntryViewData
             {
                 CardInstanceId = cardInstance?.InstanceId,
-                TitleText = CardTextFormatter.FormatTitle(cardInstance),
+                TitleText = deckLabel,
                 TraitsText = CardTextFormatter.FormatTraits(cardInstance),
                 StatsText = CardTextFormatter.FormatStats(cardInstance),
                 StateText = stateText,

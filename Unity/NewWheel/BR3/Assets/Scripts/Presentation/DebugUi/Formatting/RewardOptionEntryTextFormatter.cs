@@ -4,7 +4,7 @@ namespace BR3.Presentation.DebugUi
 {
     public static class RewardOptionEntryTextFormatter
     {
-        public static RewardOptionEntryViewData Format(RewardOption rewardOption, CardInstance targetCard, bool isInteractable)
+        public static RewardOptionEntryViewData Format(RewardOption rewardOption, CardInstance targetCard, string targetCardLabel, bool isInteractable)
         {
             if (rewardOption == null)
             {
@@ -20,29 +20,42 @@ namespace BR3.Presentation.DebugUi
             return new RewardOptionEntryViewData
             {
                 OptionId = rewardOption.OptionId,
-                TitleText = rewardOption.Type.ToString(),
-                DetailsText = FormatDetails(rewardOption, targetCard),
+                TitleText = FormatTitle(rewardOption, targetCardLabel),
+                DetailsText = FormatDetails(rewardOption, targetCardLabel),
                 IsInteractable = isInteractable,
             };
         }
 
-        private static string FormatDetails(RewardOption rewardOption, CardInstance targetCard)
+        private static string FormatTitle(RewardOption rewardOption, string targetCardLabel)
         {
             switch (rewardOption.Type)
             {
                 case RewardOptionType.Upgrade:
-                    string upgradeTarget = CardTextFormatter.FormatTitle(targetCard);
-                    string addedTrait = rewardOption.UpgradePayload == null ? "-" : rewardOption.UpgradePayload.AddedTrait.ToString();
-                    return $"{upgradeTarget}\nAdd: {addedTrait}";
+                    return $"Upgrade {targetCardLabel}";
                 case RewardOptionType.Replace:
-                    string replaceTarget = CardTextFormatter.FormatTitle(targetCard);
+                    return $"Replace {targetCardLabel}";
+                case RewardOptionType.Skip:
+                    return "Skip";
+                default:
+                    return rewardOption.Type.ToString();
+            }
+        }
+
+        private static string FormatDetails(RewardOption rewardOption, string targetCardLabel)
+        {
+            switch (rewardOption.Type)
+            {
+                case RewardOptionType.Upgrade:
+                    string addedTrait = rewardOption.UpgradePayload == null ? "-" : rewardOption.UpgradePayload.AddedTrait.ToString();
+                    return $"Add: {addedTrait}";
+                case RewardOptionType.Replace:
                     string replacementTitle = CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec);
                     string replacementStats = CardTextFormatter.FormatStats(rewardOption.ReplacePayload?.ReplacementCardSpec);
-                    return $"{replaceTarget}\nWith: {replacementTitle} | {replacementStats}";
+                    return $"With: {replacementTitle} | {replacementStats}";
                 case RewardOptionType.Skip:
                     return "Leave the deck unchanged.";
                 default:
-                    return rewardOption.Type.ToString();
+                    return targetCardLabel;
             }
         }
     }
