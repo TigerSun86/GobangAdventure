@@ -13,8 +13,8 @@ namespace BR3.Presentation.DebugUi
 
             return
                 $"Phase: {snapshot.Phase}\n" +
-                $"Enemy Lane: {snapshot.EnemyLaneStateText}\n" +
-                $"Player Lane: {snapshot.PlayerLaneStateText}";
+                $"Enemy Lane: {SlotIndexDisplayFormatter.NormalizeVisibleSlotNumbers(snapshot.EnemyLaneStateText)}\n" +
+                $"Player Lane: {SlotIndexDisplayFormatter.NormalizeVisibleSlotNumbers(snapshot.PlayerLaneStateText)}";
         }
     }
 }

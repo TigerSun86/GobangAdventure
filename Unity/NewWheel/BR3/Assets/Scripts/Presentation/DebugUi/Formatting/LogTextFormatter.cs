@@ -6,7 +6,7 @@ namespace BR3.Presentation.DebugUi
         {
             return new LogEntryViewData
             {
-                LogText = string.IsNullOrWhiteSpace(logLine) ? "-" : logLine,
+                LogText = string.IsNullOrWhiteSpace(logLine) ? "-" : SlotIndexDisplayFormatter.NormalizeVisibleSlotNumbers(logLine),
             };
         }
     }
