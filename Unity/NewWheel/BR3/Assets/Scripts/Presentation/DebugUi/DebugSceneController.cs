@@ -192,7 +192,7 @@ namespace BR3.Presentation.DebugUi
                 }
 
                 RunCommandResult runResult = runService.AcceptCompletedBattle(currentRun, result.BattleOutcome, rewardService, currentConfig);
-                SetStatusMessage(runResult.Success ? "Battle completed." : runResult.FailureReason);
+                SetStatusMessage(GetRunOutcomeStatusMessage(runResult) ?? (runResult.Success ? "Battle completed." : runResult.FailureReason));
             }
             else
             {
@@ -256,6 +256,24 @@ namespace BR3.Presentation.DebugUi
         private void SetStatusMessage(string message)
         {
             debugUiState.StatusMessage = message;
+        }
+
+        private static string GetRunOutcomeStatusMessage(RunCommandResult runCommandResult)
+        {
+            if (runCommandResult == null || !runCommandResult.Success)
+            {
+                return null;
+            }
+
+            switch (runCommandResult.FlowStage)
+            {
+                case RunFlowStage.Victory:
+                    return "Victory.";
+                case RunFlowStage.Defeat:
+                    return "Defeat.";
+                default:
+                    return null;
+            }
         }
 
         private RunSummaryViewData BuildRunSummaryViewData()
