@@ -32,14 +32,14 @@ namespace BR3.Presentation.DebugUi
             return deckPosition > 0 ? FormatDeckLabel(cardInstance, deckPosition) : FormatTitle(cardInstance);
         }
 
-        public static string FormatTraits(CardSpec cardSpec)
+        public static string FormatTraits(CardSpec cardSpec, TraitTuning traitTuning = null)
         {
-            return cardSpec == null ? "Traits: -" : TraitListFormatter.Format(cardSpec.traits);
+            return cardSpec == null ? "Traits: -" : TraitListFormatter.Format(cardSpec.traits, traitTuning);
         }
 
-        public static string FormatTraits(CardInstance cardInstance)
+        public static string FormatTraits(CardInstance cardInstance, TraitTuning traitTuning = null)
         {
-            return cardInstance == null ? "Traits: -" : TraitListFormatter.Format(cardInstance.Traits);
+            return cardInstance == null ? "Traits: -" : TraitListFormatter.Format(cardInstance.Traits, traitTuning);
         }
 
         public static string FormatStats(CardSpec cardSpec)

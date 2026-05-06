@@ -1,10 +1,11 @@
+using BR3.Config;
 using BR3.Domain.Runtime;
 
 namespace BR3.Presentation.DebugUi
 {
     public static class BoardSlotTextFormatter
     {
-        public static BoardSlotViewData Format(BoardSlotState slotState, int? currentRoundIndex = null)
+        public static BoardSlotViewData Format(BoardSlotState slotState, TraitTuning traitTuning, int? currentRoundIndex = null)
         {
             int slotIndex = slotState?.Index + 1 ?? 0;
 
@@ -57,7 +58,7 @@ namespace BR3.Presentation.DebugUi
             {
                 SlotTitleText = $"Slot {slotIndex}",
                 OccupantNameText = CardTextFormatter.FormatTitle(occupant.SourceCard),
-                TraitsText = CardTextFormatter.FormatTraits(occupant.SourceCard),
+                TraitsText = CardTextFormatter.FormatTraits(occupant.SourceCard, traitTuning),
                 PowerText = $"Power: {occupant.CurrentPower}",
                 ExtraText = extraText,
             };

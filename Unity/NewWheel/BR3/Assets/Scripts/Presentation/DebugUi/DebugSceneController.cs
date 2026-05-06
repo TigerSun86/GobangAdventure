@@ -362,7 +362,7 @@ namespace BR3.Presentation.DebugUi
                     SummaryText = RoundResultTextFormatter.FormatSummary(latestRoundResult, latestPlayerCard),
                 },
                 SnapshotText = SnapshotTextFormatter.Format(selectedSnapshot),
-                RewardDetailsText = RewardOptionTextFormatter.Format(currentRun?.PendingRewardOffer, currentRun?.PlayerDeck),
+                RewardDetailsText = RewardOptionTextFormatter.Format(currentRun?.PendingRewardOffer, currentRun?.PlayerDeck, currentConfig?.traitTuning),
             };
         }
 
@@ -457,7 +457,7 @@ namespace BR3.Presentation.DebugUi
                 }
 
                 string deckLabel = CardTextFormatter.FormatDeckLabel(card, index + 1);
-                entries[index] = DeckEntryTextFormatter.Format(card, deckLabel, isUsed, isWaitingForPlayerCard, stateText);
+                entries[index] = DeckEntryTextFormatter.Format(card, deckLabel, isUsed, isWaitingForPlayerCard, currentConfig?.traitTuning, stateText);
             }
 
             return entries;
@@ -479,7 +479,7 @@ namespace BR3.Presentation.DebugUi
                 RewardOption option = currentRun.PendingRewardOffer.Options[index];
                 CardInstance targetCard = FindTargetCardForRewardOption(option);
                 string targetCardLabel = CardTextFormatter.FormatDeckLabel(targetCard, currentRun.PlayerDeck);
-                entries[index] = RewardOptionEntryTextFormatter.Format(option, targetCard, targetCardLabel, true);
+                entries[index] = RewardOptionEntryTextFormatter.Format(option, targetCard, targetCardLabel, currentConfig?.traitTuning, true);
             }
 
             return entries;
@@ -550,12 +550,12 @@ namespace BR3.Presentation.DebugUi
             return laneState.Slots[index];
         }
 
-        private static BoardSlotViewData BuildBoardSlotViewData(LaneState laneState, int index, int? currentRoundIndex)
+        private BoardSlotViewData BuildBoardSlotViewData(LaneState laneState, int index, int? currentRoundIndex)
         {
             BoardSlotState slotState = GetSlot(laneState, index);
             if (slotState != null)
             {
-                return BoardSlotTextFormatter.Format(slotState, currentRoundIndex);
+                return BoardSlotTextFormatter.Format(slotState, currentConfig?.traitTuning, currentRoundIndex);
             }
 
             return new BoardSlotViewData

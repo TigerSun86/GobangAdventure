@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using BR3.Config;
 using BR3.Domain.Runtime;
 
 namespace BR3.Presentation.DebugUi
 {
     public static class RewardOptionTextFormatter
     {
-        public static string Format(RewardOffer rewardOffer, IReadOnlyList<CardInstance> playerDeck)
+        public static string Format(RewardOffer rewardOffer, IReadOnlyList<CardInstance> playerDeck, TraitTuning traitTuning)
         {
             if (rewardOffer == null || rewardOffer.Options == null || rewardOffer.Options.Count == 0)
             {
@@ -17,13 +18,13 @@ namespace BR3.Presentation.DebugUi
 
             for (int index = 0; index < rewardOffer.Options.Count; index++)
             {
-                lines[index + 1] = $"{index + 1}. {FormatOption(rewardOffer.Options[index], playerDeck)}";
+                lines[index + 1] = $"{index + 1}. {FormatOption(rewardOffer.Options[index], playerDeck, traitTuning)}";
             }
 
             return string.Join("\n", lines);
         }
 
-        private static string FormatOption(RewardOption rewardOption, IReadOnlyList<CardInstance> playerDeck)
+        private static string FormatOption(RewardOption rewardOption, IReadOnlyList<CardInstance> playerDeck, TraitTuning traitTuning)
         {
             if (rewardOption == null)
             {
@@ -35,11 +36,13 @@ namespace BR3.Presentation.DebugUi
                 case RewardOptionType.Upgrade:
                     CardInstance upgradeTargetCard = FindCard(playerDeck, rewardOption.UpgradePayload?.TargetCardInstanceId);
                     string targetCardName = CardTextFormatter.FormatDeckLabel(upgradeTargetCard, playerDeck);
-                    string addedTrait = rewardOption.UpgradePayload == null ? "-" : rewardOption.UpgradePayload.AddedTrait.ToString();
+                    string addedTrait = rewardOption.UpgradePayload == null
+                        ? "-"
+                        : TraitListFormatter.FormatTrait(rewardOption.UpgradePayload.AddedTrait, traitTuning);
                     return $"Upgrade {targetCardName} with {addedTrait}";
                 case RewardOptionType.Replace:
                     CardInstance replaceTargetCard = FindCard(playerDeck, rewardOption.ReplacePayload?.TargetCardInstanceId);
-                    return $"Replace {CardTextFormatter.FormatDeckLabel(replaceTargetCard, playerDeck)} with {CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec)} ({CardTextFormatter.FormatTraits(rewardOption.ReplacePayload?.ReplacementCardSpec)})";
+                    return $"Replace {CardTextFormatter.FormatDeckLabel(replaceTargetCard, playerDeck)} with {CardTextFormatter.FormatTitle(rewardOption.ReplacePayload?.ReplacementCardSpec)} ({CardTextFormatter.FormatTraits(rewardOption.ReplacePayload?.ReplacementCardSpec, traitTuning)})";
                 case RewardOptionType.Skip:
                     return "Skip";
                 default:

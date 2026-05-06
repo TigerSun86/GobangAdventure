@@ -1,3 +1,4 @@
+using BR3.Config;
 using BR3.Domain.Runtime;
 
 namespace BR3.Presentation.DebugUi
@@ -9,6 +10,7 @@ namespace BR3.Presentation.DebugUi
             string deckLabel,
             bool isUsed,
             bool canSelectCard,
+            TraitTuning traitTuning,
             string stateText)
         {
             bool isInteractable = canSelectCard && !isUsed && cardInstance != null;
@@ -17,7 +19,7 @@ namespace BR3.Presentation.DebugUi
             {
                 CardInstanceId = cardInstance?.InstanceId,
                 TitleText = deckLabel,
-                TraitsText = CardTextFormatter.FormatTraits(cardInstance),
+                TraitsText = CardTextFormatter.FormatTraits(cardInstance, traitTuning),
                 StatsText = CardTextFormatter.FormatStats(cardInstance),
                 StateText = stateText,
                 IsInteractable = isInteractable,
