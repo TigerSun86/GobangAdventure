@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using BR3.Application;
 using BR3.Config;
 using BR3.Domain.Results;
@@ -11,8 +12,7 @@ namespace BR3.Presentation.DebugUi
 {
     public sealed class DebugSceneController : MonoBehaviour
     {
-        [Header("Config")]
-        [SerializeField] private TextAsset configTextAsset;
+        private const string StreamingConfigFileName = "game_config.json";
 
         [Header("Panels")]
         [SerializeField] private RunSummaryPanelView runSummaryPanelView;
@@ -36,8 +36,8 @@ namespace BR3.Presentation.DebugUi
         private RoundResolver roundResolver;
         private GameConfig currentConfig;
         private RunState currentRun;
+        private string streamingConfigPath;
 
-        public TextAsset ConfigTextAsset => configTextAsset;
         public GameConfig CurrentConfig => currentConfig;
         public RunState CurrentRun => currentRun;
         public DebugUiState UiState => debugUiState;
@@ -50,6 +50,7 @@ namespace BR3.Presentation.DebugUi
             battleService = new BattleService();
             rewardService = new RewardService(runtimeStateFactory);
             roundResolver = new RoundResolver();
+            streamingConfigPath = Path.Combine(UnityEngine.Application.streamingAssetsPath, StreamingConfigFileName);
 
             actionBarView?.Bind(OnLoadConfigButtonPressed, OnNewRunButtonPressed, OnStartBattleButtonPressed, OnContinueButtonPressed, OnQuitButtonPressed);
             inspectorPanelView?.BindSnapshotPhaseChanged(OnSnapshotPhaseChanged);
@@ -58,16 +59,9 @@ namespace BR3.Presentation.DebugUi
 
         public void OnLoadConfigButtonPressed()
         {
-            if (configTextAsset == null)
-            {
-                SetStatusMessage("Assign a GameConfig TextAsset before loading config.");
-                RefreshAll();
-                return;
-            }
-
             try
             {
-                currentConfig = gameConfigLoader.LoadFromTextAsset(configTextAsset);
+                currentConfig = gameConfigLoader.LoadFromFile(streamingConfigPath);
 
                 if (currentRun == null)
                 {
@@ -81,7 +75,7 @@ namespace BR3.Presentation.DebugUi
             catch (Exception exception)
             {
                 currentConfig = null;
-                SetStatusMessage($"Config load failed: {exception.Message}");
+                SetStatusMessage($"Config load failed: {exception.Message} ({streamingConfigPath})");
             }
 
             RefreshAll();

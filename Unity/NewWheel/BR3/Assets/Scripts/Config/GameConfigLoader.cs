@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using BR3.Domain;
 using UnityEngine;
 
@@ -37,6 +38,21 @@ namespace BR3.Config
             }
 
             return LoadFromJson(textAsset.text);
+        }
+
+        public GameConfig LoadFromFile(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                throw new ArgumentException("Config file path must not be null or empty.", nameof(filePath));
+            }
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("Config file was not found.", filePath);
+            }
+
+            return LoadFromJson(File.ReadAllText(filePath));
         }
 
         private static void Validate(GameConfig config)

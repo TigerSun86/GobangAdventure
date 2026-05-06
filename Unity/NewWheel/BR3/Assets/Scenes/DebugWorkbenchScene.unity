@@ -325,7 +325,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f4e0f4dac4ba604caec9a4578ba0d5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BR3::BR3.Presentation.DebugUi.DebugSceneController
-  configTextAsset: {fileID: 4900000, guid: 18877437c4b009140a68aec21b489c0a, type: 3}
   runSummaryPanelView: {fileID: 524151997}
   boardPanelView: {fileID: 2020121336}
   enemySequencePanelView: {fileID: 1715888534}
