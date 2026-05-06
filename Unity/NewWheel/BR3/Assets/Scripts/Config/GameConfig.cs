@@ -14,10 +14,26 @@ namespace BR3.Config
     }
 
     [Serializable]
+    public sealed class AuthoredGameConfig
+    {
+        public AuthoredPlayerStartConfig playerStart;
+        public List<AuthoredEnemyConfig> enemies;
+        public AuthoredRewardGenerationConfig rewardGeneration;
+        public TraitTuning traitTuning;
+    }
+
+    [Serializable]
     public sealed class PlayerStartConfig
     {
         public int playerMaxHp;
         public List<CardSpec> startingDeck;
+    }
+
+    [Serializable]
+    public sealed class AuthoredPlayerStartConfig
+    {
+        public int playerMaxHp;
+        public List<AuthoredCardSpec> startingDeck;
     }
 
     [Serializable]
@@ -30,11 +46,29 @@ namespace BR3.Config
     }
 
     [Serializable]
+    public sealed class AuthoredEnemyConfig
+    {
+        public string enemyId;
+        public string displayName;
+        public int maxHp;
+        public List<AuthoredCardSpec> fixedDeck;
+    }
+
+    [Serializable]
     public sealed class RewardGenerationConfig
     {
         public List<RpsType> allowedReplacementRpsTypes;
         public List<int> allowedReplacementBasePowers;
         public List<TraitType> allowedReplacementTraits;
+        public int replacementTraitCount;
+    }
+
+    [Serializable]
+    public sealed class AuthoredRewardGenerationConfig
+    {
+        public List<string> allowedReplacementRpsTypes;
+        public List<int> allowedReplacementBasePowers;
+        public List<string> allowedReplacementTraits;
         public int replacementTraitCount;
     }
 
@@ -54,5 +88,13 @@ namespace BR3.Config
         public RpsType rpsType;
         public int basePower;
         public List<TraitType> traits;
+    }
+
+    [Serializable]
+    public sealed class AuthoredCardSpec
+    {
+        public string rpsType;
+        public int basePower;
+        public List<string> traits;
     }
 }

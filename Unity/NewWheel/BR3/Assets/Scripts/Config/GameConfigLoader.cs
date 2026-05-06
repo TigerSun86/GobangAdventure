@@ -20,12 +20,13 @@ namespace BR3.Config
                 throw new ArgumentException("Config JSON text must not be null or empty.", nameof(jsonText));
             }
 
-            GameConfig config = JsonUtility.FromJson<GameConfig>(jsonText);
-            if (config == null)
+            AuthoredGameConfig authoredConfig = JsonUtility.FromJson<AuthoredGameConfig>(jsonText);
+            if (authoredConfig == null)
             {
-                throw new InvalidOperationException("Config JSON could not be deserialized into GameConfig.");
+                throw new InvalidOperationException("Config JSON could not be deserialized into AuthoredGameConfig.");
             }
 
+            GameConfig config = ConvertToGameConfig(authoredConfig);
             Validate(config);
             return config;
         }
@@ -53,6 +54,134 @@ namespace BR3.Config
             }
 
             return LoadFromJson(File.ReadAllText(filePath));
+        }
+
+        private static GameConfig ConvertToGameConfig(AuthoredGameConfig authoredConfig)
+        {
+            if (authoredConfig == null)
+            {
+                return null;
+            }
+
+            return new GameConfig
+            {
+                playerStart = ConvertPlayerStart(authoredConfig.playerStart),
+                enemies = ConvertEnemies(authoredConfig.enemies),
+                rewardGeneration = ConvertRewardGeneration(authoredConfig.rewardGeneration),
+                traitTuning = authoredConfig.traitTuning,
+            };
+        }
+
+        private static PlayerStartConfig ConvertPlayerStart(AuthoredPlayerStartConfig authoredPlayerStart)
+        {
+            if (authoredPlayerStart == null)
+            {
+                return null;
+            }
+
+            return new PlayerStartConfig
+            {
+                playerMaxHp = authoredPlayerStart.playerMaxHp,
+                startingDeck = ConvertCardSpecs(authoredPlayerStart.startingDeck, "GameConfig.playerStart.startingDeck"),
+            };
+        }
+
+        private static List<EnemyConfig> ConvertEnemies(List<AuthoredEnemyConfig> authoredEnemies)
+        {
+            if (authoredEnemies == null)
+            {
+                return null;
+            }
+
+            List<EnemyConfig> enemies = new List<EnemyConfig>(authoredEnemies.Count);
+            for (int enemyIndex = 0; enemyIndex < authoredEnemies.Count; enemyIndex++)
+            {
+                AuthoredEnemyConfig authoredEnemy = authoredEnemies[enemyIndex];
+                enemies.Add(new EnemyConfig
+                {
+                    enemyId = authoredEnemy?.enemyId,
+                    displayName = authoredEnemy?.displayName,
+                    maxHp = authoredEnemy?.maxHp ?? 0,
+                    fixedDeck = ConvertCardSpecs(authoredEnemy?.fixedDeck, $"GameConfig.enemies[{enemyIndex}].fixedDeck"),
+                });
+            }
+
+            return enemies;
+        }
+
+        private static RewardGenerationConfig ConvertRewardGeneration(AuthoredRewardGenerationConfig authoredRewardGeneration)
+        {
+            if (authoredRewardGeneration == null)
+            {
+                return null;
+            }
+
+            return new RewardGenerationConfig
+            {
+                allowedReplacementRpsTypes = ConvertEnumList<RpsType>(
+                    authoredRewardGeneration.allowedReplacementRpsTypes,
+                    "GameConfig.rewardGeneration.allowedReplacementRpsTypes"),
+                allowedReplacementBasePowers = authoredRewardGeneration.allowedReplacementBasePowers,
+                allowedReplacementTraits = ConvertEnumList<TraitType>(
+                    authoredRewardGeneration.allowedReplacementTraits,
+                    "GameConfig.rewardGeneration.allowedReplacementTraits"),
+                replacementTraitCount = authoredRewardGeneration.replacementTraitCount,
+            };
+        }
+
+        private static List<CardSpec> ConvertCardSpecs(List<AuthoredCardSpec> authoredCards, string path)
+        {
+            if (authoredCards == null)
+            {
+                return null;
+            }
+
+            List<CardSpec> cards = new List<CardSpec>(authoredCards.Count);
+            for (int cardIndex = 0; cardIndex < authoredCards.Count; cardIndex++)
+            {
+                AuthoredCardSpec authoredCard = authoredCards[cardIndex];
+                string cardPath = $"{path}[{cardIndex}]";
+                cards.Add(new CardSpec
+                {
+                    rpsType = ParseEnum<RpsType>(authoredCard?.rpsType, $"{cardPath}.rpsType"),
+                    basePower = authoredCard?.basePower ?? 0,
+                    traits = ConvertEnumList<TraitType>(authoredCard?.traits, $"{cardPath}.traits"),
+                });
+            }
+
+            return cards;
+        }
+
+        private static List<TEnum> ConvertEnumList<TEnum>(List<string> values, string path) where TEnum : struct, Enum
+        {
+            if (values == null)
+            {
+                return null;
+            }
+
+            List<TEnum> enums = new List<TEnum>(values.Count);
+            for (int index = 0; index < values.Count; index++)
+            {
+                enums.Add(ParseEnum<TEnum>(values[index], $"{path}[{index}]"));
+            }
+
+            return enums;
+        }
+
+        private static TEnum ParseEnum<TEnum>(string rawValue, string path) where TEnum : struct, Enum
+        {
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                throw new InvalidOperationException($"{path} must contain a non-empty {typeof(TEnum).Name} name.");
+            }
+
+            if (Enum.TryParse(rawValue, true, out TEnum parsedValue) && Enum.IsDefined(typeof(TEnum), parsedValue))
+            {
+                return parsedValue;
+            }
+
+            throw new InvalidOperationException(
+                $"{path} has invalid value '{rawValue}'. Expected one of: {string.Join(", ", Enum.GetNames(typeof(TEnum)))}.");
         }
 
         private static void Validate(GameConfig config)
