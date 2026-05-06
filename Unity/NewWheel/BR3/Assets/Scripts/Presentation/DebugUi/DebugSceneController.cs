@@ -51,7 +51,7 @@ namespace BR3.Presentation.DebugUi
             rewardService = new RewardService(runtimeStateFactory);
             roundResolver = new RoundResolver();
 
-            actionBarView?.Bind(OnLoadConfigButtonPressed, OnNewRunButtonPressed, OnStartBattleButtonPressed, OnContinueButtonPressed);
+            actionBarView?.Bind(OnLoadConfigButtonPressed, OnNewRunButtonPressed, OnStartBattleButtonPressed, OnContinueButtonPressed, OnQuitButtonPressed);
             inspectorPanelView?.BindSnapshotPhaseChanged(OnSnapshotPhaseChanged);
             RefreshAll();
         }
@@ -208,6 +208,15 @@ namespace BR3.Presentation.DebugUi
             RefreshAll();
         }
 
+        public void OnQuitButtonPressed()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            UnityEngine.Application.Quit();
+#endif
+        }
+
         public void RefreshAll()
         {
             runSummaryPanelView?.SetVisible(true);
@@ -244,7 +253,8 @@ namespace BR3.Presentation.DebugUi
                 canLoadConfig: true,
                 canCreateRun: canCreateRun,
                 canStartBattle: canStartBattle,
-                canContinue: canContinue);
+                canContinue: canContinue,
+                canQuit: true);
             actionBarView?.SetStatusMessage(debugUiState.StatusMessage);
 
             if (statusMessageText != null)

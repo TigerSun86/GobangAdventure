@@ -11,6 +11,7 @@ namespace BR3.Presentation.DebugUi
         [SerializeField] private Button newRunButton;
         [SerializeField] private Button startBattleButton;
         [SerializeField] private Button continueButton;
+        [SerializeField] private Button quitButton;
         [SerializeField] private TMP_Text statusMessageText;
 
         public void SetVisible(bool isVisible)
@@ -22,24 +23,28 @@ namespace BR3.Presentation.DebugUi
             Action onLoadConfig,
             Action onNewRun,
             Action onStartBattle,
-            Action onContinue)
+            Action onContinue,
+            Action onQuit)
         {
             BindButton(loadConfigButton, onLoadConfig);
             BindButton(newRunButton, onNewRun);
             BindButton(startBattleButton, onStartBattle);
             BindButton(continueButton, onContinue);
+            BindButton(quitButton, onQuit);
         }
 
         public void SetButtonsInteractable(
             bool canLoadConfig,
             bool canCreateRun,
             bool canStartBattle,
-            bool canContinue)
+            bool canContinue,
+            bool canQuit)
         {
             SetInteractable(loadConfigButton, canLoadConfig);
             SetInteractable(newRunButton, canCreateRun);
             SetInteractable(startBattleButton, canStartBattle);
             SetInteractable(continueButton, canContinue);
+            SetInteractable(quitButton, canQuit);
         }
 
         public void SetStatusMessage(string message)
