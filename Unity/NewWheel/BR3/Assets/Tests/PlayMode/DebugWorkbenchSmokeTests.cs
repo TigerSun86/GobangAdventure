@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using BR3.Application;
+using BR3.Domain.Results;
 using BR3.Domain.Runtime;
 using BR3.Presentation.DebugUi;
 using NUnit.Framework;
@@ -147,6 +149,46 @@ namespace BR3.Tests.PlayMode
             LogAssert.NoUnexpectedReceived();
         }
 
+        [UnityTest]
+        public IEnumerator Continue_WhenThirdBattleCompletesWithEnemyAlive_EntersDefeat()
+        {
+            DebugSceneController controller = null;
+
+            yield return CreateLoadedRun(controllerResult => controller = controllerResult);
+
+            SetupPendingDefeatBattle(controller);
+
+            controller.OnContinueButtonPressed();
+            yield return null;
+
+            Assert.That(controller.CurrentRun.FlowStage, Is.EqualTo(RunFlowStage.Defeat));
+            Assert.That(controller.CurrentRun.ActiveBattle, Is.Null);
+            Assert.That(controller.CurrentRun.PendingRewardOffer, Is.Null);
+            Assert.That(controller.CurrentRun.CurrentEnemy.BattlesPlayed, Is.EqualTo(3));
+            LogAssert.NoUnexpectedReceived();
+        }
+
+        [UnityTest]
+        public IEnumerator ChooseReward_WhenFinalEnemyIsDefeated_EntersVictory()
+        {
+            DebugSceneController controller = null;
+
+            yield return CreateLoadedRun(controllerResult => controller = controllerResult);
+
+            SetupPendingVictoryReward(controller);
+            RewardOffer originalRewardOffer = controller.CurrentRun.PendingRewardOffer;
+            string selectedOptionId = FindRewardOptionId(originalRewardOffer, RewardOptionType.Skip);
+
+            controller.OnRewardOptionSelected(selectedOptionId);
+            yield return null;
+
+            Assert.That(controller.CurrentRun.FlowStage, Is.EqualTo(RunFlowStage.Victory));
+            Assert.That(controller.CurrentRun.ActiveBattle, Is.Null);
+            Assert.That(controller.CurrentRun.PendingRewardOffer, Is.Null);
+            Assert.That(controller.CurrentRun.CurrentEnemy.RewardsClaimed, Is.EqualTo(1));
+            LogAssert.NoUnexpectedReceived();
+        }
+
         private static IEnumerator LoadDebugWorkbenchScene()
         {
             yield return EditorSceneManager.LoadSceneAsyncInPlayMode(
@@ -222,6 +264,53 @@ namespace BR3.Tests.PlayMode
                 rewardIndexForCurrentEnemy: 1);
             controller.CurrentRun.FlowStage = RunFlowStage.ChoosingReward;
             controller.RefreshAll();
+        }
+
+        private static void SetupPendingDefeatBattle(DebugSceneController controller)
+        {
+            controller.CurrentRun.CurrentEnemy.BattlesPlayed = 2;
+            controller.CurrentRun.CurrentEnemy.RewardsClaimed = 0;
+            controller.CurrentRun.CurrentEnemy.CurrentHp = 5;
+            controller.CurrentRun.PendingRewardOffer = null;
+            controller.CurrentRun.ActiveBattle = CreatePresentingBattleState(battleIndexForEnemy: 3, roundIndex: 3);
+            controller.CurrentRun.FlowStage = RunFlowStage.InBattle;
+            controller.RefreshAll();
+        }
+
+        private static void SetupPendingVictoryReward(DebugSceneController controller)
+        {
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = new RewardService(runtimeStateFactory);
+            int finalEnemyIndex = controller.CurrentConfig.enemies.Count - 1;
+
+            controller.CurrentRun.CurrentEnemyIndex = finalEnemyIndex;
+            controller.CurrentRun.CurrentEnemy = runtimeStateFactory.CreateEnemyProgressState(controller.CurrentConfig.enemies[finalEnemyIndex]);
+            controller.CurrentRun.CurrentEnemy.CurrentHp = 0;
+            controller.CurrentRun.CurrentEnemy.RewardsClaimed = 0;
+            controller.CurrentRun.ActiveBattle = null;
+            controller.CurrentRun.PendingRewardOffer = rewardService.CreateRewardOffer(
+                controller.CurrentRun.PlayerDeck,
+                controller.CurrentConfig.rewardGeneration,
+                rewardIndexForCurrentEnemy: 1);
+            controller.CurrentRun.FlowStage = RunFlowStage.ChoosingReward;
+            controller.RefreshAll();
+        }
+
+        private static BattleState CreatePresentingBattleState(int battleIndexForEnemy, int roundIndex)
+        {
+            return new BattleState
+            {
+                BattleIndexForEnemy = battleIndexForEnemy,
+                RoundIndex = roundIndex,
+                PlayerLane = null,
+                EnemyLane = null,
+                UsedPlayerCardIds = new HashSet<string>(),
+                EnemySequence = new List<BR3.Config.CardSpec>(),
+                RoundResults = new List<RoundResult>(),
+                Logs = new List<string>(),
+                Snapshots = new List<PhaseSnapshot>(),
+                BattleFlowStage = BattleFlowStage.PresentingRoundResult,
+            };
         }
 
         private static string FindRewardOptionId(RewardOffer rewardOffer, RewardOptionType rewardOptionType)
