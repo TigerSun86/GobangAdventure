@@ -1,0 +1,19 @@
+{
+  "name": "BR3.Tests.PlayMode",
+  "rootNamespace": "BR3.Tests.PlayMode",
+  "references": [
+    "BR3"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
