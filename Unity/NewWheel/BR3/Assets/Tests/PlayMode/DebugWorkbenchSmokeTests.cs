@@ -1,4 +1,5 @@
 using System.Collections;
+using BR3.Application;
 using BR3.Domain.Runtime;
 using BR3.Presentation.DebugUi;
 using NUnit.Framework;
@@ -73,17 +74,7 @@ namespace BR3.Tests.PlayMode
         {
             DebugSceneController controller = null;
 
-            yield return LoadDebugWorkbenchScene();
-            yield return WaitForController(controllerResult => controller = controllerResult);
-
-            controller.OnLoadConfigButtonPressed();
-            yield return null;
-
-            controller.OnNewRunButtonPressed();
-            yield return null;
-
-            controller.OnStartBattleButtonPressed();
-            yield return null;
+            yield return CreateStartedBattle(controllerResult => controller = controllerResult);
 
             Assert.That(controller.CurrentRun, Is.Not.Null);
             Assert.That(controller.CurrentRun.FlowStage, Is.EqualTo(RunFlowStage.InBattle));
@@ -91,6 +82,68 @@ namespace BR3.Tests.PlayMode
             Assert.That(controller.CurrentRun.ActiveBattle.BattleFlowStage, Is.EqualTo(BattleFlowStage.WaitingForPlayerCard));
             Assert.That(controller.CurrentRun.ActiveBattle.RoundIndex, Is.EqualTo(1));
             Assert.That(controller.CurrentRun.ActiveBattle.EnemySequence, Is.Not.Null.And.Count.GreaterThan(0));
+            LogAssert.NoUnexpectedReceived();
+        }
+
+        [UnityTest]
+        public IEnumerator SubmitPlayerCard_AfterBattleStart_ProducesRoundResultAndPresentationState()
+        {
+            DebugSceneController controller = null;
+
+            yield return CreateStartedBattle(controllerResult => controller = controllerResult);
+
+            string selectedCardId = controller.CurrentRun.PlayerDeck[0].InstanceId;
+
+            controller.OnPlayerCardSelected(selectedCardId);
+            yield return null;
+
+            Assert.That(controller.CurrentRun.ActiveBattle, Is.Not.Null);
+            Assert.That(controller.CurrentRun.ActiveBattle.BattleFlowStage, Is.EqualTo(BattleFlowStage.PresentingRoundResult));
+            Assert.That(controller.CurrentRun.ActiveBattle.RoundResults, Has.Count.EqualTo(1));
+            Assert.That(controller.CurrentRun.ActiveBattle.UsedPlayerCardIds.Contains(selectedCardId), Is.True);
+            Assert.That(controller.CurrentRun.ActiveBattle.RoundResults[0], Is.Not.Null);
+            Assert.That(controller.CurrentRun.ActiveBattle.RoundResults[0].PlayerCardInstanceId, Is.EqualTo(selectedCardId));
+            LogAssert.NoUnexpectedReceived();
+        }
+
+        [UnityTest]
+        public IEnumerator Continue_AfterRoundResult_AdvancesBattleOutOfPresentationState()
+        {
+            DebugSceneController controller = null;
+
+            yield return CreateStartedBattle(controllerResult => controller = controllerResult);
+            yield return SubmitFirstPlayerCard(controller);
+
+            controller.OnContinueButtonPressed();
+            yield return null;
+
+            Assert.That(controller.CurrentRun.ActiveBattle, Is.Not.Null);
+            Assert.That(controller.CurrentRun.ActiveBattle.BattleFlowStage, Is.EqualTo(BattleFlowStage.WaitingForPlayerCard));
+            Assert.That(controller.CurrentRun.ActiveBattle.BattleFlowStage, Is.Not.EqualTo(BattleFlowStage.PresentingRoundResult));
+            Assert.That(controller.CurrentRun.ActiveBattle.RoundIndex, Is.EqualTo(2));
+            Assert.That(controller.CurrentRun.FlowStage, Is.EqualTo(RunFlowStage.InBattle));
+            LogAssert.NoUnexpectedReceived();
+        }
+
+        [UnityTest]
+        public IEnumerator ChooseReward_WhenPendingRewardExists_AdvancesRunStateReasonably()
+        {
+            DebugSceneController controller = null;
+
+            yield return CreateLoadedRun(controllerResult => controller = controllerResult);
+
+            SetupPendingRewardOffer(controller);
+            RewardOffer originalRewardOffer = controller.CurrentRun.PendingRewardOffer;
+            string selectedOptionId = FindRewardOptionId(originalRewardOffer, RewardOptionType.Skip);
+
+            controller.OnRewardOptionSelected(selectedOptionId);
+            yield return null;
+
+            Assert.That(originalRewardOffer, Is.Not.Null);
+            Assert.That(controller.CurrentRun.ActiveBattle, Is.Null);
+            Assert.That(controller.CurrentRun.PendingRewardOffer, Is.Null);
+            Assert.That(controller.CurrentRun.CurrentEnemy.RewardsClaimed, Is.EqualTo(1));
+            Assert.That(controller.CurrentRun.FlowStage, Is.EqualTo(RunFlowStage.ReadyForNextBattle));
             LogAssert.NoUnexpectedReceived();
         }
 
@@ -118,6 +171,72 @@ namespace BR3.Tests.PlayMode
             }
 
             setController(null);
+        }
+
+        private static IEnumerator CreateLoadedRun(System.Action<DebugSceneController> setController)
+        {
+            DebugSceneController controller = null;
+
+            yield return LoadDebugWorkbenchScene();
+            yield return WaitForController(controllerResult => controller = controllerResult);
+
+            controller.OnLoadConfigButtonPressed();
+            yield return null;
+
+            controller.OnNewRunButtonPressed();
+            yield return null;
+
+            setController(controller);
+        }
+
+        private static IEnumerator CreateStartedBattle(System.Action<DebugSceneController> setController)
+        {
+            DebugSceneController controller = null;
+
+            yield return CreateLoadedRun(controllerResult => controller = controllerResult);
+
+            controller.OnStartBattleButtonPressed();
+            yield return null;
+
+            setController(controller);
+        }
+
+        private static IEnumerator SubmitFirstPlayerCard(DebugSceneController controller)
+        {
+            string selectedCardId = controller.CurrentRun.PlayerDeck[0].InstanceId;
+            controller.OnPlayerCardSelected(selectedCardId);
+            yield return null;
+        }
+
+        private static void SetupPendingRewardOffer(DebugSceneController controller)
+        {
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = new RewardService(runtimeStateFactory);
+
+            controller.CurrentRun.ActiveBattle = null;
+            controller.CurrentRun.CurrentEnemy.CurrentHp = 10;
+            controller.CurrentRun.CurrentEnemy.RewardsClaimed = 0;
+            controller.CurrentRun.PendingRewardOffer = rewardService.CreateRewardOffer(
+                controller.CurrentRun.PlayerDeck,
+                controller.CurrentConfig.rewardGeneration,
+                rewardIndexForCurrentEnemy: 1);
+            controller.CurrentRun.FlowStage = RunFlowStage.ChoosingReward;
+            controller.RefreshAll();
+        }
+
+        private static string FindRewardOptionId(RewardOffer rewardOffer, RewardOptionType rewardOptionType)
+        {
+            for (int optionIndex = 0; optionIndex < rewardOffer.Options.Count; optionIndex++)
+            {
+                RewardOption option = rewardOffer.Options[optionIndex];
+                if (option.Type == rewardOptionType)
+                {
+                    return option.OptionId;
+                }
+            }
+
+            Assert.Fail($"Could not find reward option of type {rewardOptionType}.");
+            return null;
         }
     }
 }
