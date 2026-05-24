@@ -361,6 +361,14 @@ This object exists because enemy HP persists across multiple battles.
 
 It is created when entering an enemy and discarded when the system moves to the next enemy or the run ends.
 
+### Important interpretation rule
+
+`BattlesPlayed` must be interpreted against `CurrentEnemy.Config.battleLimit`, not against a hard-coded constant.
+
+Reward total for the current enemy should likewise be derived from that same configured battle limit.
+
+`RewardsClaimed` therefore tracks progress toward the enemy's configured reward total rather than toward a separately authored fixed reward-count field.
+
 ---
 
 ## RunService Public Commands
@@ -862,61 +870,101 @@ This handoff is one of the most important boundaries in the architecture.
 
 ## Interpreting Battle Outcome
 
-After a battle is complete, `RunService` must choose one of three branches.
+The current design uses the following high-level interpretation rules after a battle completes.
 
 ### Branch A: Enemy defeated
 
-If the enemy HP is zero or below:
+If the current enemy's HP is zero or below after the completed battle:
 
-* the current enemy is defeated
+* the enemy is considered defeated
+* reward handling for the completed battle must still occur
+* if additional rewards remain for this enemy, they must be settled immediately
+* if no rewards remain and this was not the final enemy, the run advances to the next enemy
+* if no rewards remain and this was the final enemy, the run enters `Victory`
 
-RunService must then determine reward settlement for this enemy.
-
-### Branch B: Enemy not defeated, but all three battles used
+### Branch B: Enemy not defeated, and configured battle limit has been exhausted
 
 If:
 
-* enemy HP is still above zero
-* `BattlesPlayed` has reached three
+* the current enemy is still above zero HP
+* `CurrentEnemy.BattlesPlayed >= CurrentEnemy.Config.battleLimit`
 
-Then:
+then:
 
 * the run enters `Defeat`
 
-### Branch C: Enemy not defeated, and more battles remain
+### Branch C: Enemy not defeated, and more configured battles remain
 
 If:
 
-* enemy HP is above zero
-* fewer than three battles have been played
+* the current enemy is still above zero HP
+* `CurrentEnemy.BattlesPlayed < CurrentEnemy.Config.battleLimit`
 
-Then:
+then:
 
 * reward handling for the completed battle must occur
-* afterward the run should become ready for the next battle
+* after that reward is resolved, the run becomes ready for the next battle against the same enemy
+
+### Important note
+
+This interpretation must not use a hard-coded assumption such as "all three battles used."
+
+Battle exhaustion is determined by the current enemy's configured `battleLimit`.
 
 ---
 
 ## Reward Timing Rule
 
-The implementation discussion assumes this interpretation of the gameplay rules:
+The implementation should interpret reward timing like this:
 
-* each enemy provides three rewards total
+* each enemy provides reward opportunities totaling that enemy's configured `battleLimit`
 * normally, one reward is obtained after each completed battle
-* if the enemy is defeated before all three battles are used, all remaining rewards are settled immediately
+* if the enemy is defeated before all of its configured reward opportunities have been resolved, the remaining rewards are settled immediately
+* if the defeated enemy is the final enemy, any unresolved remaining rewards are ignored
 
-This interpretation should remain aligned with the locked gameplay documents.
+### Important design rule
+
+Reward total for an enemy is derived from that enemy's configured `battleLimit`.
+
+The system should not introduce a separate authored reward-count source of truth for the current demo.
+
+### Default baseline note
+
+Under the current default baseline, many examples still appear as "three rewards per enemy" because the default enemy battle limit is 3.
+
+That is a default content value, not a permanent implementation constant.
 
 ---
 
 ## Entering Reward Flow
 
-Reward flow begins only when `RunService` decides it should happen.
+Reward flow should begin whenever one or more reward resolutions are immediately due.
 
-Typical situations:
+This can happen in two main situations:
 
-* one battle has completed and one normal reward is due
-* the enemy has been defeated early and multiple remaining rewards must now be settled
+### Situation 1: normal post-battle reward
+
+One completed battle normally makes one reward immediately due.
+
+### Situation 2: early-defeat remainder settlement
+
+If the current enemy has been defeated before all of that enemy's reward opportunities have been resolved, additional rewards become immediately due until:
+
+* `CurrentEnemy.RewardsClaimed >= CurrentEnemy.Config.battleLimit`
+
+### Entering reward flow behavior
+
+When reward flow begins:
+
+1. `RunState.ActiveBattle` must already be cleared
+2. `RunState.FlowStage` becomes `ChoosingReward`
+3. `RewardService.GenerateOffer(...)` is called
+4. the returned `RewardOffer` is stored in `RunState.PendingRewardOffer`
+
+### Important note
+
+If the defeated enemy is the final enemy, unresolved remaining rewards should not be entered.
+The run should move toward `Victory` instead of generating meaningless post-run reward offers.
 
 ### RunService action
 
@@ -993,19 +1041,50 @@ Once a reward option is selected:
 
 ## Continuing Reward Settlement
 
-After one reward is chosen, `RunService` checks whether more rewards are immediately owed.
+After one reward choice is applied, the run must decide whether another reward is immediately due or whether normal progression should continue.
 
-### Case 1: enemy already defeated and more rewards remain
+### Case 1: enemy already defeated and unresolved rewards remain
 
-Generate another reward offer immediately and stay in `ChoosingReward`.
+If:
+
+* the current enemy has already been defeated
+* `CurrentEnemy.RewardsClaimed < CurrentEnemy.Config.battleLimit`
+
+then:
+
+* generate another reward offer immediately
+* keep the run in `ChoosingReward`
 
 ### Case 2: enemy not defeated and the expected reward for the completed battle is now resolved
 
-Move toward `ReadyForNextBattle`.
+If:
 
-### Case 3: enemy defeated and all rewards have been settled
+* the current enemy is not defeated
+* the normal post-battle reward has now been resolved
 
-Move toward next enemy or victory.
+then:
+
+* clear `PendingRewardOffer`
+* set the run to `ReadyForNextBattle`
+
+### Case 3: enemy defeated and all rewards for that enemy have been settled
+
+If:
+
+* the current enemy has been defeated
+* `CurrentEnemy.RewardsClaimed >= CurrentEnemy.Config.battleLimit`
+
+then:
+
+* clear `PendingRewardOffer`
+* if another enemy remains, advance to that enemy and set the run to `ReadyForNextBattle`
+* otherwise enter `Victory`
+
+### Special rule for the final enemy
+
+If the final enemy has been defeated, unresolved remaining rewards are ignored rather than continued.
+
+The run should proceed directly to `Victory`.
 
 ---
 
@@ -1014,7 +1093,7 @@ Move toward next enemy or victory.
 If:
 
 * the current enemy is not defeated
-* fewer than three battles have been played
+* `CurrentEnemy.BattlesPlayed < CurrentEnemy.Config.battleLimit`
 * no reward is pending
 
 Then:
@@ -1074,7 +1153,7 @@ At this point:
 If:
 
 * the current enemy is still alive
-* three battles against that enemy have been used
+* `CurrentEnemy.BattlesPlayed >= CurrentEnemy.Config.battleLimit`
 
 Then:
 

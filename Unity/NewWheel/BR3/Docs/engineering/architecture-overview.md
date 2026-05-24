@@ -185,7 +185,9 @@ Examples:
 * player max HP
 * player starting deck specs
 * enemy max HP
+* each enemy's battle limit
 * enemy fixed decks
+* reward offer structure rules
 * replacement generation rules
 * trait tuning values
 
@@ -568,11 +570,13 @@ Reward generation is not treated as a simple random picker.
 
 The architecture must support:
 
-* a fixed four-option reward offer
-* fallback from missing upgrades to extra replace options
+* exactly one `Skip` in every reward offer
+* config-driven total offer size
+* config-driven upgrade target
+* replace count derived from remaining non-skip capacity after upgrade selection
 * canonical deduplication by resulting deck state
 * configuration-driven replacement generation
-* current demo support for fixed replacement base power
+* current demo support for an allowed replacement base-power set, which may still contain only one value in the default baseline
 
 This makes reward generation a real domain/application concern rather than a UI-only feature.
 
@@ -629,7 +633,7 @@ The recommended implementation order is:
 6. Edit Mode tests for domain logic
 7. `BattleService`
 8. `RunService`
-9. minimal debug UI
+9. debug-oriented presentation
 10. smoke tests and iteration
 
 This order reduces early instability and helps surface rule bugs sooner.

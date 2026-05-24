@@ -181,8 +181,7 @@ It does not define:
 ```text
 +--------------------------------------------------------------------------------------------------+
 | Top Summary Bar                                                                                  |
-| Player HP | Enemy HP | Enemy 1/3 | Battles 1/3 | Rewards 1/3 | Run Stage | Battle Stage | Round |
-+------------------------------------------------------+-------------------------------------------+
+| Player HP | Enemy HP | Enemy 1/N | Battles X/Limit | Rewards X/Limit | Run Stage | Battle Stage | Round |+------------------------------------------------------+-------------------------------------------+
 | Left Main Column                                     | Right Inspector Panel                     |
 |                                                      |                                           |
 | Enemy Sequence (read-only)                           | Latest Round Result                       |
@@ -280,10 +279,10 @@ The top summary bar should always show the most important current state.
 ### Recommended fields
 
 * `Player HP: current / max`
-* `Enemy: current index / total`
+* `Enemy: current index / total enemy count`
 * `Enemy HP: current / max`
-* `Battles Played: x / 3`
-* `Rewards Claimed: x / 3`
+* `Battles Played: x / current enemy battle limit`
+* `Rewards Claimed: x / current enemy reward total`
 * `Run Stage`
 * `Battle Stage`
 * `Round`
@@ -361,9 +360,10 @@ Use a `GridLayoutGroup` on the deck panel parent container.
 Recommended initial setup:
 
 * fixed column count: 3
-* resulting layout: 2 rows x 3 columns
+* actual visible entry count is generated at runtime from the current deck size
+* the familiar 2-row, 3-column layout is only the default-baseline visual example for a 6-card deck
 
-This is preferred over a single row of six because each debug card entry contains multiple lines of text.
+This is preferred over a single row of six when debug card entries contain multiple lines of text.
 
 ### Runtime generation rule
 

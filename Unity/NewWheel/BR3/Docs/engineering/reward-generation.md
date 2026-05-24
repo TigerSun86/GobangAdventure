@@ -12,8 +12,8 @@ It explains:
 * how reward options are deduplicated
 * how canonical deck signatures are used
 * how selected rewards are applied to the player deck
-* how authored reward-generation config participates in replacement generation
-* how the current demo constraints differ from possible future extensions
+* how authored reward-generation config participates in offer structure and replacement generation
+* how locked reward invariants differ from default reward-scale values
 
 This document focuses on reward logic. Reward timing and run progression are described in `run-battle-reward-flow.md`.
 
@@ -29,37 +29,101 @@ The reward system is designed to satisfy the following goals:
 4. duplicate options should not appear
 5. the system should preserve meaningful variety
 6. the current demo should remain simple to implement and test
-7. future expansion should remain possible without redesigning the whole structure
+7. future expansion and gameplay testing should remain possible without redesigning the whole structure
+
+---
+
+## Locked Reward Invariants vs Default Reward Scale
+
+The current gameplay design distinguishes between:
+
+1. **locked reward invariants**
+2. **default reward-scale values**
+
+### Locked reward invariants include
+
+* `Skip` is always present
+* reward options must be one-step actions
+* non-skip options in the same offer must not be duplicates
+* deduplication uses canonical resulting deck state
+* upgrade generation remains legality-based
+* replace generation remains legality-based
+* replace fills remaining non-skip capacity after upgrade selection
+
+### Default reward-scale values include
+
+* default total offer size
+* default upgrade target
+* default replacement trait count
+
+These defaults are useful for the v1 baseline and test expectations, but they are not the same thing as permanent hard-coded system constants.
 
 ---
 
 ## Core Reward Structure
 
-Each reward offer contains exactly 4 options.
+Each reward offer contains:
 
-The structure is:
+* exactly one `Skip`
+* a configurable total number of options
+* a set of non-skip options composed from:
 
-* 3 non-skip options
-* 1 skip option
+  * `Upgrade`
+  * `Replace`
 
-The non-skip options are composed from:
+### Source of truth
 
-* `Upgrade`
-* `Replace`
+The total offer size is controlled by:
 
-### Intended composition rule
+* `RewardGenerationConfig.rewardOfferTotalOptions`
 
-The system should use up to 2 different legal `Upgrade` options.
+The generator targets up to:
 
-If fewer than 2 different legal `Upgrade` options exist, the remaining non-skip slots are filled with `Replace` options.
+* `RewardGenerationConfig.upgradeTarget`
 
-This means a reward offer can have one of the following structures:
+The actual replace count is not configured as a separate source of truth.
+
+Instead, actual replace count is derived as:
+
+`rewardOfferTotalOptions - 1 - actualUpgradeCount`
+
+where:
+
+* the `1` is the always-present `Skip`
+* `actualUpgradeCount` is the number of legal deduplicated upgrades actually selected for this offer
+
+### Important design rule
+
+The system remains:
+
+* upgrade-first
+* replace-fallback
+
+That means:
+
+1. generate legal upgrade candidates
+2. deduplicate them
+3. select up to the configured upgrade target
+4. fill the remaining non-skip slots with replace options
+5. add exactly one `Skip`
+
+---
+
+## Default Baseline for v1 Reward Structure
+
+The current v1 demo uses the following **default baseline values**:
+
+* default reward offer total options: 4
+* default upgrade target: 2
+* default replacement trait count: 2
+
+Under that default baseline, the most common final offer structures are:
 
 * `2 Upgrade + 1 Replace + 1 Skip`
 * `1 Upgrade + 2 Replace + 1 Skip`
 * `0 Upgrade + 3 Replace + 1 Skip`
 
-This structure is locked for the current implementation design.
+These are useful default examples, but they are not the only structures the generalized reward system can support.
 
 ---
 
@@ -221,15 +285,29 @@ This produces a candidate action set such as:
 
 ## Upgrade Candidate Selection
 
-After legal candidates are enumerated and deduplicated, the system selects up to 2 different upgrade options.
+After legal candidates are enumerated and deduplicated, the system selects up to the configured upgrade target.
 
 ### Selection rule
 
-* if 2 or more different legal upgrade options exist, select 2
-* if exactly 1 different legal upgrade option exists, select 1
+Let:
+
+* `upgradeTarget = RewardGenerationConfig.upgradeTarget`
+
+Then:
+
+* if legal deduplicated upgrade count is greater than or equal to `upgradeTarget`, select `upgradeTarget`
+* if legal deduplicated upgrade count is less than `upgradeTarget`, select all legal deduplicated upgrades
 * if no legal upgrade option exists, select 0
 
 The remaining non-skip slots are filled by replace options.
+
+### Important note
+
+Under the current v1 default baseline:
+
+* `upgradeTarget = 2`
+
+So the old familiar behavior still appears by default, but it is now treated as a default configuration value rather than as a permanently hard-coded reward invariant.
 
 ---
 
@@ -248,7 +326,7 @@ Use simple random selection from the legal deduplicated pool.
 
 If possible:
 
-* prefer not to select two upgrades that target the same card
+* prefer not to select too many upgrades that target the same card
 * prefer some variety across the selected upgrades
 
 This diversity preference should remain light.
@@ -285,7 +363,7 @@ This approach preserves randomness while keeping legality deterministic and insp
 
 ## RewardGenerationConfig
 
-Replacement generation is driven by authored config.
+Replacement generation and offer structure are driven by authored config.
 
 The main relevant config object is:
 
@@ -293,19 +371,28 @@ The main relevant config object is:
 
 The current design expects it to provide:
 
+* `rewardOfferTotalOptions`
+* `upgradeTarget`
 * `allowedReplacementRpsTypes`
 * `allowedReplacementBasePowers`
 * `allowedReplacementTraits`
 * `replacementTraitCount`
 
-### Current demo rule
+### Important rules
+
+* `Skip` remains fixed at exactly 1 and is not configured separately
+* replace count is derived, not authored independently
+* default total offer size and default upgrade target come from config
+* replacement trait count comes from config
+
+### Current demo rule for base power
 
 For the current demo:
 
-* replacement player cards use a single configured base power value
+* replacement player cards use a configured allowed base power set
 
 That means the architecture supports a set of allowed base powers,
-but in the current demo configuration the allowed set contains only one value.
+but in the current demo configuration the allowed set may still contain only one value.
 
 This matches the current gameplay direction where player cards are intended to share a fixed base power and derive identity mainly through traits.
 
@@ -313,15 +400,25 @@ This matches the current gameplay direction where player cards are intended to s
 
 ## Replace Card Trait Count
 
-A generated replacement card must have exactly 2 traits in the current design.
+A generated replacement card must have exactly `replacementTraitCount` traits.
 
-This is part of the locked reward behavior for replacement cards.
-
-This count is expected to come from:
+This value is expected to come from:
 
 * `RewardGenerationConfig.replacementTraitCount`
 
-For the current demo, that value is fixed to 2.
+### Default baseline
+
+For the current v1 baseline:
+
+* `replacementTraitCount = 2`
+
+### Current allowed test range
+
+For the current test-oriented phase:
+
+* `replacementTraitCount` may vary from 0 to 3 inclusive
+
+This means reward generation should not assume that replacement cards are permanently fixed to exactly 2 traits in all test scenarios.
 
 ---
 
@@ -331,9 +428,10 @@ A generated replacement card spec is legal only if all of the following are true
 
 1. it has a valid RPS type
 2. it uses an allowed base power
-3. it has exactly 2 traits
-4. the 2 traits are distinct
-5. the trait pair does not contain both `ShiftLeft` and `ShiftRight`
+3. it has exactly `replacementTraitCount` traits
+4. all traits in the generated trait set are distinct
+5. the generated trait set does not contain both `ShiftLeft` and `ShiftRight`
+6. the generated trait count does not exceed the current per-card trait legality limit
 
 These checks apply before the spec is combined with a target card to form a replace action.
 
@@ -349,363 +447,326 @@ Generate all legal `CardSpec` values based on:
 
 * allowed RPS types
 * allowed base powers
-* all legal 2-trait combinations
+* all legal `k`-trait combinations
 
-### Stage 2: Combine with target deck cards
+where:
 
-For each card in the current deck:
+* `k = replacementTraitCount`
 
-* pair the target card with each legal generated card spec
-* keep only meaningful replacements
+### Stage 2: Combine generated specs with replacement targets
 
-A replacement is meaningful only if it actually changes the deck in a gameplay-relevant way.
+Combine each legal generated `CardSpec` with each legal target card instance in the current deck to form raw replace candidates.
 
----
+### Stage 3: Filter and deduplicate
 
-## Meaningless Replace Candidates
-
-A replace candidate should be discarded if the generated replacement `CardSpec` is functionally identical to the target card being replaced.
-
-For this comparison, use gameplay-relevant card properties:
-
-* `RpsType`
-* `BasePower`
-* `Traits`
-
-Do not consider:
-
-* `InstanceId`
-* deck slot index
-* current object identity
-
-If replacement would produce the same card specification, it should not be offered.
+Filter illegal or meaningless candidates, then deduplicate by canonical resulting deck state.
 
 ---
 
-## Why Pure Rejection Sampling Is Not Preferred
+## Replace Candidate Selection
 
-The system could theoretically generate random replacement cards and retry when illegal.
+After legal replace candidates are enumerated and deduplicated, the system selects enough replace options to fill the remaining non-skip slots.
 
-However, this is not the preferred design.
+### Selection rule
 
-### Reasons
+Let:
 
-1. the legal candidate space is small enough to enumerate directly
-2. direct enumeration is easier to test
-3. direct enumeration is easier to debug
-4. direct enumeration avoids unclear retry behavior
-5. direct enumeration gives a stable base for deduplication
+* `totalOptions = RewardGenerationConfig.rewardOfferTotalOptions`
+* `skipCount = 1`
+* `actualUpgradeCount = number of selected upgrades`
 
-For the current demo, enumeration is the cleaner design.
+Then:
 
----
+* `replaceSlotsToFill = totalOptions - skipCount - actualUpgradeCount`
 
-## Skip Option
+The generator should then select up to `replaceSlotsToFill` distinct legal replace options.
 
-Each reward offer always includes exactly one `Skip` option.
+### Important rule
 
-`Skip`:
+Replace count is a derived consequence of total offer size and actual selected upgrade count.
 
-* changes nothing in the deck
-* does not require legality filtering
-* does not require candidate generation
-
-It should still be represented explicitly as a normal `RewardOption` with type `Skip`.
+It is not an independently authored count in the current design.
 
 ---
 
-## Reward Option Deduplication
+## Meaningless Replace Filtering
 
-This is one of the most important parts of the reward system.
+Not every legal generated replacement spec is necessarily a meaningful replace candidate.
 
-Reward options must not be deduplicated only by raw action parameters.
+The generator should filter candidates that are equivalent to leaving the target card effectively unchanged.
 
-Instead, they must be deduplicated by the resulting deck state after the option is applied.
+### Example
 
-### Core Rule
+If a replace option would produce a card that is functionally identical to the target card under canonical comparison, that option should not remain in the final replace candidate pool.
 
-Two reward options are considered identical if applying them would produce the same canonical resulting deck signature.
-
-This rule applies to:
-
-* upgrade options
-* replace options
-* comparisons across options in the same reward offer
-
-For the detailed architectural reasoning behind this rule, see:
-
-* `Docs/adr/ADR-0003-reward-dedup-by-canonical-deck.md`
+This keeps offers more meaningful.
 
 ---
 
-## Why Raw Action Deduplication Is Not Enough
+## Reward Deduplication Rule
 
-Raw action comparison is not sufficient because different-looking actions can still produce equivalent deck outcomes.
+The accepted deduplication rule remains:
 
-Examples:
+* deduplicate by canonical resulting deck state after the option is applied
 
-* two upgrades target different but functionally identical cards and produce equivalent final deck states
-* two replacement specs contain the same traits in different orders
-* two replace actions target different identical cards and produce equivalent final deck states
-
-Therefore deduplication must use resulting deck equivalence, not just action payload equality.
-
----
-
-## Canonical Card Signature
-
-To support reward deduplication, each card must be reducible to a canonical gameplay signature.
-
-The canonical card signature should conceptually include:
-
-* `RpsType`
-* `BasePower`
-* `PermanentPowerBonus`
-* sorted trait set
-
-For reward-result comparison involving generated replacement results, the important concept is gameplay equivalence, not runtime identity.
-
-Trait order must not matter.
-
----
-
-## Canonical Deck Signature
-
-A deck should be converted into a canonical deck signature by:
-
-1. converting each card into its canonical card signature
-2. sorting the card signatures in a stable way
-3. building a canonical deck-level representation from the sorted signatures
-
-This means canonical deck comparison ignores:
+This rule ignores:
 
 * card instance identity
 * deck order
 * trait order
 
-This rule is intentional and locked for reward deduplication.
+This rule applies within a single reward offer.
+
+This principle is locked and is described in detail in ADR-0003. 
 
 ---
 
-## Reward Deduplication Procedure
+## Canonical Deduplication Procedure
 
-For each generated reward candidate:
-
-1. simulate applying it to a temporary copy of the current deck
-2. compute the canonical deck signature of the resulting deck
-3. use that canonical signature as the deduplication key
-
-If another candidate already produced the same canonical deck signature:
-
-* discard the new candidate as a duplicate
-
-Otherwise:
-
-* keep the candidate
-
-This procedure should be applied before random selection of final options.
-
----
-
-## Final Reward Offer Construction
-
-The final offer should be built in this order:
+The reward generation pipeline should apply deduplication like this:
 
 ### Step 1
 
-Enumerate and deduplicate all legal upgrade candidates.
+Generate legal raw reward candidates.
 
 ### Step 2
 
-Select up to 2 different upgrade options.
+For each candidate:
+
+* apply it to a temporary copy of the current deck
+* produce the resulting deck state
 
 ### Step 3
 
-Determine how many non-skip slots remain.
+Convert the resulting deck into a canonical deck signature.
 
 ### Step 4
 
-Enumerate and deduplicate all legal replace candidates.
+Use the canonical deck signature as the deduplication key.
 
 ### Step 5
 
-Select enough different replace options to fill the remaining non-skip slots.
+Discard any candidate whose deduplication key has already been seen.
 
 ### Step 6
 
-Add exactly 1 skip option.
+Select final reward options from the remaining deduplicated candidate pool.
 
-This produces exactly 4 total options:
+This procedure should be used for:
 
-* 3 non-skip
-* 1 skip
+* `Upgrade`
+* `Replace`
+
+`Skip` is always unique by category and does not participate in non-skip equivalence comparison.
 
 ---
 
-## Current Demo Composition Examples
+## Why Canonical Deduplication Still Matters
 
-### Case A: many upgrades available
+The shift from fixed default offer size to configurable offer size does not change the need for strong deduplication.
 
-* 2 upgrades
-* 1 replace
-* 1 skip
+The system still needs to prevent:
 
-### Case B: only one distinct legal upgrade exists
+* duplicate upgrades targeting functionally identical cards
+* duplicate replacement results that differ only by target identity
+* duplicate replacement specs that differ only by trait order
+* duplicate results that differ only by deck position
 
-* 1 upgrade
-* 2 replaces
-* 1 skip
+Canonical resulting deck comparison remains the correct rule.
 
-### Case C: no legal upgrades exist
+---
 
-* 3 replaces
-* 1 skip
+## Skip Option
 
-These are all valid outcomes.
+Every reward offer always includes exactly one `Skip`.
+
+### Purpose
+
+`Skip` exists because:
+
+* the player should always have a no-change option
+* reward choice should remain readable
+* forcing a deck change every time is not always desirable
+
+### Important rule
+
+`Skip` is a real reward option.
+
+Selecting `Skip`:
+
+* spends that reward opportunity
+* does not modify the deck
+* does not remain available later as a deferred reward token
 
 ---
 
 ## Reward Application
 
-After the player selects one reward option, `RewardService` applies it to the current deck.
+Once a reward option has been selected, `RewardService` applies it to the player deck.
 
----
+### Upgrade application
 
-## Applying Upgrade
-
-Applying an upgrade means:
+Upgrade application should:
 
 * find the target card instance
-* add the specified new trait
-* keep the same card instance identity
-* keep the same deck position
+* add the specified trait
+* preserve the card's existing runtime identity
+* preserve the card's existing permanent power bonus
 
-### Important Rule
+### Replace application
 
-Upgrade is an in-place modification of an existing card instance.
+Replace application should:
 
-It does not create a new card instance.
+* find the target card instance
+* create a new `CardInstance` from the replacement `CardSpec`
+* assign the new card a new runtime instance id
+* set its permanent power bonus to 0
+* replace the old card in the deck
 
----
+### Skip application
 
-## Applying Replace
+Skip application should:
 
-Applying a replace means:
-
-* find the target card's current deck position
-* create a new runtime `CardInstance` from the selected replacement `CardSpec`
-* replace the old card at the same deck position
-* assign a new `InstanceId`
-* start with no inherited permanent growth from the replaced card
-
-### Important Rule
-
-Replace is not a mutation of the old card.
-It is a true replacement.
-
-The old card's:
-
-* traits
-* permanent power bonus
-* instance identity
-
-should not be inherited by the new card.
-
----
-
-## Applying Skip
-
-Applying skip means:
-
-* do not change the deck
-
-It is still a valid resolved reward choice and still counts as the player's selected option for that reward event.
-
----
-
-## Deck Legality After Reward Application
-
-After applying any selected reward, the resulting player deck must still be legal.
-
-That means:
-
-* no card has duplicate traits
-* no card has more than 3 traits
-* no card has both `ShiftLeft` and `ShiftRight`
-
-Reward generation is expected to prevent illegal options in advance, but reward application should still assume legality matters and may validate or assert this during implementation.
+* leave the deck unchanged
 
 ---
 
 ## Important Invariants
 
-The reward system should always maintain the following invariants:
+The reward system should preserve the following invariants:
 
-1. each reward offer has exactly 4 options
-2. exactly 1 option is `Skip`
-3. non-skip options are pairwise distinct by resulting canonical deck state
+1. each reward offer has exactly `rewardOfferTotalOptions` options
+2. exactly one option is `Skip`
+3. non-skip options are pairwise distinct by canonical resulting deck state
 4. every generated option is legal and executable in one step
 5. applying the selected option results in a legal deck
-6. replacement cards in the current demo use the configured fixed player replacement base power from `RewardGenerationConfig`
+6. actual non-skip composition is upgrade-first with replace fallback
+7. replace count is derived rather than configured independently
+8. replacement card trait count must match configured `replacementTraitCount`
+
+---
+
+## Default-Config Composition Examples
+
+The following examples assume the current default baseline values:
+
+* `rewardOfferTotalOptions = 4`
+* `upgradeTarget = 2`
+
+### Case A: at least 2 legal deduplicated upgrades exist
+
+Final offer structure:
+
+* `2 Upgrade + 1 Replace + 1 Skip`
+
+### Case B: exactly 1 legal deduplicated upgrade exists
+
+Final offer structure:
+
+* `1 Upgrade + 2 Replace + 1 Skip`
+
+### Case C: no legal deduplicated upgrades exist
+
+Final offer structure:
+
+* `0 Upgrade + 3 Replace + 1 Skip`
+
+These examples remain useful for the v1 baseline, but they are examples of the default configuration, not the only generalized system behavior.
+
+---
+
+## What the Current Design Intentionally Avoids
+
+The current reward design intentionally avoids:
+
+* multi-step reward targeting
+* separate replace-count source-of-truth config
+* fully hand-authored replacement catalogs
+* reward options that are visually different but canonically identical
+* heavy weighted reward bias systems
+* late-phase overengineering of reward generation
+
+These are not needed for the current demo phase.
 
 ---
 
 ## Testing Implications
 
-The reward system should be covered by targeted Edit Mode tests.
+Reward generation remains one of the highest-value test targets in the project.
 
-High-value test areas include:
+High-value tests include two layers.
 
-* upgrade legality checks
-* replace legality checks
-* fallback from missing upgrades to extra replaces
-* reward offer composition
-* canonical deck signature behavior
-* trait-order-insensitive equivalence
-* deck-order-insensitive equivalence
-* duplicate upgrade removal
-* duplicate replace removal
-* upgrade application
-* replace application
-* skip application
+### Layer 1: generalized invariant tests
 
-These tests are especially valuable because reward bugs may not crash the game but can still silently reduce option variety or violate gameplay rules.
+These should verify:
+
+* exactly one `Skip`
+* total option count equals configured `rewardOfferTotalOptions`
+* actual upgrade count never exceeds configured `upgradeTarget`
+* actual replace count fills remaining non-skip slots
+* non-skip options are canonically deduplicated
+* all generated options are legal
+* replacement card trait count matches configured `replacementTraitCount`
+* replacement trait legality still rejects duplicate traits and left/right conflict
+* applying the chosen option produces a legal deck
+
+### Layer 2: default-baseline example tests
+
+These should verify current baseline behavior when:
+
+* `rewardOfferTotalOptions = 4`
+* `upgradeTarget = 2`
+* `replacementTraitCount = 2`
+
+For that default baseline, tests should still verify:
+
+* `2 Upgrade + 1 Replace + 1 Skip`
+* `1 Upgrade + 2 Replace + 1 Skip`
+* `0 Upgrade + 3 Replace + 1 Skip`
+
+This keeps tests aligned with both:
+
+* the generalized system
+* the current v1 baseline
 
 ---
 
-## Common Failure Risks
+## Relationship to Run Flow
 
-Important implementation risks include:
+This document defines:
 
-1. treating raw action difference as meaningful when resulting deck states are equivalent
-2. forgetting to ignore trait order in canonical comparison
-3. forgetting to ignore deck order in canonical comparison
-4. allowing duplicate non-skip options into one reward offer
-5. allowing illegal trait combinations in replacement card generation
-6. accidentally inheriting replaced card growth or identity
-7. generating meaningless replacements that do not actually change the deck
-8. ignoring authored replacement config and hardcoding replacement generation values in code
+* what one reward offer looks like
+* how its options are generated
+* how those options are applied
 
-These should be tested early.
+It does not decide:
+
+* when rewards happen
+* how many reward opportunities an enemy stage grants
+* how early settlement on enemy defeat is orchestrated
+* when the next battle or next enemy begins
+
+Those timing and flow questions belong to `run-battle-reward-flow.md`.
 
 ---
 
 ## Summary
 
-The reward system is based on:
+The current reward design is:
 
-* fixed offer structure
-* legal one-step options
-* upgrade-first composition with replace fallback
-* configuration-driven replacement generation
+* one-step
+* legality-driven
+* deduplicated by canonical resulting deck state
+* upgrade-first with replace fallback
+* explicit about the difference between locked reward invariants and configurable default offer scale
+
+The key current rules are:
+
+* exactly one `Skip`
+* configurable total offer size
+* configurable upgrade target
+* replace count derived from remaining non-skip capacity
+* configurable replacement trait count with current allowed test range 0..3
 * canonical resulting deck deduplication
-* explicit reward application
 
-This design keeps the system:
-
-* readable
-* deterministic in legality
-* random in meaningful content
-* easy to test
-* easy to debug
-* extensible for future balancing work
+This keeps the reward system simple enough for the current demo while making gameplay testing more flexible and more consistent with the newer config-driven design direction.

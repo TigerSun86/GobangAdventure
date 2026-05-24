@@ -9,6 +9,7 @@ It explains:
 * why the project uses JSON-based authored config
 * which config objects exist
 * which data belongs in config and which belongs in runtime state
+* which quantities are derived from config collections rather than stored as separate source-of-truth fields
 * how config is loaded
 * how config is validated
 * how config is converted into runtime state
@@ -34,7 +35,8 @@ The current config and content system is designed to satisfy these goals:
 4. avoid unnecessary editor-only workflows in the current demo phase
 5. support data-driven balancing where it helps
 6. keep the first implementation simple
-7. leave a clear path for future expansion
+7. separate locked gameplay invariants from default content scale
+8. leave a clear path for future expansion
 
 ---
 
@@ -75,6 +77,40 @@ A separate ADR records the full reasoning for this decision.
 
 ---
 
+## Core Modeling Rule: Locked Invariants vs Default Content Scale
+
+The current gameplay design distinguishes between:
+
+1. **locked gameplay invariants**
+2. **default content scale and default configuration values**
+
+### Locked gameplay invariants include
+
+* battle still has exactly 3 rounds
+* the board still has 3 slots per side
+* the base card types are still rock, scissors, and paper
+* the accepted round pipeline is still fixed
+* movement is still processed from right to left
+* reward selection is still one-step
+* `Skip` is still always present in a reward offer
+* card trait legality rules are still enforced
+
+### Default content scale includes
+
+* default enemy count
+* default per-enemy battle limit
+* default starting deck size
+* default enemy fixed deck size
+* default reward offer size
+* default upgrade target limit
+* default replacement trait count
+
+These defaults are important for the v1 baseline, but they are not the same thing as schema-level hard constraints.
+
+This document reflects that distinction.
+
+---
+
 ## What Configuration Should Contain
 
 Configuration should contain information that is known before runtime and should be easy to author and review.
@@ -84,8 +120,9 @@ Examples:
 * player max HP
 * the starting player deck
 * enemy max HP
+* each enemy's battle limit
 * each enemy's fixed deck
-* reward replacement generation rules
+* reward generation rules
 * numerical trait tuning values
 
 Configuration should not contain:
@@ -116,6 +153,24 @@ These are all pure C# config objects intended to be serialized from JSON.
 
 ---
 
+## Default Baseline for v1 Content
+
+The current v1 demo uses the following **default baseline values**:
+
+* default enemy count: 3
+* default enemy battle limit: 3
+* default starting deck size: 6
+* default enemy fixed deck size: 6
+* default reward offer total options: 4
+* default reward upgrade target: 2
+* default replacement trait count: 2
+
+These defaults are useful for baseline content authoring and test expectations, but they should not be treated as universal hard-coded system constants.
+
+Where practical, engineering documents and runtime systems should read actual values from config or from config-derived runtime state rather than silently assuming these defaults.
+
+---
+
 ## GameConfig
 
 ### Purpose
@@ -136,6 +191,7 @@ It groups all major configuration areas needed to start and run the demo.
 * `GameConfig` is the root object deserialized from the main JSON file.
 * It should remain a simple aggregator of configuration sections.
 * It is not runtime state.
+* enemy count should be derived from `enemies.Count`, not stored as a second explicit field.
 
 ---
 
@@ -150,11 +206,17 @@ It groups all major configuration areas needed to start and run the demo.
 * `int playerMaxHp`
 * `List<CardSpec> startingDeck`
 
-### Current Rules
+### Rules
 
 * `playerMaxHp` is the player's maximum HP
 * the player's starting current HP is initialized from `playerMaxHp`
-* `startingDeck` must contain exactly 6 cards
+* `startingDeck` defines the actual starting deck contents
+* starting deck size is derived from `startingDeck.Count`
+
+### Current Baseline
+
+* the current default starting deck size is 6
+* the current battle structure still requires at least 3 cards to support one three-round battle without reusing a card
 
 ### Important Naming Note
 
@@ -179,19 +241,28 @@ This is intentional:
 * `string enemyId`
 * `string displayName`
 * `int maxHp`
+* `int battleLimit`
 * `List<CardSpec> fixedDeck`
 
-### Current Rules
+### Rules
 
-* `fixedDeck` must contain exactly 6 cards
-* `maxHp` must be positive
-* enemy cards are authored explicitly in config for the current demo
-* the current demo does not use a procedural enemy deck generation system
+* `maxHp` defines the enemy's maximum HP for the current enemy stage
+* `battleLimit` defines how many battles the player may take against this enemy before defeat
+* `fixedDeck` defines the enemy's authored fixed card pool
+* enemy fixed deck size is derived from `fixedDeck.Count`
+
+### Current Baseline
+
+* the current default enemy battle limit is 3
+* the current default enemy fixed deck size is 6
+* because battle still uses 3 rounds, the fixed deck must still be large enough to produce a full 3-card enemy sequence for each battle
 
 ### Notes
 
-Enemy authored content remains simple for the current demo.
-Each enemy directly defines its fixed six-card deck.
+* enemy cards are authored explicitly in config for the current demo
+* the current demo does not use a procedural enemy deck generation system
+* reward total for an enemy should default to that enemy's configured `battleLimit`
+* do not introduce a second reward-count authored field for the current demo
 
 ---
 
@@ -199,28 +270,60 @@ Each enemy directly defines its fixed six-card deck.
 
 ### Purpose
 
-`RewardGenerationConfig` defines how replacement card generation works for reward offers.
+`RewardGenerationConfig` defines how reward offers are structured and how replacement card generation works.
 
-It controls the legal generation space for replacement cards.
+It controls:
+
+* the legal generation space for replacement cards
+* the default total size of one reward offer
+* the target upper bound for upgrade options inside one offer
 
 ### Recommended Fields
 
+* `int rewardOfferTotalOptions`
+* `int upgradeTarget`
 * `List<RpsType> allowedReplacementRpsTypes`
 * `List<int> allowedReplacementBasePowers`
 * `List<TraitType> allowedReplacementTraits`
 * `int replacementTraitCount`
 
-### Current Demo Rules
+### Rules
 
-* `replacementTraitCount` is fixed to 2
-* the current demo uses exactly one allowed replacement base power value
-* the architecture still supports multiple allowed base powers in the future
+* `rewardOfferTotalOptions` is the total number of options shown in one reward offer
+* `Skip` is always exactly 1 option and is not configured separately
+* `upgradeTarget` is the configured upper bound for how many upgrade options the generator tries to include before using replace options to fill the remaining non-skip slots
+* replace count is not configured as an independent source of truth
+* actual replace count is derived at runtime from:
+
+`rewardOfferTotalOptions - 1 - actualUpgradeCount`
+
+* `replacementTraitCount` defines how many traits a generated replacement card spec must contain
+
+### Current Baseline
+
+* default reward offer total options: 4
+* default upgrade target: 2
+* default replacement trait count: 2
+
+### Current Allowed Test Range
+
+For the current test-oriented phase:
+
+* `replacementTraitCount` is not treated as permanently fixed to 2
+* the currently allowed test range is 0 to 3 inclusive
 
 ### Why This Object Exists
 
-Replacement cards are not chosen from a fully hand-authored card catalog.
-Instead, they are generated from legal authored rules.
-This object defines those legal authored rules.
+Reward offer structure and replacement generation both belong to authored content rules.
+
+The current design wants:
+
+* a fixed `Skip` rule
+* a configurable default offer size
+* a configurable default upgrade target
+* replacement generation from legal authored rules rather than from a fully hand-authored replacement catalog
+
+This object defines those authored rules.
 
 ---
 
@@ -314,6 +417,54 @@ This avoids redundant authored text.
 
 ---
 
+## Derived Quantity Rules
+
+The current config model deliberately derives several quantities from primary authored collections or fields rather than duplicating them in separate source-of-truth values.
+
+### Enemy count
+
+Enemy count is derived from:
+
+* `GameConfig.enemies.Count`
+
+Do not add a second top-level enemy-count field for the current demo.
+
+### Starting deck size
+
+Starting deck size is derived from:
+
+* `PlayerStartConfig.startingDeck.Count`
+
+Do not add a separate `playerCardSize` field for the current demo.
+
+### Enemy fixed deck size
+
+Enemy fixed deck size is derived from:
+
+* `EnemyConfig.fixedDeck.Count`
+
+Do not add a second explicit fixed-deck-size field for the current demo.
+
+### Reward total per enemy
+
+Reward total per enemy defaults to:
+
+* that enemy's configured `battleLimit`
+
+Do not add a second independent authored reward-count field for the current demo.
+
+### Replace count inside an offer
+
+Replace count is derived from:
+
+* `rewardOfferTotalOptions`
+* the fixed single `Skip`
+* the actual number of upgrade options selected
+
+Do not store replace count as a separate authored source-of-truth field for the current demo.
+
+---
+
 ## Config Authoring Model
 
 The current design assumes:
@@ -344,109 +495,143 @@ This means the current config design should avoid:
 
 * dictionary-heavy schemas
 * polymorphic config graphs
-* nested container structures beyond what is necessary
-* complex generic serialization requirements
+* deep inheritance in config data
+* hidden authored content embedded inside services
 
 ---
 
-## Serialization Choice
+## Loader Boundary
 
-The current implementation should use Unity `JsonUtility`.
+The config loading boundary should stay thin.
 
-### Why This Is Acceptable
+### Recommended Unity-facing entry
 
-For the current demo, the config structure is intentionally kept compatible with `JsonUtility`:
+A Unity-facing object such as a bootstrap MonoBehaviour or debug controller may provide authored JSON text through:
 
-* object root
-* serializable classes
-* lists
-* enums
-* simple scalar fields
+* `TextAsset`
+* direct file text in future tooling
+* another thin file-loading edge if later needed
 
-### Why Third-Party JSON Is Deferred
+### Recommended loader object
 
-A third-party serializer such as Newtonsoft may be useful later if the config system grows significantly.
+Use:
 
-However, the current design intentionally avoids the kinds of structures that would force that dependency immediately.
+* `GameConfigLoader`
 
-### Future-Proofing Rule
+### Loader responsibilities
 
-JSON loading should be isolated behind a thin loader so the serializer can be replaced later if needed without redesigning the whole system.
+`GameConfigLoader` should:
 
----
-
-## Config Loading Pipeline
-
-The intended loading pipeline is:
-
-1. Unity provides the JSON file as a `TextAsset`
-2. a thin Unity-facing loader reads the text
-3. the JSON text is deserialized into `GameConfig`
-4. config validation runs
-5. a runtime factory converts config objects into runtime state
-
-This pipeline keeps Unity-specific concerns at the edge.
-
----
-
-## GameConfigLoader
-
-### Purpose
-
-`GameConfigLoader` is the thin adapter that loads authored config into pure C# config objects.
-
-### Responsibilities
-
-It should:
-
-* read JSON text from a Unity-facing source such as `TextAsset`
-* deserialize JSON into `GameConfig`
+* receive JSON text
+* deserialize it into `GameConfig`
 * validate the config
-* return a valid config object
+* return the validated config object
+* report failure cleanly if validation fails
 
-### It Should Not
+### Loader should not
 
-It should not:
-
-* create runtime battle state
-* create run progression state directly
-* contain gameplay logic
-* contain reward logic
-* contain round resolution logic
-
-### Design Rule
-
-The loader only converts text into validated config objects.
+* own runtime state
+* construct gameplay state directly
+* mutate gameplay state
+* contain gameplay rules beyond lightweight config validation
 
 ---
 
-## RuntimeStateFactory
+## Validation Rules
 
-### Purpose
+Config validation should be lightweight but explicit.
 
-`RuntimeStateFactory` converts authored config objects into runtime state objects.
+The goal is to catch content mistakes early while keeping the config schema easy to evolve for testing.
 
-### Responsibilities
+### GameConfig validation
 
-It should:
+* `playerStart` must exist
+* `enemies` must exist
+* `enemies.Count >= 1`
+* `rewardGeneration` must exist
+* `traitTuning` must exist
 
-* create an initial `RunState` from `GameConfig`
-* create `CardInstance` from `CardSpec`
-* create `EnemyProgressState` from `EnemyConfig`
+### PlayerStartConfig validation
 
-### It Should Not
+* `playerMaxHp > 0`
+* `startingDeck` must exist
+* `startingDeck.Count >= 3`
 
-It should not:
+### EnemyConfig validation
 
-* read raw JSON
-* read Unity assets directly
-* handle battle progression
-* handle run progression
-* perform gameplay rule logic
+* `enemyId` must not be empty
+* `maxHp > 0`
+* `battleLimit >= 1`
+* `fixedDeck` must exist
+* `fixedDeck.Count >= 3`
 
-### Design Rule
+### RewardGenerationConfig validation
 
-The factory only converts static config into initial runtime objects.
+* `rewardOfferTotalOptions >= 2`
+* `upgradeTarget >= 0`
+* `upgradeTarget <= rewardOfferTotalOptions - 1`
+* `allowedReplacementRpsTypes` must exist and contain at least one value
+* `allowedReplacementBasePowers` must exist and contain at least one value
+* `allowedReplacementTraits` must exist and contain at least one value
+* `replacementTraitCount >= 0`
+* `replacementTraitCount <= 3`
+
+### TraitTuning validation
+
+* all numerical fields must be non-negative
+
+### CardSpec validation
+
+* `basePower >= 0`
+* `traits` must exist
+* traits must not contain duplicates
+* traits must not contain both `ShiftLeft` and `ShiftRight`
+* authored card trait count must not exceed 3
+
+### Validation Notes
+
+These are schema and legality checks, not balance checks.
+
+They intentionally distinguish:
+
+* hard minimum validity requirements
+  from
+* default content baselines such as 3 enemies or 6-card starting decks
+
+---
+
+## Runtime Construction Boundary
+
+The current design intentionally separates:
+
+* config loading
+  from
+* runtime construction
+
+### Recommended constructor object
+
+Use:
+
+* `RuntimeStateFactory`
+
+### RuntimeStateFactory responsibilities
+
+It should convert validated config objects into runtime state objects.
+
+Examples:
+
+* `GameConfig` -> `RunState`
+* `EnemyConfig` -> `EnemyProgressState`
+* `CardSpec` -> `CardInstance`
+
+### It should not
+
+* decide run progression
+* decide battle progression
+* decide reward timing
+* contain UI logic
+
+Those belong elsewhere.
 
 ---
 
@@ -487,6 +672,12 @@ When creating a new run:
 * set `PendingRewardOffer = null`
 * set run flow to the stage that means the first battle can begin
 
+### Important conversion note
+
+Runtime construction should not separately author a reward-total field for the current enemy if that total can be derived from the enemy config's `battleLimit`.
+
+The current design prefers one clear source of truth.
+
 ---
 
 ## Max HP Design Rule
@@ -513,6 +704,7 @@ The current design explicitly separates:
 ### Important Rule
 
 Runtime systems should not repeatedly consult config to know current max HP.
+
 Max HP should already exist in runtime state.
 
 This keeps runtime state self-contained and easier to reason about.
@@ -536,54 +728,6 @@ This applies to:
 * `BattleService` applies healing to runtime HP and clamps to max HP
 
 This keeps round calculation and runtime application responsibilities separate.
-
----
-
-## Validation Rules
-
-Config validation should be lightweight but explicit.
-
-The goal is to catch content mistakes early.
-
-### GameConfig validation
-
-* `playerStart` must exist
-* `enemies` must exist
-* `enemies.Count` must be 3 for the current demo
-* `rewardGeneration` must exist
-* `traitTuning` must exist
-
-### PlayerStartConfig validation
-
-* `playerMaxHp > 0`
-* `startingDeck` must exist
-* `startingDeck.Count == 6`
-
-### EnemyConfig validation
-
-* `enemyId` must not be empty
-* `maxHp > 0`
-* `fixedDeck` must exist
-* `fixedDeck.Count == 6`
-
-### RewardGenerationConfig validation
-
-* `allowedReplacementRpsTypes` must exist and contain at least one value
-* `allowedReplacementBasePowers` must exist and contain at least one value
-* `allowedReplacementTraits` must exist and contain at least one value
-* `replacementTraitCount == 2` for the current demo
-
-### TraitTuning validation
-
-* all numerical fields must be non-negative
-
-### CardSpec validation
-
-* `basePower >= 0`
-* `traits` must exist
-* traits must not contain duplicates
-* traits must not contain both `ShiftLeft` and `ShiftRight`
-* authored card trait count must not exceed 3
 
 ---
 
@@ -634,6 +778,7 @@ The current design intentionally avoids:
 * polymorphic JSON content graphs
 * config-owned runtime state
 * loader-owned gameplay logic
+* duplicated source-of-truth fields for quantities that can be derived directly from primary authored collections or fields
 
 These are not needed for the current demo phase.
 
@@ -647,6 +792,7 @@ The current design leaves room for future expansion such as:
 * replacing `JsonUtility` with another serializer
 * supporting multiple replacement base powers
 * supporting richer reward generation profiles
+* supporting different default offer sizes or upgrade targets
 * adding more enemy content
 * adding more tuning values
 * introducing stronger editor tooling later if needed
@@ -669,6 +815,7 @@ The current config and content design is:
 * explicit conversion into runtime state
 * simple enough for the current demo
 * extensible enough for future growth
+* explicit about the difference between locked gameplay invariants and configurable default content scale
 
 The key objects are:
 

@@ -140,7 +140,7 @@ If the current run must be understood, displayed, debugged, or later saved, `Run
 
 ### Purpose
 
-`EnemyProgressState` represents the progression state of the current enemy across up to three battles.
+`EnemyProgressState` represents the progression state of the current enemy across multiple battles against that enemy, bounded by the enemy's configured battle limit.
 
 ### Responsibilities
 
@@ -164,7 +164,9 @@ It tracks:
 
 * `EnemyProgressState` exists because enemy HP persists across battles.
 * `MaxHp` is part of runtime state, not something that should be looked up repeatedly from config during battle flow.
-* reward count is stored here because rewards are per enemy, not per battle.
+* `BattlesPlayed` must be interpreted against `Config.battleLimit`, not against a hard-coded constant.
+* `RewardsClaimed` tracks progress toward the reward total derived from `Config.battleLimit`.
+* the current demo should not introduce a second independent authored or runtime reward-total source of truth for the enemy when that total can be derived from `Config.battleLimit`.
 * `Config` refers to the static authored enemy config and should not be mutated at runtime.
 
 ---

@@ -255,6 +255,14 @@ Should test:
 * invalid config fails validation
 * required sections must exist
 * invalid authored card specs are rejected
+* `enemies.Count >= 1`
+* `startingDeck.Count >= 3`
+* `fixedDeck.Count >= 3`
+* `battleLimit >= 1`
+* `rewardOfferTotalOptions >= 2`
+* `upgradeTarget >= 0`
+* `upgradeTarget <= rewardOfferTotalOptions - 1`
+* `replacementTraitCount` is accepted only within the current allowed range `0..3`
 
 ### `RuntimeStateFactoryTests.cs`
 
@@ -265,6 +273,10 @@ Should test:
 * `EnemyConfig` creates a valid `EnemyProgressState`
 * player max HP is copied into runtime state
 * enemy max HP is copied into runtime state
+* starting deck size is derived from authored `startingDeck`
+* enemy fixed deck size is derived from authored `fixedDeck`
+* enemy battle limit remains available through `EnemyProgressState.Config.battleLimit`
+* reward total is not introduced as a separate authored runtime source of truth when it can be derived from enemy config
 
 ---
 
@@ -349,13 +361,37 @@ Should test:
 Should test:
 
 * replacement spec legality
-* replacement trait count rule
 * use of authored replacement config
 * filtering of meaningless replacements
+* `replacementTraitCount = 0`
+* `replacementTraitCount = 1`
+* `replacementTraitCount = 2` default-baseline behavior
+* `replacementTraitCount = 3`
+* illegal replacement trait counts outside the current allowed range are rejected
+* duplicate trait rejection still applies under all valid replacement trait-count settings
+* left/right shift conflict rejection still applies under all valid replacement trait-count settings
 
 ### `RewardOfferCompositionTests.cs`
 
-Should test:
+Should test two layers.
+
+#### Layer 1: generalized invariant tests
+
+* exactly one `Skip`
+* total option count equals configured `rewardOfferTotalOptions`
+* selected upgrade count never exceeds configured `upgradeTarget`
+* replace count fills the remaining non-skip slots
+* non-skip options are pairwise distinct by canonical resulting deck state
+
+#### Layer 2: default-baseline example tests
+
+When:
+
+* `rewardOfferTotalOptions = 4`
+* `upgradeTarget = 2`
+* `replacementTraitCount = 2`
+
+the system should still produce the familiar default-baseline structures:
 
 * `2 Upgrade + 1 Replace + 1 Skip`
 * `1 Upgrade + 2 Replace + 1 Skip`
@@ -405,6 +441,11 @@ Should test:
 * next enemy progression
 * victory
 * defeat
+* defeat occurs when `BattlesPlayed >= CurrentEnemy.Config.battleLimit` and the enemy is still alive
+* non-defeat continuation occurs when `BattlesPlayed < CurrentEnemy.Config.battleLimit`
+* one completed battle normally creates one immediately due reward
+* early enemy defeat settles remaining rewards until `RewardsClaimed >= CurrentEnemy.Config.battleLimit`
+* final enemy defeat ignores unresolved remaining rewards and enters `Victory`
 
 ---
 
@@ -444,6 +485,13 @@ If implementation capacity needs to stay especially lean, the minimum high-value
 * `RoundResolverPostResolveTests.cs`
 
 This reduced set still covers the highest-risk logic.
+
+For the current config-driven design direction, `RewardOfferCompositionTests.cs` should cover both:
+
+* generalized reward-offer invariants
+* default-baseline examples
+
+This keeps the first-wave test set aligned with both the generalized reward structure and the current v1 default content baseline.
 
 ---
 
@@ -680,6 +728,16 @@ This is a required principle of the current workflow.
 * `GameConfigLoaderTests.cs`
 * `RuntimeStateFactoryTests.cs`
 
+Validation coverage for this batch should include config-driven quantity and bound rules such as:
+
+* enemy count lower bound
+* starting deck size lower bound
+* enemy fixed deck size lower bound
+* per-enemy battle limit lower bound
+* reward offer total option lower bound
+* upgrade target upper-bound relationship to total offer size
+* replacement trait count allowed range
+
 ### Required helpers
 
 * `TestConfigFactory`
@@ -736,6 +794,11 @@ Its main purpose is to enable later resolver, reward, and flow tests.
 * `RewardOfferCompositionTests.cs`
 * `RewardDedupTests.cs`
 * `RewardApplicationTests.cs`
+
+Reward-generation tests in this batch should cover both:
+
+* generalized config-driven offer structure and replacement-generation behavior
+* the current v1 default baseline behavior
 
 ### Required helpers
 
@@ -807,6 +870,13 @@ Its main purpose is to enable later resolver, reward, and flow tests.
 ### Required tests
 
 * `RunServiceTests.cs`
+
+Run-flow tests in this batch should explicitly cover:
+
+* configurable per-enemy `battleLimit`
+* reward-total derivation from that battle limit
+* early reward settlement on enemy defeat
+* final-enemy remainder-ignore behavior
 
 ### Required helpers
 

@@ -12,16 +12,30 @@ The reward system for the current demo generates one reward offer at a time.
 
 Each reward offer contains:
 
-* exactly 4 options
 * exactly 1 `Skip`
-* exactly 3 non-skip options
+* a configurable total number of options
+* non-skip options composed from:
+  * `Upgrade`
+  * `Replace`
 
-The non-skip options are composed from:
+The current design uses config-driven default reward structure values.
 
-* `Upgrade`
-* `Replace`
+In particular:
 
-The reward system must prevent duplicate options from appearing in the same offer.
+* total offer size is controlled by `RewardGenerationConfig.rewardOfferTotalOptions`
+* upgrade selection targets up to `RewardGenerationConfig.upgradeTarget`
+* replace count is not a separate source of truth
+* actual replace count is derived from the remaining non-skip capacity after upgrade selection
+
+Under the current v1 default baseline, the familiar structures are still:
+
+* `2 Upgrade + 1 Replace + 1 Skip`
+* `1 Upgrade + 2 Replace + 1 Skip`
+* `0 Upgrade + 3 Replace + 1 Skip`
+
+However, these are default-baseline examples rather than permanent hard-coded reward invariants.
+
+The reward system must still prevent duplicate non-skip options from appearing in the same offer.
 
 At first glance, deduplication could be implemented by comparing raw reward action parameters, such as:
 

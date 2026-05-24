@@ -238,24 +238,73 @@ unless explicitly required.
 
 ## Reward Rules
 
-Reward generation must follow the locked design:
+Reward generation must follow the locked gameplay design and current engineering documents.
 
-- Each reward offer has exactly 4 options.
-- Exactly 1 option is `Skip`.
-- Exactly 3 options are non-skip.
-- Use up to 2 different legal `Upgrade` options.
-- If fewer than 2 distinct legal `Upgrade` options exist, fill remaining non-skip slots with `Replace` options.
-- Reward options must be deduplicated by resulting canonical deck state, not by raw action parameters.
+### Locked invariants
+
+- Each reward offer contains exactly 1 `Skip`.
+- `Skip` is always a real reward option and consumes that reward opportunity when chosen.
+- Non-skip options within the same offer must be deduplicated by resulting canonical deck state, not by raw action parameters.
+- Reward options must remain one-step actions.
+- Replacement generation must use authored reward-generation config rather than hardcoded values.
+
+### Config-driven offer structure
+
+The current demo uses config-driven default reward structure values.
+
+Use:
+
+- `RewardGenerationConfig.rewardOfferTotalOptions`
+- `RewardGenerationConfig.upgradeTarget`
+- `RewardGenerationConfig.replacementTraitCount`
+
+Important rules:
+
+- total offer size is configurable
+- upgrade target is configurable
+- replace count is not an independent source of truth
+- actual replace count is derived from:
+
+`rewardOfferTotalOptions - 1 - actualUpgradeCount`
+
+where the `1` is the always-present `Skip`
+
+### Default baseline note
+
+The current default baseline is still:
+
+- 4 total options
+- upgrade target 2
+- replacement trait count 2
+
+Under that default baseline, the familiar structures are still:
+
+- `2 Upgrade + 1 Replace + 1 Skip`
+- `1 Upgrade + 2 Replace + 1 Skip`
+- `0 Upgrade + 3 Replace + 1 Skip`
+
+But these are default-baseline examples, not permanent hard-coded reward invariants.
+
+### Canonical reward deduplication
 
 Canonical reward deduplication must ignore:
+
 - card instance identity
 - deck order
 - trait order
 
 Do not simplify this rule.
 
-Replacement generation must use authored reward-generation config rather than hardcoded values.
+### Replacement legality
 
+Replacement generation must follow the authored config and current legality rules.
+
+Important rules:
+
+- replacement cards must have exactly the configured `replacementTraitCount`
+- the current allowed test range for `replacementTraitCount` is `0..3`
+- replacement trait sets must not contain duplicates
+- replacement trait sets must not contain both `ShiftLeft` and `ShiftRight`
 ---
 
 ## HP and Healing Rules
