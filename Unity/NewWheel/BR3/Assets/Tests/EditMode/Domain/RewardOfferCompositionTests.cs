@@ -13,41 +13,128 @@ namespace BR3.Tests.EditMode.Domain
     public sealed class RewardOfferCompositionTests
     {
         [Test]
-        public void GenerateRewardOffer_WhenTwoOrMoreDistinctUpgradesExist_UsesTwoUpgradeOneReplaceOneSkip()
+        public void GenerateRewardOffer_UsesConfiguredOfferSizeAndExactlyOneSkip()
+        {
+            RewardGenerationConfig config = CreateConfig(
+                replacementTraitCount: 1,
+                rewardOfferTotalOptions: 5,
+                upgradeTarget: 1);
+
+            RewardOffer rewardOffer = GenerateOffer(
+                CreateDeck(
+                    CreateCardInstance("card-0001", RpsType.Rock, 4, TraitType.Empower),
+                    CreateCardInstance("card-0002", RpsType.Scissors, 4, TraitType.Suppress)),
+                config);
+
+            Assert.That(rewardOffer.Options, Has.Count.EqualTo(config.rewardOfferTotalOptions));
+            Assert.That(rewardOffer.Options.Count(option => option.Type == RewardOptionType.Skip), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void GenerateRewardOffer_SelectedUpgradeCountNeverExceedsConfiguredUpgradeTarget()
+        {
+            RewardGenerationConfig config = CreateConfig(
+                replacementTraitCount: 1,
+                rewardOfferTotalOptions: 5,
+                upgradeTarget: 1);
+
+            RewardOffer rewardOffer = GenerateOffer(
+                CreateDeck(
+                    CreateCardInstance("card-0001", RpsType.Rock, 4, TraitType.Empower),
+                    CreateCardInstance("card-0002", RpsType.Scissors, 4, TraitType.Suppress)),
+                config);
+
+            Assert.That(rewardOffer.Options.Count(option => option.Type == RewardOptionType.Upgrade), Is.LessThanOrEqualTo(config.upgradeTarget));
+        }
+
+        [Test]
+        public void GenerateRewardOffer_ReplaceCountFillsRemainingNonSkipCapacity()
+        {
+            RewardGenerationConfig config = CreateConfig(
+                replacementTraitCount: 1,
+                rewardOfferTotalOptions: 5,
+                upgradeTarget: 1);
+
+            RewardOffer rewardOffer = GenerateOffer(
+                CreateDeck(
+                    CreateCardInstance("card-0001", RpsType.Rock, 4, TraitType.Empower),
+                    CreateCardInstance("card-0002", RpsType.Scissors, 4, TraitType.Suppress)),
+                config);
+
+            int actualUpgradeCount = rewardOffer.Options.Count(option => option.Type == RewardOptionType.Upgrade);
+            int actualReplaceCount = rewardOffer.Options.Count(option => option.Type == RewardOptionType.Replace);
+            int expectedReplaceCount = config.rewardOfferTotalOptions - 1 - actualUpgradeCount;
+
+            Assert.That(actualReplaceCount, Is.EqualTo(expectedReplaceCount));
+        }
+
+        [Test]
+        public void GenerateRewardOffer_NonSkipOptionsAreDistinctByCanonicalResultingDeckState()
+        {
+            RewardGenerationConfig config = CreateConfig(
+                replacementTraitCount: 1,
+                rewardOfferTotalOptions: 4,
+                upgradeTarget: 2);
+
+            List<CardInstance> deck = CreateDeck(
+                CreateCardInstance("card-0001", RpsType.Rock, 4, TraitType.Empower),
+                CreateCardInstance("card-0002", RpsType.Rock, 4, TraitType.Empower));
+
+            RewardOffer rewardOffer = GenerateOffer(deck, config);
+
+            List<string> resultingDeckSignatures = rewardOffer.Options
+                .Where(option => option.Type != RewardOptionType.Skip)
+                .Select(option => CreateResultingDeckSignature(deck, option))
+                .ToList();
+
+            Assert.That(resultingDeckSignatures.Distinct().Count(), Is.EqualTo(resultingDeckSignatures.Count));
+        }
+
+        [Test]
+        public void GenerateRewardOffer_WhenDefaultBaselineHasAtLeastTwoDistinctUpgrades_UsesTwoUpgradeOneReplaceOneSkip()
         {
             RewardOffer rewardOffer = GenerateOffer(
                 CreateDeck(
                     CreateCardInstance("card-0001", RpsType.Rock, 4, TraitType.Empower),
                     CreateCardInstance("card-0002", RpsType.Scissors, 4, TraitType.Suppress)),
-                CreateConfig());
+                CreateConfig(
+                    replacementTraitCount: 1,
+                    rewardOfferTotalOptions: 4,
+                    upgradeTarget: 2));
 
-            AssertOfferShape(rewardOffer, expectedUpgrades: 2, expectedReplaces: 1, expectedSkips: 1);
+            AssertOfferShape(rewardOffer, expectedTotalOptions: 4, expectedUpgrades: 2, expectedReplaces: 1, expectedSkips: 1);
         }
 
         [Test]
-        public void GenerateRewardOffer_WhenExactlyOneDistinctUpgradeExists_UsesOneUpgradeTwoReplaceOneSkip()
+        public void GenerateRewardOffer_WhenDefaultBaselineHasExactlyOneDistinctUpgrade_UsesOneUpgradeTwoReplaceOneSkip()
         {
             RewardOffer rewardOffer = GenerateOffer(
                 CreateDeck(
                     CreateCardInstance("card-0001", RpsType.Rock, 4, TraitType.Empower),
                     CreateCardInstance("card-0002", RpsType.Rock, 4, TraitType.Empower)),
                 CreateConfig(
-                    allowedReplacementTraits: new List<TraitType> { TraitType.Suppress }));
+                    allowedReplacementTraits: new List<TraitType> { TraitType.Suppress },
+                    replacementTraitCount: 1,
+                    rewardOfferTotalOptions: 4,
+                    upgradeTarget: 2));
 
-            AssertOfferShape(rewardOffer, expectedUpgrades: 1, expectedReplaces: 2, expectedSkips: 1);
+            AssertOfferShape(rewardOffer, expectedTotalOptions: 4, expectedUpgrades: 1, expectedReplaces: 2, expectedSkips: 1);
         }
 
         [Test]
-        public void GenerateRewardOffer_WhenNoDistinctUpgradesExist_UsesThreeReplaceOneSkip()
+        public void GenerateRewardOffer_WhenDefaultBaselineHasNoDistinctUpgrades_UsesZeroUpgradeThreeReplaceOneSkip()
         {
             RewardOffer rewardOffer = GenerateOffer(
                 CreateDeck(
                     CreateCardInstance("card-0001", RpsType.Rock, 4, TraitType.Empower, TraitType.Suppress, TraitType.Growth),
                     CreateCardInstance("card-0002", RpsType.Scissors, 4, TraitType.Empower, TraitType.Suppress, TraitType.Growth)),
                 CreateConfig(
-                    allowedReplacementTraits: new List<TraitType> { TraitType.Empower, TraitType.Suppress, TraitType.Growth }));
+                    allowedReplacementTraits: new List<TraitType> { TraitType.Empower, TraitType.Suppress, TraitType.Growth },
+                    replacementTraitCount: 2,
+                    rewardOfferTotalOptions: 4,
+                    upgradeTarget: 2));
 
-            AssertOfferShape(rewardOffer, expectedUpgrades: 0, expectedReplaces: 3, expectedSkips: 1);
+            AssertOfferShape(rewardOffer, expectedTotalOptions: 4, expectedUpgrades: 0, expectedReplaces: 3, expectedSkips: 1);
         }
 
         [Test]
@@ -94,8 +181,8 @@ namespace BR3.Tests.EditMode.Domain
                 .ToList();
 
             Assert.That(firstOptionShapes, Is.Not.EqualTo(secondOptionShapes));
-            AssertOfferShape(firstOffer, expectedUpgrades: 2, expectedReplaces: 1, expectedSkips: 1);
-            AssertOfferShape(secondOffer, expectedUpgrades: 2, expectedReplaces: 1, expectedSkips: 1);
+            AssertOfferShape(firstOffer, expectedTotalOptions: 4, expectedUpgrades: 2, expectedReplaces: 1, expectedSkips: 1);
+            AssertOfferShape(secondOffer, expectedTotalOptions: 4, expectedUpgrades: 2, expectedReplaces: 1, expectedSkips: 1);
         }
 
         private static RewardOffer GenerateOffer(List<CardInstance> deck, RewardGenerationConfig config, IGameRandom gameRandom = null)
@@ -106,12 +193,52 @@ namespace BR3.Tests.EditMode.Domain
             return generator.GenerateRewardOffer(deck, config, rewardIndexForCurrentEnemy: 1);
         }
 
-        private static void AssertOfferShape(RewardOffer rewardOffer, int expectedUpgrades, int expectedReplaces, int expectedSkips)
+        private static void AssertOfferShape(RewardOffer rewardOffer, int expectedTotalOptions, int expectedUpgrades, int expectedReplaces, int expectedSkips)
         {
-            Assert.That(rewardOffer.Options, Has.Count.EqualTo(4));
+            Assert.That(rewardOffer.Options, Has.Count.EqualTo(expectedTotalOptions));
             Assert.That(rewardOffer.Options.Count(option => option.Type == RewardOptionType.Upgrade), Is.EqualTo(expectedUpgrades));
             Assert.That(rewardOffer.Options.Count(option => option.Type == RewardOptionType.Replace), Is.EqualTo(expectedReplaces));
             Assert.That(rewardOffer.Options.Count(option => option.Type == RewardOptionType.Skip), Is.EqualTo(expectedSkips));
+        }
+
+        private static string CreateResultingDeckSignature(IEnumerable<CardInstance> deck, RewardOption option)
+        {
+            List<CardInstance> simulatedDeck = deck
+                .Select(CloneCardInstance)
+                .ToList();
+
+            switch (option.Type)
+            {
+                case RewardOptionType.Upgrade:
+                    CardInstance upgradeTarget = simulatedDeck.Single(card => card.InstanceId == option.UpgradePayload.TargetCardInstanceId);
+                    upgradeTarget.Traits.Add(option.UpgradePayload.AddedTrait);
+                    break;
+                case RewardOptionType.Replace:
+                    int replaceIndex = simulatedDeck.FindIndex(card => card.InstanceId == option.ReplacePayload.TargetCardInstanceId);
+                    simulatedDeck[replaceIndex] = new CardInstance
+                    {
+                        InstanceId = "simulated-replacement",
+                        RpsType = option.ReplacePayload.ReplacementCardSpec.rpsType,
+                        BasePower = option.ReplacePayload.ReplacementCardSpec.basePower,
+                        PermanentPowerBonus = 0,
+                        Traits = new List<TraitType>(option.ReplacePayload.ReplacementCardSpec.traits),
+                    };
+                    break;
+            }
+
+            return RewardCanonicalSignatureFactory.CreateDeckSignature(simulatedDeck).SignatureText;
+        }
+
+        private static CardInstance CloneCardInstance(CardInstance card)
+        {
+            return new CardInstance
+            {
+                InstanceId = card.InstanceId,
+                RpsType = card.RpsType,
+                BasePower = card.BasePower,
+                PermanentPowerBonus = card.PermanentPowerBonus,
+                Traits = new List<TraitType>(card.Traits),
+            };
         }
 
         private static string ToOptionShape(RewardOption option)
@@ -132,7 +259,11 @@ namespace BR3.Tests.EditMode.Domain
             return option.Type.ToString();
         }
 
-        private static RewardGenerationConfig CreateConfig(List<TraitType> allowedReplacementTraits = null)
+        private static RewardGenerationConfig CreateConfig(
+            List<TraitType> allowedReplacementTraits = null,
+            int replacementTraitCount = 1,
+            int rewardOfferTotalOptions = 4,
+            int upgradeTarget = 2)
         {
             return TestConfigFactory.CreateValidRewardGenerationConfig(
                 allowedReplacementRpsTypes: new List<RpsType> { RpsType.Rock, RpsType.Scissors, RpsType.Paper },
@@ -143,7 +274,9 @@ namespace BR3.Tests.EditMode.Domain
                     TraitType.Suppress,
                     TraitType.Growth,
                 },
-                replacementTraitCount: 1);
+                replacementTraitCount: replacementTraitCount,
+                rewardOfferTotalOptions: rewardOfferTotalOptions,
+                upgradeTarget: upgradeTarget);
         }
 
         private static List<CardInstance> CreateDeck(params CardInstance[] cards)

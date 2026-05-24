@@ -115,8 +115,11 @@ namespace BR3.Domain.Reward
                 rewardGenerationConfig.allowedReplacementTraits ?? new List<TraitType>());
 
             List<UpgradeCandidate> dedupedUpgradeCandidates = DeduplicateUpgradeCandidates(deckList, rawUpgradeCandidates);
-            int selectedUpgradeCount = Math.Min(2, dedupedUpgradeCandidates.Count);
-            int selectedReplaceCount = 3 - selectedUpgradeCount;
+            int nonSkipCapacity = rewardGenerationConfig.rewardOfferTotalOptions - 1;
+            int selectedUpgradeCount = Math.Min(
+                Math.Min(rewardGenerationConfig.upgradeTarget, nonSkipCapacity),
+                dedupedUpgradeCandidates.Count);
+            int selectedReplaceCount = nonSkipCapacity - selectedUpgradeCount;
             List<UpgradeCandidate> selectedUpgradeCandidates = SelectCandidates(dedupedUpgradeCandidates, selectedUpgradeCount);
 
             List<ReplaceCandidate> rawReplaceCandidates = RewardRawCandidateGenerator.EnumerateReplaceCandidates(

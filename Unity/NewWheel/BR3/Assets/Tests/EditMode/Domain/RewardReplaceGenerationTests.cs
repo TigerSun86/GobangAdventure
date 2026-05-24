@@ -65,6 +65,20 @@ namespace BR3.Tests.EditMode.Domain
             Assert.That(isLegal, Is.False);
         }
 
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void IsLegalReplacementSpec_AcceptsMatchingTraitCountAcrossAllowedRange(int replacementTraitCount)
+        {
+            RewardGenerationConfig rewardGenerationConfig = CreateConfigForTraitCount(replacementTraitCount);
+            CardSpec replacementSpec = CreateSpecForTraitCount(replacementTraitCount);
+
+            bool isLegal = RewardRawCandidateGenerator.IsLegalReplacementSpec(replacementSpec, rewardGenerationConfig);
+
+            Assert.That(isLegal, Is.True);
+        }
+
         [Test]
         public void IsLegalReplacementSpec_RejectsWrongTraitCount()
         {
@@ -81,42 +95,54 @@ namespace BR3.Tests.EditMode.Domain
             Assert.That(isLegal, Is.False);
         }
 
-        [Test]
-        public void IsLegalReplacementSpec_RejectsDuplicateTraits()
+        [TestCase(2)]
+        [TestCase(3)]
+        public void IsLegalReplacementSpec_RejectsDuplicateTraitsAcrossAllowedRange(int replacementTraitCount)
         {
-            RewardGenerationConfig rewardGenerationConfig = TestConfigFactory.CreateValidRewardGenerationConfig();
+            RewardGenerationConfig rewardGenerationConfig = CreateConfigForTraitCount(replacementTraitCount);
+            TraitType duplicateTrait = TraitType.Empower;
+            TraitType[] traits = Enumerable.Repeat(duplicateTrait, replacementTraitCount).ToArray();
 
             CardSpec replacementSpec = TestConfigFactory.CreateCard(
                 RpsType.Rock,
                 4,
-                TraitType.Empower,
-                TraitType.Empower);
+                traits);
 
             bool isLegal = RewardRawCandidateGenerator.IsLegalReplacementSpec(replacementSpec, rewardGenerationConfig);
 
             Assert.That(isLegal, Is.False);
         }
 
-        [Test]
-        public void IsLegalReplacementSpec_RejectsShiftConflict()
+        [TestCase(2)]
+        [TestCase(3)]
+        public void IsLegalReplacementSpec_RejectsShiftConflictAcrossAllowedRange(int replacementTraitCount)
         {
-            RewardGenerationConfig rewardGenerationConfig = TestConfigFactory.CreateValidRewardGenerationConfig();
+            RewardGenerationConfig rewardGenerationConfig = CreateConfigForTraitCount(replacementTraitCount);
+            List<TraitType> traits = new List<TraitType> { TraitType.ShiftLeft, TraitType.ShiftRight };
+
+            if (replacementTraitCount == 3)
+            {
+                traits.Add(TraitType.Empower);
+            }
 
             CardSpec replacementSpec = TestConfigFactory.CreateCard(
                 RpsType.Rock,
                 4,
-                TraitType.ShiftLeft,
-                TraitType.ShiftRight);
+                traits.ToArray());
 
             bool isLegal = RewardRawCandidateGenerator.IsLegalReplacementSpec(replacementSpec, rewardGenerationConfig);
 
             Assert.That(isLegal, Is.False);
         }
 
-        [Test]
-        public void EnumerateLegalReplacementSpecs_ReturnsExpectedSpecsFromConfig()
+        [TestCase(0, new[] { "Rock:4:" })]
+        [TestCase(1, new[] { "Rock:4:Empower", "Rock:4:Suppress", "Rock:4:Growth" })]
+        [TestCase(2, new[] { "Rock:4:Empower,Suppress", "Rock:4:Empower,Growth", "Rock:4:Suppress,Growth" })]
+        [TestCase(3, new[] { "Rock:4:Empower,Suppress,Growth" })]
+        public void EnumerateLegalReplacementSpecs_SupportsReplacementTraitCountAcrossAllowedRange(int replacementTraitCount, string[] expectedKeys)
         {
-            RewardGenerationConfig rewardGenerationConfig = TestConfigFactory.CreateValidRewardGenerationConfig(
+            RewardGenerationConfig rewardGenerationConfig = CreateConfigForTraitCount(
+                replacementTraitCount,
                 allowedReplacementRpsTypes: new List<RpsType> { RpsType.Rock },
                 allowedReplacementBasePowers: new List<int> { 4 },
                 allowedReplacementTraits: new List<TraitType>
@@ -124,20 +150,14 @@ namespace BR3.Tests.EditMode.Domain
                     TraitType.Empower,
                     TraitType.Suppress,
                     TraitType.Growth,
-                },
-                replacementTraitCount: 2);
+                });
 
             List<CardSpec> specs = RewardRawCandidateGenerator.EnumerateLegalReplacementSpecs(rewardGenerationConfig);
             List<string> actualKeys = specs
                 .Select(spec => spec.rpsType + ":" + spec.basePower + ":" + string.Join(",", spec.traits))
                 .ToList();
 
-            Assert.That(actualKeys, Is.EqualTo(new[]
-            {
-                "Rock:4:Empower,Suppress",
-                "Rock:4:Empower,Growth",
-                "Rock:4:Suppress,Growth",
-            }));
+            Assert.That(actualKeys, Is.EqualTo(expectedKeys));
         }
 
         [Test]
@@ -172,6 +192,41 @@ namespace BR3.Tests.EditMode.Domain
                 "card-0001:Empower,Growth",
                 "card-0001:Suppress,Growth",
             }));
+        }
+
+        private static RewardGenerationConfig CreateConfigForTraitCount(
+            int replacementTraitCount,
+            List<RpsType> allowedReplacementRpsTypes = null,
+            List<int> allowedReplacementBasePowers = null,
+            List<TraitType> allowedReplacementTraits = null)
+        {
+            return TestConfigFactory.CreateValidRewardGenerationConfig(
+                allowedReplacementRpsTypes: allowedReplacementRpsTypes ?? new List<RpsType> { RpsType.Rock },
+                allowedReplacementBasePowers: allowedReplacementBasePowers ?? new List<int> { 4 },
+                allowedReplacementTraits: allowedReplacementTraits ?? new List<TraitType>
+                {
+                    TraitType.Empower,
+                    TraitType.Suppress,
+                    TraitType.Growth,
+                    TraitType.ShiftLeft,
+                    TraitType.ShiftRight,
+                },
+                replacementTraitCount: replacementTraitCount);
+        }
+
+        private static CardSpec CreateSpecForTraitCount(int replacementTraitCount)
+        {
+            switch (replacementTraitCount)
+            {
+                case 0:
+                    return TestConfigFactory.CreateCard(RpsType.Rock, 4);
+                case 1:
+                    return TestConfigFactory.CreateCard(RpsType.Rock, 4, TraitType.Empower);
+                case 2:
+                    return TestConfigFactory.CreateCard(RpsType.Rock, 4, TraitType.Empower, TraitType.Suppress);
+                default:
+                    return TestConfigFactory.CreateCard(RpsType.Rock, 4, TraitType.Empower, TraitType.Suppress, TraitType.Growth);
+            }
         }
 
         private static CardInstance CreateCardInstance(
