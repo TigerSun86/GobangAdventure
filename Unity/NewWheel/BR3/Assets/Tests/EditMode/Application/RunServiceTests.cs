@@ -236,21 +236,21 @@ namespace BR3.Tests.EditMode.Application
         }
 
         [Test]
-        public void AcceptCompletedBattle_WhenEnemySurvivesAfterThirdBattle_EntersDefeatWithoutPendingRewardOffer()
+        public void AcceptCompletedBattle_WhenEnemySurvivesAfterConfiguredBattleLimit_EntersDefeatWithoutPendingRewardOffer()
         {
             RunService runService = new RunService();
-            GameConfig config = TestConfigFactory.CreateValidGameConfig();
-            RunState runState = CreateRunStateForCompletedBattle(config, currentEnemyIndex: 1, battleIndexForEnemy: 3, battlesPlayed: 2);
+            GameConfig config = CreateGameConfigWithBattleLimits(2, 4, 3);
+            RunState runState = CreateRunStateForCompletedBattle(config, currentEnemyIndex: 1, battleIndexForEnemy: 4, battlesPlayed: 3);
             RewardService rewardService = CreateRewardService();
 
             RunCommandResult commandResult = runService.AcceptCompletedBattle(
                 runState,
-                CreateBattleOutcome(battleIndexForEnemy: 3, roundsPlayed: 3, enemyDefeated: false),
+                CreateBattleOutcome(battleIndexForEnemy: 4, roundsPlayed: 3, enemyDefeated: false),
                 rewardService,
                 config);
 
             Assert.That(commandResult.Success, Is.True);
-            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(3));
+            Assert.That(runState.CurrentEnemy.BattlesPlayed, Is.EqualTo(4));
             Assert.That(runState.ActiveBattle, Is.Null);
             Assert.That(runState.PendingRewardOffer, Is.Null);
             Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.Defeat));
@@ -388,7 +388,7 @@ namespace BR3.Tests.EditMode.Application
         public void ChooseReward_WhenDefeatedNonFinalEnemyStillOwesRewards_GeneratesAnotherRewardAndStaysInChoosingReward()
         {
             RunService runService = new RunService();
-            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            GameConfig config = CreateGameConfigWithBattleLimits(4, 3, 3);
             RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
             RewardService rewardService = CreateRewardService();
             RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: 0, rewardsClaimed: 1, enemyCurrentHp: 0);
@@ -408,6 +408,34 @@ namespace BR3.Tests.EditMode.Application
             Assert.That(runState.PendingRewardOffer, Is.Not.Null);
             Assert.That(runState.PendingRewardOffer, Is.Not.SameAs(originalOffer));
             Assert.That(runState.PendingRewardOffer.RewardIndexForCurrentEnemy, Is.EqualTo(3));
+            Assert.That(commandResult.PendingRewardOffer, Is.SameAs(runState.PendingRewardOffer));
+            Assert.That(commandResult.IsRunComplete, Is.False);
+        }
+
+        [Test]
+        public void ChooseReward_WhenDefeatedNonFinalEnemyWithHigherBattleLimit_KeepsSettlingUntilBattleLimitRewardTotal()
+        {
+            RunService runService = new RunService();
+            GameConfig config = CreateGameConfigWithBattleLimits(4, 3, 3);
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: 0, rewardsClaimed: 2, enemyCurrentHp: 0);
+            RewardOffer originalOffer = runState.PendingRewardOffer;
+            string skipOptionId = FindOptionId(originalOffer, RewardOptionType.Skip);
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                skipOptionId,
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(3));
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.ChoosingReward));
+            Assert.That(runState.PendingRewardOffer, Is.Not.Null);
+            Assert.That(runState.PendingRewardOffer, Is.Not.SameAs(originalOffer));
+            Assert.That(runState.PendingRewardOffer.RewardIndexForCurrentEnemy, Is.EqualTo(4));
             Assert.That(commandResult.PendingRewardOffer, Is.SameAs(runState.PendingRewardOffer));
             Assert.That(commandResult.IsRunComplete, Is.False);
         }
@@ -455,11 +483,11 @@ namespace BR3.Tests.EditMode.Application
         public void ChooseReward_WhenFinalEnemyIsDefeated_EntersVictoryWithoutStaleReferences()
         {
             RunService runService = new RunService();
-            GameConfig config = TestConfigFactory.CreateValidGameConfig();
+            GameConfig config = CreateGameConfigWithBattleLimits(3, 3, 4);
             RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
             RewardService rewardService = CreateRewardService();
             int finalEnemyIndex = config.enemies.Count - 1;
-            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: finalEnemyIndex, rewardsClaimed: 0, enemyCurrentHp: 0);
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: finalEnemyIndex, rewardsClaimed: 2, enemyCurrentHp: 0);
             string skipOptionId = FindOptionId(runState.PendingRewardOffer, RewardOptionType.Skip);
 
             RunCommandResult commandResult = runService.ChooseReward(
@@ -470,12 +498,38 @@ namespace BR3.Tests.EditMode.Application
                 runtimeStateFactory);
 
             Assert.That(commandResult.Success, Is.True);
-            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(1));
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(3));
             Assert.That(runState.PendingRewardOffer, Is.Null);
             Assert.That(runState.ActiveBattle, Is.Null);
             Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.Victory));
             Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.Victory));
             Assert.That(commandResult.PendingRewardOffer, Is.Null);
+            Assert.That(commandResult.IsRunComplete, Is.True);
+        }
+
+        [Test]
+        public void ChooseReward_WhenFinalEnemyIsDefeatedEarly_IgnoresRemainingRewardsFromConfiguredBattleLimit()
+        {
+            RunService runService = new RunService();
+            GameConfig config = CreateGameConfigWithBattleLimits(3, 3, 5);
+            RuntimeStateFactory runtimeStateFactory = new RuntimeStateFactory();
+            RewardService rewardService = CreateRewardService();
+            int finalEnemyIndex = config.enemies.Count - 1;
+            RunState runState = CreateRunStateChoosingReward(config, currentEnemyIndex: finalEnemyIndex, rewardsClaimed: 1, enemyCurrentHp: 0);
+            string skipOptionId = FindOptionId(runState.PendingRewardOffer, RewardOptionType.Skip);
+
+            RunCommandResult commandResult = runService.ChooseReward(
+                runState,
+                skipOptionId,
+                rewardService,
+                config,
+                runtimeStateFactory);
+
+            Assert.That(commandResult.Success, Is.True);
+            Assert.That(runState.CurrentEnemy.RewardsClaimed, Is.EqualTo(2));
+            Assert.That(runState.PendingRewardOffer, Is.Null);
+            Assert.That(runState.FlowStage, Is.EqualTo(RunFlowStage.Victory));
+            Assert.That(commandResult.FlowStage, Is.EqualTo(RunFlowStage.Victory));
             Assert.That(commandResult.IsRunComplete, Is.True);
         }
 
@@ -524,6 +578,24 @@ namespace BR3.Tests.EditMode.Application
             runState.PendingRewardOffer = null;
             runState.FlowStage = RunFlowStage.InBattle;
             return runState;
+        }
+
+        private static GameConfig CreateGameConfigWithBattleLimits(params int[] battleLimits)
+        {
+            List<EnemyConfig> enemies = new List<EnemyConfig>();
+
+            for (int i = 0; i < battleLimits.Length; i++)
+            {
+                enemies.Add(TestConfigFactory.CreateValidEnemyConfig(
+                    enemyId: $"enemy-{i + 1}",
+                    displayName: $"Enemy {i + 1}",
+                    maxHp: 18 + (i * 6),
+                    lowPower: 4 + i,
+                    highPower: 5 + i,
+                    battleLimit: battleLimits[i]));
+            }
+
+            return TestConfigFactory.CreateValidGameConfig(enemies: enemies);
         }
 
         private static RewardService CreateRewardService()

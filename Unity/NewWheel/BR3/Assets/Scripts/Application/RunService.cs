@@ -7,8 +7,6 @@ namespace BR3.Application
 {
     public sealed class RunService
     {
-        private const int RewardsPerEnemy = 3;
-
         public RunState CreateNewRun(GameConfig config, RuntimeStateFactory runtimeStateFactory)
         {
             if (config == null)
@@ -117,7 +115,7 @@ namespace BR3.Application
                 return EnterRewardFlow(runState, rewardService, config);
             }
 
-            if (runState.CurrentEnemy.BattlesPlayed >= 3)
+            if (runState.CurrentEnemy.BattlesPlayed >= GetRewardTotalForCurrentEnemy(runState))
             {
                 runState.FlowStage = RunFlowStage.Defeat;
                 return CreateSuccessResult(runState);
@@ -175,7 +173,7 @@ namespace BR3.Application
                 return CreateSuccessResult(runState);
             }
 
-            if (runState.CurrentEnemy.RewardsClaimed < RewardsPerEnemy)
+            if (runState.CurrentEnemy.RewardsClaimed < GetRewardTotalForCurrentEnemy(runState))
             {
                 return EnterRewardFlow(runState, rewardService, config);
             }
@@ -186,13 +184,15 @@ namespace BR3.Application
 
         private static bool CanAcceptCompletedBattle(RunState runState, BattleOutcome battleOutcome, GameConfig config)
         {
+            int rewardTotalForCurrentEnemy = GetRewardTotalForCurrentEnemy(runState);
+
             if (runState.CurrentEnemy == null
                 || runState.ActiveBattle == null
                 || runState.PendingRewardOffer != null
                 || runState.FlowStage != RunFlowStage.InBattle
                 || runState.ActiveBattle.BattleFlowStage != BattleFlowStage.BattleComplete
                 || runState.CurrentEnemy.RewardsClaimed < 0
-                || runState.CurrentEnemy.RewardsClaimed > 2
+                || runState.CurrentEnemy.RewardsClaimed >= rewardTotalForCurrentEnemy
                 || config.enemies == null
                 || config.enemies.Count == 0
                 || runState.CurrentEnemyIndex < 0
@@ -230,6 +230,11 @@ namespace BR3.Application
             }
 
             return false;
+        }
+
+        private static int GetRewardTotalForCurrentEnemy(RunState runState)
+        {
+            return runState.CurrentEnemy?.Config?.battleLimit ?? 0;
         }
 
         private static bool IsFinalEnemy(RunState runState, GameConfig config)
