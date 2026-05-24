@@ -57,7 +57,7 @@ namespace BR3.Tests.EditMode.Config
         [Test]
         public void CreateEnemyProgressState_WithValidEnemyConfig_CreatesExpectedProgressState()
         {
-            EnemyConfig enemyConfig = TestConfigFactory.CreateValidEnemyConfig("enemy-2", "Enemy 2", 24, 5, 6);
+            EnemyConfig enemyConfig = TestConfigFactory.CreateValidEnemyConfig("enemy-2", "Enemy 2", 24, 5, 6, battleLimit: 4);
 
             EnemyProgressState enemyProgressState = factory.CreateEnemyProgressState(enemyConfig);
 
@@ -66,6 +66,17 @@ namespace BR3.Tests.EditMode.Config
             Assert.That(enemyProgressState.MaxHp, Is.EqualTo(enemyConfig.maxHp));
             Assert.That(enemyProgressState.BattlesPlayed, Is.EqualTo(0));
             Assert.That(enemyProgressState.RewardsClaimed, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void CreateEnemyProgressState_UsesConfigBattleLimitAsSingleRewardProgressSourceOfTruth()
+        {
+            EnemyConfig enemyConfig = TestConfigFactory.CreateValidEnemyConfig(battleLimit: 5);
+
+            EnemyProgressState enemyProgressState = factory.CreateEnemyProgressState(enemyConfig);
+
+            Assert.That(enemyProgressState.Config.battleLimit, Is.EqualTo(5));
+            Assert.That(typeof(EnemyProgressState).GetField("RewardsTotal"), Is.Null);
         }
 
         [Test]

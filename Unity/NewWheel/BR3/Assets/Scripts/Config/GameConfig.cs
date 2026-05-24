@@ -42,6 +42,7 @@ namespace BR3.Config
         public string enemyId;
         public string displayName;
         public int maxHp;
+        public int battleLimit;
         public List<CardSpec> fixedDeck;
     }
 
@@ -51,12 +52,15 @@ namespace BR3.Config
         public string enemyId;
         public string displayName;
         public int maxHp;
+        public int battleLimit;
         public List<AuthoredCardSpec> fixedDeck;
     }
 
     [Serializable]
     public sealed class RewardGenerationConfig
     {
+        public int rewardOfferTotalOptions;
+        public int upgradeTarget;
         public List<RpsType> allowedReplacementRpsTypes;
         public List<int> allowedReplacementBasePowers;
         public List<TraitType> allowedReplacementTraits;
@@ -66,6 +70,8 @@ namespace BR3.Config
     [Serializable]
     public sealed class AuthoredRewardGenerationConfig
     {
+        public int rewardOfferTotalOptions;
+        public int upgradeTarget;
         public List<string> allowedReplacementRpsTypes;
         public List<int> allowedReplacementBasePowers;
         public List<string> allowedReplacementTraits;

@@ -8,9 +8,9 @@ namespace BR3.Config
 {
     public sealed class GameConfigLoader
     {
-        private const int DemoEnemyCount = 3;
-        private const int DemoDeckSize = 6;
-        private const int DemoReplacementTraitCount = 2;
+        private const int MinDeckSize = 3;
+        private const int MinRewardOfferTotalOptions = 2;
+        private const int MinReplacementTraitCount = 0;
         private const int MaxAuthoredTraitCount = 3;
 
         public GameConfig LoadFromJson(string jsonText)
@@ -102,6 +102,7 @@ namespace BR3.Config
                     enemyId = authoredEnemy?.enemyId,
                     displayName = authoredEnemy?.displayName,
                     maxHp = authoredEnemy?.maxHp ?? 0,
+                    battleLimit = authoredEnemy?.battleLimit ?? 0,
                     fixedDeck = ConvertCardSpecs(authoredEnemy?.fixedDeck, $"GameConfig.enemies[{enemyIndex}].fixedDeck"),
                 });
             }
@@ -118,6 +119,8 @@ namespace BR3.Config
 
             return new RewardGenerationConfig
             {
+                rewardOfferTotalOptions = authoredRewardGeneration.rewardOfferTotalOptions,
+                upgradeTarget = authoredRewardGeneration.upgradeTarget,
                 allowedReplacementRpsTypes = ConvertEnumList<RpsType>(
                     authoredRewardGeneration.allowedReplacementRpsTypes,
                     "GameConfig.rewardGeneration.allowedReplacementRpsTypes"),
@@ -188,7 +191,7 @@ namespace BR3.Config
         {
             Require(config.playerStart != null, "GameConfig.playerStart must exist.");
             Require(config.enemies != null, "GameConfig.enemies must exist.");
-            Require(config.enemies.Count == DemoEnemyCount, $"GameConfig.enemies must contain exactly {DemoEnemyCount} entries for the current demo.");
+            Require(config.enemies.Count >= 1, "GameConfig.enemies must contain at least 1 entry.");
             Require(config.rewardGeneration != null, "GameConfig.rewardGeneration must exist.");
             Require(config.traitTuning != null, "GameConfig.traitTuning must exist.");
 
@@ -207,7 +210,7 @@ namespace BR3.Config
         {
             Require(playerStart.playerMaxHp > 0, "PlayerStartConfig.playerMaxHp must be greater than 0.");
             Require(playerStart.startingDeck != null, "PlayerStartConfig.startingDeck must exist.");
-            Require(playerStart.startingDeck.Count == DemoDeckSize, $"PlayerStartConfig.startingDeck must contain exactly {DemoDeckSize} cards.");
+            Require(playerStart.startingDeck.Count >= MinDeckSize, $"PlayerStartConfig.startingDeck must contain at least {MinDeckSize} cards.");
 
             ValidateCardList(playerStart.startingDeck, "PlayerStartConfig.startingDeck");
         }
@@ -219,22 +222,37 @@ namespace BR3.Config
             Require(enemy != null, $"{prefix} must exist.");
             Require(!string.IsNullOrWhiteSpace(enemy.enemyId), $"{prefix}.enemyId must not be null or empty.");
             Require(enemy.maxHp > 0, $"{prefix}.maxHp must be greater than 0.");
+            Require(enemy.battleLimit >= 1, $"{prefix}.battleLimit must be at least 1.");
             Require(enemy.fixedDeck != null, $"{prefix}.fixedDeck must exist.");
-            Require(enemy.fixedDeck.Count == DemoDeckSize, $"{prefix}.fixedDeck must contain exactly {DemoDeckSize} cards.");
+            Require(enemy.fixedDeck.Count >= MinDeckSize, $"{prefix}.fixedDeck must contain at least {MinDeckSize} cards.");
 
             ValidateCardList(enemy.fixedDeck, $"{prefix}.fixedDeck");
         }
 
         private static void ValidateRewardGeneration(RewardGenerationConfig rewardGeneration)
         {
+            Require(rewardGeneration.rewardOfferTotalOptions >= MinRewardOfferTotalOptions,
+                $"RewardGenerationConfig.rewardOfferTotalOptions must be at least {MinRewardOfferTotalOptions}.");
+            Require(rewardGeneration.upgradeTarget >= 0,
+                "RewardGenerationConfig.upgradeTarget must be non-negative.");
+            Require(rewardGeneration.upgradeTarget <= rewardGeneration.rewardOfferTotalOptions - 1,
+                "RewardGenerationConfig.upgradeTarget must be less than or equal to rewardOfferTotalOptions - 1.");
             Require(rewardGeneration.allowedReplacementRpsTypes != null && rewardGeneration.allowedReplacementRpsTypes.Count > 0,
                 "RewardGenerationConfig.allowedReplacementRpsTypes must exist and contain at least one value.");
             Require(rewardGeneration.allowedReplacementBasePowers != null && rewardGeneration.allowedReplacementBasePowers.Count > 0,
                 "RewardGenerationConfig.allowedReplacementBasePowers must exist and contain at least one value.");
-            Require(rewardGeneration.allowedReplacementTraits != null && rewardGeneration.allowedReplacementTraits.Count > 0,
-                "RewardGenerationConfig.allowedReplacementTraits must exist and contain at least one value.");
-            Require(rewardGeneration.replacementTraitCount == DemoReplacementTraitCount,
-                $"RewardGenerationConfig.replacementTraitCount must equal {DemoReplacementTraitCount} for the current demo.");
+            Require(rewardGeneration.replacementTraitCount >= MinReplacementTraitCount,
+                $"RewardGenerationConfig.replacementTraitCount must be at least {MinReplacementTraitCount}.");
+            Require(rewardGeneration.replacementTraitCount <= MaxAuthoredTraitCount,
+                $"RewardGenerationConfig.replacementTraitCount must be less than or equal to {MaxAuthoredTraitCount}.");
+
+            if (rewardGeneration.replacementTraitCount > 0)
+            {
+                Require(rewardGeneration.allowedReplacementTraits != null && rewardGeneration.allowedReplacementTraits.Count > 0,
+                    "RewardGenerationConfig.allowedReplacementTraits must exist and contain at least one value when replacementTraitCount is greater than 0.");
+                Require(rewardGeneration.allowedReplacementTraits.Count >= rewardGeneration.replacementTraitCount,
+                    "RewardGenerationConfig.allowedReplacementTraits must contain at least replacementTraitCount values.");
+            }
         }
 
         private static void ValidateTraitTuning(TraitTuning traitTuning)

@@ -5,32 +5,44 @@
       {
         "rpsType": "Rock",
         "basePower": 4,
-        "traits": ["Empower"]
+        "traits": [
+          "Empower"
+        ]
       },
       {
         "rpsType": "Rock",
         "basePower": 4,
-        "traits": ["ShiftLeft"]
+        "traits": [
+          "ShiftLeft"
+        ]
       },
       {
         "rpsType": "Scissors",
         "basePower": 4,
-        "traits": ["Empower"]
+        "traits": [
+          "Empower"
+        ]
       },
       {
         "rpsType": "Scissors",
         "basePower": 4,
-        "traits": ["ShiftLeft"]
+        "traits": [
+          "ShiftLeft"
+        ]
       },
       {
         "rpsType": "Paper",
         "basePower": 4,
-        "traits": ["Empower"]
+        "traits": [
+          "Empower"
+        ]
       },
       {
         "rpsType": "Paper",
         "basePower": 4,
-        "traits": ["ShiftLeft"]
+        "traits": [
+          "ShiftLeft"
+        ]
       }
     ]
   },
@@ -39,6 +51,7 @@
       "enemyId": "enemy-1",
       "displayName": "Enemy 1",
       "maxHp": 18,
+      "battleLimit": 3,
       "fixedDeck": [
         {
           "rpsType": "Rock",
@@ -76,6 +89,7 @@
       "enemyId": "enemy-2",
       "displayName": "Enemy 2",
       "maxHp": 24,
+      "battleLimit": 3,
       "fixedDeck": [
         {
           "rpsType": "Rock",
@@ -113,6 +127,7 @@
       "enemyId": "enemy-3",
       "displayName": "Enemy 3",
       "maxHp": 30,
+      "battleLimit": 3,
       "fixedDeck": [
         {
           "rpsType": "Rock",
@@ -148,9 +163,26 @@
     }
   ],
   "rewardGeneration": {
-    "allowedReplacementRpsTypes": ["Rock", "Scissors", "Paper"],
-    "allowedReplacementBasePowers": [4],
-    "allowedReplacementTraits": ["Empower", "ShiftLeft", "ShiftRight", "AdjacentAid", "Suppress", "Regrow", "Lifesteal", "Growth"],
+    "rewardOfferTotalOptions": 4,
+    "upgradeTarget": 2,
+    "allowedReplacementRpsTypes": [
+      "Rock",
+      "Scissors",
+      "Paper"
+    ],
+    "allowedReplacementBasePowers": [
+      4
+    ],
+    "allowedReplacementTraits": [
+      "Empower",
+      "ShiftLeft",
+      "ShiftRight",
+      "AdjacentAid",
+      "Suppress",
+      "Regrow",
+      "Lifesteal",
+      "Growth"
+    ],
     "replacementTraitCount": 2
   },
   "traitTuning": {

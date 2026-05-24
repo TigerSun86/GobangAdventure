@@ -21,6 +21,21 @@ namespace BR3.Tests.EditMode.TestHelpers
             };
         }
 
+        public static AuthoredGameConfig CreateValidAuthoredGameConfig(
+            AuthoredPlayerStartConfig playerStart = null,
+            List<AuthoredEnemyConfig> enemies = null,
+            AuthoredRewardGenerationConfig rewardGeneration = null,
+            TraitTuning traitTuning = null)
+        {
+            return new AuthoredGameConfig
+            {
+                playerStart = playerStart ?? CreateValidAuthoredPlayerStartConfig(),
+                enemies = enemies ?? CreateValidAuthoredEnemies(),
+                rewardGeneration = rewardGeneration ?? CreateValidAuthoredRewardGenerationConfig(),
+                traitTuning = traitTuning ?? CreateValidTraitTuning(),
+            };
+        }
+
         public static PlayerStartConfig CreateValidPlayerStartConfig(
             int playerMaxHp = 30,
             List<CardSpec> startingDeck = null)
@@ -29,6 +44,17 @@ namespace BR3.Tests.EditMode.TestHelpers
             {
                 playerMaxHp = playerMaxHp,
                 startingDeck = startingDeck ?? CreateValidStartingDeck(),
+            };
+        }
+
+        public static AuthoredPlayerStartConfig CreateValidAuthoredPlayerStartConfig(
+            int playerMaxHp = 30,
+            List<AuthoredCardSpec> startingDeck = null)
+        {
+            return new AuthoredPlayerStartConfig
+            {
+                playerMaxHp = playerMaxHp,
+                startingDeck = startingDeck ?? CreateValidAuthoredStartingDeck(),
             };
         }
 
@@ -42,20 +68,51 @@ namespace BR3.Tests.EditMode.TestHelpers
             };
         }
 
+        public static List<AuthoredEnemyConfig> CreateValidAuthoredEnemies()
+        {
+            return new List<AuthoredEnemyConfig>
+            {
+                CreateValidAuthoredEnemyConfig("enemy-1", "Enemy 1", 18, 4, 5),
+                CreateValidAuthoredEnemyConfig("enemy-2", "Enemy 2", 24, 5, 6),
+                CreateValidAuthoredEnemyConfig("enemy-3", "Enemy 3", 30, 6, 7),
+            };
+        }
+
         public static EnemyConfig CreateValidEnemyConfig(
             string enemyId = "enemy-1",
             string displayName = "Enemy 1",
             int maxHp = 18,
             int lowPower = 4,
             int highPower = 5,
-            List<CardSpec> fixedDeck = null)
+            List<CardSpec> fixedDeck = null,
+            int battleLimit = 3)
         {
             return new EnemyConfig
             {
                 enemyId = enemyId,
                 displayName = displayName,
                 maxHp = maxHp,
+                battleLimit = battleLimit,
                 fixedDeck = fixedDeck ?? CreateValidEnemyDeck(lowPower, highPower),
+            };
+        }
+
+        public static AuthoredEnemyConfig CreateValidAuthoredEnemyConfig(
+            string enemyId = "enemy-1",
+            string displayName = "Enemy 1",
+            int maxHp = 18,
+            int lowPower = 4,
+            int highPower = 5,
+            List<AuthoredCardSpec> fixedDeck = null,
+            int battleLimit = 3)
+        {
+            return new AuthoredEnemyConfig
+            {
+                enemyId = enemyId,
+                displayName = displayName,
+                maxHp = maxHp,
+                battleLimit = battleLimit,
+                fixedDeck = fixedDeck ?? CreateValidAuthoredEnemyDeck(lowPower, highPower),
             };
         }
 
@@ -63,10 +120,14 @@ namespace BR3.Tests.EditMode.TestHelpers
             List<RpsType> allowedReplacementRpsTypes = null,
             List<int> allowedReplacementBasePowers = null,
             List<TraitType> allowedReplacementTraits = null,
-            int replacementTraitCount = 2)
+            int replacementTraitCount = 2,
+            int rewardOfferTotalOptions = 4,
+            int upgradeTarget = 2)
         {
             return new RewardGenerationConfig
             {
+                rewardOfferTotalOptions = rewardOfferTotalOptions,
+                upgradeTarget = upgradeTarget,
                 allowedReplacementRpsTypes = allowedReplacementRpsTypes ?? new List<RpsType> { RpsType.Rock, RpsType.Scissors, RpsType.Paper },
                 allowedReplacementBasePowers = allowedReplacementBasePowers ?? new List<int> { 4 },
                 allowedReplacementTraits = allowedReplacementTraits ?? new List<TraitType>
@@ -79,6 +140,35 @@ namespace BR3.Tests.EditMode.TestHelpers
                     TraitType.Regrow,
                     TraitType.Lifesteal,
                     TraitType.Growth,
+                },
+                replacementTraitCount = replacementTraitCount,
+            };
+        }
+
+        public static AuthoredRewardGenerationConfig CreateValidAuthoredRewardGenerationConfig(
+            List<string> allowedReplacementRpsTypes = null,
+            List<int> allowedReplacementBasePowers = null,
+            List<string> allowedReplacementTraits = null,
+            int replacementTraitCount = 2,
+            int rewardOfferTotalOptions = 4,
+            int upgradeTarget = 2)
+        {
+            return new AuthoredRewardGenerationConfig
+            {
+                rewardOfferTotalOptions = rewardOfferTotalOptions,
+                upgradeTarget = upgradeTarget,
+                allowedReplacementRpsTypes = allowedReplacementRpsTypes ?? new List<string> { "Rock", "Scissors", "Paper" },
+                allowedReplacementBasePowers = allowedReplacementBasePowers ?? new List<int> { 4 },
+                allowedReplacementTraits = allowedReplacementTraits ?? new List<string>
+                {
+                    "Empower",
+                    "ShiftLeft",
+                    "ShiftRight",
+                    "AdjacentAid",
+                    "Suppress",
+                    "Regrow",
+                    "Lifesteal",
+                    "Growth",
                 },
                 replacementTraitCount = replacementTraitCount,
             };
@@ -114,6 +204,19 @@ namespace BR3.Tests.EditMode.TestHelpers
             };
         }
 
+        public static List<AuthoredCardSpec> CreateValidAuthoredStartingDeck()
+        {
+            return new List<AuthoredCardSpec>
+            {
+                CreateAuthoredCard("Rock", 4, "Empower"),
+                CreateAuthoredCard("Rock", 4, "ShiftLeft"),
+                CreateAuthoredCard("Scissors", 4, "Empower"),
+                CreateAuthoredCard("Scissors", 4, "ShiftLeft"),
+                CreateAuthoredCard("Paper", 4, "Empower"),
+                CreateAuthoredCard("Paper", 4, "ShiftLeft"),
+            };
+        }
+
         public static List<CardSpec> CreateValidEnemyDeck(int lowPower, int highPower)
         {
             return new List<CardSpec>
@@ -127,6 +230,19 @@ namespace BR3.Tests.EditMode.TestHelpers
             };
         }
 
+        public static List<AuthoredCardSpec> CreateValidAuthoredEnemyDeck(int lowPower, int highPower)
+        {
+            return new List<AuthoredCardSpec>
+            {
+                CreateAuthoredCard("Rock", lowPower),
+                CreateAuthoredCard("Rock", highPower),
+                CreateAuthoredCard("Scissors", lowPower),
+                CreateAuthoredCard("Scissors", highPower),
+                CreateAuthoredCard("Paper", lowPower),
+                CreateAuthoredCard("Paper", highPower),
+            };
+        }
+
         public static CardSpec CreateCard(RpsType rpsType, int basePower, params TraitType[] traits)
         {
             return new CardSpec
@@ -134,6 +250,16 @@ namespace BR3.Tests.EditMode.TestHelpers
                 rpsType = rpsType,
                 basePower = basePower,
                 traits = new List<TraitType>(traits),
+            };
+        }
+
+        public static AuthoredCardSpec CreateAuthoredCard(string rpsType, int basePower, params string[] traits)
+        {
+            return new AuthoredCardSpec
+            {
+                rpsType = rpsType,
+                basePower = basePower,
+                traits = new List<string>(traits),
             };
         }
     }
