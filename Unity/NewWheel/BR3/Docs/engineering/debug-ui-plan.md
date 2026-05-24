@@ -30,7 +30,7 @@ It does not redefine gameplay rules, application flow rules, or domain model rul
 
 The first debug scene must support:
 
-* loading authored config from an inspector-bound `TextAsset`
+* loading authored config from the StreamingAssets-based game_config.json source-of-truth
 * creating a new run
 * displaying run summary state
 * starting a battle
@@ -787,12 +787,12 @@ This method should be the main UI refresh entry point.
 
 ### Input source
 
-The debug scene should use an inspector-bound `TextAsset`, not a runtime text input box.
+The debug scene should load authored config from the StreamingAssets game_config.json file, not from a runtime text input box.
 
 ### Flow
 
-1. read `TextAsset.text`
-2. call `GameConfigLoader`
+1. read the StreamingAssets game_config.json file
+2. call GameConfigLoader
 3. store the resulting config if successful
 4. update status message
 5. refresh UI
@@ -1439,7 +1439,7 @@ Those belong in Edit Mode tests.
 
 The first debug UI implementation is considered done when it:
 
-* can load config from an inspector-bound `TextAsset`
+* can load config from the StreamingAssets game_config.json file
 * can create a new run
 * can start a battle
 * can show current run and battle summary
