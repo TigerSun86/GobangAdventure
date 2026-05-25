@@ -302,18 +302,32 @@ namespace BR3.Presentation.DebugUi
                 : $"{currentRun.CurrentEnemyIndex + 1}/{currentConfig.enemies.Count}";
 
             BattleState activeBattle = currentRun.ActiveBattle;
+            EnemyProgressState currentEnemy = currentRun.CurrentEnemy;
+            int? battleLimit = currentEnemy?.Config?.battleLimit;
 
             return new RunSummaryViewData
             {
                 PlayerHpText = $"HP {currentRun.PlayerHp}/{currentRun.PlayerMaxHp}",
                 EnemyIndexText = $"Enemy {enemyIndexText}",
-                EnemyHpText = currentRun.CurrentEnemy == null ? "Enemy HP -" : $"Enemy HP {currentRun.CurrentEnemy.CurrentHp}/{currentRun.CurrentEnemy.MaxHp}",
-                BattlesPlayedText = currentRun.CurrentEnemy == null ? "Battles -" : $"Battles {currentRun.CurrentEnemy.BattlesPlayed}/3",
-                RewardsClaimedText = currentRun.CurrentEnemy == null ? "Rewards -" : $"Rewards {currentRun.CurrentEnemy.RewardsClaimed}/3",
+                EnemyHpText = currentEnemy == null ? "Enemy HP -" : $"Enemy HP {currentEnemy.CurrentHp}/{currentEnemy.MaxHp}",
+                BattlesPlayedText = FormatProgressText("Battles", currentEnemy?.BattlesPlayed, battleLimit),
+                RewardsClaimedText = FormatProgressText("Rewards", currentEnemy?.RewardsClaimed, battleLimit),
                 RunStageText = $"Run {FlowStageTextFormatter.Format(currentRun.FlowStage)}",
                 BattleStageText = $"Battle {FlowStageTextFormatter.Format(activeBattle?.BattleFlowStage)}",
                 RoundText = activeBattle == null ? "Round -" : $"Round {activeBattle.RoundIndex}",
             };
+        }
+
+        private static string FormatProgressText(string label, int? currentValue, int? totalValue)
+        {
+            if (!currentValue.HasValue)
+            {
+                return $"{label} -";
+            }
+
+            return totalValue.HasValue
+                ? $"{label} {currentValue.Value}/{totalValue.Value}"
+                : $"{label} {currentValue.Value}";
         }
 
         private BoardViewData BuildBoardViewData()
