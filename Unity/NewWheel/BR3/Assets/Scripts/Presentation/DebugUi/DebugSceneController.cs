@@ -423,15 +423,15 @@ namespace BR3.Presentation.DebugUi
 
         private EnemySequenceRowViewData[] BuildEnemySequenceRowViewData()
         {
-            if (currentRun?.ActiveBattle?.EnemySequence == null)
+            if (currentRun?.CurrentEnemy?.Config?.fixedDeck == null)
             {
                 return Array.Empty<EnemySequenceRowViewData>();
             }
 
-            EnemySequenceRowViewData[] rows = new EnemySequenceRowViewData[currentRun.ActiveBattle.EnemySequence.Count];
-            for (int index = 0; index < currentRun.ActiveBattle.EnemySequence.Count; index++)
+            EnemySequenceRowViewData[] rows = new EnemySequenceRowViewData[currentRun.CurrentEnemy.Config.fixedDeck.Count];
+            for (int index = 0; index < currentRun.CurrentEnemy.Config.fixedDeck.Count; index++)
             {
-                rows[index] = EnemySequenceTextFormatter.Format(index + 1, currentRun.ActiveBattle.EnemySequence[index]);
+                rows[index] = EnemySequenceTextFormatter.Format(index + 1, currentRun.CurrentEnemy.Config.fixedDeck[index]);
             }
 
             return rows;

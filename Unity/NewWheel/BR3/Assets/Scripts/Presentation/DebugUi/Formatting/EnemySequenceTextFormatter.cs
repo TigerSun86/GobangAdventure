@@ -4,11 +4,11 @@ namespace BR3.Presentation.DebugUi
 {
     public static class EnemySequenceTextFormatter
     {
-        public static EnemySequenceRowViewData Format(int roundIndex, CardSpec cardSpec)
+        public static EnemySequenceRowViewData Format(int cardIndex, CardSpec cardSpec)
         {
             return new EnemySequenceRowViewData
             {
-                SequenceIndexText = $"R{roundIndex}",
+                SequenceIndexText = $"Card {cardIndex}",
                 SequenceCardText = $"{CardTextFormatter.FormatTitle(cardSpec)} | {CardTextFormatter.FormatStats(cardSpec)} | {CardTextFormatter.FormatTraits(cardSpec)}",
             };
         }
