@@ -1,5 +1,13 @@
 # 平局流头脑风暴
 
+## 文档元信息
+
+- 文档标识：`tie-build-brainstorm`
+- Repository 文件：`tie-build-brainstorm.md`
+- 内容版本：`v06`
+- 最后更新：`2026-07-12`
+- 当前状态：Chat D 候选设计累计文档
+
 ## 文档目的
 
 本文档用于整理 Chat D 关于 **平局流 / Tie Build** 的长期玩法头脑风暴。
