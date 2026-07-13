@@ -31,9 +31,10 @@
   - 术语 source of truth。
   - 本文使用“特质”“修正”“词条”“被动”“槽位胜利”“槽位失败”“槽位平局”等术语时，以该文档定义为准。
 
-- `Docs/game-design/tasks/global-modifier-brainstorming-guidelines.md`
-  - 修正头脑风暴规范。
-  - 本文后续列举具体修正时，应尽量遵守其中的简写模板、完整模板、伤害源、治疗源、伤害类别、作用时机和轮内结算阶段约束。
+- `Docs/project-workflow-and-handoff.md`
+  - 项目工作流、handoff 与跨 Chat 设计方法文档。
+  - 本文后续列举和评估具体修正时，应遵守其中第 12.1 节“Chat D 与 Chat A：修正头脑风暴与评估”定义的设计轴、描述模板、伤害源、治疗源、伤害类别、作用时机和轮内结算阶段兼容性检查。
+
 
 - `Docs/game-design/game-rules-locked.md`
   - 当前 v1 demo 的锁定核心玩法规则。
@@ -1363,7 +1364,7 @@ BR3 的核心结构包括：
 > 只要发生槽位平局，就可能积累某种后续收益。  
 > 不额外要求位置、移位、邻接、特质、低血、压制或奖励条件。
 
-本节使用 `global-modifier-brainstorming-guidelines.md` 中的通用设计轴，尤其是：
+本节使用 `Docs/project-workflow-and-handoff.md` 第 12.1 节“Chat D 与 Chat A：修正头脑风暴与评估”中的通用设计轴，尤其是：
 
 - 持续时间与释放跨度轴；
 - 释放条件轴；
@@ -1484,7 +1485,7 @@ BR3 的核心结构包括：
 
 ### 1.3.4 持续时间在平局蓄力中的应用
 
-持续时间是通用设计轴，详细方法论见全局修正头脑风暴规范。
+持续时间是通用设计轴，详细方法见 `Docs/project-workflow-and-handoff.md` 第 12.1 节“Chat D 与 Chat A：修正头脑风暴与评估”。
 
 在平局蓄力型中，最重要的是以下几类。
 

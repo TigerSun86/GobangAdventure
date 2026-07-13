@@ -2,9 +2,13 @@
 
 ## Purpose
 
-This directory contains the canonical design and implementation documents for the Unity 6.4 2D turn-based card roguelike demo.
+This directory contains:
 
-These documents are the primary source of truth for:
+* the canonical gameplay design documents
+* the canonical engineering and implementation-design documents
+* the project collaboration, handoff, and cross-chat design-method reference
+
+Together, these documents are the primary source of truth for:
 
 * locked gameplay rules
 * software architecture
@@ -14,12 +18,41 @@ These documents are the primary source of truth for:
 * config and content structure
 * debug UI planning
 * testing strategy
+* ChatGPT multi-session coordination, handoff, recovery, and cross-chat design review
 
-Use these documents to keep design discussion, Codex implementation, and repository code aligned.
+Use these documents to keep gameplay discussion, engineering design, Codex implementation, repository code, and multi-chat collaboration aligned.
 
+The collaboration and handoff reference does not redefine gameplay or engineering behavior.
 ---
 
 ## Document Categories
+
+### Project Workflow and Handoff
+
+`Docs/project-workflow-and-handoff.md` defines:
+
+* Chat A / B / C / D responsibilities
+* main coordination sessions and focused sessions
+* multi-chat task packages and completion reports
+* session recovery procedures
+* shared-baseline and document-version coordination
+* cross-chat collaboration protocols
+* Chat D → Chat A modifier brainstorming and evaluation methods
+* current workflow state snapshots
+
+This is the authoritative reference for collaboration workflow.
+
+It is not:
+
+* a canonical gameplay specification
+* a canonical engineering specification
+* an implementation task specification
+
+Its design-method sections define how candidates should be described, reviewed, and handed off. They do not make those candidates part of the accepted gameplay rules.
+
+It must not override the documents responsible for those areas.
+
+---
 
 ### Game Design
 
@@ -39,9 +72,13 @@ These documents define what the game should do.
 
 Documents in `Docs/game-design/tasks/` store deferred gameplay ideas, design incubator notes, and temporary gameplay proposals that are not part of the current canonical rules.
 
-Recommended files:
+Typical files include:
 
 * `deferred-gameplay-ideas.md`
+* cumulative archetype documents such as `tie-build-brainstorm.md`
+* temporary chapter or focused-topic outputs awaiting local merge
+
+Cumulative archetype documents may use internal document identifiers and content versions so parallel focused sessions can share a stable baseline.
 
 These documents are not current source-of-truth gameplay rules unless explicitly promoted.
 
@@ -58,6 +95,8 @@ Examples:
 * `GDR-0003-enemy-rewards-settle-early-on-defeat.md`
 
 Use GDRs to preserve the reasoning behind non-obvious gameplay rule decisions.
+
+---
 
 ### Engineering
 
@@ -106,6 +145,35 @@ These documents are not long-term source-of-truth documents unless explicitly pr
 ---
 
 ## Reading Order
+
+### For ChatGPT multi-chat coordination or session recovery
+
+Read:
+
+1. `Docs/project-workflow-and-handoff.md`
+2. `Docs/README.md`
+3. the canonical documents required by the relevant Chat role
+4. the current cumulative design or implementation document identified by the workflow state snapshot or task package
+
+When a ChatGPT Project upload has an automatic suffix such as `(3)`, use the document title, repository path, document identifier, and internal content version to identify the intended file. Do not treat the automatic suffix as a content version.
+
+---
+
+### For Chat D archetype brainstorming or Chat A candidate evaluation
+
+Read:
+
+1. `Docs/project-workflow-and-handoff.md`
+   * use the relevant Chat-specific protocol
+   * use Section 12.1 for modifier brainstorming and evaluation
+2. `Docs/game-design/glossary.md`
+3. the current cumulative archetype document identified by the task package or workflow state snapshot
+4. the canonical gameplay documents directly relevant to the topic
+5. relevant GDRs when the candidate touches a locked gameplay decision
+
+The workflow document defines the method and handoff format. The cumulative archetype document contains candidates. Canonical gameplay documents determine the accepted rules.
+
+---
 
 ### For a new engineer or coding agent
 
@@ -192,6 +260,24 @@ Read:
 
 The following documents should be treated as canonical sources.
 
+### Collaboration Workflow
+
+* `Docs/project-workflow-and-handoff.md`
+
+This document is authoritative for:
+
+* Chat role responsibilities
+* main coordination and focused-session workflow
+* task handoff and completion-report format
+* session recovery
+* shared-baseline and Project file-identification rules
+* cross-chat collaboration protocols
+* modifier brainstorming, description, review, and handoff methods
+
+It does not override canonical gameplay or engineering documents.
+
+A candidate described according to its design-method sections remains non-canonical until the responsible Chat role accepts it and the relevant source-of-truth document is updated.
+
 ### Gameplay
 
 * `Docs/game-design/game-rules-locked.md`
@@ -210,6 +296,8 @@ The following documents should be treated as canonical sources.
 * `Docs/engineering/testing-strategy.md`
 
 If a temporary task document conflicts with a canonical document, the canonical document wins.
+
+If the workflow document conflicts with a gameplay or engineering specification on game behavior or implementation behavior, the relevant gameplay or engineering document wins. The workflow document should then be corrected.
 
 If an engineering document appears to conflict with a locked gameplay rule, do not resolve the conflict silently. Report it and update the documents explicitly.
 
@@ -301,10 +389,14 @@ Contains:
 ## Documentation Maintenance Rules
 
 * Keep implementation-facing documents in English.
-* Gameplay-facing documents under `Docs/game-design/` and `Docs/game-design/tasks/` may be written in Chinese.
+* Gameplay-facing documents under `Docs/game-design/`, `Docs/game-design/tasks/`, and `Docs/game-design/gdr/` may be written in Chinese.
+* The cross-cutting user-facing workflow document at `Docs/project-workflow-and-handoff.md` may be written primarily in Chinese.
 * Keep file names and implementation-facing terminology stable in English where useful.
 * Update canonical documents when design decisions change.
 * Do not leave important rules only in chat history.
+* Keep stable collaboration procedures and cross-chat design methods in `Docs/project-workflow-and-handoff.md` instead of relying on one ChatGPT conversation or creating overlapping guideline files.
+* Keep archetype-specific candidates and analysis in the relevant cumulative archetype document rather than copying the shared method sections into every archetype file.
+* Keep the workflow state snapshot short and update it when the active baseline, current focused sessions, or next planned work changes.
 * Prefer updating an existing canonical document instead of creating many overlapping documents.
 * Use ADRs for engineering decisions that need long-term traceability.
 * Use GDRs for gameplay decisions that need long-term traceability.
@@ -360,6 +452,7 @@ These should change only when the accepted design changes:
 * debug UI plan
 * testing strategy
 * ADRs
+* stable protocol and cross-chat design-method sections of `Docs/project-workflow-and-handoff.md`
 
 ### More changeable documents
 
@@ -367,10 +460,13 @@ These may evolve more frequently:
 
 * gameplay task notes
 * gameplay incubator notes
+* cumulative archetype brainstorming documents such as `tie-build-brainstorm.md`
+* focused-topic outputs awaiting merge
 * implementation task plans
 * implementation sequence notes
 * migration notes
 * temporary rollout notes
+* the current state snapshot inside `Docs/project-workflow-and-handoff.md`
 
 Keep stable documents authoritative and avoid polluting them with short-lived implementation details.
 
