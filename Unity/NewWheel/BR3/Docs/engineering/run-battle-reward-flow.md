@@ -128,6 +128,11 @@ A battle is currently active.
 Expected conditions:
 
 * `RunState.ActiveBattle != null`
+* the active battle may be in any non-consumed battle flow stage from `WaitingForPlayerCard` through `BattleComplete`
+
+The run remains in `InBattle` while the final round result is being presented and while a completed battle is waiting for `RunService.AcceptCompletedBattle(...)`.
+
+The run-level stage does not change merely because a battle outcome has already been fixed.
 
 #### `ChoosingReward`
 
@@ -252,16 +257,32 @@ It is responsible for:
 * preparing enemy sequence data
 * validating player card selection
 * invoking `RoundResolver`
-* applying round results to battle-related runtime state
-* clamping healing results to max HP when applying them
+* applying raw round consequences to authoritative runtime HP
+* enforcing max-HP clamp during HP application
+* finalizing authoritative HP application fields in `RoundResult`
+* classifying whether the resolved round completes the battle
+* storing any fixed completed outcome in `BattleState.PendingBattleOutcome`
 * advancing battle-level flow
-* producing `BattleOutcome`
+* producing the completed `BattleOutcome` handoff
 
 It is not responsible for:
 
-* deciding run-level progression
+* deciding next enemy progression
 * generating reward offers
-* deciding victory or defeat for the entire run
+* deciding whether the run enters `Victory` or `Defeat`
+* deciding any run-level reward progression
+
+### Important distinction
+
+`BattleService` may classify a battle completion reason such as:
+
+* `PlayerDefeated`
+* `EnemyDefeated`
+* `AllRoundsCompleted`
+
+This is a battle-level gameplay fact.
+
+`RunService` decides what that completed battle means for the full run.
 
 ---
 
@@ -474,11 +495,7 @@ On failure:
 
 ### Purpose
 
-Accept a completed `BattleOutcome` and advance run-level progression.
-
-### Why it is important
-
-This is the main handoff point from battle-level orchestration back to run-level orchestration.
+Accept the authoritative completed battle outcome and perform run-level progression.
 
 ### Inputs
 
@@ -486,29 +503,146 @@ This is the main handoff point from battle-level orchestration back to run-level
 * `BattleOutcome`
 * `RewardService`
 
-### Behavior
+### Validation
 
-This method should:
+Before changing progression, `RunService` should validate:
 
-1. increment `CurrentEnemy.BattlesPlayed`
-2. clear `RunState.ActiveBattle`
-3. inspect battle outcome and current enemy state
-4. decide whether the run should:
+* `RunState.FlowStage == InBattle`
+* `RunState.ActiveBattle != null`
+* `RunState.ActiveBattle.BattleFlowStage == BattleComplete`
+* `RunState.ActiveBattle.PendingBattleOutcome != null`
+* `RunState.PendingRewardOffer == null`
+* the supplied `BattleOutcome` matches the authoritative pending outcome stored in the active battle
 
-   * enter reward flow
-   * become ready for the next battle
-   * move to the next enemy
-   * enter victory
-   * enter defeat
+The implementation may instead read the outcome directly from the active battle, but there must not be two conflicting outcome sources.
 
-### Output
+If validation fails:
 
-Returns `RunCommandResult`.
+* no progression counter should change
+* the active battle should not be cleared
+* a failed `RunCommandResult` should be returned
 
-### Notes
+### Shared acceptance steps
 
-This method should not recompute battle rules.
-It only interprets battle consequences at run level.
+After successful validation:
+
+1. capture the authoritative pending outcome
+2. increment `CurrentEnemy.BattlesPlayed` exactly once
+3. clear `RunState.ActiveBattle`
+4. interpret the captured outcome using the branch order below
+
+The completed fatal battle still counts as a played battle.
+
+This historical increment must not be used to grant a reward after player death.
+
+### Branch order
+
+The run-level branch order is:
+
+1. `PlayerDefeated`
+2. `EnemyDefeated`
+3. `AllRoundsCompleted` with battle limit exhausted
+4. `AllRoundsCompleted` with more battles remaining
+
+### Branch 1: PlayerDefeated
+
+If:
+
+```
+CompletionReason ==
+    BattleCompletionReason.PlayerDefeated
+```
+
+then:
+
+* clear `RunState.PendingRewardOffer`
+* set `RunState.FlowStage = Defeat`
+* return immediately
+
+Do not:
+
+* generate a reward offer
+* increment `RewardsClaimed`
+* settle remaining enemy rewards
+* move to the next enemy
+* enter `Victory`
+
+This branch also handles simultaneous zero.
+
+### Branch 2: EnemyDefeated
+
+If:
+
+```
+CompletionReason ==
+    BattleCompletionReason.EnemyDefeated
+```
+
+then the player is known to be alive.
+
+If the current enemy is the final enemy:
+
+* ignore unresolved final-enemy reward opportunities
+* keep `PendingRewardOffer = null`
+* set `FlowStage = Victory`
+
+If more enemies remain:
+
+* enter reward flow
+* begin settling the completed battle's reward opportunity
+* continue settling remaining rewards for this defeated enemy through the normal reward loop
+
+### Branch 3: AllRoundsCompleted and battle limit exhausted
+
+If:
+
+```
+CompletionReason ==
+    BattleCompletionReason.AllRoundsCompleted
+```
+
+and:
+
+```
+CurrentEnemy.BattlesPlayed >=
+    CurrentEnemy.Config.battleLimit
+```
+
+then:
+
+* clear `RunState.PendingRewardOffer`
+* set `FlowStage = Defeat`
+
+No reward is generated for the battle that exhausted the allowed battle limit without defeating the enemy.
+
+### Branch 4: AllRoundsCompleted and more battles remain
+
+If:
+
+```
+CompletionReason ==
+    BattleCompletionReason.AllRoundsCompleted
+```
+
+and:
+
+```
+CurrentEnemy.BattlesPlayed <
+    CurrentEnemy.Config.battleLimit
+```
+
+then:
+
+* enter reward flow for the completed battle
+* after that reward is resolved, the run becomes ready for the next battle against the same enemy
+
+### Important rules
+
+`RunService` must interpret `CompletionReason`.
+
+It must not reconstruct official battle outcome by checking enemy HP first.
+
+`RewardsClaimed` is incremented only when a reward choice is actually resolved through `ChooseReward(...)`.
 
 ---
 
@@ -579,7 +713,8 @@ This method should:
 3. initialize round index
 4. initialize used player card tracking
 5. generate enemy sequence for this battle
-6. set battle flow stage to `WaitingForPlayerCard`
+6. initialize `PendingBattleOutcome = null`
+7. set battle flow stage to `WaitingForPlayerCard`
 
 ### Output
 
@@ -596,7 +731,7 @@ Returns `BattleState`
 
 ### Purpose
 
-Submit the player's selected card for the current round and resolve that round.
+Submit the player's selected card, fully resolve and apply the current round, and fix any battle-completion outcome produced by that round.
 
 ### Inputs
 
@@ -606,46 +741,177 @@ Submit the player's selected card for the current round and resolve that round.
 * `cardInstanceId`
 * `RoundResolver`
 
+### Validation
+
+Before any mutation, `BattleService` should validate:
+
+* the run has the supplied active battle
+* `BattleFlowStage == WaitingForPlayerCard`
+* `PendingBattleOutcome == null`
+* the selected card exists in the player deck
+* the selected card has not already been used in this battle
+* the current round index is valid
+* the prepared enemy sequence contains a card for the current round
+
+If validation fails:
+
+* no battle state should advance
+* no HP should change
+* no card should become used
+* a failed `BattleCommandResult` should be returned
+
 ### Behavior
 
-This method should:
+After successful validation, the method should:
 
-1. validate that the battle is in `WaitingForPlayerCard`
-2. validate the selected player card
-3. select the enemy card for the current round
-4. set battle flow to `ResolvingRound`
-5. call `RoundResolver.ResolveRound(...)`
-6. apply the resulting round consequences to runtime state
-7. clamp healing to max HP for player and enemy
-8. finalize any authoritative post-application HP-after values stored in `RoundResult`
-9. append round result to battle history
-10. set battle flow to `PresentingRoundResult`
+1. set `BattleFlowStage = ResolvingRound`
+2. select the enemy card for the current round
+3. call `RoundResolver.ResolveRound(...)`
+4. allow `RoundResolver` to complete all seven accepted round phases
+5. read authoritative player and enemy HP before consequence application
+6. apply merged damage to authoritative runtime HP
+7. record HP immediately after merged damage
+8. apply raw post-resolve healing
+9. enforce max-HP clamp
+10. record actual healing applied
+11. establish final authoritative player and enemy HP
+12. populate all authoritative HP application fields in `RoundResult`
+13. append the finalized round result, logs, and snapshots to battle history
+14. classify whether the resolved round completes the battle
+15. create and store `PendingBattleOutcome` when the battle is complete
+16. set `BattleFlowStage = PresentingRoundResult`
+17. return a successful `BattleCommandResult`
 
-### Output
+### Battle-completion classification
 
-Returns `BattleCommandResult`.
+Classification must use final HP only, in this exact priority:
 
-### Important Rule
+```
+if PlayerHpAfter <= 0
+    CompletionReason = BattleCompletionReason.PlayerDefeated
+else if EnemyHpAfter <= 0
+    CompletionReason = BattleCompletionReason.EnemyDefeated
+else if the third round has just been resolved
+    CompletionReason = BattleCompletionReason.AllRoundsCompleted
+else
+    the battle continues after presentation
+```
 
-BattleService is allowed to apply immediate battle consequences such as HP changes.
-It is not allowed to decide what those consequences mean for the full run.
+### Simultaneous zero
+
+If:
+
+```
+PlayerHpAfter <= 0
+EnemyHpAfter <= 0
+```
+
+then:
+
+```
+CompletionReason =
+    BattleCompletionReason.PlayerDefeated
+```
+
+The enemy is not officially reported as defeated.
+
+### Pending outcome behavior
+
+When classification produces a completion reason, `BattleService` should create one immutable `BattleOutcome` and store it in:
+
+* `BattleState.PendingBattleOutcome`
+
+That outcome must contain:
+
+* actual battle index
+* actual rounds played
+* the unique completion reason
+* final player HP
+* final enemy HP
+
+When the battle can continue:
+
+* `PendingBattleOutcome` remains `null`
+
+### Command result behavior
+
+`SubmitPlayerCard(...)` returns the finalized `RoundResult`.
+
+At this point:
+
+* `BattleFlowStage = PresentingRoundResult`
+* `IsBattleComplete = false`, because the presentation handoff has not finished
+* the authoritative fixed outcome, when one exists, is stored in `BattleState.PendingBattleOutcome`
+
+`SubmitPlayerCard(...)` must not directly call `RunService`.
+
+### Important rule
+
+Gameplay outcome classification is completed during battle-layer application.
+
+It is not delayed until the player presses Continue, and it is not performed by Presentation code.
 
 ---
 
 ## HP Application Rule
 
-When battle service applies a round result:
+`BattleService` is the authoritative owner of runtime HP mutation.
 
-* damage is applied to current HP
-* healing is then applied
-* healing is clamped to max HP
+For each side, application follows this order:
+
+```
+HP before
+→ subtract merged damage
+→ record HP after merged damage
+→ add raw post-resolve healing
+→ clamp to max HP
+→ record actual healing applied
+→ establish final HP
+```
 
 This applies to:
 
 * `RunState.PlayerHp` against `RunState.PlayerMaxHp`
 * `EnemyProgressState.CurrentHp` against `EnemyProgressState.MaxHp`
 
-This rule exists so runtime HP state remains self-contained and does not depend on repeatedly querying authored config.
+### RoundResult field mapping
+
+`RoundResolver` produces:
+
+* `DamageToPlayer`
+* `DamageToEnemy`
+* `HealToPlayer`
+* `HealToEnemy`
+
+`BattleService` finalizes:
+
+* `PlayerHpBefore`
+* `PlayerHpAfterMergedDamage`
+* `PlayerHealingApplied`
+* `PlayerHpAfter`
+* `EnemyHpBefore`
+* `EnemyHpAfterMergedDamage`
+* `EnemyHealingApplied`
+* `EnemyHpAfter`
+
+### Temporary zero or below
+
+HP after merged damage may be zero or negative.
+
+That intermediate value must not cause:
+
+* Post Resolve to be skipped
+* premature player death
+* premature enemy defeat
+* premature battle completion
+
+Only final HP after healing and clamp participates in completion classification.
+
+### No duplicate HP calculation
+
+`RoundResolver` and `BattleService` must not independently calculate two competing authoritative final-HP results.
+
+The authoritative HP mutation and clamp occur once in `BattleService`.
 
 ---
 
@@ -653,54 +919,101 @@ This rule exists so runtime HP state remains self-contained and does not depend 
 
 ### Purpose
 
-Advance battle flow after the current round result has finished being presented.
+Finish presentation of the already-resolved round and advance battle flow without changing gameplay results.
 
-### Inputs
+### Recommended inputs
 
 * `BattleState`
-* `EnemyProgressState`
 
-### Behavior
+`EnemyProgressState` is no longer required to decide whether the battle completed.
 
-This method should decide whether the battle continues or completes.
+If an existing implementation temporarily retains that parameter, this method must not use it to re-read HP or reclassify the outcome.
 
-### If battle continues
+### Validation
 
-It should:
+The method should validate:
 
-* increment `RoundIndex`
-* set `BattleFlowStage = WaitingForPlayerCard`
+* `BattleFlowStage == PresentingRoundResult`
 
-### If battle completes
+If validation fails:
 
-It should:
+* no state should change
+* a failed `BattleCommandResult` should be returned
 
-* set `BattleFlowStage = BattleComplete`
-* produce a `BattleOutcome`
+### If a pending battle outcome exists
 
-### Output
+If:
 
-Returns `BattleCommandResult`.
+* `BattleState.PendingBattleOutcome != null`
 
-On battle completion:
+then:
 
-* `IsBattleComplete = true`
-* `BattleOutcome != null`
+1. set `BattleFlowStage = BattleComplete`
+2. return the same stored `BattleOutcome`
+3. set `IsBattleComplete = true`
+
+The stored authoritative copy must remain in `BattleState.PendingBattleOutcome`.
+
+It is not cleared here.
+
+### If no pending battle outcome exists
+
+If:
+
+* `BattleState.PendingBattleOutcome == null`
+
+then:
+
+1. increment `RoundIndex`
+2. set `BattleFlowStage = WaitingForPlayerCard`
+3. return a successful result with `IsBattleComplete = false`
+
+### Prohibited behavior
+
+`FinishRoundPresentation(...)` must not:
+
+* read current HP to decide who won
+* recreate `BattleOutcome`
+* change the completion reason
+* decide simultaneous-zero priority
+* enter reward flow
+* enter run victory or defeat
+* clear the pending outcome
+
+### Important rule
+
+Continue is a presentation gate, not a gameplay-decision command.
+
+Delaying or pressing Continue cannot change the already-fixed battle result.
 
 ---
 
 ## Battle Runtime Flow
 
-Once a battle has started, `BattleService` becomes the active battle-level orchestrator until the battle completes.
+Once a battle has started, the battle-level flow is:
 
-The typical battle loop is:
+1. wait for a legal player card
+2. validate the submitted action
+3. resolve all seven round phases
+4. apply damage, healing, and clamp
+5. finalize `RoundResult`
+6. classify and store any completed battle outcome
+7. present the finalized round result
+8. after presentation:
 
-1. wait for player card input
-2. validate input
-3. resolve one round
-4. apply round result
-5. present round result
-6. either advance to the next round or complete the battle
+   * continue to the next round
+   * or expose the already-fixed completed outcome to `RunService`
+
+### Important timing rule
+
+Battle completion may already be fixed while:
+
+* `BattleFlowStage == PresentingRoundResult`
+* `RunState.FlowStage == InBattle`
+
+This is intentional.
+
+The battle remains attached to the run until `RunService.AcceptCompletedBattle(...)` accepts the completed outcome.
 
 ---
 
@@ -785,52 +1098,68 @@ This keeps runtime state authoritative and keeps debug UI honest.
 
 ## Presenting a Round Result
 
-After a round result is applied:
+After the round has been fully resolved, applied, finalized, and classified:
 
-* battle flow becomes `PresentingRoundResult`
+* `BattleFlowStage` becomes `PresentingRoundResult`
 
-This stage exists so the UI can:
+This stage allows Presentation to:
 
-* display round logs
+* display final HP
+* display HP after merged damage
+* display raw and actual healing
 * inspect slot results
+* inspect logs
 * inspect phase snapshots
-* later play animations if needed
+* show the final round even when it caused player defeat
 
-### Important Rule
+Presentation may inspect `PendingBattleOutcome` for display purposes.
 
-`RoundResolver` calculates the full round first.
-Presentation consumes the result afterward.
-Rule calculation should not be paused mid-phase for UI.
+It must not alter or reinterpret it.
 
 ---
 
 ## When a Battle Is Complete
 
-A battle is complete if either of these is true:
+A battle completes after a fully applied round when exactly one of the following official reasons is produced:
 
-* the current enemy HP is now zero or below
-* the third round of the battle has already been resolved
+### Player defeated
 
-This means:
+* final player HP is zero or below
+* this may occur in round 1, 2, or 3
+* this reason takes priority over all other completion facts
 
-* a battle can end early if the enemy dies
-* a battle also ends after round three if the enemy survives
+### Enemy defeated
+
+* final player HP is above zero
+* final enemy HP is zero or below
+* this may occur before round 3
+
+### All rounds completed
+
+* both final HP values are above zero
+* the third round has completed
+
+The battle does not complete merely because HP was temporarily zero or below after merged damage.
 
 ---
 
 ## BattleOutcome
 
-`BattleOutcome` is the handoff object from battle-level orchestration to run-level orchestration.
+`BattleOutcome` is the immutable handoff object from battle-level orchestration to run-level orchestration.
 
-It should summarize:
+It contains:
 
-* battle index for the current enemy
-* number of rounds played
-* whether the enemy was defeated
-* player HP after the battle
-* enemy HP after the battle
+* `BattleIndexForEnemy`
+* `RoundsPlayed`
+* `CompletionReason`
+* `PlayerHpAfterBattle`
+* `EnemyHpAfterBattle`
 
-This object exists to keep `RunService` from depending on the full internal details of `BattleState`.
+The official result is represented by one `BattleCompletionReason`.
+
+Raw final HP values may show simultaneous zero, but the official reason remains:
+
+* `PlayerDefeated`
 
 ---
 
@@ -870,46 +1199,74 @@ This handoff is one of the most important boundaries in the architecture.
 
 ## Interpreting Battle Outcome
 
-The current design uses the following high-level interpretation rules after a battle completes.
+The official completed battle result is interpreted in this exact order.
 
-### Branch A: Enemy defeated
-
-If the current enemy's HP is zero or below after the completed battle:
-
-* the enemy is considered defeated
-* reward handling for the completed battle must still occur
-* if additional rewards remain for this enemy, they must be settled immediately
-* if no rewards remain and this was not the final enemy, the run advances to the next enemy
-* if no rewards remain and this was the final enemy, the run enters `Victory`
-
-### Branch B: Enemy not defeated, and configured battle limit has been exhausted
+### Branch A: Player defeated
 
 If:
 
-* the current enemy is still above zero HP
+```
+CompletionReason ==
+    BattleCompletionReason.PlayerDefeated
+```
+
+then:
+
+* the run enters `Defeat`
+* no reward flow begins
+* no enemy-defeat progression occurs
+* no next enemy is created
+* no victory check occurs
+
+The enemy's final HP may also be zero or below.
+
+That raw HP fact does not change the official result.
+
+### Branch B: Enemy defeated while player survives
+
+If:
+
+```
+CompletionReason ==
+    BattleCompletionReason.EnemyDefeated
+```
+
+then:
+
+* the current enemy is officially defeated
+* non-final-enemy reward settlement proceeds normally
+* final-enemy unresolved rewards are ignored
+* progression may eventually move to the next enemy or `Victory`
+
+### Branch C: All rounds completed and the configured battle limit is exhausted
+
+If:
+
+* `CompletionReason == BattleCompletionReason.AllRoundsCompleted`
 * `CurrentEnemy.BattlesPlayed >= CurrentEnemy.Config.battleLimit`
 
 then:
 
 * the run enters `Defeat`
+* no reward flow begins
 
-### Branch C: Enemy not defeated, and more configured battles remain
+### Branch D: All rounds completed and more configured battles remain
 
 If:
 
-* the current enemy is still above zero HP
+* `CompletionReason == BattleCompletionReason.AllRoundsCompleted`
 * `CurrentEnemy.BattlesPlayed < CurrentEnemy.Config.battleLimit`
 
 then:
 
-* reward handling for the completed battle must occur
-* after that reward is resolved, the run becomes ready for the next battle against the same enemy
+* one normal post-battle reward becomes due
+* after reward resolution, the run becomes `ReadyForNextBattle`
 
 ### Important note
 
-This interpretation must not use a hard-coded assumption such as "all three battles used."
+The branch order is gameplay-significant.
 
-Battle exhaustion is determined by the current enemy's configured `battleLimit`.
+Enemy HP must not be checked before the official `PlayerDefeated` reason.
 
 ---
 
@@ -918,9 +1275,11 @@ Battle exhaustion is determined by the current enemy's configured `battleLimit`.
 The implementation should interpret reward timing like this:
 
 * each enemy provides reward opportunities totaling that enemy's configured `battleLimit`
-* normally, one reward is obtained after each completed battle
+* normally, one reward is obtained after each reward-eligible completed battle
 * if the enemy is defeated before all of its configured reward opportunities have been resolved, the remaining rewards are settled immediately
 * if the defeated enemy is the final enemy, any unresolved remaining rewards are ignored
+
+A completed battle is not automatically reward-eligible. Player defeat and battle-limit exhaustion short-circuit reward flow as defined below.
 
 ### Important design rule
 
@@ -936,15 +1295,42 @@ That is a default content value, not a permanent implementation constant.
 
 ---
 
+## Reward Eligibility Gate
+
+Reward flow may begin only after `RunService` has accepted an eligible completed battle.
+
+### Reward flow is prohibited when:
+
+* `CompletionReason == BattleCompletionReason.PlayerDefeated`
+* simultaneous zero has resolved as `BattleCompletionReason.PlayerDefeated`
+* `CompletionReason == BattleCompletionReason.AllRoundsCompleted` and the configured battle limit has been exhausted
+* the run is already in `Victory`
+* the run is already in `Defeat`
+
+### Reward flow may begin when:
+
+* the player survived and the current enemy was officially defeated, provided the current enemy is not the final enemy
+* the player and enemy survived the completed three-round battle and more configured battles remain
+
+### Important rule
+
+`RewardService` does not need player-death logic.
+
+`RunService` prevents the call entirely when the completed battle is not reward-eligible.
+
+`RewardsClaimed` must not change until the player resolves an actual pending reward option.
+
+---
+
 ## Entering Reward Flow
 
 Reward flow should begin whenever one or more reward resolutions are immediately due.
 
 This can happen in two main situations:
 
-### Situation 1: normal post-battle reward
+### Situation 1: normal eligible post-battle reward
 
-One completed battle normally makes one reward immediately due.
+One reward-eligible completed battle normally makes one reward immediately due.
 
 ### Situation 2: early-defeat remainder settlement
 
@@ -1108,61 +1494,89 @@ At that point the next battle may be started by `RunService`.
 
 If:
 
-* the current enemy is defeated
-* all rewards for that enemy have been settled
-* more enemies remain
+* the current enemy was officially defeated while the player survived
+* the current enemy is not the final enemy
+* `CurrentEnemy.RewardsClaimed >= CurrentEnemy.Config.battleLimit`
+* no reward is pending
 
 Then `RunService` should:
 
 * increment `CurrentEnemyIndex`
-* create a new `EnemyProgressState`
-* clear active battle and pending reward
+* create the next `EnemyProgressState`
 * preserve player HP
 * preserve player max HP
 * preserve the current deck
-* set run flow to `ReadyForNextBattle`
-
-### Important Rule
-
-Player HP persists to the next enemy.
-Player max HP also persists.
-The player deck also persists.
+* keep `ActiveBattle = null`
+* keep `PendingRewardOffer = null`
+* set `FlowStage = ReadyForNextBattle`
 
 ---
 
 ## Victory
 
-If:
+The run enters `Victory` only when:
 
-* the final enemy is defeated
-* all rewards for that enemy have been settled
+* the player survived
+* the final enemy was officially defeated
+* the completed outcome reason was `EnemyDefeated`
 
-Then:
-
-* run flow becomes `Victory`
+Unresolved reward opportunities for the final enemy are ignored.
 
 At this point:
 
-* no active battle should remain
-* no pending reward should remain
+* `ActiveBattle == null`
+* `PendingRewardOffer == null`
+* no further gameplay command is legal
+
+Simultaneous zero must never enter this branch.
 
 ---
 
 ## Defeat
 
+The current run has two official defeat sources.
+
+### Source 1: Player death
+
 If:
 
-* the current enemy is still alive
+```
+CompletionReason ==
+    BattleCompletionReason.PlayerDefeated
+```
+
+then:
+
+* `FlowStage = Defeat`
+* `ActiveBattle = null`
+* `PendingRewardOffer = null`
+
+This may happen after round 1, 2, or 3.
+
+It also includes simultaneous zero.
+
+### Source 2: Battle-limit exhaustion
+
+If:
+
+* `CompletionReason == BattleCompletionReason.AllRoundsCompleted`
 * `CurrentEnemy.BattlesPlayed >= CurrentEnemy.Config.battleLimit`
 
-Then:
+then:
 
-* run flow becomes `Defeat`
+* `FlowStage = Defeat`
+* `ActiveBattle = null`
+* `PendingRewardOffer = null`
 
-At this point:
+### Terminal behavior
 
-* no active battle should remain
-* no pending reward should remain
+After entering `Defeat`:
+
+* no next battle may start
+* no player card may be submitted
+* no reward may be generated or chosen
+* no next enemy may be entered
+* the run must remain terminal
 
 ---
 
@@ -1203,18 +1617,33 @@ The run and battle flow must maintain these invariants:
 3. `ChoosingReward` requires a valid pending reward offer
 4. `Victory` and `Defeat` must be terminal states
 5. terminal states must not leave intermediate flow objects active
+6. player defeat must be interpreted before enemy defeat
+7. a player-defeat outcome must never create a reward offer
+8. simultaneous zero must never enter enemy-defeat, next-enemy, or victory progression
+9. `RewardsClaimed` changes only when a pending reward choice is resolved
+10. a completed fatal battle may increment `BattlesPlayed`, but that increment must not make the battle reward-eligible
 
 ### Battle-level invariants
 
 1. battle round progression belongs to `BattleService`
 2. battle flow stage must always reflect actual battle state
 3. `RoundResolver` does not advance battle flow on its own
+4. authoritative final HP is established before battle completion is classified
+5. `PendingBattleOutcome` is fixed before round-result presentation begins
+6. `FinishRoundPresentation(...)` does not calculate or alter gameplay outcome
+7. `BattleComplete` requires a non-null authoritative pending outcome
+8. the pending outcome remains available until run-level acceptance clears the active battle
 
 ### Reward-level invariants
 
 1. reward application does not decide run progression by itself
 2. reward generation happens only when run flow requests it
 3. one reward offer is resolved before another begins
+
+### Presentation-level invariant
+
+1. Presentation may display gameplay results and forward commands
+2. Presentation must not determine player death, enemy defeat, simultaneous-zero priority, reward eligibility, victory, or defeat
 
 ---
 
@@ -1252,21 +1681,47 @@ The run and battle flow must maintain these invariants:
 
 A complete run follows this pattern:
 
-1. create run
-2. prepare current enemy
-3. start battle
-4. resolve rounds until battle completes
-5. accept battle outcome
-6. enter reward flow when required
-7. apply reward choice
-8. either:
+1. create the run
 
-   * go to next battle
-   * go to next enemy
-   * enter victory
-   * enter defeat
+2. prepare the current enemy
 
-This loop repeats until the run ends.
+3. start a battle
+
+4. wait for player input
+
+5. fully resolve all seven round phases
+
+6. apply damage, healing, and clamp
+
+7. establish final HP
+
+8. fix any completed battle outcome
+
+9. present the finalized round result
+
+10. finish the presentation gate
+
+11. if the battle continues, begin the next round
+
+12. if the battle completed, accept the fixed outcome at run level
+
+13. interpret the outcome in this order:
+
+    * player defeated
+    * enemy defeated
+    * battle limit exhausted
+    * more battles remain
+
+14. enter reward flow only when eligible
+
+15. proceed to:
+
+    * the next battle
+    * the next enemy
+    * `Victory`
+    * `Defeat`
+
+This loop repeats until the run reaches a terminal stage.
 
 ---
 
@@ -1327,3 +1782,13 @@ The whole system is designed so that:
 * rewards are explicit
 * battle results are explicit
 * responsibility boundaries remain clean
+
+The player-death flow also requires that:
+
+* all seven round phases complete before final HP is classified
+* `BattleService` fixes one authoritative `BattleCompletionReason` after final HP application
+* `PendingBattleOutcome` remains stable through round-result presentation
+* `FinishRoundPresentation(...)` does not calculate gameplay outcome
+* `RunService` interprets `PlayerDefeated` before any enemy-defeat or reward branch
+* player defeat and simultaneous zero never enter reward, next-enemy, or victory progression
+* battle-limit exhaustion remains the second official run-defeat source

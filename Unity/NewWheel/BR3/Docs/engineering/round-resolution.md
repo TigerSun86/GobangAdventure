@@ -20,9 +20,9 @@ This document is one of the most important engineering references for the curren
 
 ## Role of RoundResolver
 
-`RoundResolver` resolves one round of gameplay.
+`RoundResolver` resolves the rule-evaluation portion of exactly one round.
 
-It is the component that applies the fixed gameplay sequence for a round and produces a complete `RoundResult`.
+It executes the complete fixed seven-phase pipeline and produces the raw round consequences that will later be applied to authoritative runtime HP by `BattleService`.
 
 ### RoundResolver is responsible for:
 
@@ -31,23 +31,44 @@ It is the component that applies the fixed gameplay sequence for a round and pro
 * applying movement
 * applying board-derived effects
 * resolving slot combat
-* calculating round damage and healing totals
-* applying post-resolve effects that belong to this round
+* calculating merged damage totals
+* calculating raw post-resolve healing totals
+* applying non-HP post-resolve effects such as `Growth`
+* producing slot combat results
 * producing logs and phase snapshots
-* producing explicit round-level consequence data for later battle-layer application
+* creating the non-finalized `RoundResult` containing raw round consequences
 
 ### RoundResolver is not responsible for:
 
 * deciding whether a battle should start
 * waiting for player input
 * selecting the enemy card sequence
+* authoritatively mutating player or enemy HP
+* applying max-HP clamp
+* establishing final authoritative HP
+* classifying player death or enemy defeat
+* classifying battle completion
 * advancing battle-level flow state
 * advancing run-level flow state
 * generating rewards
 * deciding victory or defeat
-* authoritatively mutating runtime HP
+* performing UI transitions
 
-Those responsibilities belong elsewhere.
+Those responsibilities belong to battle-level, run-level, or presentation orchestration.
+
+### Important terminology
+
+A round is **rule-resolved** when `RoundResolver` has completed all seven phases.
+
+A round is **fully resolved and applied** only after `BattleService` has:
+
+* applied merged damage
+* recorded HP after merged damage
+* applied post-resolve healing
+* enforced max-HP clamp
+* recorded actual healing
+* established final HP
+* finalized the authoritative application fields in `RoundResult`
 
 ---
 
@@ -78,46 +99,69 @@ This reflects the intended responsibility:
 * the current `BattleState`
 * the newly selected player card for this round
 * the enemy card for this round
-* current player HP
-* current enemy HP
+* current player HP as read-only round context
+* current enemy HP as read-only round context
 
 The exact method signature may evolve slightly during implementation, but the conceptual inputs are stable.
 
+Current HP values supplied to `RoundResolver` are not permission to mutate authoritative runtime HP or perform survival classification.
+
 ### Conceptual Output
 
-`RoundResolver` returns a `RoundResult`.
+`RoundResolver` creates and returns a non-finalized `RoundResult`.
 
-`RoundResult` must contain:
+The resolver-populated portion contains:
 
 * round index
-* damage totals
-* healing totals
-* HP before and after
+* selected player and enemy card references
+* raw merged damage totals
+* raw post-resolve healing totals
 * per-slot combat results
 * logs
 * per-phase snapshots
 
+`BattleService` later finalizes the authoritative application fields:
+
+* `PlayerHpBefore`
+* `PlayerHpAfterMergedDamage`
+* `PlayerHealingApplied`
+* `PlayerHpAfter`
+* `EnemyHpBefore`
+* `EnemyHpAfterMergedDamage`
+* `EnemyHealingApplied`
+* `EnemyHpAfter`
+
 ### Important Design Choice
 
-`RoundResolver` should return the resolved round result rather than own higher-level flow progression.
+`RoundResolver` returns explicit round consequences rather than owning higher-level application or flow progression.
 
 Battle and run progression remain the responsibility of higher-level services.
 
-### Important HP Responsibility Note
+### RoundResult finalization rule
 
-`RoundResolver` computes raw damage totals, raw healing totals, and round-level consequence data.
+A `RoundResult` created by `RoundResolver` must not be added to finalized battle history or presented as the complete authoritative result until `BattleService` has populated all HP application fields.
 
-Authoritative runtime HP mutation does not happen inside `RoundResolver`.
+The lifecycle is:
 
-`BattleService` applies the returned round consequences to runtime state, enforces healing clamp against max HP, and finalizes the authoritative post-application HP values associated with the round result.
+```
+RoundResolver creates raw RoundResult
+→ BattleService applies consequences
+→ BattleService finalizes RoundResult
+→ finalized RoundResult enters battle history
+→ Presentation displays the finalized result
+```
 
-This means `RoundResult` may carry HP-before and HP-after values, but the final authoritative post-application HP-after values are established during battle-layer application rather than by duplicating clamp logic inside `RoundResolver`.
+### No duplicate application logic
+
+`RoundResolver` must not calculate an independent authoritative final HP result.
+
+`BattleService` must not independently recalculate raw trait damage or healing rules already resolved by `RoundResolver`.
 
 ---
 
 ## Fixed Round Pipeline
 
-The round pipeline is locked and must not be reordered.
+The round pipeline is locked and must not be reordered or terminated early.
 
 The seven phases are:
 
@@ -130,6 +174,26 @@ The seven phases are:
 7. Post Resolve
 
 The order is part of the gameplay design and is not an implementation detail.
+
+### Full-pipeline rule
+
+Once a valid round begins resolution, all seven phases must complete.
+
+Projected or intermediate player or enemy HP reaching zero or below must not cause:
+
+* Phase 7 to be skipped
+* `Regrow` to be skipped
+* `Lifesteal` to be skipped
+* `Growth` to be skipped
+* premature player-death classification
+* premature enemy-defeat classification
+* premature battle completion
+
+### No eighth phase
+
+Player death, enemy defeat, battle completion, and battle continuation are classified after battle-layer HP application.
+
+That classification is not a new eighth `RoundPhase`.
 
 ---
 
@@ -160,6 +224,27 @@ The resolver should produce enough information to inspect each phase clearly.
 ### 6. Runtime HP state remains authoritative at battle layer
 
 `RoundResolver` produces explicit consequence data, but the authoritative live HP state is updated later by `BattleService`.
+
+### 7. Temporary zero does not end rule resolution
+
+Merged damage may imply that player or enemy HP will temporarily reach zero or below.
+
+That intermediate condition does not stop the seven-phase pipeline.
+
+Post-resolve effects still execute normally.
+
+### 8. Only final applied HP determines survival
+
+Player death and enemy defeat are determined only after:
+
+* merged damage has been applied
+* post-resolve healing has been applied
+* max-HP clamp has been enforced
+* final authoritative HP has been established
+
+### 9. Presentation does not participate in classification
+
+Round-result presentation may display the completed result, but it does not calculate or alter player death, enemy defeat, or battle completion.
 
 ---
 
@@ -430,40 +515,70 @@ Damage is accumulated, not immediately applied to HP.
 
 ### Purpose
 
-This phase finalizes the merged damage consequences of the round.
+This phase finalizes the simultaneous merged-damage consequence produced by all resolved open slots.
+
+The accepted gameplay phase name remains `ApplyMergedDamage`.
+
+Within the current architecture, `RoundResolver` records the finalized merged-damage consequence, while `BattleService` later performs the authoritative runtime HP mutation.
 
 ### Reads
 
 * accumulated damage to player
 * accumulated damage to enemy
-* current player HP
-* current enemy HP
+* slot combat results
+* per-card `DamageDealtThisRound`
 
 ### Writes
 
-* merged damage totals in round-local context
-* raw damage consequences for `RoundResult`
+* finalized merged damage totals in round-local context
+* `DamageToPlayer`
+* `DamageToEnemy`
 * logs
-* snapshot
+* phase snapshot
 
 ### Behavior
 
-This phase finalizes the merged damage consequences of the round.
+Damage from all open slots is accumulated before this phase.
 
-Conceptually, player-side and enemy-side damage are determined simultaneously.
+Player-side and enemy-side damage are treated as simultaneous round consequences.
 
-`RoundResolver` does not authoritatively mutate runtime HP here.  
-Instead, it records the damage consequences needed for later battle-layer application.
+`RoundResolver` must not:
+
+* subtract damage from authoritative runtime HP
+* classify either side as defeated
+* stop resolution because projected HP would reach zero or below
 
 ### Important Rule
 
-Damage must be accumulated first and applied together.
+Damage must be accumulated first and represented as one merged consequence per side.
 
 The resolver must not reduce HP slot-by-slot during combat resolution.
 
-### Responsibility Boundary Note
+### Relationship to authoritative application
 
-Authoritative runtime HP application happens later in `BattleService`, not inside `RoundResolver`.
+After `RoundResolver` returns, `BattleService` applies:
+
+```
+PlayerHpBefore - DamageToPlayer
+EnemyHpBefore - DamageToEnemy
+```
+
+and records:
+
+* `PlayerHpAfterMergedDamage`
+* `EnemyHpAfterMergedDamage`
+
+Those values may be zero or negative.
+
+They remain intermediate application values, not official survival results.
+
+### Snapshot interpretation
+
+The `ApplyMergedDamage` phase snapshot represents the board and the finalized merged-damage consequence at that rule phase.
+
+It is not, by itself, the authoritative HP-after-damage record.
+
+The authoritative HP timeline is stored in the finalized `RoundResult`.
 
 ---
 
@@ -471,7 +586,9 @@ Authoritative runtime HP application happens later in `BattleService`, not insid
 
 ### Purpose
 
-This phase applies post-resolve effects to cards newly played this round.
+This phase evaluates post-resolve effects for cards newly played this round.
+
+It always executes after the merged-damage consequence has been finalized.
 
 ### Reads
 
@@ -479,14 +596,15 @@ This phase applies post-resolve effects to cards newly played this round.
 * newly entered enemy board card
 * each new card's traits
 * `DamageDealtThisRound`
+* finalized slot combat and merged-damage consequences
 
 ### Writes
 
-* player healing total
-* enemy healing total
+* `HealToPlayer`
+* `HealToEnemy`
 * source card permanent growth when applicable
 * logs
-* snapshot
+* phase snapshot
 
 ### Current Effects
 
@@ -502,25 +620,49 @@ This phase should only inspect the two cards that entered this round.
 
 #### Regrow
 
-Heal 2 HP.
+Add the configured Regrow amount to the appropriate raw healing total.
 
 #### Lifesteal
 
-If the card dealt damage this round, heal that amount.
+If the newly played card dealt damage this round, add that card's `DamageDealtThisRound` to the appropriate raw healing total.
 
 #### Growth
 
-Increase the source card's permanent power bonus by 1.
+Increase the source card's permanent power bonus by the configured Growth amount.
 
-### Important Rule
+### Full-execution rule
+
+Post Resolve must execute even when the merged-damage consequence would temporarily reduce player or enemy HP to zero or below.
+
+The resolver must not perform an early survival check between Phase 6 and Phase 7.
+
+Examples of behavior that must remain valid:
+
+```
+projected player HP after merged damage <= 0
+Regrow produces raw healing
+final applied player HP > 0
+```
+
+and:
+
+```
+projected player HP after merged damage <= 0
+Lifesteal produces raw healing
+final applied player HP > 0
+```
+
+### Growth rule
 
 `Growth` modifies persistent card state, not current-round board combat power.
 
-That means it should update:
+It should update:
 
 * `BoardCard.SourceCard.PermanentPowerBonus`
 
-It must not retroactively affect already resolved combat this round.
+It must not retroactively affect combat already resolved in the current round.
+
+`Growth` still executes during a round that later results in player defeat because the full seven-phase pipeline must complete.
 
 ### Suggested Internal Order
 
@@ -534,9 +676,91 @@ This keeps behavior deterministic and easy to inspect.
 
 ### HP Application Boundary
 
-Post-resolve healing totals belong to the round result, but authoritative runtime HP update and max-HP clamp are performed later by `BattleService`.
+`HealToPlayer` and `HealToEnemy` are raw healing consequences.
 
-`RoundResolver` should not duplicate battle-layer clamp logic.
+`RoundResolver` does not:
+
+* add healing to authoritative HP
+* clamp healing against max HP
+* calculate actual healing applied
+* establish final HP
+* classify survival
+
+Those steps belong to `BattleService`.
+
+### Current-v1 boundary assumption
+
+The current v1 post-resolve traits can be evaluated without authoritatively mutating HP inside `RoundResolver`.
+
+If a future accepted post-resolve effect explicitly depends on authoritative HP after merged damage, the resolver/application boundary must be reviewed deliberately rather than silently introducing a second HP calculation.
+
+---
+
+## Rule Resolution and Authoritative Application
+
+The system has two related but distinct steps.
+
+### Step 1: rule resolution
+
+`RoundResolver` completes all seven phases and produces:
+
+* raw merged damage
+* raw post-resolve healing
+* slot combat results
+* logs
+* snapshots
+* persistent non-HP effects such as `Growth`
+
+At the end of this step, the round is rule-resolved but `RoundResult` is not yet finalized.
+
+### Step 2: authoritative application
+
+`BattleService` applies the resolved consequences in this order:
+
+```
+read HP before application
+→ apply merged damage
+→ record HP after merged damage
+→ apply raw post-resolve healing
+→ clamp to max HP
+→ record actual healing applied
+→ establish final HP
+→ finalize RoundResult
+→ classify battle completion
+```
+
+### Classification priority
+
+After final HP is established, `BattleService` classifies the round in this order:
+
+```
+if final player HP <= 0
+    PlayerDefeated
+else if final enemy HP <= 0
+    EnemyDefeated
+else if the third round was resolved
+    AllRoundsCompleted
+else
+    battle continues
+```
+
+This classification belongs to battle-level application, not to `RoundResolver`.
+
+### Simultaneous zero
+
+If both final HP values are zero or below, the official completion reason is:
+
+```
+BattleCompletionReason.PlayerDefeated
+```
+
+`RoundResolver` does not make this decision.
+
+### Not an additional RoundPhase
+
+Authoritative application and completion classification do not add a new value to `RoundPhase`.
+
+The accepted seven-phase gameplay pipeline remains unchanged.
 
 ---
 
@@ -567,8 +791,20 @@ Typical log entries may describe:
 * derived buffs and debuffs
 * slot combat results
 * post-resolve healing and growth
+* finalized merged-damage consequences
+* raw Regrow and Lifesteal healing
+* persistent Growth application
+* clear distinction between raw healing and actual healing after clamp
 
 Logs are not the authoritative state, but they are an important inspection tool.
+
+### Application-value logging
+
+`RoundResolver` logs may describe raw rule consequences.
+
+Final HP, HP after merged damage, and actual healing applied are established later by `BattleService`.
+
+Presentation should prefer finalized `RoundResult` fields for the authoritative HP timeline rather than attempting to infer final HP from resolver logs.
 
 ---
 
@@ -605,6 +841,24 @@ That means a round can produce snapshots for:
 
 Snapshots are not authoritative gameplay state.  
 They are derived inspection data and normally should not be treated as mandatory save data.
+
+### HP visibility boundary
+
+Phase snapshots primarily capture rule-phase board state.
+
+They do not replace the authoritative HP application fields in `RoundResult`.
+
+In particular:
+
+* the `ApplyMergedDamage` snapshot may show the finalized damage consequence
+* the `PostResolve` snapshot may show raw healing and persistent trait effects
+* `PlayerHpAfterMergedDamage` and `EnemyHpAfterMergedDamage` are finalized by `BattleService`
+* final HP is finalized by `BattleService`
+
+Debug presentation should combine:
+
+* phase snapshots for board evolution
+* finalized `RoundResult` fields for HP evolution
 
 ---
 
@@ -653,38 +907,66 @@ This is one of the most important conceptual rules in the whole combat system.
 
 ### `RoundResolver` owns
 
-* the fixed seven-phase round pipeline
+* the fixed seven-phase rule pipeline
 * round-local combat calculation
-* raw damage and healing totals
-* post-resolve trait effects
+* slot combat resolution
+* raw merged damage totals
+* raw post-resolve healing totals
+* per-card damage attribution used by Lifesteal
+* persistent non-HP post-resolve effects such as Growth
 * logs
 * phase snapshots
-* `RoundResult` production
+* creation of the non-finalized `RoundResult`
 
 ### `BattleService` owns
 
-* applying round consequences to runtime state
-* updating authoritative player and enemy HP
-* enforcing healing clamp to max HP
-* finalizing authoritative post-application HP-after values associated with the round result
-* advancing battle flow
+* reading authoritative HP before application
+* applying merged damage
+* recording HP after merged damage
+* applying post-resolve healing
+* enforcing max-HP clamp
+* recording actual healing applied
+* establishing final authoritative HP
+* finalizing the `RoundResult`
+* adding the finalized result to battle history
+* classifying player defeat, enemy defeat, all-round completion, or continuation
+* creating and storing any `PendingBattleOutcome`
+* advancing battle-level flow
 
 ### Why this separation matters
 
-If both layers independently try to calculate and own final applied HP state, duplicated logic and inconsistency become likely.
+If both layers independently calculate final applied HP, healing clamp, or survival outcome, their results may diverge.
 
 The intended design is:
 
-* `RoundResolver` computes consequences
-* `BattleService` applies consequences
+```
+RoundResolver computes rule consequences
+→ BattleService applies consequences once
+→ BattleService establishes final HP once
+→ BattleService classifies battle completion once
+```
+
+### Presentation boundary
+
+Presentation may display:
+
+* raw consequences
+* intermediate HP
+* actual healing
+* final HP
+* the fixed battle outcome
+
+Presentation must not calculate or alter any of them.
 
 ---
 
 ## Testing Implications
 
-The resolver is one of the best targets for Edit Mode tests.
+`RoundResolver` remains one of the highest-value Edit Mode test targets.
 
-High-value tests include:
+### Resolver-owned tests
+
+High-value resolver tests include:
 
 * RPS outcome rules
 * minimum damage rule
@@ -692,13 +974,55 @@ High-value tests include:
 * movement order
 * adjacent aid behavior
 * suppress behavior
-* simultaneous damage consequence calculation
-* regrow
-* lifesteal
-* growth
-* snapshot count and phase order
+* simultaneous merged-damage consequence calculation
+* Regrow raw healing
+* Lifesteal raw healing
+* Growth persistent update
+* post-resolve effects only applying to newly played cards
+* snapshot count and exact seven-phase order
 
-These tests are especially important because the resolver owns the fixed round pipeline and produces the raw round-level consequences consumed later by battle-layer application.
+### Full-pipeline tests
+
+`RoundResolverPostResolveTests` should explicitly verify:
+
+* Post Resolve executes when projected player HP after merged damage would be zero or below
+* Regrow raw healing is still produced after projected lethal damage
+* Lifesteal raw healing is still produced after projected lethal damage
+* Growth still executes after projected lethal damage
+* no player-death or enemy-defeat classification occurs inside `RoundResolver`
+* all seven snapshots are produced in a temporary-zero scenario
+
+### Mutation-boundary tests
+
+Resolver tests should verify that:
+
+* authoritative player HP is not mutated by `RoundResolver`
+* authoritative enemy HP is not mutated by `RoundResolver`
+* max-HP clamp is not performed by `RoundResolver`
+* final HP is not independently calculated by `RoundResolver`
+
+### Companion BattleService tests
+
+The following behavior belongs in `BattleServiceTests`, not resolver tests:
+
+* HP before application
+* HP after merged damage
+* raw healing versus actual healing
+* healing clamp
+* final HP
+* temporary zero followed by survival
+* final HP exactly zero
+* player-death classification
+* enemy-defeat classification
+* simultaneous-zero priority
+* first- or second-round battle completion
+* pending battle outcome creation
+
+### Important test boundary
+
+Resolver tests prove that the seven-phase rule pipeline produces the correct consequences.
+
+BattleService tests prove that those consequences are applied exactly once and produce the correct final authoritative state.
 
 ---
 
@@ -709,11 +1033,23 @@ These tests are especially important because the resolver owns the fixed round p
 It must:
 
 * follow the locked seven-phase pipeline
+* complete all seven phases without early death interruption
 * recalculate combat state explicitly each round
 * keep movement and board-derived behavior deterministic
-* accumulate damage before application
+* accumulate damage before representing it as one merged consequence
+* evaluate Post Resolve even when projected HP after damage is zero or below
 * apply post-resolve effects only to newly played cards
+* produce raw merged damage and raw healing consequences
 * produce logs and snapshots as first-class debug outputs
-* return explicit round consequence data without taking over battle-layer runtime HP application
+* create a non-finalized `RoundResult`
+* avoid authoritative HP mutation, max-HP clamp, survival classification, and battle progression
 
-This keeps the combat rules explicit, testable, and aligned with the layered architecture.
+`BattleService` then:
+
+* applies damage and healing
+* records intermediate and final HP
+* enforces clamp
+* finalizes `RoundResult`
+* classifies battle completion
+
+This preserves the locked seven-phase gameplay rule while keeping authoritative HP application, battle outcome classification, and Presentation responsibilities clearly separated.

@@ -20,6 +20,8 @@ This document is a high-level engineering reference. More detailed behavior is s
 * `run-battle-reward-flow.md`
 * `reward-generation.md`
 * `config-and-content.md`
+* `testing-strategy.md`
+* `debug-ui-plan.md`
 
 ---
 
@@ -29,10 +31,12 @@ The current architecture is optimized for:
 
 1. gameplay rule correctness
 2. clean separation of responsibilities
-3. fast iteration during early development
-4. debug visibility
-5. easy verification through lightweight tests
-6. future expansion without heavy refactoring
+3. authoritative and internally consistent runtime state
+4. deterministic outcome classification
+5. fast iteration during early development
+6. debug visibility
+7. easy verification through lightweight tests
+8. future expansion without heavy refactoring
 
 The current goal is not final production polish.
 
@@ -72,6 +76,8 @@ The Domain layer contains:
 * enums and value objects
 * result objects
 * round resolution logic
+* raw round consequence calculation
+* explicit battle-completion reason representation
 * reward legality rules
 * reward deduplication rules
 * canonical signature logic
@@ -94,6 +100,7 @@ Typical Domain objects include:
 * `PhaseSnapshot`
 * `BattleOutcome`
 * `RoundResolver`
+* `BattleCompletionReason`
 
 ### Domain Principles
 
@@ -102,6 +109,8 @@ Typical Domain objects include:
 * Core rule logic should be explicit and testable.
 * Temporary round computation should not pollute persistent runtime state.
 * Authored config types are not the same thing as runtime state types.
+* Raw rule consequences and authoritative applied values must remain distinguishable.
+* Gameplay outcome must be represented explicitly rather than inferred independently by multiple layers.
 
 ---
 
@@ -114,9 +123,13 @@ The Application layer contains:
 * run-level flow orchestration
 * battle-level flow orchestration
 * reward flow orchestration
+* authoritative HP application
+* battle-completion classification
+* completed-battle handoff
+* reward eligibility and terminal run progression
 * command handling
 * state transitions
-* coordination between domain logic and presentation
+* coordination between domain objects and presentation
 * runtime construction delegation through helpers such as factories
 
 ### Examples
@@ -136,6 +149,9 @@ Typical Application objects include:
 * Application flow should be explicit and state-driven.
 * The layer should coordinate existing state objects rather than hide them behind unnecessary abstractions.
 * Construction helpers and flow orchestrators are distinct concepts.
+* Authoritative HP mutation must occur in one application-layer owner.
+* A fixed battle outcome must not be recalculated during presentation.
+* Run-level reward and terminal progression must consume the official battle outcome rather than reconstructing it from HP.
 
 ---
 
@@ -169,6 +185,10 @@ Typical Presentation objects include:
 * UI should read state and send commands.
 * The first implementation target is a debug-oriented text-heavy UI, not a polished final UI.
 * Unity-specific concerns should stay near the edge of the system.
+* Presentation may retain finalized result objects for inspection after authoritative gameplay state has advanced.
+* Presentation-only retention is observational and must not become a second gameplay-state source.
+* Presentation must not classify player death, enemy defeat, simultaneous-zero priority, reward eligibility, victory, or defeat.
+* Continue is a presentation gate, not an outcome-decision command.
 
 ---
 
@@ -237,6 +257,43 @@ Core runtime state must not be fragmented across unrelated MonoBehaviours or hid
 
 ---
 
+## Battle Completion State
+
+A completed battle outcome may be fixed before the active battle is handed back to `RunService`.
+
+The relevant battle-scoped state is:
+
+```
+BattleState
+├── RoundResults
+├── BattleFlowStage
+└── PendingBattleOutcome : BattleOutcome?
+```
+
+### PendingBattleOutcome
+
+`PendingBattleOutcome` is the authoritative completed-battle result while:
+
+* the final round result is being presented
+* the battle has moved to `BattleComplete`
+* run-level acceptance has not yet consumed the active battle
+
+The run remains in:
+
+* `RunFlowStage.InBattle`
+
+until `RunService.AcceptCompletedBattle(...)` accepts the completed battle.
+
+### Important rules
+
+* the pending outcome is fixed from final authoritative HP
+* Presentation may inspect it but must not modify or recreate it
+* `FinishRoundPresentation(...)` does not clear it
+* run-level acceptance clears the active battle after capturing the authoritative outcome
+* no second mutable outcome source should coexist with it
+
+---
+
 ## Authored Config Model
 
 The authored config model is JSON-first.
@@ -269,17 +326,34 @@ More detail is defined in `config-and-content.md`.
 
 It is responsible for:
 
-* resolving the fixed round pipeline
+* executing the complete fixed seven-phase pipeline
 * updating round-local battle values
-* producing `RoundResult`
+* resolving slot combat
+* calculating raw merged damage
+* calculating raw post-resolve healing
+* applying persistent non-HP post-resolve effects such as `Growth`
+* creating the non-finalized `RoundResult`
 * generating logs and per-phase snapshots
 
 It is not responsible for:
 
+* authoritatively mutating player or enemy HP
+* applying max-HP clamp
+* establishing final authoritative HP
+* classifying player death or enemy defeat
+* classifying battle completion
 * battle flow progression
 * run flow progression
 * reward generation
 * UI interaction
+
+### Important rule
+
+All seven phases complete even when projected or intermediate HP reaches zero or below.
+
+Player death, enemy defeat, and battle completion are classified after battle-layer HP application.
+
+They do not form an eighth `RoundPhase`.
 
 ---
 
@@ -293,17 +367,51 @@ It is responsible for:
 * preparing enemy sequence data
 * validating player card selection
 * invoking `RoundResolver`
-* applying round results to battle-related runtime state
-* clamping healing to max HP when applying round results
+* applying raw merged damage to authoritative HP
+* recording HP after merged damage
+* applying raw post-resolve healing
+* clamping healing to max HP
+* recording actual healing applied
+* establishing final authoritative HP
+* finalizing the authoritative HP fields in `RoundResult`
+* adding the finalized result to battle history
+* classifying one official `BattleCompletionReason`
+* creating and storing `BattleState.PendingBattleOutcome`
 * advancing battle-level flow
-* producing `BattleOutcome`
+* exposing the completed outcome after round-result presentation
 
 It is not responsible for:
 
-* run-level progression
-* enemy switching
-* reward entry decisions
-* gameplay rule calculation already handled by `RoundResolver`
+* deciding run-level victory or defeat
+* selecting the next enemy
+* deciding reward eligibility
+* generating reward offers
+* recalculating raw rules already handled by `RoundResolver`
+
+### Completion priority
+
+After final HP is established, classification is:
+
+```
+if final player HP <= 0
+    PlayerDefeated
+else if final enemy HP <= 0
+    EnemyDefeated
+else if the final round completed
+    AllRoundsCompleted
+else
+    continue the battle
+```
+
+Simultaneous zero is officially:
+
+* `BattleCompletionReason.PlayerDefeated`
+
+### Presentation gate
+
+`SubmitPlayerCard(...)` fixes the outcome before entering `PresentingRoundResult`.
+
+`FinishRoundPresentation(...)` only advances the presentation gate and exposes the already-fixed outcome.
 
 ---
 
@@ -315,19 +423,48 @@ It is responsible for:
 
 * starting a new run
 * determining when the next battle may begin
-* accepting and interpreting battle outcomes
-* deciding whether to enter rewards, next battle, next enemy, victory, or defeat
+* accepting the authoritative completed battle outcome
+* incrementing completed-battle progression exactly once
+* clearing completed active-battle state
+* interpreting official battle-completion reason
+* deciding reward eligibility
+* deciding next battle or next enemy progression
+* deciding victory or defeat
 * maintaining run-level flow consistency
 
 It is not responsible for:
 
 * per-round gameplay rule calculation
-* battle-internal round progression details
+* authoritative round HP application
+* battle-internal round transitions
 * reward option generation internals
+* reconstructing official battle outcome from displayed or raw HP
+
+### Official branch order
+
+Run-level interpretation must use this order:
+
+1. `BattleCompletionReason.PlayerDefeated`
+2. `BattleCompletionReason.EnemyDefeated`
+3. `BattleCompletionReason.AllRoundsCompleted` with the battle limit exhausted
+4. `BattleCompletionReason.AllRoundsCompleted` with more battles remaining
+
+### Player-death rule
+
+When the official reason is `PlayerDefeated`:
+
+* the run enters `Defeat`
+* the active battle is cleared
+* no reward offer is generated
+* remaining enemy rewards are not settled
+* reward progress does not increase
+* no next enemy or `Victory` branch is entered
+
+This branch also handles simultaneous zero.
 
 ### Important note
 
-`RunService.CreateNewRun(...)` is the run-level entry point for starting a run, but it should delegate initial runtime graph construction to `RuntimeStateFactory`.
+`RunService.CreateNewRun(...)` remains the run-level entry point for starting a run, but it delegates initial runtime graph construction to `RuntimeStateFactory`.
 
 ---
 
@@ -345,8 +482,25 @@ It is responsible for:
 It is not responsible for:
 
 * deciding when rewards happen
+* deciding whether a completed battle is reward-eligible
+* handling player-death logic
+* interpreting simultaneous zero
+* deciding battle-limit defeat
 * deciding post-reward run progression
 * battle flow
+
+### Reward-call boundary
+
+`RunService` controls whether `RewardService` is called.
+
+For:
+
+* player death
+* simultaneous zero resolved as player death
+* battle-limit exhaustion
+* terminal victory or defeat
+
+reward generation is prevented before entering `RewardService`.
 
 ---
 
@@ -394,6 +548,88 @@ Services orchestrate runtime flow.
 
 ---
 
+## HP Application and Outcome Ownership
+
+The architecture separates four consecutive responsibilities.
+
+### 1. Rule resolution
+
+Owned by:
+
+* `RoundResolver`
+
+Produces:
+
+* raw merged damage
+* raw healing
+* slot results
+* logs
+* snapshots
+* persistent non-HP effects
+
+### 2. Authoritative application
+
+Owned by:
+
+* `BattleService`
+
+Performs:
+
+```
+HP before
+→ merged damage
+→ HP after merged damage
+→ raw healing
+→ max-HP clamp
+→ actual healing
+→ final HP
+```
+
+### 3. Battle-outcome classification
+
+Owned by:
+
+* `BattleService`
+
+Produces one official:
+
+* `BattleCompletionReason`
+
+and stores one authoritative:
+
+* `PendingBattleOutcome`
+
+### 4. Run-level interpretation
+
+Owned by:
+
+* `RunService`
+
+Decides:
+
+* reward flow
+* next battle
+* next enemy
+* victory
+* defeat
+
+### Architectural invariant
+
+No two layers may independently calculate competing final HP or official battle outcome.
+
+The intended chain is:
+
+```
+RoundResolver computes consequences
+→ BattleService applies consequences once
+→ BattleService establishes final HP once
+→ BattleService classifies outcome once
+→ Presentation displays the fixed result
+→ RunService interprets the fixed result once
+```
+
+---
+
 ## Flow Stages
 
 The architecture uses explicit flow stages at run level and battle level.
@@ -420,6 +656,41 @@ The accepted battle flow stages are:
 ### Why this matters
 
 Run flow and battle flow operate at different scopes and should not be collapsed into a single state machine.
+
+### Outcome timing across flow stages
+
+A completed battle outcome may already exist while:
+
+* `RunFlowStage == InBattle`
+* `BattleFlowStage == PresentingRoundResult`
+
+This is intentional.
+
+During this state:
+
+* final HP is already authoritative
+* the official completion reason is already fixed
+* Presentation may display the result
+* Continue cannot change the result
+
+After presentation finishes:
+
+* `BattleFlowStage` becomes `BattleComplete`
+* the same pending outcome remains authoritative
+* `RunService` accepts and interprets it
+
+### Terminal stages
+
+After entering:
+
+* `Victory`
+* `Defeat`
+
+the run has:
+
+* no active battle
+* no pending reward offer
+* no legal in-run gameplay action
 
 ---
 
@@ -448,6 +719,35 @@ These describe service command execution:
 
 A gameplay result is not the same thing as a service command result.
 Keeping both concepts explicit improves readability and keeps orchestration easier to inspect.
+
+### RoundResult lifecycle
+
+`RoundResult` has two lifecycle points:
+
+1. resolver-created, containing raw rule consequences
+2. battle-finalized, containing authoritative HP application values
+
+Only the battle-finalized result may be treated as the complete authoritative round result.
+
+### BattleOutcome identity
+
+`BattleOutcome` records:
+
+* battle index
+* rounds played
+* one `BattleCompletionReason`
+* final player HP
+* final enemy HP
+
+The completion reason is the official result.
+
+Final HP values provide supporting authoritative data but do not create a second independently interpreted outcome.
+
+### Command failure distinction
+
+`BattleCommandResult` and `RunCommandResult` describe command execution.
+
+Player defeat is a successful gameplay outcome, not a command failure.
 
 ---
 
@@ -562,6 +862,30 @@ The purpose is to make rule validation easier before polished presentation exist
 
 Debug visibility is considered a core architectural requirement for this demo phase.
 
+The debug architecture must also support:
+
+* HP before merged damage
+* HP after merged damage
+* raw healing
+* actual healing after clamp
+* final HP
+* fixed battle-completion reason
+* simultaneous-zero explanation
+* retained visibility of the latest fatal round
+
+### Presentation retention
+
+`DebugUiState` may retain references to:
+
+* the latest finalized `RoundResult`
+* the latest completed `BattleOutcome`
+
+This allows the debug inspector to remain populated after `RunService` clears `RunState.ActiveBattle`.
+
+These references are presentation-only observation state.
+
+They must not be mutated or treated as authoritative gameplay state.
+
 ---
 
 ## Reward Design Implications for Architecture
@@ -601,42 +925,82 @@ This avoids overengineering the authored content system too early.
 
 ## Testing Strategy Implications
 
-The architecture is designed to support lightweight but high-value tests.
+The architecture is designed to support lightweight but high-value tests at the layer that owns each responsibility.
 
-### Main testing focus
+### Resolver tests
 
-* domain rules
-* round resolution behavior
-* reward legality
-* reward deduplication
-* battle/run flow smoke validation
+Verify:
+
+* complete seven-phase execution
+* raw damage and healing consequences
+* Post Resolve after projected lethal damage
+* no authoritative HP mutation
+* no survival classification
+
+### BattleService tests
+
+Verify:
+
+* authoritative HP application
+* HP after merged damage
+* healing clamp and actual healing
+* final HP
+* temporary-zero recovery
+* final HP exactly zero
+* player-death and enemy-defeat classification
+* simultaneous-zero priority
+* pending-outcome lifecycle
+* presentation-gate stability
+
+### RunService tests
+
+Verify:
+
+* authoritative completed-battle acceptance
+* progression counters change exactly once
+* player-death priority
+* reward short circuit
+* simultaneous-zero defeat
+* enemy-defeat progression
+* battle-limit defeat
+* terminal-state cleanup
+
+### Presentation and smoke validation
+
+Verify:
+
+* finalized result formatting
+* terminal status text
+* button gating
+* retained fatal-round visibility
+* controller handoff wiring
 
 ### Main testing style
 
 * Edit Mode tests first
 * minimal Play Mode smoke tests later
-* manual validation through a debug scene
+* manual validation through the debug scene
 
-The architecture intentionally favors explicit state and explicit results to make this testing style practical.
+The architecture favors explicit state, explicit results, and narrow ownership so each layer can be tested without duplicating another layer's rule logic.
 
 ---
 
 ## Implementation Phases
 
-The recommended implementation order is:
+The recommended implementation and change order is:
 
 1. config objects and loading boundary
 2. domain enums and state objects
-3. `RoundResult`, `SlotCombatResult`, `PhaseSnapshot`
-4. `RoundResolver`
+3. result objects and explicit outcome representation
+4. `RoundResolver` raw consequence behavior
 5. reward legality and deduplication helpers
 6. Edit Mode tests for domain logic
-7. `BattleService`
-8. `RunService`
-9. debug-oriented presentation
-10. smoke tests and iteration
+7. `BattleService` authoritative application and outcome classification
+8. `RunService` outcome interpretation and reward eligibility
+9. debug-oriented presentation and retained result inspection
+10. smoke tests and manual iteration
 
-This order reduces early instability and helps surface rule bugs sooner.
+For cross-layer rule changes, update the canonical engineering documents before implementation tasks are generated.
 
 ---
 
@@ -662,13 +1026,18 @@ These may be revisited later if the game grows, but they are not appropriate for
 
 The following boundaries are considered locked unless explicitly redesigned:
 
-* `RoundResolver` resolves one round but does not control run progression.
-* `BattleService` controls one battle but does not decide run-level progression.
-* `RunService` controls run progression but does not compute round rules.
-* `RewardService` generates and applies rewards but does not decide when rewards occur.
+* `RoundResolver` completes all seven rule phases and produces raw consequences, but does not authoritatively mutate HP or classify survival.
+* `BattleService` applies round consequences once, establishes final HP once, and classifies one official battle outcome.
+* `BattleState.PendingBattleOutcome` remains authoritative through round-result presentation and battle-complete handoff.
+* `FinishRoundPresentation(...)` does not calculate or alter gameplay outcome.
+* `RunService` interprets the official battle outcome and owns reward eligibility, next-battle, next-enemy, victory, and defeat progression.
+* `RunService` interprets `PlayerDefeated` before enemy-defeat or reward progression.
+* `RewardService` generates and applies reward content but does not decide whether rewards occur.
 * `GameConfigLoader` loads and validates authored config but does not create gameplay flow.
 * `RuntimeStateFactory` constructs runtime objects but does not orchestrate runtime flow.
-* Presentation displays and forwards input but does not implement gameplay logic.
+* Presentation displays authoritative state, retains finalized results for inspection, and forwards commands, but does not implement gameplay outcome rules.
+* Player death, enemy defeat, and battle completion do not introduce an eighth `RoundPhase`.
+* No new config field or flow stage is required for the player-death rule.
 
 ---
 
@@ -695,10 +1064,24 @@ These future extensions should build on the current layering unless a redesign i
 This architecture is centered on:
 
 * explicit authored config
-* explicit runtime state
-* clear service boundaries
-* deterministic rule resolution
-* debug visibility
+* explicit authoritative runtime state
+* clear Domain, Application, and Presentation boundaries
+* complete deterministic seven-phase rule resolution
+* single-owner authoritative HP application
+* one fixed battle-completion reason
+* player-death-first run interpretation
+* reward eligibility controlled by `RunService`
+* retained debug visibility through terminal transitions
 * small, testable components
 
-It is designed to let the team implement the demo quickly without collapsing config, rule logic, flow orchestration, and UI into one layer.
+The core execution chain is:
+
+```
+RoundResolver computes raw consequences
+→ BattleService applies and finalizes the round
+→ BattleService fixes the battle outcome
+→ Presentation displays the fixed result
+→ RunService interprets run progression
+```
+
+This structure allows the project to add player-death failure behavior without moving gameplay logic into Presentation, duplicating HP calculation, adding an eighth round phase, or coupling reward generation to death handling.

@@ -36,6 +36,7 @@ The current testing strategy is designed to satisfy these goals:
 5. prioritize high-value tests over broad but shallow coverage
 6. support Codex-assisted implementation with small verifiable tasks
 7. preserve a manual debug path for behavior inspection
+8. protect gameplay-outcome priority, terminal-state cleanup, and reward short-circuit behavior from regression
 
 The current goal is not exhaustive automated coverage.
 
@@ -56,6 +57,10 @@ They should cover:
 * domain rules
 * reward generation and deduplication
 * battle and run application flow logic where practical
+* authoritative HP application and final-HP classification
+* player-death and simultaneous-zero outcome priority
+* completed-battle handoff and reward eligibility
+* terminal-state cleanup and action gating
 
 ### 2. Play Mode smoke tests
 
@@ -216,6 +221,11 @@ The debug scene should support:
 * viewing phase snapshots
 * viewing reward offers
 * continuing flow after battle and reward resolution
+* inspecting HP before damage, HP after merged damage, raw healing, actual healing, and final HP
+* validating temporary-zero recovery
+* validating player-death presentation
+* validating simultaneous-zero presentation
+* validating terminal button state after run defeat
 
 The debug scene is part of the validation strategy, not just a convenience tool.
 
@@ -320,19 +330,45 @@ Should test:
 
 Should test:
 
-* `Regrow`
-* `Lifesteal`
-* `Growth`
-* post-resolve only affects newly played cards
-* `Growth` updates persistent source card state
+* `Regrow` produces the expected raw healing
+* `Lifesteal` produces raw healing equal to the newly played card's attributed damage
+* `Growth` updates persistent source-card state
+* post-resolve effects only affect cards newly played this round
+* Post Resolve executes when projected player HP after merged damage would be zero or below
+* Post Resolve executes when projected enemy HP after merged damage would be zero or below
+* `Regrow` raw healing is still produced after projected lethal damage
+* `Lifesteal` raw healing is still produced after projected lethal damage
+* `Growth` still executes during a round that will later result in player defeat
+* `RoundResolver` does not classify player death
+* `RoundResolver` does not classify enemy defeat
+* `RoundResolver` does not authoritatively mutate player HP
+* `RoundResolver` does not authoritatively mutate enemy HP
+* `RoundResolver` does not perform max-HP clamp
+* `RoundResolver` does not independently establish final authoritative HP
+
+### Important boundary
+
+These tests verify rule consequences and complete execution of Phase 7.
+
+They do not verify:
+
+* actual healing after clamp
+* final HP
+* battle-completion reason
+* run defeat
+
+Those belong to `BattleServiceTests` and `RunServiceTests`.
 
 ### `RoundResolverSnapshotTests.cs`
 
 Should test:
 
 * snapshot count
-* snapshot phase order
-* presence of snapshots for all phases
+* exact snapshot phase order
+* presence of snapshots for all seven phases
+* all seven snapshots are produced when projected HP after merged damage is zero or below
+* the `PostResolve` snapshot is still produced after projected lethal damage
+* no additional eighth `RoundPhase` is introduced for survival or battle-completion classification
 
 ---
 
@@ -420,32 +456,246 @@ Should test:
 
 ### `BattleServiceTests.cs`
 
+`BattleServiceTests` should be divided conceptually into five groups.
+
+#### Group 1: battle startup and command validation
+
 Should test:
 
 * battle startup
+* `PendingBattleOutcome` starts as `null`
 * valid player card submission
 * invalid player card rejection
-* round result application
-* healing clamp to max HP
-* flow transition to next round or battle complete
+* used player card rejection
+* invalid battle flow stage rejection
+* failed submission does not mutate HP
+* failed submission does not mark a card as used
+* failed submission does not advance round or battle flow
+
+#### Group 2: authoritative HP application
+
+Should test:
+
+* `PlayerHpBefore` and `EnemyHpBefore` match authoritative runtime state
+* merged damage is applied exactly once
+* `PlayerHpAfterMergedDamage` is recorded correctly
+* `EnemyHpAfterMergedDamage` is recorded correctly
+* raw player healing is preserved in `HealToPlayer`
+* raw enemy healing is preserved in `HealToEnemy`
+* `PlayerHealingApplied` records healing after clamp
+* `EnemyHealingApplied` records healing after clamp
+* healing cannot exceed max HP
+* final `PlayerHpAfter` matches `RunState.PlayerHp`
+* final `EnemyHpAfter` matches `EnemyProgressState.CurrentHp`
+* the finalized `RoundResult` is added to battle history only after authoritative HP fields are populated
+
+#### Group 3: temporary zero and recovery
+
+Should test:
+
+* player receives lethal merged damage with no healing and ends at zero or below
+* player reaches zero or below after merged damage but survives after `Regrow`
+* player reaches zero or below after merged damage but survives after `Lifesteal`
+* healing produces a final player HP of exactly zero
+* healing clamp produces the correct final HP and actual-healing value
+* temporary zero followed by final HP above zero does not create a player-defeat outcome
+* final HP exactly zero does create a player-defeat outcome
+
+Representative assertions should include:
+
+```
+PlayerHpBefore
+PlayerHpAfterMergedDamage
+HealToPlayer
+PlayerHealingApplied
+PlayerHpAfter
+```
+
+#### Group 4: battle-completion classification
+
+Should test:
+
+* player death completes the battle
+* player death may complete the battle in round 1
+* player death may complete the battle in round 2
+* player death in round 3 produces `BattleCompletionReason.PlayerDefeated`
+* player alive and enemy final HP zero or below produces `BattleCompletionReason.EnemyDefeated`
+* both sides alive after round 3 produces `BattleCompletionReason.AllRoundsCompleted`
+* both sides alive before round 3 produces no pending outcome
+* simultaneous zero produces only `BattleCompletionReason.PlayerDefeated`
+* simultaneous zero preserves both final HP values in the outcome
+* `EnemyDefeated` is never the official reason when player final HP is zero or below
+* one immutable pending outcome is created when the battle completes
+* the pending outcome records the actual rounds played
+* the pending outcome records final authoritative HP
+
+#### Group 5: presentation-gate behavior
+
+Should test:
+
+* `SubmitPlayerCard(...)` fixes `PendingBattleOutcome` before result presentation begins
+* after a fatal submission, `BattleFlowStage == PresentingRoundResult`
+* after a fatal submission, `IsBattleComplete == false`
+* `FinishRoundPresentation(...)` returns the already-stored outcome
+* `FinishRoundPresentation(...)` moves the battle to `BattleComplete`
+* `FinishRoundPresentation(...)` does not clear `PendingBattleOutcome`
+* `FinishRoundPresentation(...)` does not recreate or reclassify the outcome
+* `FinishRoundPresentation(...)` does not read final HP to choose a different result
+* when no pending outcome exists, `FinishRoundPresentation(...)` advances to the next round
+* when no pending outcome exists, the round index increments exactly once
+* repeated or invalid presentation-finish commands do not advance battle state twice
+
+### Important test boundary
+
+`BattleServiceTests` verify:
+
+* authoritative HP mutation
+* clamp
+* final HP
+* official battle-completion reason
+* pending-outcome lifecycle
+
+They do not decide:
+
+* reward eligibility
+* next enemy
+* victory
+* run defeat
+
+Those belong to `RunServiceTests`.
 
 ### `RunServiceTests.cs`
+
+`RunServiceTests` should cover both existing run progression and the two official run-defeat sources.
+
+#### Group 1: existing run and battle entry behavior
 
 Should test:
 
 * run creation
-* legal and illegal battle start conditions
-* battle outcome interpretation
-* reward flow entry
-* reward choice progression
-* next enemy progression
-* victory
-* defeat
-* defeat occurs when `BattlesPlayed >= CurrentEnemy.Config.battleLimit` and the enemy is still alive
-* non-defeat continuation occurs when `BattlesPlayed < CurrentEnemy.Config.battleLimit`
-* one completed battle normally creates one immediately due reward
-* early enemy defeat settles remaining rewards until `RewardsClaimed >= CurrentEnemy.Config.battleLimit`
-* final enemy defeat ignores unresolved remaining rewards and enters `Victory`
+* legal battle start conditions
+* illegal battle start conditions
+* a battle cannot start in `Victory`
+* a battle cannot start in `Defeat`
+* a battle cannot start while a reward is pending
+* a battle cannot start while another active battle exists
+
+#### Group 2: completed-battle acceptance validation
+
+Should test:
+
+* acceptance requires `RunFlowStage.InBattle`
+* acceptance requires an active battle
+* acceptance requires `BattleFlowStage.BattleComplete`
+* acceptance requires a non-null authoritative pending outcome
+* if `AcceptCompletedBattle(...)` accepts a supplied `BattleOutcome`, it must match the authoritative pending outcome
+* if the implementation reads the outcome directly from the active battle, no second conflicting outcome source may exist
+* failed acceptance does not increment `BattlesPlayed`
+* failed acceptance does not clear the active battle
+* one completed battle increments `BattlesPlayed` exactly once
+* repeated acceptance cannot increment `BattlesPlayed` twice
+
+#### Group 3: player-death run flow
+
+Should test:
+
+* `PlayerDefeated` enters `RunFlowStage.Defeat`
+* player death clears `ActiveBattle`
+* player death leaves `PendingRewardOffer == null`
+* player death does not increment `RewardsClaimed`
+* player death does not generate a reward offer
+* player death does not settle remaining enemy rewards
+* player death does not move to the next enemy
+* player death does not enter `Victory`
+* player death prevents starting another battle
+* player death remains terminal after later invalid commands
+* a fatal completed battle still increments `BattlesPlayed` exactly once
+
+A small spy or fake around reward generation may be used to verify that reward generation was not requested.
+
+#### Group 4: simultaneous zero
+
+Should test:
+
+* simultaneous zero is accepted as `BattleCompletionReason.PlayerDefeated`
+* simultaneous zero enters `Defeat`
+* simultaneous zero clears `ActiveBattle`
+* simultaneous zero does not enter reward flow
+* simultaneous zero does not increment `RewardsClaimed`
+* simultaneous zero does not move to the next enemy
+* simultaneous zero does not enter final-enemy `Victory`
+* enemy final HP zero or below does not override the official player-defeat reason
+
+#### Group 5: enemy defeated while player survives
+
+Should test:
+
+* `EnemyDefeated` is interpreted only when player final HP is above zero
+* non-final enemy defeat enters the normal reward-settlement flow
+* early enemy defeat settles remaining reward opportunities
+* final enemy defeat ignores unresolved reward opportunities
+* final enemy defeat enters `Victory`
+* final enemy defeat leaves no active battle
+* final enemy defeat leaves no pending reward offer
+
+#### Group 6: battle-limit exhaustion
+
+Should test:
+
+* `AllRoundsCompleted` with `BattlesPlayed < battleLimit` enters reward flow
+* after the eligible reward is resolved, the run becomes `ReadyForNextBattle`
+* `AllRoundsCompleted` with `BattlesPlayed >= battleLimit` enters `Defeat`
+* battle-limit exhaustion leaves `ActiveBattle == null`
+* battle-limit exhaustion leaves `PendingRewardOffer == null`
+* battle-limit exhaustion does not generate a reward for the exhausting battle
+* battle-limit exhaustion does not increment `RewardsClaimed`
+* battle-limit exhaustion remains functional independently of player-death rules
+
+#### Group 7: reward progress invariants
+
+Should test:
+
+* `RewardsClaimed` changes only when a pending reward choice is resolved
+* generating a reward offer does not itself increment `RewardsClaimed`
+* choosing `Skip` increments `RewardsClaimed`
+* player death never creates an immediately due reward
+* battle-limit exhaustion never creates an immediately due reward
+* an active battle and pending reward never coexist
+
+---
+
+## Player-Death Regression Matrix
+
+The following matrix defines the minimum ownership of player-death regression scenarios.
+
+| Scenario                              |       Resolver tests | BattleService tests |       RunService tests | Formatter / Presentation tests | Manual debug validation |
+| ------------------------------------- | -------------------: | ------------------: | ---------------------: | -----------------------------: | ----------------------: |
+| lethal damage with no healing         | raw consequence only |            required |               required |                       optional |                required |
+| temporary zero recovered by Regrow    |             required |            required |           not required |                    recommended |                required |
+| temporary zero recovered by Lifesteal |             required |            required |           not required |                    recommended |                required |
+| healing leaves final HP exactly zero  |     raw healing only |            required |               required |                       optional |             recommended |
+| healing clamp                         |     raw healing only |            required |           not required |                    recommended |             recommended |
+| Post Resolve not skipped              |             required |            indirect |           not required |                   not required |             recommended |
+| player death in round 1 or 2          |         not required |            required |               required |                    recommended |                required |
+| simultaneous zero                     |         not required |            required |               required |                       required |                required |
+| enemy defeated while player survives  |         not required |            required |               required |                       optional |             recommended |
+| both survive round 3                  |         not required |            required |               required |                       optional |             recommended |
+| no reward after player death          |         not required |        not required |               required |                       required |                required |
+| terminal action gating                |         not required |        not required |  service gate required |                       required |                required |
+| fatal result remains inspectable      |         not required |     result required | state cleanup required |                       required |                required |
+
+### Matrix interpretation
+
+The same full scenario does not need to be reconstructed at every layer.
+
+Each test layer should verify only the responsibility it owns.
+
+For example:
+
+* resolver tests verify that raw Regrow healing still exists
+* battle tests verify that the healing changes final HP
+* run tests verify that final player death enters `Defeat`
+* presentation tests verify that the result is displayed correctly
 
 ---
 
@@ -458,16 +708,39 @@ Should test:
 * Unity-side bootstrap can load config
 * a run can be created successfully
 
+No player-death-specific bootstrap test is required.
+
 ### `BattleFlowSmokeTests.cs`
 
 Should test:
 
 * a battle can start
 * one round can be played
-* result presentation can complete
-* flow can continue
+* the finalized round result becomes visible
+* Continue completes the presentation gate
+* normal nonfatal flow can continue
+* one fatal round can still be presented before run-level defeat is accepted
+* after Continue on the fatal result, the run displays `Defeat`
+* no gameplay action remains available after defeat
+* the fatal round result remains inspectable after the active battle is cleared
 
-These Play Mode tests may be implemented after the first Edit Mode-heavy batches are stable.
+### Scope rule
+
+The fatal Play Mode smoke path validates:
+
+* Unity wiring
+* controller command chaining
+* refresh behavior
+* button gating
+* retained result visibility
+
+It must not replace the detailed Edit Mode matrix for:
+
+* Regrow recovery
+* Lifesteal recovery
+* exact HP values
+* simultaneous-zero priority
+* reward counter invariants
 
 ---
 
@@ -492,6 +765,33 @@ For the current config-driven design direction, `RewardOfferCompositionTests.cs`
 * default-baseline examples
 
 This keeps the first-wave test set aligned with both the generalized reward structure and the current v1 default content baseline.
+
+---
+
+## Required Regression Set for Player-Death Implementation
+
+When the player-death rule is implemented, the minimum required regression set is:
+
+* `RoundResolverPostResolveTests.cs`
+* `RoundResolverSnapshotTests.cs`
+* `BattleServiceTests.cs`
+* `RunServiceTests.cs`
+* pure formatter tests where formatters exist
+* manual debug validation
+
+At minimum, this set must cover:
+
+* temporary-zero Post Resolve execution
+* temporary-zero recovery
+* final HP exactly zero
+* player death in an early round
+* simultaneous zero
+* fixed pending outcome before presentation
+* player-death reward short circuit
+* terminal run cleanup
+* existing battle-limit defeat
+
+This rule-change regression set is required even if the older minimal first-wave list is kept lean for historical implementation sequencing.
 
 ---
 
@@ -561,6 +861,13 @@ Quickly build battle-related object graphs.
 * open slot setup
 * board card placement
 * round index and flow stage setup
+* custom player and enemy HP context
+* custom round index
+* custom battle flow stage
+* custom pending battle outcome
+* battle state already in `PresentingRoundResult`
+* battle state already in `BattleComplete`
+* finalized round-result history when needed
 
 ### Should not do
 
@@ -581,11 +888,50 @@ Quickly build valid runtime run state for application-level tests.
 * custom HP and max HP
 * current enemy state setup
 * flow stage setup
+* custom `BattlesPlayed`
+* custom `RewardsClaimed`
+* custom enemy `battleLimit`
+* active battle attachment
+* pending reward attachment
+* `Victory` and `Defeat` terminal states
+* player and enemy HP combinations for simultaneous-zero scenarios
 
 ### Should not do
 
 * battle-level rule execution
 * reward legality logic
+
+---
+
+## `TestBattleOutcomeFactory`
+
+### Purpose
+
+Build valid immutable `BattleOutcome` instances for run-level tests without requiring full round resolution.
+
+### Should support
+
+* `PlayerDefeated`
+* `EnemyDefeated`
+* `AllRoundsCompleted`
+* custom battle index
+* custom rounds played
+* custom final player HP
+* custom final enemy HP
+* simultaneous-zero final HP with official `PlayerDefeated` reason
+
+### Important rule
+
+The helper should produce only valid outcome combinations.
+
+It must not make invalid states convenient, such as:
+
+```
+CompletionReason = EnemyDefeated
+PlayerHpAfterBattle <= 0
+```
+
+A large outcome-builder framework is not required.
 
 ---
 
@@ -652,6 +998,7 @@ The recommended helper implementation priority is:
 ### Lower priority
 
 * `TestRunFactory`
+* `TestBattleOutcomeFactory`
 * `DeterministicRandom`
 
 ### Optional and very light
@@ -683,6 +1030,42 @@ Config loading should remain outside the core gameplay logic.
 `RoundResult`, `BattleOutcome`, `BattleCommandResult`, and `RunCommandResult` should remain explicit rather than hidden behind side-effect-only APIs.
 
 These rules are important for both maintainability and Codex task quality.
+
+### 5. Stable outcome observation
+
+Tests must be able to inspect `BattleState.PendingBattleOutcome` before presentation completion.
+
+### 6. Reward-call observation
+
+Run-level tests must be able to verify that reward generation is not requested for:
+
+* player death
+* simultaneous zero
+* battle-limit exhaustion
+
+Use the smallest practical seam, such as:
+
+* an existing reward-service abstraction
+* a lightweight fake
+* a lightweight spy
+
+Do not introduce a general mocking framework solely for this purpose.
+
+### 7. Finalized result observation
+
+Tests must be able to inspect:
+
+* HP before
+* HP after merged damage
+* raw healing
+* actual healing applied
+* final HP
+
+without parsing Presentation strings.
+
+### 8. Presentation remains replaceable
+
+Pure formatting and view-data construction should remain testable without loading a Unity scene where practical.
 
 ---
 
@@ -766,8 +1149,15 @@ Validation coverage for this batch should include config-driven quantity and bou
 
 ### Required tests
 
-This batch may include only light sanity tests if needed.
-Its main purpose is to enable later resolver, reward, and flow tests.
+This batch may include light sanity tests for:
+
+* `BattleCompletionReason`
+* valid `BattleOutcome` construction
+* derived `PlayerDefeated` and `EnemyDefeated` properties
+* simultaneous-zero representation
+* nullable `BattleState.PendingBattleOutcome`
+
+The main behavioral coverage still belongs to later resolver, battle-service, and run-service batches.
 
 ### Required helpers
 
@@ -827,6 +1217,20 @@ Reward-generation tests in this batch should cover both:
 * `RoundResolverPostResolveTests.cs`
 * `RoundResolverSnapshotTests.cs`
 
+`RoundResolverPostResolveTests.cs` must explicitly cover:
+
+* projected lethal damage does not stop Phase 7
+* Regrow still produces raw healing
+* Lifesteal still produces raw healing
+* Growth still executes
+* authoritative HP is not mutated
+* survival is not classified
+
+`RoundResolverSnapshotTests.cs` must explicitly cover:
+
+* all seven snapshots in projected-lethal scenarios
+* no eighth survival-classification phase
+
 ### Required helpers
 
 * `TestCardFactory`
@@ -841,18 +1245,47 @@ Reward-generation tests in this batch should cover both:
 
 * `StartBattle(...)`
 * `SubmitPlayerCard(...)`
+* authoritative HP application
+* `RoundResult` finalization
+* battle-completion classification
+* `PendingBattleOutcome`
 * `FinishRoundPresentation(...)`
 * `BattleCommandResult`
+* `BattleCompletionReason`
+* `BattleOutcome`
 
 ### Required tests
 
 * `BattleServiceTests.cs`
 
+Required coverage includes:
+
+* damage, healing, and clamp order
+* HP after merged damage
+* actual healing applied
+* final HP
+* temporary-zero recovery
+* final HP exactly zero
+* player death in rounds 1 and 2
+* enemy defeat while player survives
+* simultaneous-zero priority
+* all-round completion
+* pending-outcome creation before presentation
+* stable outcome through presentation
+* nonfatal next-round progression
+* duplicate presentation-finish protection
+
 ### Required helpers
 
 * `TestBattleFactory`
 * `TestRunFactory`
-* `DeterministicRandom`
+* `TestCardFactory`
+* the smallest practical deterministic resolver setup
+* `DeterministicRandom` where battle startup requires it
+
+### Important rule
+
+This batch must not defer gameplay-outcome classification to Presentation or controller code.
 
 ---
 
@@ -864,6 +1297,9 @@ Reward-generation tests in this batch should cover both:
 * `CanStartNextBattle(...)`
 * `StartNextBattle(...)`
 * `AcceptCompletedBattle(...)`
+* player-death defeat flow
+* battle-limit defeat flow
+* reward eligibility
 * `ChooseReward(...)`
 * `RunCommandResult`
 
@@ -871,18 +1307,38 @@ Reward-generation tests in this batch should cover both:
 
 * `RunServiceTests.cs`
 
-Run-flow tests in this batch should explicitly cover:
+Run-flow tests in this batch must explicitly cover:
 
+* acceptance of the authoritative pending outcome
+* `BattlesPlayed` increments exactly once
+* player death enters `Defeat`
+* player death clears active battle
+* player death creates no reward
+* player death does not increase reward progress
+* simultaneous zero does not enter reward or victory flow
+* enemy defeat while player survives retains normal reward progression
 * configurable per-enemy `battleLimit`
-* reward-total derivation from that battle limit
+* battle-limit exhaustion defeat
+* no reward for the exhausting battle
 * early reward settlement on enemy defeat
 * final-enemy remainder-ignore behavior
+* terminal action gating after `Defeat`
 
 ### Required helpers
 
 * `TestRunFactory`
 * `TestConfigFactory`
-* optional small fake outcome builders when useful
+* `TestBattleOutcomeFactory`
+* a small reward-service spy or equivalent observation seam
+
+### Important rule
+
+The official branch order must be tested as:
+
+1. `PlayerDefeated`
+2. `EnemyDefeated`
+3. `AllRoundsCompleted` with battle limit exhausted
+4. `AllRoundsCompleted` with more battles remaining
 
 ---
 
@@ -905,8 +1361,29 @@ Run-flow tests in this batch should explicitly cover:
 ### Required tests and verification
 
 * manual validation against the scenarios defined in `debug-ui-plan.md`
-* optional light Edit Mode tests for pure formatter or pure view-data builders
-* no heavy Play Mode coverage is required yet
+
+* optional light Edit Mode tests for pure formatter or view-data builders
+
+* formatter coverage for:
+
+  * HP before
+  * merged damage
+  * HP after merged damage
+  * raw healing
+  * actual healing
+  * final HP
+  * player-death status
+  * simultaneous-zero status
+
+* button-state verification for:
+
+  * `PresentingRoundResult`
+  * `BattleComplete`
+  * `Defeat`
+
+* verification that the last fatal round remains visible after active-battle cleanup
+
+* no heavy Play Mode coverage is required for fine-grained rule behavior
 
 ### Required helpers and dependencies
 
@@ -916,6 +1393,10 @@ Run-flow tests in this batch should explicitly cover:
 * stable scene references for controller wiring
 
 ### Important rule
+
+Presentation tests verify display and action gating.
+
+They must not recreate player-death, simultaneous-zero, reward-eligibility, victory, or defeat rules inside formatter or controller code.
 
 This batch implements debug-oriented presentation, not production UI polish.
 
@@ -941,6 +1422,11 @@ This batch implements debug-oriented presentation, not production UI polish.
   * round result visibility
   * continue flow
   * optional reward path later
+  * one fatal-round presentation path
+  * Continue handoff from the fatal result
+  * final `Defeat` stage display
+  * no enabled gameplay action after defeat
+  * retained visibility of the last round result
 
 ### Required helpers and dependencies
 
@@ -969,6 +1455,17 @@ Good assertions include:
 * canonical deck equivalence
 * current flow stage
 * reward offer composition
+* HP after merged damage
+* raw healing
+* actual healing applied
+* `BattleCompletionReason`
+* pending battle outcome presence
+* pending outcome stability through presentation
+* `ActiveBattle == null` after run-level acceptance
+* `PendingRewardOffer == null` after player death
+* unchanged `RewardsClaimed` after player death
+* terminal flow stage
+* reward generation not requested for ineligible outcomes
 
 Tests should avoid overdependence on:
 
@@ -978,6 +1475,10 @@ Tests should avoid overdependence on:
 
 The goal is to keep tests resilient while still meaningful.
 
+Tests may assert that a collaborator was not called when the absence of that call is itself a gameplay invariant, such as proving that no reward offer is generated after player death.
+
+Avoid asserting unrelated internal call order when state and outcome assertions are sufficient.
+
 ---
 
 ## Manual Validation Workflow
@@ -986,19 +1487,87 @@ Automated tests do not replace manual validation.
 
 The debug scene should be used for:
 
-* visually inspecting flow progression
+* visually inspecting normal flow progression
 * checking log readability
 * checking snapshot usefulness
 * checking reward readability
-* spotting friction in interaction and debugging workflows
+* inspecting HP before damage, HP after merged damage, healing, and final HP
+* checking temporary-zero recovery
+* checking player-death presentation
+* checking simultaneous-zero presentation
+* checking terminal button state
+* checking that the last fatal result remains inspectable
 
-The intended validation loop is:
+### Required player-death scenarios
 
-1. run relevant Edit Mode tests
-2. implement or update the debug scene when presentation work begins
-3. manually inspect the debug scene against the scenarios in `debug-ui-plan.md`
-4. add minimal Play Mode smoke tests after the debug scene is stable enough
-5. iterate on usability and wiring issues without moving gameplay rules into the UI layer
+#### Scenario 1: lethal damage without recovery
+
+Verify:
+
+* all seven phases were resolved
+* final player HP is zero or below
+* the round result is presented
+* Continue remains the only relevant battle action during presentation
+* after Continue, run stage becomes `Defeat`
+* no reward appears
+* no next battle action is available
+
+#### Scenario 2: temporary zero recovered by Regrow
+
+Verify:
+
+* HP after merged damage is zero or below
+* raw Regrow healing is shown
+* actual healing is shown
+* final HP is above zero
+* the player does not enter `Defeat`
+* battle flow continues according to round and enemy state
+
+#### Scenario 3: temporary zero recovered by Lifesteal
+
+Verify:
+
+* the new card dealt attributable damage
+* HP after merged damage is zero or below
+* Lifesteal healing is shown
+* final HP is above zero
+* the player survives
+
+#### Scenario 4: final HP exactly zero
+
+Verify:
+
+* final HP displays exactly zero
+* the official result is player defeat
+* no reward appears
+
+#### Scenario 5: simultaneous zero
+
+Verify:
+
+* both final HP values are zero or below
+* the status clearly identifies player defeat
+* the UI does not describe the enemy as officially defeated
+* no reward appears
+* final-enemy simultaneous zero does not show `Victory`
+
+#### Scenario 6: battle-limit exhaustion
+
+Verify:
+
+* the existing non-death defeat path still works
+* the exhausting battle does not generate a reward
+* the status distinguishes battle-limit defeat from player-death defeat
+
+### Intended validation loop
+
+1. run relevant resolver Edit Mode tests
+2. run relevant BattleService Edit Mode tests
+3. run relevant RunService Edit Mode tests
+4. open the debug scene
+5. inspect the scenarios above
+6. run the minimal fatal Play Mode smoke path after scene behavior is stable
+7. fix presentation or wiring issues without moving gameplay rules into the UI layer
 
 ---
 
@@ -1014,6 +1583,13 @@ The testing strategy is successful if:
 * the project avoids large up-front testing overhead
 * the debug scene becomes a useful manual validation workbench
 * minimal Play Mode smoke tests can validate runtime wiring without taking over rule verification
+* temporary HP at zero or below cannot silently skip Post Resolve
+* final HP and battle outcome cannot diverge
+* simultaneous zero cannot produce enemy-defeat or victory progression
+* player death cannot generate or advance rewards
+* `FinishRoundPresentation(...)` cannot alter a fixed gameplay outcome
+* both official run-defeat sources remain covered
+* fatal round results remain inspectable in the debug workbench
 
 This is the intended balance for the current demo phase.
 
@@ -1024,20 +1600,27 @@ This is the intended balance for the current demo phase.
 The current testing strategy is:
 
 * Edit Mode tests as the primary automated layer
-* Play Mode smoke tests as a minimal runtime integration layer
+* Play Mode smoke tests as a minimal runtime-integration layer
 * manual debug-scene validation as a required inspection layer
 
-The first-wave emphasis is on:
+The main automated responsibility split is:
 
-* config loading and runtime construction
-* reward canonicalization and generation
-* round resolution
-* battle and run flow correctness
+* `RoundResolverPostResolveTests` verify complete seven-phase rule execution and raw post-resolve consequences
+* `BattleServiceTests` verify authoritative HP application, clamp, final HP, and one official battle-completion reason
+* `RunServiceTests` verify run progression, player-death priority, reward short circuit, and terminal cleanup
+* formatter and Presentation tests verify display and action gating without implementing gameplay rules
+* Play Mode smoke tests verify controller and scene wiring only
 
-Later batches expand the strategy to include:
+The player-death regression strategy specifically protects:
 
-* debug-oriented presentation
-* manual validation through the debug scene
-* minimal Play Mode smoke tests for runtime wiring
+* temporary-zero recovery
+* final HP exactly zero
+* early battle completion from player death
+* simultaneous-zero priority
+* fixed pending outcome before presentation completion
+* no reward after player death
+* no reward after battle-limit exhaustion
+* terminal `Defeat` behavior
+* retained visibility of the fatal round result
 
-The strategy is intentionally lightweight, explicit, and aligned with incremental Codex-assisted implementation.
+The strategy remains intentionally lightweight, explicit, and aligned with incremental Codex-assisted implementation.

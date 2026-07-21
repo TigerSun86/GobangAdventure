@@ -93,6 +93,7 @@ Examples:
 * `GDR-0001-movement-processed-right-to-left.md`
 * `GDR-0002-start-with-six-card-deck.md`
 * `GDR-0003-enemy-rewards-settle-early-on-defeat.md`
+* `GDR-0004-player-death-checked-after-full-round-resolution.md`
 
 Use GDRs to preserve the reasoning behind non-obvious gameplay rule decisions.
 
@@ -181,13 +182,15 @@ Read in this order:
 
 1. `../AGENTS.md`
 2. `Docs/game-design/game-rules-locked.md`
-3. `Docs/engineering/architecture-overview.md`
-4. `Docs/engineering/config-and-content.md`
-5. `Docs/engineering/domain-model.md`
-6. `Docs/engineering/round-resolution.md`
-7. `Docs/engineering/run-battle-reward-flow.md`
-8. `Docs/engineering/reward-generation.md`
-9. `Docs/engineering/testing-strategy.md`
+3. `Docs/game-design/gdr/GDR-0004-player-death-checked-after-full-round-resolution.md`
+4. `Docs/engineering/architecture-overview.md`
+5. `Docs/engineering/config-and-content.md`
+6. `Docs/engineering/domain-model.md`
+7. `Docs/engineering/round-resolution.md`
+8. `Docs/engineering/run-battle-reward-flow.md`
+9. `Docs/engineering/reward-generation.md`
+10. `Docs/engineering/testing-strategy.md`
+11. `Docs/engineering/debug-ui-plan.md`
 
 ---
 
@@ -253,6 +256,29 @@ Read:
 2. `Docs/engineering/testing-strategy.md`
 3. `Docs/engineering/run-battle-reward-flow.md`
 4. `Docs/engineering/domain-model.md`
+
+---
+
+### For implementation work on player death and terminal flow
+
+Read:
+
+1. `Docs/game-design/gdr/GDR-0004-player-death-checked-after-full-round-resolution.md`
+2. `Docs/engineering/architecture-overview.md`
+3. `Docs/engineering/domain-model.md`
+4. `Docs/engineering/round-resolution.md`
+5. `Docs/engineering/run-battle-reward-flow.md`
+6. `Docs/engineering/testing-strategy.md`
+7. `Docs/engineering/debug-ui-plan.md`
+
+This reading set defines:
+
+* full seven-phase execution after projected lethal damage
+* authoritative HP application and final-HP classification
+* simultaneous-zero player-defeat priority
+* completed-battle handoff through `PendingBattleOutcome`
+* reward short-circuit behavior
+* terminal-state cleanup and debug-result retention
 
 ---
 
@@ -328,7 +354,8 @@ Contains:
 * core runtime state objects
 * value objects
 * result objects
-* rule logic
+* rule logic and raw round consequences
+* explicit battle-completion reason representation
 * canonical signature logic
 * reward legality and deduplication
 
@@ -339,6 +366,9 @@ Contains:
 * run orchestration
 * battle orchestration
 * reward flow orchestration
+* authoritative HP application and clamp
+* battle-completion classification and handoff
+* reward eligibility and terminal run progression
 * command handling
 * state transitions
 * runtime construction delegation
@@ -352,7 +382,11 @@ Contains:
 * input forwarding
 * view models
 * presentation-only formatting
+* presentation-only retention of finalized results
+* terminal-state display and action gating
 * thin Unity-facing bootstrapping and config loading entry points
+
+Presentation may display and retain finalized results for inspection, but it does not classify player death, enemy defeat, simultaneous-zero priority, reward eligibility, victory, or defeat.
 
 ---
 
@@ -367,8 +401,10 @@ Contains:
 
 * `RoundResolver`
 * runtime state objects such as `RunState`, `BattleState`, `CardInstance`, `BoardCard`
+* battle-scoped completion state such as `BattleState.PendingBattleOutcome`
 * config-side objects such as `GameConfig`, `EnemyConfig`, `CardSpec`
 * result objects such as `RoundResult`, `SlotCombatResult`, `PhaseSnapshot`, `BattleOutcome`
+* explicit outcome representation such as `BattleCompletionReason`
 
 ### Application-focused
 
@@ -408,11 +444,13 @@ Contains:
 ## Recommended Implementation Workflow
 
 1. Discuss and lock design decisions.
-2. Update canonical documents.
-3. Let Codex implement a small scoped task.
-4. Validate with tests and debug tooling.
-5. Review the result against the docs.
-6. Update docs again if a real design change is approved.
+2. Update canonical gameplay documents and GDRs where required.
+3. Update canonical engineering documents.
+4. Update `AGENTS.md` when coding-agent constraints change.
+5. Let Codex implement a small scoped task.
+6. Validate with tests and debug tooling.
+7. Review the result against the docs.
+8. Update docs again if a real design change is approved.
 
 Do not let implementation drift away from the documents.
 
@@ -495,6 +533,35 @@ Explains why the current demo uses JSON as the primary authored config format in
 Explains why reward options are deduplicated by canonical resulting deck state rather than raw action parameters.
 
 These ADRs are part of the current architecture and should be read when the relevant area is being implemented or changed.
+
+---
+
+## Current Important GDRs
+
+### GDR-0001
+
+Explains why movement is processed from right to left.
+
+### GDR-0002
+
+Explains why the current v1 baseline starts with a six-card default deck while allowing legal config variation.
+
+### GDR-0003
+
+Explains why a defeated non-final enemy settles its remaining reward opportunities early, while final-enemy remainder is ignored.
+
+### GDR-0004
+
+Explains why:
+
+* all seven round phases complete before survival classification
+* temporary HP at zero or below does not skip Post Resolve
+* final player HP of zero or below causes run defeat
+* simultaneous zero resolves as player defeat
+* player death prevents the fatal battle reward and remaining enemy reward settlement
+* survival classification is not an eighth round phase
+
+These GDRs preserve gameplay rationale. The canonical gameplay documents define the currently accepted rules, and the engineering documents define implementation ownership.
 
 ---
 

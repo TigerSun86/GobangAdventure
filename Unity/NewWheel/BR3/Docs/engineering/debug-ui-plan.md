@@ -45,6 +45,11 @@ The first debug scene must support:
 * displaying reward offers
 * choosing reward options
 * displaying clear status / failure messages
+* displaying the authoritative HP application timeline for the latest round
+* displaying a fixed battle-completion reason when one exists
+* displaying player-death and simultaneous-zero outcomes clearly
+* retaining the latest fatal round result after the active battle is cleared
+* disabling all in-run gameplay actions after `Victory` or `Defeat`
 
 ## Out of Scope
 
@@ -99,6 +104,13 @@ Instead, it provides a reliable manual entry point for inspecting:
 * current reward state
 * latest round output
 * logs and snapshots
+* authoritative HP before and after merged damage
+* raw healing and actual healing after clamp
+* final HP
+* fixed battle-completion reason
+* player-death and simultaneous-zero status
+* terminal action gating
+* retained visibility of the latest fatal round
 
 ---
 
@@ -292,6 +304,20 @@ The top summary bar should always show the most important current state.
 * if no active battle exists, battle stage may display `-`
 * if no run exists, fields may display placeholders
 * values should be concise and stable in position
+* when the run is in `Defeat` or `Victory`, `Run Stage` must remain visible
+* after the active battle is cleared, `Battle Stage` and `Round` may display `-`
+* clearing the active battle must not clear the latest-round inspector
+* final player and enemy HP remain visible through the run and enemy summary fields
+
+### Important terminal-state rule
+
+The top summary bar shows current authoritative run state.
+
+It must not infer defeat from displayed HP.
+
+The official terminal stage comes from:
+
+* `RunState.FlowStage`
 
 ### Formatting responsibility
 
@@ -408,19 +434,169 @@ It should contain the following subsections.
 
 ### Latest Round Result
 
-This section should display the latest resolved `RoundResult` summary.
+This section should display the latest finalized `RoundResult`.
 
-Recommended fields:
+It must remain available after the active battle has been cleared by run-level progression.
+
+### Recommended general fields
 
 * round index
 * selected player card summary
 * enemy card summary
-* damage to player
-* damage to enemy
-* heal to player
-* heal to enemy
-* player HP before / after
-* enemy HP before / after
+
+### Recommended player HP timeline
+
+* player HP before
+* merged damage to player
+* player HP after merged damage
+* raw healing to player
+* actual healing applied to player
+* final player HP
+
+### Recommended enemy HP timeline
+
+* enemy HP before
+* merged damage to enemy
+* enemy HP after merged damage
+* raw healing to enemy
+* actual healing applied to enemy
+* final enemy HP
+
+### Example display
+
+```
+Player HP
+Before: 2
+Damage: 3
+After Damage: -1
+Raw Healing: 2
+Healing Applied: 2
+Final: 1
+
+Enemy HP
+Before: 4
+Damage: 4
+After Damage: 0
+Raw Healing: 0
+Healing Applied: 0
+Final: 0
+```
+
+### Temporary-zero visibility
+
+When:
+
+```
+HpAfterMergedDamage <= 0
+FinalHp > 0
+```
+
+the formatter may display a presentation-only marker such as:
+
+```
+Recovered from temporary zero
+```
+
+This marker is derived from authoritative result fields.
+
+It is not a gameplay-state field and must not be used to decide survival.
+
+### Finalization rule
+
+Only a finalized `RoundResult` returned through successful `BattleService` application may be displayed as the authoritative latest result.
+
+The UI must not display a resolver-created non-finalized result as complete.
+### Latest Battle Outcome
+
+When the latest round completed a battle, the inspector should display:
+
+* `BattleIndexForEnemy`
+* `RoundsPlayed`
+* `CompletionReason`
+* `PlayerHpAfterBattle`
+* `EnemyHpAfterBattle`
+
+### Official outcome text
+
+The displayed official result must come from:
+
+* `BattleOutcome.CompletionReason`
+
+Presentation must not independently determine the result from HP.
+
+### Player defeated
+
+For:
+
+```
+BattleCompletionReason.PlayerDefeated
+```
+
+display a clear result such as:
+
+```
+Official Result: Player Defeated
+```
+
+### Enemy defeated
+
+For:
+
+```
+BattleCompletionReason.EnemyDefeated
+```
+
+display:
+
+```
+Official Result: Enemy Defeated
+```
+
+### All rounds completed
+
+For:
+
+```
+BattleCompletionReason.AllRoundsCompleted
+```
+
+display:
+
+```
+Official Result: All Rounds Completed
+```
+
+This text describes the completed battle.
+
+It does not by itself decide whether the full run later enters another battle or battle-limit defeat.
+
+### Simultaneous zero
+
+When:
+
+```
+CompletionReason ==
+    BattleCompletionReason.PlayerDefeated
+```
+
+and:
+
+```
+PlayerHpAfterBattle <= 0
+EnemyHpAfterBattle <= 0
+```
+
+the UI should state explicitly:
+
+```
+Official Result: Player Defeated
+Both sides reached zero or below.
+Player-death priority applies.
+```
+
+The enemy HP may still be displayed as zero or below.
+
+The UI must not describe the enemy as officially defeated.
 
 ### Slot Results
 
@@ -563,19 +739,70 @@ Display:
 * command success messages
 * command failure messages
 * `FailureReason`
-* short guidance such as `Config loaded. Click New Run to use it.`
+* short next-step guidance
+* completed battle handoff status
+* run terminal status
 
-### Why it exists
+### Command failure versus gameplay defeat
 
-This makes debugging faster than relying only on the Unity Console.
+`FailureReason` represents an invalid or failed command.
+
+Player defeat is a successful gameplay outcome and must not be presented as a command failure.
+
+For example:
+
+```
+Incorrect:
+Command failed: player died
+
+Correct:
+Run defeated: player final HP is zero or below.
+```
+
+### Recommended terminal status messages
+
+#### Player death
+
+```
+Run defeated: player final HP is zero or below.
+```
+
+#### Simultaneous zero
+
+```
+Run defeated: both sides reached zero or below; player-death priority applies.
+```
+
+#### Battle-limit exhaustion
+
+```
+Run defeated: the enemy survived the configured battle limit.
+```
+
+#### Victory
+
+```
+Run victory: the final enemy was defeated while the player survived.
+```
+
+### Status source rule
+
+The controller and formatter may combine already-authoritative facts from:
+
+* `RunCommandResult`
+* `RunState.FlowStage`
+* cached `BattleOutcome`
+* finalized `RoundResult`
+
+They must not recalculate gameplay outcome or reward eligibility.
 
 ### Placement
 
-The recommended first placement is:
+The recommended placement remains:
 
 * a full-width line below the main content and action area
 
-This placement keeps the action area and deck panel visually grouped while preserving a stable location for feedback.
+Do not add a separate death dialog or death panel for the first implementation.
 
 ---
 
@@ -612,6 +839,12 @@ It should not:
 * receive command results
 * update presentation-only local state
 * trigger full refresh
+* retain the latest finalized `RoundResult` for presentation
+* retain the latest completed `BattleOutcome` for presentation
+* preserve those references before run-level acceptance clears the active battle
+* chain battle completion into run-level acceptance
+* prevent duplicate Continue processing
+* build status text from authoritative command and outcome data
 
 ### It should not
 
@@ -619,6 +852,13 @@ It should not:
 * interpret trait effects
 * compute reward legality
 * directly mutate runtime state without going through the appropriate service or factory
+* classify player death
+* classify enemy defeat
+* decide simultaneous-zero priority
+* decide reward eligibility
+* decide victory or defeat
+* recreate a `BattleOutcome` from displayed HP
+* clear the authoritative pending outcome inside `BattleState`
 
 ---
 
@@ -665,6 +905,37 @@ Recommended examples:
 * `RewardOptionViewData`
 * `InspectorViewData`
 * `ActionBarViewData`
+* `RoundResultViewData`
+* `BattleOutcomeViewData`
+* `HpTimelineViewData`
+
+### `HpTimelineViewData`
+
+Recommended fields:
+
+* `HpBefore`
+* `Damage`
+* `HpAfterMergedDamage`
+* `RawHealing`
+* `HealingApplied`
+* `FinalHp`
+
+### `BattleOutcomeViewData`
+
+Recommended fields:
+
+* battle index
+* rounds played
+* completion-reason text
+* final player HP
+* final enemy HP
+* simultaneous-zero explanatory text when applicable
+
+### Important rule
+
+View data may derive display labels from authoritative fields.
+
+It must not create or alter gameplay outcome.
 
 ### Purpose
 
@@ -718,11 +989,52 @@ Recommended example:
 * whether raw ids are shown
 * temporary status text
 * local expansion/collapse flags
+* latest finalized `RoundResult`
+* latest completed `BattleOutcome`
 
-### Important rule
+### Latest-result retention
 
-This state is not part of `RunState`.
-It must remain presentation-only state.
+`DebugUiState.LatestRoundResult` should be updated after each successful `SubmitPlayerCard(...)`.
+
+Only the finalized result returned after `BattleService` application may be stored.
+
+`DebugUiState.LatestBattleOutcome` should be updated when a completed battle outcome is exposed through `FinishRoundPresentation(...)`.
+
+These retained references are presentation-only observation state.
+
+They are not authoritative gameplay state and must never be mutated by Presentation.
+
+### Clear rules
+
+Clear retained latest-result state when:
+
+* a new run is successfully created
+* a new battle is successfully started, if the intended inspector behavior is to begin that battle with a clean result area
+
+Do not clear it merely because:
+
+* `RunService.AcceptCompletedBattle(...)` clears `RunState.ActiveBattle`
+* the run enters reward flow
+* the run enters `Victory`
+* the run enters `Defeat`
+
+### Why retention is required
+
+After `RunService.AcceptCompletedBattle(...)`:
+
+* `RunState.ActiveBattle` becomes `null`
+
+Without a presentation cache, the final round's:
+
+* HP timeline
+* slot results
+* logs
+* snapshots
+* completion reason
+
+would disappear immediately.
+
+The debug workbench must retain that information for inspection.
 
 ---
 
@@ -771,13 +1083,31 @@ The first implementation should not use:
 
 1. read current root state
 2. read current presentation-only local state
-3. build all panel view data
-4. render all panels
-5. apply current button enable / disable rules
-6. apply reward panel visibility rules
-7. display current status message
+3. build run-summary view data
+4. build board and deck view data when an active battle exists
+5. build latest-round view data from the retained finalized result
+6. build latest-outcome view data from the retained completed outcome
+7. render all panels
+8. apply current button enable / disable rules
+9. apply reward panel visibility rules
+10. display current status message
 
-This method should be the main UI refresh entry point.
+### Data precedence
+
+For latest-round display:
+
+* use the latest finalized result from `DebugUiState`
+
+The active battle may be used to update that cache, but the inspector must not require an active battle to remain visible.
+
+### Terminal refresh
+
+When the run enters `Victory` or `Defeat`, `RefreshAll()` must:
+
+* display the terminal run stage
+* disable in-run gameplay actions
+* keep the latest round and outcome inspector visible
+* keep status text visible
 
 ---
 
@@ -832,17 +1162,29 @@ Loading config does not automatically create a new run.
 
 ### Flow
 
-1. card button click sends selected card id to controller
-2. controller calls `BattleService.SubmitPlayerCard(...)`
-3. capture `BattleCommandResult`
-4. if successful, default inspector focus to latest round result
-5. update status message
-6. refresh UI
+1. card button click sends the selected card id to the controller
+
+2. controller temporarily prevents duplicate card submission
+
+3. controller calls `BattleService.SubmitPlayerCard(...)`
+
+4. capture `BattleCommandResult`
+
+5. if successful:
+
+   * store the finalized `RoundResult` in `DebugUiState.LatestRoundResult`
+   * clear any stale `LatestBattleOutcome`
+   * default inspector focus to the latest round result
+
+6. update status message
+
+7. refresh UI
 
 ### Important note
 
-This resolves the current round and enters result presentation.
-It does not automatically continue into the next round.
+This resolves and applies the current round and enters result presentation.
+
+Any completed battle outcome is already fixed in `BattleState.PendingBattleOutcome`, but the controller does not send it to `RunService` until Continue finishes the presentation gate.
 
 ---
 
@@ -850,17 +1192,84 @@ It does not automatically continue into the next round.
 
 ### Flow
 
-1. controller calls `BattleService.FinishRoundPresentation(...)`
-2. if battle continues, refresh UI
-3. if battle completes and a `BattleOutcome` is produced:
+1. verify that an active battle exists
+2. verify that its flow stage is `PresentingRoundResult`
+3. temporarily disable Continue or use a controller re-entry guard
+4. call `BattleService.FinishRoundPresentation(...)`
+5. capture `BattleCommandResult`
 
-   * controller then calls `RunService.AcceptCompletedBattle(...)`
-   * controller refreshes UI again
+### If the battle continues
+
+If:
+
+* `IsBattleComplete == false`
+
+then:
+
+1. update status message
+2. refresh UI
+3. restore normal interaction according to the new battle stage
+
+### If the battle completed
+
+If:
+
+* `IsBattleComplete == true`
+* a `BattleOutcome` is returned
+
+then:
+
+1. retain the already-finalized latest `RoundResult`
+2. store the returned authoritative `BattleOutcome` in `DebugUiState.LatestBattleOutcome`
+3. call `RunService.AcceptCompletedBattle(...)`
+4. capture `RunCommandResult`
+5. update status message from the run command result and retained authoritative outcome
+6. refresh UI
+
+### Outcome-source rule
+
+The controller must preserve the authoritative outcome exposed by battle flow.
+
+If `AcceptCompletedBattle(...)` accepts a supplied `BattleOutcome`, the controller must pass that same authoritative outcome.
+
+If `RunService` reads the outcome directly from the active battle, the controller must not create or supply a second conflicting outcome source.
+
+The controller must never create a new outcome by checking displayed HP.
+
+### Active-battle cleanup rule
+
+`RunService.AcceptCompletedBattle(...)` may clear `RunState.ActiveBattle`.
+
+The controller must retain the latest finalized result and completed outcome before that cleanup makes the battle state unavailable.
+
+### Player-death flow
+
+For a player-defeat outcome, the same Continue button is used:
+
+```
+PresentingRoundResult
+→ Continue
+→ BattleComplete
+→ RunService.AcceptCompletedBattle(...)
+→ RunFlowStage.Defeat
+```
+
+No separate death-confirmation button is required.
 
 ### Important note
 
-The controller is responsible for chaining battle completion into run-level progression.
-This should not be hidden inside a presentation-unaware service transition.
+Continue is a presentation gate.
+
+It does not decide:
+
+* player death
+* enemy defeat
+* simultaneous-zero priority
+* reward eligibility
+* victory
+* defeat
+
+Those outcomes have already been fixed or are decided by application services.
 
 ---
 
@@ -882,14 +1291,47 @@ Reward selection is handled at run level, not battle level.
 
 ## Button Visibility and Enable/Disable Rules
 
+### Global terminal rule
+
+When:
+
+* `RunState.FlowStage == Victory`
+  or
+* `RunState.FlowStage == Defeat`
+
+disable all in-run gameplay actions:
+
+* player deck buttons
+* Continue
+* Start Battle
+* reward option buttons
+
+Debug utility actions such as:
+
+* Load Config
+* New Run
+
+may remain available.
+
+---
+
 ## Player Deck Buttons
 
 Enable only when:
 
+* a run exists
+* `RunState.FlowStage == InBattle`
 * an active battle exists
-* battle flow stage is `WaitingForPlayerCard`
+* `BattleFlowStage == WaitingForPlayerCard`
 
-Disable in all other battle stages.
+Disable when:
+
+* the battle is resolving
+* the round result is being presented
+* the battle is complete
+* a reward is pending
+* the run is in `Victory`
+* the run is in `Defeat`
 
 ---
 
@@ -897,11 +1339,25 @@ Disable in all other battle stages.
 
 Enable only when:
 
-* battle flow stage is `PresentingRoundResult`
+* `RunState.FlowStage == InBattle`
+* an active battle exists
+* `BattleFlowStage == PresentingRoundResult`
+* the controller is not already processing Continue
 
 Disable otherwise.
 
-The button may remain visible for stability, even when disabled.
+The button may remain visible for layout stability.
+
+### Fatal-round behavior
+
+Continue remains enabled while a fatal round result is being presented.
+
+This allows the user to inspect the complete round before advancing to terminal run defeat.
+
+After run-level acceptance enters `Defeat`:
+
+* Continue becomes disabled
+* the fatal result remains visible
 
 ---
 
@@ -909,9 +1365,16 @@ The button may remain visible for stability, even when disabled.
 
 Enable only when:
 
-* run flow stage is `ReadyForNextBattle`
+* `RunState.FlowStage == ReadyForNextBattle`
+* `RunState.ActiveBattle == null`
+* `RunState.PendingRewardOffer == null`
 
-Disable otherwise.
+Explicitly disable in:
+
+* `InBattle`
+* `ChoosingReward`
+* `Victory`
+* `Defeat`
 
 ---
 
@@ -932,6 +1395,21 @@ After click:
 
 * temporarily disable reward buttons to prevent double submit
 
+Reward entries must not appear for:
+
+* player defeat
+* simultaneous zero resolved as player defeat
+* battle-limit exhaustion
+* `Victory`
+* `Defeat`
+
+The UI does not decide these eligibility rules.
+
+It simply renders the authoritative pending reward state:
+
+* show reward options only when `PendingRewardOffer != null`
+* enable them only when `RunFlowStage == ChoosingReward`
+
 ---
 
 ## Load Config Button
@@ -951,6 +1429,62 @@ If clicked during an existing run:
 It may remain enabled in the first implementation.
 
 A later refinement may add an explicit confirmation if replacing an active run becomes problematic, but this is not required for the first debug version.
+
+---
+
+## Terminal-State Presentation
+
+### Defeat
+
+When `RunState.FlowStage == Defeat`, the UI should show:
+
+* run stage `Defeat`
+* final player HP
+* final enemy HP
+* the latest finalized round
+* the latest official battle outcome when the defeat came from player death
+* a clear status message explaining the defeat source
+* no enabled in-run gameplay action
+
+### Two defeat sources
+
+The status display should distinguish:
+
+#### Player-death defeat
+
+Derived from:
+
+retained `BattleOutcome.CompletionReason ==
+BattleCompletionReason.PlayerDefeated`
+
+#### Battle-limit defeat
+
+Derived from:
+
+* run-level command result and final run state after an `AllRoundsCompleted` battle exhausted the configured limit
+
+The UI must not describe battle-limit defeat as player death.
+
+### Victory
+
+When `RunState.FlowStage == Victory`, the UI should show:
+
+* run stage `Victory`
+* final HP values
+* the latest finalized round
+* the latest official enemy-defeat outcome
+* no enabled in-run gameplay action
+
+### No additional terminal UI required
+
+The first implementation does not require:
+
+* a modal dialog
+* a scene transition
+* a death animation
+* a separate victory or defeat panel
+
+The existing summary bar, inspector, action bar, and status line are sufficient.
 
 ---
 
@@ -1305,6 +1839,48 @@ The first implementation may use text-based snapshot display.
 
 ---
 
+## Round Result Text
+
+Round-result formatting should clearly distinguish:
+
+* merged damage
+* HP after merged damage
+* raw healing
+* actual healing applied
+* final HP
+
+Do not compress these into only:
+
+    HP before / after
+
+because that hides temporary-zero recovery and max-HP clamp.
+
+---
+
+## Outcome Text
+
+Outcome formatting must use:
+
+* `BattleCompletionReason`
+
+It may explain the authoritative result but must not infer a different one.
+
+### Simultaneous-zero example
+
+    Player Defeated
+    Player Final HP: 0
+    Enemy Final HP: 0
+    Both sides reached zero or below.
+    Player-death priority applies.
+
+Do not show:
+
+    Enemy Defeated
+
+for that outcome.
+
+---
+
 ## Status Text
 
 Status messages should be:
@@ -1312,14 +1888,18 @@ Status messages should be:
 * short
 * explicit
 * command-result oriented
+* clear about terminal gameplay outcomes
 
 Use them for:
 
 * success feedback
 * failure feedback
 * simple next-step guidance
+* terminal gameplay outcomes
 
 Do not use the status line as a full log substitute.
+
+Do not treat player defeat as a failed command.
 
 ---
 
@@ -1327,42 +1907,98 @@ Do not use the status line as a full log substitute.
 
 The first debug scene should support the following manual validation scenarios.
 
-## Scenario A: Config Bootstrap
+### Scenario A: Config Bootstrap
 
 * load config
-* create new run
-* inspect top summary bar values
-* confirm player and enemy initial values are correct
+* create a new run
+* inspect top-summary values
+* confirm player and enemy initial values
 
-## Scenario B: Battle Happy Path
+### Scenario B: Battle Happy Path
 
-* start battle
+* start a battle
 * select a valid player card
-* inspect latest round result
-* click continue
-* observe transition to next round or battle completion
+* inspect the latest round result
+* click Continue
+* observe transition to the next round or completed battle
 
-## Scenario C: Round Inspection
+### Scenario C: Round Inspection
 
 * inspect board
 * inspect slot results
 * inspect logs
-* inspect snapshots
-* confirm state is understandable
+* inspect all seven snapshots
+* inspect the HP application timeline
 
-## Scenario D: Reward Happy Path
+### Scenario D: Reward Happy Path
 
 * enter reward stage
 * inspect all reward options
 * choose one reward
 * confirm deck and run summary update
 
-## Scenario E: Invalid Input Sanity
+### Scenario E: Invalid Input Sanity
 
-* attempt invalid actions at the wrong stage
-* confirm no crash occurs
-* confirm useful status feedback appears
-* confirm UI state remains stable
+* attempt actions at the wrong stage
+* confirm no crash
+* confirm useful command-failure text
+* confirm state remains stable
+
+### Scenario F: Temporary Zero Recovered by Regrow
+
+Verify:
+
+* player HP after merged damage is zero or below
+* raw Regrow healing is visible
+* actual healing applied is visible
+* final player HP is above zero
+* no player-defeat outcome is displayed
+* battle flow continues normally
+
+### Scenario G: Temporary Zero Recovered by Lifesteal
+
+Verify:
+
+* attributed player-card damage is visible
+* player HP after merged damage is zero or below
+* raw Lifesteal healing is visible
+* final player HP is above zero
+* the run does not enter `Defeat`
+
+### Scenario H: Player Death
+
+Verify:
+
+* all seven phase snapshots exist
+* final player HP is zero or below
+* the latest result is presented before run-level defeat
+* Continue is enabled during `PresentingRoundResult`
+* after Continue, run stage becomes `Defeat`
+* active battle is cleared
+* no reward is displayed
+* no in-run gameplay action is enabled
+* the fatal round remains visible
+
+### Scenario I: Simultaneous Zero
+
+Verify:
+
+* both final HP values are zero or below
+* official result is `PlayerDefeated`
+* the UI explains player-death priority
+* the UI does not report official enemy defeat
+* no reward appears
+* final-enemy simultaneous zero does not show `Victory`
+
+### Scenario J: Battle-Limit Defeat
+
+Verify:
+
+* both sides survive the final round
+* the enemy remains alive after the configured battle limit
+* run stage becomes `Defeat`
+* no reward is generated for the exhausting battle
+* status text distinguishes this from player-death defeat
 
 ---
 
@@ -1379,6 +2015,12 @@ The scene should expose stable references for:
 * start battle button
 * continue button
 * status message text
+* latest-round-result root
+* latest-outcome text or root
+* run-stage text
+* battle-stage text
+* player-HP text
+* enemy-HP text
 * key panel roots where useful
 
 ## Stable Visible State
@@ -1395,29 +2037,62 @@ This makes smoke assertions simpler.
 ## Reward Panel Behavior
 
 Reward panel visibility should be predictable.
+
 Do not allow ambiguous partial reward state.
 
 ## Latest Round Result Presence
 
 A stable latest-result container should exist so smoke tests can assert that result presentation is visible.
 
+The stable latest-result container must remain populated after fatal active-battle cleanup.
+
+## Terminal Action State
+
+Smoke tests should be able to determine that:
+
+* player deck buttons are disabled
+* Continue is disabled
+* Start Battle is disabled
+* reward buttons are absent or disabled
+
+after `Defeat`.
+
 ---
 
 ## Planned First Smoke Tests
 
-The first intended Play Mode smoke tests are:
+The intended Play Mode smoke tests are:
 
 * bootstrap smoke test
-* basic battle flow smoke test
-* optional later reward flow smoke test
+* basic nonfatal battle-flow smoke test
+* one fatal battle-flow smoke test
+* optional later reward-flow smoke test
 
-These tests should only validate that:
+### Fatal battle-flow smoke
 
-* the scene works
-* the main buttons are wired correctly
-* the flow can advance
+The fatal smoke path should verify:
 
-They should not become the primary validation mechanism for gameplay correctness.
+1. a fatal round can be submitted
+2. its finalized result becomes visible
+3. Continue completes the presentation gate
+4. the controller forwards the completed outcome to `RunService`
+5. the run enters `Defeat`
+6. the active battle is cleared
+7. no gameplay action remains enabled
+8. the latest fatal result remains visible
+
+### Scope rule
+
+Smoke tests validate scene and controller wiring.
+
+They do not replace Edit Mode coverage for:
+
+* exact HP arithmetic
+* Regrow recovery
+* Lifesteal recovery
+* simultaneous-zero classification
+* reward counters
+* outcome invariants
 
 ---
 
@@ -1432,6 +2107,41 @@ Do not rely on Play Mode smoke tests for:
 * fine-grained domain-rule correctness
 
 Those belong in Edit Mode tests.
+
+---
+
+## Expected Unity Editor Impact
+
+The current player-death presentation does not require a new major UI region.
+
+The existing design can reuse:
+
+* top summary bar
+* latest-round inspector
+* status message line
+* Continue button
+
+### No manual Editor change is expected when:
+
+* the latest-round inspector already uses a flexible multi-line text area
+* the status line can display the recommended terminal messages
+* the controller already has serialized references to those existing UI elements
+
+### A small manual Editor adjustment may be required when:
+
+* the latest-round area uses separate fixed fields and lacks fields for the HP timeline
+* the inspector needs more vertical space or scrolling
+* a new outcome text field is preferred instead of appending outcome text to the existing latest-result field
+* new serialized text references must be connected
+
+### Preferred approach
+
+Prefer reusing the current inspector and status elements before adding:
+
+* a new death panel
+* a new button
+* a new scene
+* a modal dialog
 
 ---
 
@@ -1458,6 +2168,18 @@ The first debug UI implementation is considered done when it:
 * contains no gameplay rule logic
 * supports manual validation scenarios
 * supports later minimal Play Mode smoke tests
+* can display HP before damage
+* can display HP after merged damage
+* can distinguish raw healing from actual healing
+* can display final HP
+* can display the official battle-completion reason
+* can display player-death status
+* can explain simultaneous-zero priority
+* retains the latest fatal round after active-battle cleanup
+* disables all in-run gameplay actions after `Victory` or `Defeat`
+* does not generate reward UI after player death or battle-limit exhaustion
+* supports temporary-zero, player-death, simultaneous-zero, and battle-limit manual validation
+* supports one fatal Play Mode smoke path
 
 ---
 
@@ -1493,4 +2215,15 @@ It is built from:
 * lightweight text formatters
 * a small presentation-only local state object
 
-Its job is to make the run, battle, and reward flow easy to inspect and easy to validate during early development.
+For round and battle completion, it must:
+
+* display the finalized authoritative HP timeline
+* display the fixed `BattleCompletionReason`
+* preserve the latest finalized round and outcome through active-battle cleanup
+* use Continue only as a presentation gate
+* chain completed battle handoff into `RunService`
+* distinguish player death, simultaneous zero, battle-limit defeat, and victory
+* disable all in-run gameplay actions in terminal states
+* avoid implementing gameplay outcome or reward rules in Presentation
+
+Its job is to make the run, battle, reward, HP-application, and terminal-flow behavior easy to inspect and validate during early development.
